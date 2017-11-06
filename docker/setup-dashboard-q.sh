@@ -28,11 +28,11 @@
 # Ensure the message queue server is up and running. Exit if timeout waiting for it.
 ${CNTR_FOLDER_DEV}/docker/wait-for-it.sh ${MSGQ_HOST}:${MSGQ_PORT} --timeout=10 --strict
 
-pip3.4 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard-q.txt
+pip3 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard-q.txt
 
 # Install SHIELD packages.
-cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.4 install --upgrade .
-cd ${CNTR_FOLDER_DEV}/backend/dare && pip3.4 install --upgrade .
+cd ${CNTR_FOLDER_DEV}/backend/utils && pip3 install --upgrade .
+cd ${CNTR_FOLDER_DEV}/backend/dare && pip3 install --upgrade .
 
 
 

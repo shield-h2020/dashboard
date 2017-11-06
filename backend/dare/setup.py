@@ -36,7 +36,6 @@ setup(
     name="dashboard-dare",
     version="0.1",
     packages=find_packages(),
-    include_package_data=True,
     exclude_package_data={'': ['README.md']},
     author="betakoder",
     author_email="betakoder@outlook.com",

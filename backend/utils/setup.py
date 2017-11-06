@@ -30,13 +30,11 @@ import os.path as path
 from setuptools import setup, find_packages
 
 cwd = path.dirname(__file__)
-long_desc = codecs.open(path.join(cwd, 'README.md'), 'r', 'utf-8').read()
 
 setup(
     name="dashboard-utils",
     version="0.1",
     packages=find_packages(),
-    include_package_data=True,
     exclude_package_data={'': ['README.md']},
     author="betakoder",
     author_email="betakoder@outlook.com",
@@ -44,5 +42,4 @@ setup(
     license="Apache License, Version 2.0",
     keywords="shield dashboard backend utils",
     url="https://github.com/shield-h2020/dashboard",
-    long_description=long_desc
 )
