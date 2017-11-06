@@ -1,0 +1,99 @@
+@import '~styleglobals/colors';
+
+:global {
+
+    .view-title {
+        font-family: "OpenSans";
+        font-size: 36px;
+        color: $color-blue-dark;
+    }
+
+    .card {
+        border-radius: 4px;
+        background-color: $color-white;
+        box-shadow: 0 0 5px 0 rgba($color-black, 0.1);
+        padding: 30px;
+        position: relative;
+        margin-bottom: 28px;
+
+        &__header {
+            padding-bottom: 15px;
+            border-bottom: 1px solid $color-light-grey;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+
+            .header__title {
+                font-family: "OpenSans";
+                font-size: 28px;
+                line-height: 38px;
+                color: $color-card-title;
+                margin: 0;
+            }
+        }
+
+        &__footer {
+            position: absolute;
+            bottom: 30px;
+            width: calc(100% - 60px);
+            padding-top: 15px;
+            border-top: 1px solid $color-light-grey;
+            text-align: right;
+
+            .footer__button {
+                margin-left: 15px;
+            }
+        }
+
+        &__line+.card__line {
+            margin-top: 20px;
+        }
+
+        &__text,
+        &__text--title {
+            color: $color-black;
+            font-family: OpenSans;
+            font-size: 14px;
+            line-height: 20px;
+            display: inline-block;
+        }
+
+        &__text--error {
+            color: $color-red;
+        }
+
+        &__text--title {
+            color: $color-medium-grey;
+        }
+
+        &__text--header {
+            font-size: 20px;
+            margin: 24px 0 0;
+            padding: 0;
+            color: $color-dark-grey;
+            font-family: OpenSans;
+        }
+    }
+
+    .isCollapsed {
+      .collapse_icon {
+        &:before {
+          content: '▾';
+        }
+      }
+    }
+
+    .collapse_icon {
+      &:before {
+        content: '▴';
+      }
+    }
+
+    .collapsed {
+      height: 0;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      padding: 0;
+    }
+}

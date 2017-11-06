@@ -1,0 +1,12 @@
+<section  ng-hide="!$ctrl.isOpen" class="{{::$ctrl.styles.viewer}}" ng-class="{ '{{::$ctrl.styles['viewer--hidden']}}': !$ctrl.isOpen }">
+  <div class="{{::$ctrl.styles.bg}}"></div>
+  <div class="{{::$ctrl.styles.container}}">
+    <header class="{{::$ctrl.styles.header}}">
+      <span>{{$ctrl.title}}</span>
+    </header>
+    <div class="{{::$ctrl.styles.text}}">{{$ctrl.text}}</div>
+    <footer class="{{::$ctrl.styles.footer}}">
+      <button class="{{::$ctrl.styles.button}}" ng-click="$ctrl.closeModal()">{{::$ctrl.strings.CLOSE}}</button>
+    </footer>
+  </div>
+</section>

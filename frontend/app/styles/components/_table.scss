@@ -1,0 +1,108 @@
+.sn-table {
+  width: 100%;
+  font-family: 'OpenSans';
+
+  &__header {
+    line-height: 36px;
+    background-color: $color-app-background;
+    box-shadow: inset 0 -1px 0 0 $color-light-grey;
+    border-radius: 4px 4px 0 0;
+
+    .header__title {
+      color: $color-medium-grey;
+      font-size: 14px;
+      font-weight: 400;
+      padding: 0 10px;
+    }
+
+    .header__title:first-of-type {
+      padding-left: 32px;
+    }
+
+    .header__title:last-of-type {
+      padding-right: 40px;
+    }
+
+    .header__title--selected {
+      font-weight: 600;
+      color: $color-black;
+    }
+
+  }
+
+  &__row {
+    height: 48px;
+    line-height: 48px;
+    background-color: $color-white;
+    box-shadow: inset 0 -1px 0 0 $color-app-background;
+    font-family: "OpenSans";
+    font-size: 14px;
+    color: $color-black;
+    
+    td {
+      padding: 0 10px;
+    }
+
+    td:first-of-type {
+      padding-left: 32px;
+    }
+
+    td:last-of-type {
+      padding-right: 40px;
+    }
+
+    .action-link {
+      cursor: pointer;
+      color: #00B5E2;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+  }
+
+  &__footer {
+    color: #818181;
+    font-family: OpenSans;
+    font-size: 12px;
+    line-height: 17px;
+    display: inline-block;
+    margin-left: 12px;
+  }
+
+}
+.table__msg--loading {
+  text-align: center;
+  margin-top: 230px;
+  color: rgba(0,76,151,0.3);
+  font-family: Orbitron;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 24px;
+}
+
+.table__msg--nocontent {
+
+  .image {
+    background-image: url('./../resources/images/illustration-no-data.svg');
+    width: 208px;
+    height: 226px;
+    margin: 75px auto 35px;
+  }
+
+  .title {
+    font-family: "OpenSans";
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 30px;
+    color: #818181;
+  }
+
+  .subtitle {
+    font-family: "OpenSans";
+    font-size: 20px;
+    text-align: center;
+    line-height: 27px;
+    color: #818181;
+  }
+}

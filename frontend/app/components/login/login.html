@@ -1,0 +1,9 @@
+<div class="{{::$ctrl.styles['login-form']}}">
+  <form name="loginForm" ng-submit="$ctrl.login(loginForm.$valid)" novalidate>
+    <img class="{{::$ctrl.styles.logo}}" src="./assets/shield_logo.png" alt="">
+    <span class="{{::$ctrl.styles['error-msg']}}" ng-show="$ctrl.errorSubmitted">{{::$ctrl.strings.error}}</span>
+    <input focus="true" required class="{{::$ctrl.styles.input}}" type="text" ng-model="$ctrl.username" placeholder="{{$ctrl.strings.username}}">
+    <input required class="{{::$ctrl.styles.input}}" type="password" ng-model="$ctrl.password" placeholder="{{$ctrl.strings.password}}">
+    <button class="{{::$ctrl.styles.button}}" action-feedback="$ctrl.isChecking" ng-disabled="loginForm.$invalid || $ctrl.isChecking" type="submit">{{::$ctrl.strings.login}}</button>
+  </form>
+</div>

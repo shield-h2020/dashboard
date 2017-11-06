@@ -1,0 +1,9 @@
+<div class="sn-select-input">
+  <label class="sn-select-input__label" ng-if="$ctrl.fieldLabel">{{$ctrl.fieldLabel}}</label>
+  <div class="sn-select-input__container">
+    <select class="container__input" ng-change="$ctrl.changed($ctrl.currentValue)" 
+    ng-model="$ctrl.currentValue" ng-options="obj.label for obj in $ctrl.options track by obj.value">
+    </select>
+    <i class="container__icon glyphicon glyphicon-chevron-down"></i>
+  </div>
+</div>

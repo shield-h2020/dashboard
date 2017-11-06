@@ -1,0 +1,59 @@
+@import '~styleglobals/colors';
+
+.base {
+    display: inline-block;
+}
+
+.label--compact {
+    line-height: 24px;
+    margin: 0;
+    font-family: 'OpenSans';
+    color: $color-medium-grey;
+    font-size: 12px;
+    width: 100%;
+    display: flex;
+
+    .label__text {
+        line-height: 20px;
+        width: 70px;
+        margin-right: 10px;
+    }
+
+    .input {
+        height: 24px;
+        padding: 0 5px;
+        border: 1px solid $color-light-grey;
+        background-color: $color-white;
+        border-radius: 4px;
+        flex-grow: 100;
+        
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.label {
+    margin: 0;
+    font-family: 'OpenSans';
+    color: $color-medium-grey;
+    font-size: 12px;
+    line-height: 40px;
+    width: 100%;
+    display: flex;
+}
+
+.label__text {
+    line-height: 40px;
+    width: 40px;
+    margin-right: 10px;
+}
+
+.input {
+    border: 1px solid $color-medium-grey;
+    background-color: $color-white;
+    border-radius: 4px;
+    padding: 0 10px;
+    height: 40px;
+    flex-grow: 100;
+}

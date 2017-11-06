@@ -1,0 +1,19 @@
+<section>
+  <h4 class="sn-uppertitle">{{$ctrl.strings.title}}</h4>
+  <div auto-resizer class="sn-card">
+    <header class="sn-card__header">
+      <h5 class="header__title">{{$ctrl.strings.table.title}}</h5>
+    </header>
+    <sn-table
+      config="$ctrl.tableConf"
+      item-source="$ctrl.tableSource(pagination, filters)"
+      actions-callback="$ctrl.onAction($event.value.item, $event.value.action)"
+      actions="['recommendation']"
+      needs-refresh="$ctrl.refreshTable"
+      has-date="true"
+      has-pagination="true"
+      filter-inputs="$ctrl.strings.filters"
+    ></sn-table>
+  </div>
+  <incidents-modal incident="$ctrl.currentIncident" is-open="$ctrl.modalOpen" close-handler="$ctrl.modalCloseHandler()"/>
+</section>

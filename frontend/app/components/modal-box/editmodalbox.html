@@ -1,0 +1,14 @@
+<div class="sn-modal" ng-class="{'sn-modal--hidden': $ctrl.isHidden}">
+  <div class="sn-modal__background"></div>
+  <div class="sn-modal__container sn-modal__container--large">
+    <header class="container__header">{{::$ctrl.strings.common.update}}</header>
+    <article class="container__content">
+      <sn-area-input field-rows="600" field-value="$ctrl.value"
+        on-update="$ctrl.value = $event.value" field-label="{{$ctrl.strings.common.update}}"></sn-area-input>
+    </article>
+    <footer class="container__footer">
+      <button ng-click="$ctrl.cancelAction()" class="footer__button">{{::$ctrl.strings.common.cancel}}</button>
+      <button ng-click="$ctrl.action()" class="footer__button footer__button--confirm">{{::$ctrl.strings.common.update}}</button>
+    </footer>
+  </div>
+</div>

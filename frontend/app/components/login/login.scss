@@ -1,0 +1,62 @@
+@import '~styleglobals/mixins';
+
+.login-form {
+  @include card-style();
+  padding: $login-padding;
+  max-width: 370px;
+  margin: 0 auto;
+  margin-top: 25vh;
+
+  .error-msg {
+    color: $color-app-error;
+    font-size: 14px;
+    text-align: center;
+    line-height: 19px;
+    margin-bottom: 15px;
+    font-family: 'OpenSans';
+    display: inline-block;
+  }
+
+  .logo {
+    width: 100%;
+    height: auto;
+    margin-bottom: 25px;
+  }
+
+  .input {
+      font-family: 'OpenSans';
+      font-weight: 400;
+      border: 1px solid $color-light-grey;
+      width: 100%;
+      padding: 0 $login-input-padding;
+      font-size: $input-font-size;
+      line-height: $input-line-height;
+      border-radius: $input-border-radius;
+      height: $login-input-height;
+      background-color: $color-white;
+      margin-bottom: $login-input-margin-bottom;
+  }
+
+  .button {
+    border: none;
+    font-family: 'OpenSans';
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    color: $color-white;
+    width: 100%;
+    background-color: $color-app-primary;
+    height: $login-button-height;
+    border-radius: $button-border-radius;
+    text-transform: capitalize;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-app-primary-shade;
+    }
+
+    &[disabled] {
+      background-color: $color-light-grey;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+# dependencies folders
+node_modules
+.vscode
+dev
+prod
+

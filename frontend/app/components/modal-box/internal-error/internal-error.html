@@ -1,0 +1,15 @@
+<div ng-class="{'{{::$ctrl.styles['modal--hidden']}}': $ctrl.isHidden}">
+  <div class="{{::$ctrl.styles.background}}"></div>
+  <div class="{{::$ctrl.styles.container}}">
+    <header class="{{::$ctrl.styles.header}}">{{$ctrl.error.code === '205' ? $ctrl.strings.TITLE_ERROR : $ctrl.strings.TITLE_UNAVAILABLE }}</header>
+    <article class="{{::$ctrl.styles.content}}">
+      <div class="{{::$ctrl.styles.line}} row" ng-repeat="(key, value) in $ctrl.error.description">
+      <span class="{{::$ctrl.styles['text--title']}} col-xs-3">{{key}}: </span>
+      <span class="{{::$ctrl.styles.text}} col-xs-9">{{value}}</span>
+      </div>
+    </article>
+    <footer class="{{::$ctrl.styles.footer}}">
+      <button ng-click="$ctrl.cancelAction()" class="{{::$ctrl.styles.button}}">{{::$ctrl.strings.OK}}</button>
+    </footer>
+  </div>
+</div>

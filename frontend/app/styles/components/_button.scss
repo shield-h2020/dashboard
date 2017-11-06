@@ -1,0 +1,79 @@
+.sn-button {
+    height: 40px;
+    line-height: 40px;
+    font-family: 'OpenSans';
+    border-radius: 4px;
+    background-color: transparent;
+    border: 0;
+    text-align: center;
+    width: 140px;
+    font-size: 13px;
+}
+
+.sn-button--primary {
+    font-weight: bold;
+    color: $color-white;
+    background-color: $color-app-primary;
+
+    &:hover {
+        background-color: $color-app-primary-shade;
+    }
+
+    &[disabled] {
+        background-color: $color-light-grey;
+    }
+}
+
+.sn-button--secondary {
+    text-align: right;
+    color: $color-medium-grey;
+    font-size: 16px;
+
+    &:hover {
+        color: $color-med-dark-grey;
+    }
+
+    &[disabled] {
+        color: $color-light-grey;
+    }
+}
+
+.sn-button--delete {
+    color: $color-app-error;
+    border: 1px solid $color-app-error;
+
+    &:hover {
+        background-color: rgba($color-app-error, 0.15);
+    }
+
+    &[disabled] {
+        border-color: $color-light-grey;
+        color: $color-light-grey;
+    }
+
+    &[disabled]:hover {
+        background-color: $color-white;
+    }
+}
+
+@mixin button--sm() {
+    .sn-button {
+        height: 35px;
+        line-height: 35px;
+    }
+
+    .sn-button--delete {
+        line-height: 33px;
+    }
+}
+
+@mixin button--lg() {
+    .sn-button {
+        height: 40px;
+        line-height: 40px;
+    }
+
+    .sn-button--delete {
+        line-height: 38px;
+    }
+}

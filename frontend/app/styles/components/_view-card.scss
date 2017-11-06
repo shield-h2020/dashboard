@@ -1,0 +1,36 @@
+.sn-card {
+  @include card-style();
+  border-radius: 0;
+  padding: 30px;
+  position: relative;
+  margin-bottom: 28px;
+
+  &__header {
+    padding-bottom: 15px;
+    border-bottom: 1px solid $color-light-grey;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    
+    .header__title {
+      font-family: "OpenSans";
+      color: $color-blue-dark;
+      margin: 0;
+      font-size: 18px;
+      line-height: 24px;
+    }
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: 30px;
+    width: calc(100% - 60px);
+    padding-top: 15px;
+    border-top: 1px solid $color-light-grey;
+    text-align: right;
+
+    button {
+      margin-left: 15px;
+    }
+  }
+}
