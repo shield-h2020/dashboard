@@ -50,4 +50,4 @@ Every element shown is a computational node with the folowing properties:
 
 # Further reading
 
-Please refer to the [Dashboard Queue](../dare/README.md), the [Recommendations Persistence](../persistence/README.md), and the [Orchestrator Adapter](../vnsfo/README.md) for additional insight on the Dashboard logic.
+Please refer to the [Dashboard Queue](../backend/dare/README.md), the [Recommendations Persistence](../backend/persistence/README.md), and the [Orchestrator Adapter](../backend/vnsfo/README.md) for additional insight on the Dashboard logic.

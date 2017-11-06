@@ -78,4 +78,4 @@ The implementation makes use of the following modules:
 **API**
 
 * [api.py](api.py) sets up the API through the [Eve REST API framework](http://eve.readthedocs.io/en/stable/).
-* [persistence.py](dashboardpersistence.py/persistence.py) implements the persistence-tailored-operations such as conveying a recommendation to the Orchestrator (which makes use of the [Orchestrator Adapter](../vnsfo/README.md)).
+* [persistence.py](dashboardpersistence/persistence.py) implements the persistence-tailored-operations such as conveying a recommendation to the Orchestrator (which makes use of the [Orchestrator Adapter](../vnsfo/README.md)).
