@@ -25,79 +25,18 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-import datetime
 import logging
-from pprint import pprint
 
 from eve import Eve
 
 import settings as cfg
+from dashboardpersistence.persistence import DashboardPersistence
 from dashboardutils import log
-from vnsfo.vnsfo import VnsfoFactory, VnsfOrchestratorPolicyIssue, VnsfoNotSupported
-
-
-def validate_policy(updates, original):
-    """
-    Sends the security policy to the vNSFO.
-
-    :param updates: The data updated
-    :param original: The original data
-    """
-
-    policy = dict(original)
-    for key, value in updates.items():
-        policy[key] = value
-
-    logger.info('updated policy: \n%s', pprint(policy))
-    print('updated policy: \n%s', pprint(policy))
-
-    try:
-        vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT, cfg.VNSFO_API)
-        vnsfo.apply_policy(cfg.VNSFO_TENANT_ID, policy)
-    except VnsfOrchestratorPolicyIssue:
-        logger.error('VnsfOrchestratorPolicyIssue')
-    except VnsfoNotSupported:
-        logger.error('VnsfOrchestratorPolicyIssue')
-
-
-def convey_policy(updates, original):
-    """
-    Sends the security policy to the vNSFO.
-
-    :param updates: The data updated
-    :param original: The original data
-    """
-
-    policy = dict(original)
-    for key, value in updates.items():
-        policy[key] = value
-
-    logger.info('updated policy: \n%s', pprint(policy))
-    print('updated policy: \n%s', pprint(policy))
-
-    try:
-        vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT, cfg.VNSFO_API)
-        vnsfo.apply_policy(cfg.VNSFO_TENANT_ID, policy)
-    except VnsfOrchestratorPolicyIssue:
-        logger.error('VnsfOrchestratorPolicyIssue')
-    except VnsfoNotSupported:
-        logger.error('VnsfOrchestratorPolicyIssue')
-
-
-def insert_convert_to_datetime(items):
-    """
-    The fields to be stored as datetime must be converted from string as it was JSON serialized.
-
-    :param items: The json to store.
-    """
-    for item in items:
-        item['detection'] = datetime.datetime.strptime(item['detection'], cfg.DATETIME_FIELDS_INPUT_FMT)
-
 
 app = Eve()
 
-app.on_update_policies += validate_policy
-app.on_insert_policies_admin += insert_convert_to_datetime
+app.on_update_policies += DashboardPersistence.convey_policy
+app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
 
 if __name__ == '__main__':
     log.setup_logging()

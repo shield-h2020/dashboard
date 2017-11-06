@@ -27,9 +27,8 @@
 import json
 
 import requests
-import xmlschema as xmlschema
 
-import settings as cfg
+from dashboardutils import http_codes
 from .vnsfo_adapter import VnsfOrchestratorAdapter
 
 
@@ -50,7 +49,6 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         """
 
         sec_policy = dict()
-        sec_policy['vnsf_id'] = self.get_vnsf_id_for_demo_hack(policy['recommendation'])
         sec_policy['action'] = 'set-policies'
         sec_policy['params'] = dict()
         sec_policy['params']['policy'] = policy['recommendation']
@@ -69,16 +67,10 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             if len(r.text) > 0:
                 self.logger.debug(r.text)
 
-            if not r.status_code == 200:
+            if not r.status_code == http_codes.HTTP_200_OK:
                 self.logger.error('vNFSO policy at {}. Status: {}'.format(url, r.status_code))
                 raise self._policy_issue
 
         except requests.exceptions.ConnectionError:
             self.logger.error('Error conveying policy at %s', url)
             raise self._unreachable
-
-    def get_vnsf_id_for_demo_hack(self, policy_data):
-        policy_schema = xmlschema.XMLSchema(cfg.POLICYSCHEMA_FILE)
-        policy = policy_schema.to_dict(policy_data, './tns:mspl-set/tns:it-resource')
-
-        return policy['@id']

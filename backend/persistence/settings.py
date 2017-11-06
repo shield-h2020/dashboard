@@ -135,25 +135,9 @@ policies_admin = {
     'resource_methods': ['GET', 'POST', 'DELETE']
 }
 
-xpto = {
-    'item_title': 'xpto',
-    'schema': policy_model,
-    'datasource': {
-        'source': 'policies'
-    },
-    'resource_methods': ['GET', 'POST', 'DELETE']
-}
-
 # The DOMAIN dict explains which resources will be available and how they will
 # be accessible to the API consumer.
 DOMAIN = {
-    'xpto': xpto,
     'policies': policies,
     'policies_admin': policies_admin
 }
-
-###
-#   Policy schema
-###
-
-POLICYSCHEMA_FILE = 'schema/mspl.xsd'

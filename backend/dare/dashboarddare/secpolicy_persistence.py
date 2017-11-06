@@ -29,7 +29,7 @@ import json
 import logging
 
 import requests
-import xmltodict
+import xmlschema
 from xmlschema import XMLSchemaValidationError
 
 from dashboardutils import exceptions, http_codes
@@ -57,25 +57,21 @@ class SecurityPolicyPersistence:
     def persist(self, policy):
         try:
             # Check MSPL schema compliance.
-            # policy_schema = xmlschema.XMLSchema(self.setttings['policy_schema'])
-            # policy_schema = xmlschema.XMLSchema()
-            # policy_meta = policy_schema.to_dict(policy, './tns:mspl-set/tns:context')
-
-            policy_meta = xmltodict.parse(policy)
-            policy_context = policy_meta['mspl-set']['context']
-
-            self.logger.debug('policy from XML\n%r', policy_meta)
+            policy_schema = xmlschema.XMLSchema(self.settings['policy_schema'])
+            policy_context = policy_schema.to_dict(policy, './tns:mspl-set/tns:context')
 
             # Extract metadata.
             policy_info = dict()
             policy_info['tenant_id'] = self.settings['tenant_id']
-            policy_info['detection'] = policy_context['timestamp']
-            policy_info['severity'] = policy_context['severity']
+            policy_info['detection'] = policy_context['tns:timestamp']
+            policy_info['severity'] = policy_context['tns:severity']
             policy_info['status'] = 'Not applied'
-            policy_info['attack'] = policy_context['type']
+            policy_info['attack'] = policy_context['tns:type']
             policy_info['recommendation'] = policy.decode('utf-8')
 
             policy_json = json.dumps(policy_info)
+
+            self.logger.debug('policy from XML\n%r', policy_info['recommendation'])
 
             # Persist policy.
             url = self.settings['persist_url']
