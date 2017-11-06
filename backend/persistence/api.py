@@ -33,7 +33,7 @@ from eve import Eve
 
 import settings as cfg
 from dashboardutils import log
-from vnsfo.vnsfo import VnsfOrchestratorAdapter, VnsfOrchestratorPolicyIssue
+from vnsfo.vnsfo import VnsfoFactory, VnsfOrchestratorPolicyIssue, VnsfoNotSupported
 
 
 def validate_policy(updates, original):
@@ -52,9 +52,11 @@ def validate_policy(updates, original):
     print('updated policy: \n%s', pprint(policy))
 
     try:
-        vnsfo = VnsfOrchestratorAdapter(cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT, cfg.VNSFO_API)
+        vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT, cfg.VNSFO_API)
         vnsfo.apply_policy(cfg.VNSFO_TENANT_ID, policy)
     except VnsfOrchestratorPolicyIssue:
+        logger.error('VnsfOrchestratorPolicyIssue')
+    except VnsfoNotSupported:
         logger.error('VnsfOrchestratorPolicyIssue')
 
 
@@ -74,9 +76,11 @@ def convey_policy(updates, original):
     print('updated policy: \n%s', pprint(policy))
 
     try:
-        vnsfo = VnsfOrchestratorAdapter(cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT, cfg.VNSFO_API)
+        vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT, cfg.VNSFO_API)
         vnsfo.apply_policy(cfg.VNSFO_TENANT_ID, policy)
     except VnsfOrchestratorPolicyIssue:
+        logger.error('VnsfOrchestratorPolicyIssue')
+    except VnsfoNotSupported:
         logger.error('VnsfOrchestratorPolicyIssue')
 
 
