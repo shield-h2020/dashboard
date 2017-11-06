@@ -39,7 +39,7 @@ class DashboardSocket(PipeConsumer):
     """
     Handles the web socket server to notify the Dashboard of new DARE policies acting as a consumer for such policies.
 
-    How an web socket server gets up and running is the responsibility of this class. When it does this is up to a 
+    How a web socket server gets up and running is the responsibility of this class. When it does this is up to a
     pipe manager provided upon instantiation. All this class needs to do for the manager is to present itself as an 
     events consumer.
 
