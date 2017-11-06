@@ -17,7 +17,10 @@ module.exports = webpackMerge(commonConfig, {
     new ExtractTextPlugin('[name].css'),
     new CleanWebpackPlugin(['dev']),
     new webpack.DefinePlugin({
-      __API_URL__: "'localhost'"
+      __API_URL__: "'localhost'",
+      __API_PORT__: JSON.stringify(process.env.BACKENDAPI_PORT),
+      __API_STORE_PORT__: JSON.stringify(process.env.VNSF_STORE_PORT),
+      __API_SOCKET_PORT__: JSON.stringify(process.env.SKT_PORT),
     }),
   ],
 });

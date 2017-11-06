@@ -1,4 +1,4 @@
-#!/bin/bash
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
@@ -25,18 +25,13 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-# Ensure the message queue server is up and running. Exit if timeout waiting for it.
-${CNTR_FOLDER_DEV}/docker/wait-for-it.sh ${MSGQ_HOST}:${MSGQ_PORT} --timeout=10 --strict
+# this is a namespace package
 
-pip3.4 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard-q.txt
+try:
+    import pkg_resources
 
-# Install SHIELD packages.
-cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.4 install --upgrade .
-cd ${CNTR_FOLDER_DEV}/backend/dare && pip3.4 install --upgrade .
+    pkg_resources.declare_namespace(__name__)
+except ImportError:
+    import pkgutil
 
-
-
-#
-# DO NOT REMOVE THIS - LEAVE IT AS THE LAST LINE IN THE FILE.
-# Convey the commands from the command line so the container does what it is intended to do once it is up and running.
-exec "$@"
+    __path__ = pkgutil.extend_path(__path__, __name__)

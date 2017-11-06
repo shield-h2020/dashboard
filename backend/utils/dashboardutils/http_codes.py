@@ -1,4 +1,4 @@
-#!/bin/bash
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
@@ -25,18 +25,9 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-# Ensure the message queue server is up and running. Exit if timeout waiting for it.
-${CNTR_FOLDER_DEV}/docker/wait-for-it.sh ${MSGQ_HOST}:${MSGQ_PORT} --timeout=10 --strict
-
-pip3.4 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard-q.txt
-
-# Install SHIELD packages.
-cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.4 install --upgrade .
-cd ${CNTR_FOLDER_DEV}/backend/dare && pip3.4 install --upgrade .
-
-
-
-#
-# DO NOT REMOVE THIS - LEAVE IT AS THE LAST LINE IN THE FILE.
-# Convey the commands from the command line so the container does what it is intended to do once it is up and running.
-exec "$@"
+# HTTP status codes
+HTTP_200_OK = 200
+HTTP_201_CREATED = 201
+HTTP_406_NOT_ACCEPTABLE = 406
+HTTP_412_PRECONDITION_FAILED = 412
+HTTP_502_BAD_GATEWAY = 502

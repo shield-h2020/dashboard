@@ -1,5 +1,3 @@
-import { PORT, SOCKET_PORT, STORE_PORT } from '../api-access-strings.js'
-
 /*
 * The HOST URL is picked up according to the environment defined at build time.
 * If a development build is made the HOST is given by variable replacement.
@@ -34,11 +32,11 @@ const strings = {
 const topologyEndpoint = '/topology/subscribe';
 
 export const APP_ADDRESSES = {
-  authAddress: `${baseUrl}:${PORT}`,
-  baseAddress: `${baseUrl}:${PORT}`,
-  cataAddress: `${baseUrl}:${PORT}`,
-  sockAddress: `${socketsUrl}:${SOCKET_PORT}`,
-  storeAddress: `${storeUrl}:${STORE_PORT}`,
+  authAddress: `${baseUrl}:${__API_PORT__}`,
+  baseAddress: `${baseUrl}:${__API_PORT__}`,
+  cataAddress: `${baseUrl}:${__API_PORT__}`,
+  sockAddress: `${socketsUrl}:${__API_SOCKET_PORT__}`,
+  storeAddress: `${storeUrl}:${__API_STORE_PORT__}`,
 };
 
 export const ACCESSORS = {

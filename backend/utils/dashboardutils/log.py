@@ -1,4 +1,4 @@
-#!/bin/bash
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
@@ -25,18 +25,26 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-# Ensure the message queue server is up and running. Exit if timeout waiting for it.
-${CNTR_FOLDER_DEV}/docker/wait-for-it.sh ${MSGQ_HOST}:${MSGQ_PORT} --timeout=10 --strict
+import logging.config
 
-pip3.4 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard-q.txt
-
-# Install SHIELD packages.
-cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.4 install --upgrade .
-cd ${CNTR_FOLDER_DEV}/backend/dare && pip3.4 install --upgrade .
+import os
+import yaml
 
 
+def setup_logging(default_path='logging.yaml', default_level=logging.INFO, env_key='LOG_CFG'):
+    """
+    Setup logging configuration
 
-#
-# DO NOT REMOVE THIS - LEAVE IT AS THE LAST LINE IN THE FILE.
-# Convey the commands from the command line so the container does what it is intended to do once it is up and running.
-exec "$@"
+    """
+    path = default_path
+    value = os.getenv(env_key, None)
+
+    if value:
+        path = value
+
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = yaml.safe_load(f.read())
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=default_level)

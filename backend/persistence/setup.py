@@ -1,4 +1,4 @@
-#!/bin/bash
+# -*- coding: utf-8 -*-
 
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
@@ -25,18 +25,24 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-# Ensure the message queue server is up and running. Exit if timeout waiting for it.
-${CNTR_FOLDER_DEV}/docker/wait-for-it.sh ${MSGQ_HOST}:${MSGQ_PORT} --timeout=10 --strict
+import codecs
+import os.path as path
+from setuptools import setup, find_packages
 
-pip3.4 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard-q.txt
+cwd = path.dirname(__file__)
+long_desc = codecs.open(path.join(cwd, 'README.md'), 'r', 'utf-8').read()
 
-# Install SHIELD packages.
-cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.4 install --upgrade .
-cd ${CNTR_FOLDER_DEV}/backend/dare && pip3.4 install --upgrade .
-
-
-
-#
-# DO NOT REMOVE THIS - LEAVE IT AS THE LAST LINE IN THE FILE.
-# Convey the commands from the command line so the container does what it is intended to do once it is up and running.
-exec "$@"
+setup(
+    name="dashboard-persistence",
+    version="0.1",
+    packages=find_packages(),
+    include_package_data=True,
+    exclude_package_data={'': ['README.md']},
+    author="betakoder",
+    author_email="betakoder@outlook.com",
+    description="Dashboard Utilities for the backend",
+    license="Apache License, Version 2.0",
+    keywords="shield dashboard backend utils",
+    url="https://github.com/shield-h2020/dashboard",
+    long_description=long_desc
+)

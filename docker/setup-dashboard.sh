@@ -27,6 +27,11 @@
 
 pip3.4 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard.txt
 
+# Install SHIELD packages.
+cd ${CNTR_FOLDER_DEV}/backend/vnsfo && pip3.4 install --upgrade .
+cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.4 install --upgrade .
+cd ${CNTR_FOLDER_DEV}/backend/persistence && pip3.4 install --upgrade .
+
 
 
 #
