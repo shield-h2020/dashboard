@@ -37,6 +37,7 @@ itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==0.23
 pymongo==3.4.0
+python3-pika==0.9.14
 PyYAML==3.12
 requests==2.18.2
 simplejson==3.11.1

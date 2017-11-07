@@ -25,11 +25,29 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-import os
-import tarfile
+version: 1
+disable_existing_loggers: False
 
+formatters:
+    simple:
+        format: "%(levelname) -10s %(asctime)s %(name) -30s %(funcName) -35s %(lineno) -5d: %(message)s'"
 
-class ExceptionMessage(Exception):
-    def __init__(self, message):
-        self.message = message
-        super(ExceptionMessage, self).__init__(message)
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+
+    file:
+        class: logging.handlers.RotatingFileHandler
+        level: DEBUG
+        formatter: simple
+        filename: dashboard.log
+        maxBytes: 2097152 # 2MB
+        backupCount: 10
+        encoding: utf8
+
+root:
+    level: DEBUG
+    handlers: [console, file]

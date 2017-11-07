@@ -37,6 +37,9 @@ VNSFO_TENANT_ID = os.environ.get('VNSFO_TENANT_ID', '__no_tenant_set__')
 # Server hostname or IP.
 MSGQ_HOST = os.environ.get('MSGQ_HOST', 'localhost')
 
+# Server port
+MSGQ_PORT = os.environ.get('MSGQ_PORT', '5672')
+
 # Message queue exchangers.
 MSGQ_EXCHANGE_DASHBOARD = os.environ.get('MSGQ_EXCHANGE_DASHBOARD', '__MSGQ_EXCHANGE_SHIELD_DASHBOARD__')
 MSGQ_EXCHANGE_TYPE = 'topic'

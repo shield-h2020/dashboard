@@ -27,7 +27,7 @@
 
 npm install -g http-server
 
-npm install
+npm install --silent
 
 npm run build:${DASHBOARD_GUI_ENV}
 

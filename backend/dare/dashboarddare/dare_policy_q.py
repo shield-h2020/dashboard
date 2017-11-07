@@ -25,13 +25,13 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-import pika
-from os import abort
+import logging
+from threading import Thread
 
 import settings as cfg
-from dashboardutils import http_codes
 from dashboardutils.pipe import PipeProducer
-from .secpolicy_persistence import SecurityPolicyPersistence, SecurityPolicyNotComplaint, SecurityPolicyNotPersisted
+from dashboardutils.rabbit_client import RabbitAsyncConsumer
+from .secpolicy_persistence import SecurityPolicyPersistence
 
 config = {
     'tenant_id': cfg.VNSFO_TENANT_ID,
@@ -54,78 +54,44 @@ class DarePolicyQ(PipeProducer):
         """
         :param settings: The AMQP queue settings.
         :param pipe: The pipe manager where this instance is to be identified as an events producer.
-        :param logger: Logger object.
         """
 
         super().__init__()
 
-        self._settings = settings
+        self.logger = logging.getLogger(__name__)
+
         self.pipe = pipe
-        self._channel = None
+        self._consumer = RabbitAsyncConsumer(config=settings, msg_callback=self.persist_policy)
 
         # Setup the instance as the events producer for the managed pipe.
         self.pipe.boot_in_sink(self)
 
     def setup(self):
         """
-        Gets the AMQP server up and running. Also sets up the security recommendations queue to communicate with the
-        DARE.
+        The logic is provided by the RabbitMQ client hence nothing to do here.
         """
-
-        self.logger.info(
-            '[DAREQ] Starting AMQP server at {} with exchange {}, queue {} and topic {}'.format(self._settings['host'],
-                                                                                                self._settings[
-                                                                                                    'exchange'],
-                                                                                                self._settings[
-                                                                                                    'dare_queue'],
-                                                                                                self._settings[
-                                                                                                    'dare_topic']))
-
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=self._settings['host']))
-        self._channel = connection.channel()
-
-        self._channel.exchange_declare(exchange=self._settings['exchange'],
-                                       exchange_type=self._settings['exchange_type'])
-        self._channel.queue_declare(queue=self._settings['dare_queue'])
-
-        self._channel.queue_bind(exchange=self._settings['exchange'],
-                                 queue=self._settings['dare_queue'],
-                                 routing_key=self._settings['dare_topic'])
+        pass
 
     def bootup(self):
         """
-        Starts to listen for DARE messages in the queue.
+        Gets the AMQP server up and running. Also sets up the security recommendations queue to communicate with the
+        DARE.
+        """
+        thread = Thread(target=self._consumer.run)
+        thread.start()
+
+    def persist_policy(self, body):
+        """
+        Persists the security policy and notifies the observers about the new policy.
+
+        NOTE: exceptions should be caught be the caller.
+
+        :param body: the actual security policy.
         """
 
-        self._channel.basic_consume(self.persist_dare_policy,
-                                    queue=self._settings['dare_queue'],
-                                    no_ack=not self._settings['dare_queue_ack'])
+        self.logger.info('Policy: %r', body)
 
-        self.logger.info('[DAREQ] [*] Waiting for messages. To exit press CTRL+C')
-        self._channel.start_consuming()
+        policy_persistence = SecurityPolicyPersistence(config)
+        policy = policy_persistence.persist(body)
 
-    def persist_dare_policy(self, channel, basic_deliver, properties, body):
-        """
-        Persists the policy message. Also notifies the consumers about the new policy.
-
-        :param channel: The channel where the message was received. Passed for your convenience.
-        :param basic_deliver: Object that is passed in carries the exchange, routing key, delivery tag and a
-        redelivered flag for the message.
-        :param properties: The message properties. An instance of BasicProperties.
-        :param body: The message received.
-        """
-
-        self.logger.info('[DARE POLICY] %r', body)
-
-        try:
-            policy_persistence = SecurityPolicyPersistence(config)
-            policy = policy_persistence.persist(body)
-
-            # Notify consumers about the new policy.
-            self.notify_all(policy)
-
-        except SecurityPolicyNotComplaint as e:
-            abort(http_codes.HTTP_412_PRECONDITION_FAILED, e.message)
-
-        except SecurityPolicyNotPersisted as e:
-            abort(http_codes.HTTP_406_NOT_ACCEPTABLE, e.message)
+        self.notify_all(policy)

@@ -151,9 +151,3 @@ DOMAIN = {
     'policies': policies,
     'policies_admin': policies_admin
 }
-
-###
-#   Policy schema
-###
-
-POLICYSCHEMA_FILE = 'schema/mspl.xsd'

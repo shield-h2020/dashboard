@@ -1,2 +1,396 @@
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" style="background-color: rgb(255, 255, 255);" xmlns:xlink="http://www.w3.org/1999/xlink" width="552px" height="149px" version="1.1" content="&lt;mxfile userAgent=&quot;Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:56.0) Gecko/20100101 Firefox/56.0&quot; version=&quot;7.6.7&quot; editor=&quot;www.draw.io&quot; type=&quot;device&quot;&gt;&lt;diagram id=&quot;3bde77db-bd07-e89d-a4bf-7dae06dc5cca&quot; name=&quot;Page-1&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;"><defs/><g transform="translate(0.5,0.5)"><path d="M 361 80 C 345 80 341 94 353.8 96.8 C 341 102.96 355.4 116.4 365.8 110.8 C 373 122 397 122 405 110.8 C 421 110.8 421 99.6 411 94 C 421 82.8 405 71.6 391 77.2 C 381 68.8 365 68.8 361 80 Z" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><g transform="translate(347.5,129.5)"><switch><foreignObject style="overflow:visible;" pointer-events="all" width="65" height="12" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 66px; white-space: nowrap; overflow-wrap: normal; text-align: center;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Web Socket</div></div></foreignObject><text x="33" y="12" fill="#000000" text-anchor="middle" font-size="12px" font-family="Helvetica">Web Socket</text></switch></g><g fill="#000000" font-family="Helvetica" text-anchor="middle" font-size="12px"><text x="70.5" y="139.5">Message Queue</text></g><path d="M 27 112 L 27 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 38 112 L 38 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 49 112 L 49 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 60 112 L 60 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 71 112 L 71 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 82 112 L 82 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 93 112 L 93 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 104 112 L 104 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 115 112 L 115 82" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 16 72 L 126 72" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 16 122 L 126 122" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 1 19 M 91 19 L 91 45 L 1 45 L 1 18" fill="none" stroke="#999999" stroke-width="2" stroke-miterlimit="10" transform="translate(0,32)scale(1,-1)translate(0,-32)" pointer-events="none"/><g transform="translate(15.5,-0.5)"><switch><foreignObject style="overflow:visible;" pointer-events="all" width="59" height="14" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(153, 153, 153); line-height: 1.2; vertical-align: top; width: 60px; white-space: nowrap; overflow-wrap: normal; text-align: center;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Input Sink</div></div></foreignObject><text x="30" y="14" fill="#999999" text-anchor="middle" font-size="13px" font-family="Helvetica">Input Sink</text></switch></g><path d="M 111 19 M 371 19 L 371 45 L 111 45 L 111 18" fill="none" stroke="#999999" stroke-width="2" stroke-miterlimit="10" transform="translate(0,32)scale(1,-1)translate(0,-32)" pointer-events="none"/><g transform="translate(200.5,-0.5)"><switch><foreignObject style="overflow:visible;" pointer-events="all" width="80" height="14" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(153, 153, 153); line-height: 1.2; vertical-align: top; width: 81px; white-space: nowrap; overflow-wrap: normal; text-align: center;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Pipe Manager</div></div></foreignObject><text x="40" y="14" fill="#999999" text-anchor="middle" font-size="13px" font-family="Helvetica"> Pipe Manager</text></switch></g><path d="M 391 19 M 551 19 L 551 45 L 391 45 L 391 18" fill="none" stroke="#999999" stroke-width="2" stroke-miterlimit="10" transform="translate(0,32)scale(1,-1)translate(0,-32)" pointer-events="none"/><g transform="translate(435.5,-0.5)"><switch><foreignObject style="overflow:visible;" pointer-events="all" width="69" height="14" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(153, 153, 153); line-height: 1.2; vertical-align: top; width: 70px; white-space: nowrap; overflow-wrap: normal; text-align: center;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Output Sink</div></div></foreignObject><text x="35" y="14" fill="#999999" text-anchor="middle" font-size="13px" font-family="Helvetica">Output Sink</text></switch></g><g transform="translate(194.5,130.5)"><switch><foreignObject style="overflow:visible;" pointer-events="all" width="69" height="14" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 70px; white-space: nowrap; overflow-wrap: normal; text-align: center;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Persistence</div></div></foreignObject><text x="35" y="14" fill="#000000" text-anchor="middle" font-size="13px" font-family="Helvetica">Persistence</text></switch></g><rect x="201.5" y="66" width="56" height="62" fill="#ffffff" stroke="none" transform="rotate(-10,229.5,97)" pointer-events="none"/><image x="225" y="92.5" width="33" height="33" xlink:href="https://cdn1.iconfinder.com/data/icons/locations-redesign/48/Tyres1-128.png" preserveAspectRatio="none" transform="rotate(-10,242,109.5)" pointer-events="none"/><path d="M 237.15 69.5 C 233.81 77.68 233.81 89.32 237.15 97.5 C 240.5 105.68 240.5 117.32 237.15 125.5 L 222.85 125.5 C 226.19 117.32 226.19 105.68 222.85 97.5 C 219.5 89.32 219.5 77.68 222.85 69.5 Z" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-miterlimit="10" transform="rotate(75,230,97.5)" pointer-events="none"/><path d="M 225.71 97.5 L 234.29 97.5 M 223.42 86.3 L 232 86.3 M 223.99 75.1 L 232.57 75.1 M 228 108.7 L 236.58 108.7 M 227.43 119.9 L 236.01 119.9" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" transform="rotate(75,230,97.5)" pointer-events="none"/><rect x="202.5" y="68" width="33" height="33" fill="#ffffff" stroke="none" transform="rotate(-10,219,84.5)" pointer-events="none"/><image x="202" y="67.5" width="33" height="33" xlink:href="https://cdn1.iconfinder.com/data/icons/locations-redesign/48/Tyres1-128.png" preserveAspectRatio="none" transform="rotate(-10,219,84.5)" pointer-events="none"/><path d="M 432 98 L 469.76 98" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 474.76 98 L 469.76 99.67 L 469.76 96.33 Z" fill="#000000" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><rect x="494" y="75" width="50" height="45" fill="#ffffff" stroke="none" pointer-events="none"/><path d="M 509 105 C 509 93 509 87 519 87 C 512.33 87 512.33 75 519 75 C 525.67 75 525.67 87 519 87 C 529 87 529 93 529 105 Z" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 524 110 C 524 98 524 92 534 92 C 527.33 92 527.33 80 534 80 C 540.67 80 540.67 92 534 92 C 544 92 544 98 544 110 Z" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 494 110 C 494 98 494 92 504 92 C 497.33 92 497.33 80 504 80 C 510.67 80 510.67 92 504 92 C 514 92 514 98 514 110 Z" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 509 120 C 509 108 509 102 519 102 C 512.33 102 512.33 90 519 90 C 525.67 90 525.67 102 519 102 C 529 102 529 108 529 120 Z" fill="#ffffff" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><g transform="translate(498.5,127.5)"><switch><foreignObject style="overflow:visible;" pointer-events="all" width="40" height="14" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 41px; white-space: nowrap; overflow-wrap: normal; text-align: center;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">Clients</div></div></foreignObject><text x="20" y="14" fill="#000000" text-anchor="middle" font-size="13px" font-family="Helvetica">Clients</text></switch></g><path d="M 282 98 L 319.76 98" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 324.76 98 L 319.76 99.67 L 319.76 96.33 Z" fill="#000000" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 140 98 L 177.76 98" fill="none" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 182.76 98 L 177.76 99.67 L 177.76 96.33 Z" fill="#000000" stroke="#000000" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg4349"
+   content="&lt;mxfile userAgent=&quot;Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:56.0) Gecko/20100101 Firefox/56.0&quot; version=&quot;7.6.7&quot; editor=&quot;www.draw.io&quot; type=&quot;device&quot;&gt;&lt;diagram id=&quot;3bde77db-bd07-e89d-a4bf-7dae06dc5cca&quot; name=&quot;Page-1&quot;&gt;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&lt;/diagram&gt;&lt;/mxfile&gt;"
+   version="1.1"
+   height="149px"
+   width="552px"
+   style="background-color: rgb(255, 255, 255);">
+  <metadata
+     id="metadata4353">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4241" />
+  <path
+     d="m 361.5,80.5 c -16,0 -20,14 -7.2,16.8 -12.8,6.16 1.6,19.6 12,14 7.2,11.2 31.2,11.2 39.2,0 16,0 16,-11.2 6,-16.8 10,-11.2 -6,-22.4 -20,-16.8 -10,-8.4 -26,-8.4 -30,2.8 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4243"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <g
+     transform="translate(348,130)"
+     id="g4249">
+    <switch
+       id="switch4247">
+      <foreignObject
+         style="overflow:visible;"
+         pointer-events="all"
+         width="65"
+         height="12"
+         requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+        <xhtml:div
+           style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 66px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
+          <xhtml:div
+             style="display:inline-block;text-align:inherit;text-decoration:inherit;">Web Socket</xhtml:div>
+        </xhtml:div>
+      </foreignObject>
+      <text
+         x="33"
+         y="12"
+         font-size="12px"
+         id="text4245"
+         style="font-size:12px;font-family:Helvetica;text-anchor:middle;fill:#000000">Web Socket</text>
+    </switch>
+  </g>
+  <g
+     transform="translate(0.5,0.5)"
+     font-size="12px"
+     id="g4253"
+     style="font-size:12px;font-family:Helvetica;text-anchor:middle;fill:#000000">
+    <text
+       x="70.5"
+       y="139.5"
+       id="text4251">Message Queue</text>
+  </g>
+  <path
+     d="m 27.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4255"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 38.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4257"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 49.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4259"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 60.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4261"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 71.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4263"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 82.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4265"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 93.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4267"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 104.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4269"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 115.5,112.5 v -30"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4271"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 16.5,72.5 h 110"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4273"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 16.5,122.5 h 110"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4275"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 1.5,45.5 m 90,0 v -26 h -90 v 27"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4277"
+     style="fill:none;stroke:#999999;stroke-width:2;stroke-miterlimit:10" />
+  <g
+     transform="translate(16)"
+     id="g4283">
+    <switch
+       id="switch4281">
+      <foreignObject
+         style="overflow:visible;"
+         pointer-events="all"
+         width="59"
+         height="14"
+         requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+        <xhtml:div
+           style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(153, 153, 153); line-height: 1.2; vertical-align: top; width: 60px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
+          <xhtml:div
+             style="display:inline-block;text-align:inherit;text-decoration:inherit;">Input Sink</xhtml:div>
+        </xhtml:div>
+      </foreignObject>
+      <text
+         x="30"
+         y="14"
+         font-size="13px"
+         id="text4279"
+         style="font-size:13px;font-family:Helvetica;text-anchor:middle;fill:#999999">Input Sink</text>
+    </switch>
+  </g>
+  <path
+     d="m 111.5,45.5 m 260,0 v -26 h -260 v 27"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4285"
+     style="fill:none;stroke:#999999;stroke-width:2;stroke-miterlimit:10" />
+  <g
+     transform="translate(201)"
+     id="g4291">
+    <switch
+       id="switch4289">
+      <foreignObject
+         style="overflow:visible;"
+         pointer-events="all"
+         width="80"
+         height="14"
+         requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+        <xhtml:div
+           style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(153, 153, 153); line-height: 1.2; vertical-align: top; width: 81px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
+          <xhtml:div
+             style="display:inline-block;text-align:inherit;text-decoration:inherit;">Pipe Manager</xhtml:div>
+        </xhtml:div>
+      </foreignObject>
+      <text
+         x="40"
+         y="14"
+         font-size="13px"
+         id="text4287"
+         style="font-size:13px;font-family:Helvetica;text-anchor:middle;fill:#999999">Pipe Manager</text>
+    </switch>
+  </g>
+  <path
+     d="m 391.5,45.5 m 160,0 v -26 h -160 v 27"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4293"
+     style="fill:none;stroke:#999999;stroke-width:2;stroke-miterlimit:10" />
+  <g
+     transform="translate(436)"
+     id="g4299">
+    <switch
+       id="switch4297">
+      <foreignObject
+         style="overflow:visible;"
+         pointer-events="all"
+         width="69"
+         height="14"
+         requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+        <xhtml:div
+           style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(153, 153, 153); line-height: 1.2; vertical-align: top; width: 70px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
+          <xhtml:div
+             style="display:inline-block;text-align:inherit;text-decoration:inherit;">Output Sink</xhtml:div>
+        </xhtml:div>
+      </foreignObject>
+      <text
+         x="35"
+         y="14"
+         font-size="13px"
+         id="text4295"
+         style="font-size:13px;font-family:Helvetica;text-anchor:middle;fill:#999999">Output Sink</text>
+    </switch>
+  </g>
+  <g
+     transform="translate(195,131)"
+     id="g4305">
+    <switch
+       id="switch4303">
+      <foreignObject
+         style="overflow:visible;"
+         pointer-events="all"
+         width="69"
+         height="14"
+         requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+        <xhtml:div
+           style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 70px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
+          <xhtml:div
+             style="display:inline-block;text-align:inherit;text-decoration:inherit;">Persistence</xhtml:div>
+        </xhtml:div>
+      </foreignObject>
+      <text
+         x="35"
+         y="14"
+         font-size="13px"
+         id="text4301"
+         style="font-size:13px;font-family:Helvetica;text-anchor:middle;fill:#000000">Persistence</text>
+    </switch>
+  </g>
+  <rect
+     x="181.57509"
+     y="104.95784"
+     width="56"
+     height="62"
+     transform="rotate(-10)"
+     pointer-events="none"
+     id="rect4307"
+     style="fill:#ffffff;stroke:none" />
+  <g
+     transform="matrix(0.02838006,-0.00962567,0.00962567,0.02838006,220.90667,100.05914)"
+     id="g5309"
+     style="fill:#fffff7;fill-opacity:1;stroke:#000000;stroke-width:55.18946457;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+    <g
+       transform="matrix(1,0,0,-1,0,1920)"
+       id="g5307"
+       style="fill:#fffff7;fill-opacity:1;stroke:#000000;stroke-width:55.18946457;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+      <path
+         d="m 500,930 c -18.9,0 -39.9,1.5 -63.1,4.5 l -32.4,129.2 c -31.4,8.5 -61,20.8 -88.6,36.9 l -114.4,-68.5 c -33.6,25.7 -63.4,55.4 -89.4,89 l 68.5,114.4 c -16.1,27.9 -28.3,57.5 -36.5,89 l -129.6,32.4 c -3,23.2 -4.5,44.3 -4.5,63.1 0,18.9 1.5,39.9 4.5,63.1 l 129.6,32.4 c 8.2,31.2 20.4,60.7 36.5,88.6 l -68.5,114.4 c 26,33.6 55.8,63.4 89.4,89.4 l 114.4,-68.5 c 27.9,15.9 57.4,28 88.6,36.5 l 32.4,129.6 c 23.5,3 44.6,4.5 63.1,4.5 18.9,0 39.9,-1.5 63.1,-4.5 l 32.4,-129.6 c 31.4,-8.2 61.1,-20.4 89,-36.5 l 114.4,68.5 c 33.6,-26 63.3,-55.8 89,-89.4 l -68.5,-114.4 c 16.1,-27.9 28.4,-57.4 36.9,-88.6 l 129.6,-32.4 c 2.7,-23.5 4.1,-44.6 4.1,-63.1 0,-18.6 -1.4,-39.6 -4.1,-63.1 l -129.6,-32.4 c -8.5,-31.4 -20.8,-61.1 -36.9,-89 l 68.9,-114 c -26.2,-33.9 -56,-63.7 -89.4,-89.4 l -114.4,68.5 c -27.6,-16.1 -57.3,-28.4 -89,-36.9 L 563.1,934.5 C 539.9,931.5 518.9,930 500,930 Z m 0,318.6 c 23.2,0 45.4,4.5 66.6,13.5 21.2,9 39.4,21.2 54.7,36.5 15.3,15.3 27.5,33.6 36.5,54.7 9,21.2 13.5,43.4 13.5,66.6 0,23.2 -4.5,45.4 -13.5,66.6 -9,21.2 -21.2,39.4 -36.5,54.7 -15.3,15.3 -33.6,27.5 -54.7,36.5 -21.2,9 -43.4,13.5 -66.6,13.5 -30.9,0 -59.5,-7.7 -85.9,-23 -26.4,-15.3 -47.2,-36.2 -62.5,-62.5 -15.3,-26.4 -23,-55.1 -23,-86.1 0,-31 7.7,-59.7 23,-85.9 15.3,-26.2 36.2,-47 62.5,-62.3 26.4,-15.1 55,-22.8 85.9,-22.8 z"
+         id="path5305"
+         style="fill:#fffff7;fill-opacity:1;stroke:#000000;stroke-width:55.18946457;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+  </g>
+  <path
+     d="m 259.39648,98.49028 c -8.76573,-0.895847 -20.00911,1.53766 -27.04593,5.8538 -7.03423,4.32394 -18.2776,6.75745 -27.04592,5.8538 l -3.70111,-11.15741 c 8.76573,0.89585 20.0091,-1.537654 27.04592,-5.853795 7.03423,-4.323943 18.27761,-6.757449 27.04592,-5.853797 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4311"
+     style="fill:#ffffff;stroke:#000000;stroke-width:1.79751158;stroke-miterlimit:10" />
+  <path
+     d="m 229.38966,95.418156 2.22067,6.694444 m 8.00501,-10.822708 2.22066,6.694444 m 8.74523,-8.591227 2.22067,6.694443 m -33.63791,3.458868 2.22067,6.69444 m -13.18657,-4.79766 2.22067,6.69444"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4313"
+     style="fill:none;stroke:#000000;stroke-width:1.79751158;stroke-miterlimit:10" />
+  <path
+     d="m 432.5,98.5 h 37.76"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4319"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 475.26,98.5 -5,1.67 v -3.34 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4321"
+     style="fill:#000000;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <rect
+     x="494.5"
+     y="75.5"
+     width="50"
+     height="45"
+     pointer-events="none"
+     id="rect4323"
+     style="fill:#ffffff;stroke:none" />
+  <path
+     d="m 509.5,105.5 c 0,-12 0,-18 10,-18 -6.67,0 -6.67,-12 0,-12 6.67,0 6.67,12 0,12 10,0 10,6 10,18 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4325"
+     style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 524.5,110.5 c 0,-12 0,-18 10,-18 -6.67,0 -6.67,-12 0,-12 6.67,0 6.67,12 0,12 10,0 10,6 10,18 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4327"
+     style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 494.5,110.5 c 0,-12 0,-18 10,-18 -6.67,0 -6.67,-12 0,-12 6.67,0 6.67,12 0,12 10,0 10,6 10,18 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4329"
+     style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 509.5,120.5 c 0,-12 0,-18 10,-18 -6.67,0 -6.67,-12 0,-12 6.67,0 6.67,12 0,12 10,0 10,6 10,18 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4331"
+     style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <g
+     transform="translate(499,128)"
+     id="g4337">
+    <switch
+       id="switch4335">
+      <foreignObject
+         style="overflow:visible;"
+         pointer-events="all"
+         width="40"
+         height="14"
+         requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+        <xhtml:div
+           style="display: inline-block; font-size: 13px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 41px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
+          <xhtml:div
+             style="display:inline-block;text-align:inherit;text-decoration:inherit;">Clients</xhtml:div>
+        </xhtml:div>
+      </foreignObject>
+      <text
+         x="20"
+         y="14"
+         font-size="13px"
+         id="text4333"
+         style="font-size:13px;font-family:Helvetica;text-anchor:middle;fill:#000000">Clients</text>
+    </switch>
+  </g>
+  <path
+     d="m 282.5,98.5 h 37.76"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4339"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 325.26,98.5 -5,1.67 v -3.34 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4341"
+     style="fill:#000000;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 140.5,98.5 h 37.76"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4343"
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <path
+     d="m 183.26,98.5 -5,1.67 v -3.34 z"
+     stroke-miterlimit="10"
+     pointer-events="none"
+     id="path4345"
+     style="fill:#000000;stroke:#000000;stroke-width:2;stroke-miterlimit:10" />
+  <g
+     style="fill:#fffff7;fill-opacity:1;stroke:#000000;stroke-width:55.18946457;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="g4465"
+     transform="matrix(0.02838006,-0.00962567,0.00962567,0.02838006,198.1948,79.979736)">
+    <g
+       style="fill:#fffff7;fill-opacity:1;stroke:#000000;stroke-width:55.18946457;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="g4463"
+       transform="matrix(1,0,0,-1,0,1920)">
+      <path
+         style="fill:#fffff7;fill-opacity:1;stroke:#000000;stroke-width:55.18946457;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path4461"
+         d="m 500,930 c -18.9,0 -39.9,1.5 -63.1,4.5 l -32.4,129.2 c -31.4,8.5 -61,20.8 -88.6,36.9 l -114.4,-68.5 c -33.6,25.7 -63.4,55.4 -89.4,89 l 68.5,114.4 c -16.1,27.9 -28.3,57.5 -36.5,89 l -129.6,32.4 c -3,23.2 -4.5,44.3 -4.5,63.1 0,18.9 1.5,39.9 4.5,63.1 l 129.6,32.4 c 8.2,31.2 20.4,60.7 36.5,88.6 l -68.5,114.4 c 26,33.6 55.8,63.4 89.4,89.4 l 114.4,-68.5 c 27.9,15.9 57.4,28 88.6,36.5 l 32.4,129.6 c 23.5,3 44.6,4.5 63.1,4.5 18.9,0 39.9,-1.5 63.1,-4.5 l 32.4,-129.6 c 31.4,-8.2 61.1,-20.4 89,-36.5 l 114.4,68.5 c 33.6,-26 63.3,-55.8 89,-89.4 l -68.5,-114.4 c 16.1,-27.9 28.4,-57.4 36.9,-88.6 l 129.6,-32.4 c 2.7,-23.5 4.1,-44.6 4.1,-63.1 0,-18.6 -1.4,-39.6 -4.1,-63.1 l -129.6,-32.4 c -8.5,-31.4 -20.8,-61.1 -36.9,-89 l 68.9,-114 c -26.2,-33.9 -56,-63.7 -89.4,-89.4 l -114.4,68.5 c -27.6,-16.1 -57.3,-28.4 -89,-36.9 L 563.1,934.5 C 539.9,931.5 518.9,930 500,930 Z m 0,318.6 c 23.2,0 45.4,4.5 66.6,13.5 21.2,9 39.4,21.2 54.7,36.5 15.3,15.3 27.5,33.6 36.5,54.7 9,21.2 13.5,43.4 13.5,66.6 0,23.2 -4.5,45.4 -13.5,66.6 -9,21.2 -21.2,39.4 -36.5,54.7 -15.3,15.3 -33.6,27.5 -54.7,36.5 -21.2,9 -43.4,13.5 -66.6,13.5 -30.9,0 -59.5,-7.7 -85.9,-23 -26.4,-15.3 -47.2,-36.2 -62.5,-62.5 -15.3,-26.4 -23,-55.1 -23,-86.1 0,-31 7.7,-59.7 23,-85.9 15.3,-26.2 36.2,-47 62.5,-62.3 26.4,-15.1 55,-22.8 85.9,-22.8 z" />
+    </g>
+  </g>
+</svg>

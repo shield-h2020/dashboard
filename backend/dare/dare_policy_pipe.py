@@ -35,11 +35,14 @@ from dashboardutils.pipe import PipeManager
 
 dare_queue_settings = {
     'host': cfg.MSGQ_HOST,
+    'port': cfg.MSGQ_PORT,
+    'user': 'guest',
+    'pass': 'guest',
     'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'dare_queue': cfg.MSGQ_DARE,
-    'dare_topic': cfg.MSGQ_DARE_TOPIC,
-    'dare_queue_ack': cfg.MSGQ_DARE_ACK
+    'queue': cfg.MSGQ_DARE,
+    'queue_ack': cfg.MSGQ_DARE_ACK,
+    'topic': cfg.MSGQ_DARE_TOPIC
 }
 
 dashboard_socket_settings = {
@@ -54,7 +57,8 @@ if __name__ == '__main__':
     #   +-----------+           +------------+           +-----------+
     #   | DARE      | 2. input  | Pipe       | 3. output | Dashboard |
     #   | Queue     | +-------> | Manager    | <-------+ | Socket    |
-    #   +-----+-----+           +------------+           +-----^-----+
+    #   +-----------+           +------------+           +-----------+
+    #         |                                                ^
     #         |                                                |
     #         +------------------------------------------------+
     #                         4. convey policies
