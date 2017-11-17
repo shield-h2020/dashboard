@@ -22,25 +22,18 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+Feature: Security Policies application
+  Validates the operation to convey security recommendations to the vNSF Orchestrator.
 
+  @smoke
+  Scenario Outline: Recommendations successful notification
+    Given I mock the vNSFO response with <mock_file>
+    Given I mock the latest security recommendation <MSPL>
+    When I want to apply the latest security recommendation
+    Then I expect the response code <status>
+    Then I expect the JSON response to be as in <file>
 
-#
-# Dashboard Data Store environment
-#
-
-FROM centos:7
-
-LABEL project="${CNTR_PROJECT}"
-
-# Dependencies
-RUN yum update -y && \
-    yum install -y which && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
-    yum makecache fast && \
-    yum install -y python36u python36u-pip && \
-    pip3.6 install --upgrade pip && \
-    yum clean all
-
-WORKDIR ${CNTR_FOLDER_DEV_Q}
-
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+    Examples:
+      | mock_file                             | MSPL                |  status | file                                  |
+      # HTTP_200_OK
+      | mspl/mspl-apply-success.json         | mspl/mspl-apply-success.json         | 200 | mspl/mspl-apply-success.json         |

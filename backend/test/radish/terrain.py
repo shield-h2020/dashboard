@@ -24,40 +24,42 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
-from dashboardutils import exceptions
-
-from .osm_vnsfo import OsmVnsfoAdapter
-
-
-class VnsfoNotSupported(exceptions.ExceptionMessage):
-    """Requested orchestrator isn't supported."""
+import os
+import tempfile
+from radish import before, after, world
+from shutil import rmtree
 
 
-class VnsfoFactory:
-    """
-    Orchestrator factory for vNSF.
-    """
+@before.all
+def setup(features, marker):
+    world.my_context = dict()
+    world.my_context['msgq_connection'] = None
+    world.my_context['msgq_channel'] = None
+    world.my_context['socket'] = None
+    world.my_context['socket_output_file'] = tempfile.NamedTemporaryFile(delete=False).name
 
-    @staticmethod
-    def get_orchestrator(kind, protocol, server, port, api_basepath, logger=None):
-        """
-        Instantiates the vNSFO Orchestrator following the type provided.
 
-        :param kind: the Orchestrator to instantiate.
-        :param protocol: HTTP or HTTPS.
-        :param server: the server name or IP address.
-        :param port: the TCP port to reach the Orchestrator.
-        :param api_basepath: the Ochestrator base path to its API.
-        :return: the proper vNSF Orchestrator instance.
-        """
+@before.each_scenario
+def setup_scenario(step):
+    # Avoid poisoning mocked responses for the vNSFO.
+    if os.path.exists(world.env['mock']['vnsfo_folder']):
+        rmtree(world.env['mock']['vnsfo_folder'])
 
-        # Currently supported Orchestrator.
-        supported = {
-            'OSM': OsmVnsfoAdapter
-        }
+    # Mock vNSFO context.
+    step.context.mock_vnsfo = dict()
 
-        orchestrator = supported.get(kind)(protocol, server, port, api_basepath, logger)
-        if orchestrator is None:
-            raise VnsfoNotSupported("Requested orchestrator isn't supported.")
+    # API context.
+    step.context.api = dict()
+    step.context.api['response'] = dict()
 
-        return orchestrator
+
+@after.all
+def cleanup(features, marker):
+    if world.my_context['msgq_connection'] is not None:
+        world.my_context['msgq_connection'].close()
+
+    if world.my_context['socket'] is not None:
+        world.my_context['socket'].close()
+
+    if os.path.isfile(world.my_context['socket_output_file']):
+        os.remove(world.my_context['socket_output_file'])

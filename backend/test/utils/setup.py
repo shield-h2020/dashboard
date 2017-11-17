@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -23,24 +25,24 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+import codecs
+import os.path as path
+from setuptools import setup, find_packages
 
-#
-# Dashboard Data Store environment
-#
+cwd = path.dirname(__file__)
+long_desc = codecs.open(path.join(cwd, 'README.md'), 'r', 'utf-8').read()
 
-FROM centos:7
-
-LABEL project="${CNTR_PROJECT}"
-
-# Dependencies
-RUN yum update -y && \
-    yum install -y which && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
-    yum makecache fast && \
-    yum install -y python36u python36u-pip && \
-    pip3.6 install --upgrade pip && \
-    yum clean all
-
-WORKDIR ${CNTR_FOLDER_DEV_Q}
-
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+setup(
+    name="dashboard-testing-utils",
+    version="0.1",
+    packages=find_packages(),
+    include_package_data=True,
+    exclude_package_data={'': ['README.md']},
+    author="betakoder",
+    author_email="betakoder@outlook.com",
+    description="Dashboard Testing Utilities for the backend",
+    license="Apache License, Version 2.0",
+    keywords="shield dashboard backend testing utils",
+    url="https://github.com/shield-h2020/dashboard",
+    long_description=long_desc
+)

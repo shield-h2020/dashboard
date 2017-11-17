@@ -1,0 +1,14 @@
+{
+  "_links": {
+    "child": [
+      {
+        "title": "policies",
+        "href": "policies"
+      },
+      {
+        "title": "admin/policies",
+        "href": "admin/policies"
+      }
+    ]
+  }
+}

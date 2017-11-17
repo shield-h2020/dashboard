@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -23,24 +25,18 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+CURRENT_PATH=${PWD}
 
-#
-# Dashboard Data Store environment
-#
+TESTS_REPORT_JSON=${FOLDER_TESTS_REPORT}/result.json
+TESTS_REPORT_HTML=${FOLDER_TESTS_REPORT}/report.html
+REPORT_TOOL=${FOLDER_TESTS_TOOLS}/html_report.js
 
-FROM centos:7
+cd ${FOLDER_TESTS_BASEPATH}
 
-LABEL project="${CNTR_PROJECT}"
+# Run tests.
+radish --cucumber-json ${TESTS_REPORT_JSON} ${FOLDER_TESTS_FEATURES}
 
-# Dependencies
-RUN yum update -y && \
-    yum install -y which && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
-    yum makecache fast && \
-    yum install -y python36u python36u-pip && \
-    pip3.6 install --upgrade pip && \
-    yum clean all
+# Beautify tests report.
+node ${REPORT_TOOL} -s ${TESTS_REPORT_JSON} -o ${TESTS_REPORT_HTML}
 
-WORKDIR ${CNTR_FOLDER_DEV_Q}
-
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+cd ${CURRENT_PATH}

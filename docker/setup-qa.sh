@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -23,24 +25,16 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+pip3.6 install -r ${CNTR_FOLDER_DEV}/docker/requirements-qa.txt
+
+# Install SHIELD testing packages.
+cd ${CNTR_FOLDER_DEV}/backend/test/utils && pip3.6 install --upgrade .
+
+# Install SHIELD common packages.
+cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.6 install --upgrade .
+
 
 #
-# Dashboard Data Store environment
-#
-
-FROM centos:7
-
-LABEL project="${CNTR_PROJECT}"
-
-# Dependencies
-RUN yum update -y && \
-    yum install -y which && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
-    yum makecache fast && \
-    yum install -y python36u python36u-pip && \
-    pip3.6 install --upgrade pip && \
-    yum clean all
-
-WORKDIR ${CNTR_FOLDER_DEV_Q}
-
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+# DO NOT REMOVE THIS - LEAVE IT AS THE LAST LINE IN THE FILE.
+# Convey the commands from the command line so the container does what it is intended to do once it is up and running.
+exec "$@"

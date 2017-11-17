@@ -36,4 +36,4 @@ WORKDIR ${CNTR_FOLDER_DEV}
 
 ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-revproxy.sh"]
 
-CMD ["haproxy", "-f", "${CNTR_FOLDER_DEV}/docker/haproxy.cfg"]
+CMD ["haproxy", "-f", "${CNTR_FOLDER_DEV}/docker/${HAPROXY_CFG_FILE}"]

@@ -22,25 +22,19 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+@smoke
+@health-check
+Feature: Health Checks
+  Ensures the Store is up and running.
 
+  Scenario: Backend API ready
+    When I list the backend API endpoints
+    Then I expect the JSON response to be as in api-endpoints.json
 
-#
-# Dashboard Data Store environment
-#
+  Scenario: Recommendations Queue ready
+    When I check the Recommendations Queue
+    # Then I expect the JSON response to be as in x.json
 
-FROM centos:7
-
-LABEL project="${CNTR_PROJECT}"
-
-# Dependencies
-RUN yum update -y && \
-    yum install -y which && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
-    yum makecache fast && \
-    yum install -y python36u python36u-pip && \
-    pip3.6 install --upgrade pip && \
-    yum clean all
-
-WORKDIR ${CNTR_FOLDER_DEV_Q}
-
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+  Scenario: Recommendations Socket ready
+    When I check the Recommendations Socket
+    # Then I expect the JSON response to be as in api-endpoints.json

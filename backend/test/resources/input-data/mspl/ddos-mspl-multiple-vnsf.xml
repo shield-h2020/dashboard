@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mspl-set xmlns="http://security.polito.it/shield/mspl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://security.polito.it/shield/mspl mspl.xsd ">
+
+	<!-- TCP SYN flood (high severity) - drop the packets -->
+
+	<context>
+		 <severity>3</severity>
+		 <type>DoS</type>
+		 <timestamp>2017-10-17T13:32:00</timestamp>
+	</context>
+
+	<it-resource id="vNSF1">
+		<configuration xsi:type="filtering-configuration">
+			<default-action>accept</default-action>
+			<resolution-strategy>FMR</resolution-strategy>
+			<rule> <!-- for each DARE attacker/attack target pairs -->
+				<priority>1</priority>
+				<action>drop</action>
+				<condition>
+					<packet-filter-condition>
+						<direction>inbound</direction>
+						<!--  <source-address></source-address> --> <!-- insert DARE attacker IP here -->
+						<!--  <source-port></source-port> --> <!-- insert DARE attacker ports here (if any) -->
+						<!--  <destination-address></destination-address> --> <!-- insert DARE attack target IP here -->
+						<!--  <destination-port></destination-port> --> <!-- insert DARE attack target port here (if any) -->
+						<protocol>TCP</protocol>
+					</packet-filter-condition>
+				</condition>
+			</rule>
+		</configuration>
+	</it-resource>
+
+	<!-- TCP SYN flood (low severity) - limit the packets -->
+
+	<it-resource id="vNSF2">
+		<configuration xsi:type="filtering-configuration">
+			<default-action>drop</default-action>
+			<resolution-strategy>FMR</resolution-strategy>
+			<rule>
+				<priority>1</priority>
+				<action>accept</action>
+				<condition>
+					<packet-filter-condition>
+						<direction>inbound</direction>
+						<protocol>TCP</protocol>
+					</packet-filter-condition>
+					<traffic-flow-condition>
+						<max-connections>10</max-connections>
+					</traffic-flow-condition>
+				</condition>
+			</rule>
+			<rule> <!-- for each DARE attacker/attack target pairs -->
+				<priority>2</priority>
+				<action>accept</action>
+				<condition>
+					<packet-filter-condition>
+						<direction>inbound</direction>
+						<!-- <source-address></source-address> --> <!-- insert DARE attacker IP here -->
+						<!-- <source-port></source-port> --> <!-- insert DARE attacker ports here (if any) -->
+						<!-- <destination-address></destination-address> --> <!-- insert DARE attack target IP here -->
+						<!-- <destination-port></destination-port> --> <!-- insert DARE attack target port here (if any) -->
+						<protocol>TCP</protocol>
+					</packet-filter-condition>
+					<traffic-flow-condition>
+						<rate-limit>100/s</rate-limit>
+					</traffic-flow-condition>
+				</condition>
+			</rule>
+		</configuration>
+	</it-resource>
+
+	<!-- UDP flood (high severity) - drop the datagrams -->
+
+	<it-resource id="vNSF3">
+		<configuration xsi:type="filtering-configuration">
+			<default-action>accept</default-action>
+			<resolution-strategy>FMR</resolution-strategy>
+			<rule> <!-- for each DARE attacker/attack target pairs -->
+				<priority>1</priority>
+				<action>drop</action>
+				<condition>
+					<packet-filter-condition>
+						<direction>inbound</direction>
+						<!-- <source-address></source-address> --> <!-- insert DARE attacker IP here -->
+						<!-- <source-port></source-port> --> <!-- insert DARE attacker ports here (if any) -->
+						<!-- <destination-address></destination-address>  --> <!-- insert DARE attack target IP here -->
+						<!-- <destination-port></destination-port> --> <!-- insert DARE attack target port here (if any) -->
+						<protocol>UDP</protocol>
+					</packet-filter-condition>
+				</condition>
+			</rule>
+		</configuration>
+	</it-resource>
+
+	<!-- UDP flood (low severity)  - limit the datagrams -->
+
+	<it-resource id="vNSF4">
+		<configuration xsi:type="filtering-configuration">
+			<default-action>drop</default-action>
+			<resolution-strategy>FMR</resolution-strategy>
+			<rule> <!-- for each DARE attacker/attack target pairs -->
+				<priority>1</priority>
+				<action>accept</action>
+				<condition>
+					<packet-filter-condition>
+						<direction>inbound</direction>
+						<!-- <source-address></source-address> --> <!-- insert DARE attacker IP here -->
+						<!-- <source-port></source-port>  --> <!-- insert DARE attacker ports here (if any) -->
+						<!-- <destination-address></destination-address>  --> <!-- insert DARE attack target IP here -->
+						<!-- <destination-port></destination-port>  --> <!-- insert DARE attack target port here (if any) -->
+						<protocol>UDP</protocol>
+					</packet-filter-condition>
+					<traffic-flow-condition>
+						<rate-limit>100/s</rate-limit>
+					</traffic-flow-condition>
+				</condition>
+			</rule>
+		</configuration>
+	</it-resource>
+
+</mspl-set>

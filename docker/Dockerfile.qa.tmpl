@@ -25,7 +25,7 @@
 
 
 #
-# Dashboard Data Store environment
+# Dashboard Quality Assurance environment
 #
 
 FROM centos:7
@@ -34,13 +34,21 @@ LABEL project="${CNTR_PROJECT}"
 
 # Dependencies
 RUN yum update -y && \
-    yum install -y which && \
     yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
     yum makecache fast && \
     yum install -y python36u python36u-pip && \
     pip3.6 install --upgrade pip && \
+    curl --silent --location https://rpm.nodesource.com/setup_8.x | bash - && \
+    yum update -y && \
+    yum install -y nodejs && \
+    npm i -g argv@0.0.2 cucumber-html-reporter@2.0.3 canned@0.3.10 && \
     yum clean all
 
-WORKDIR ${CNTR_FOLDER_DEV_Q}
+ENV NODE_PATH /usr/lib/node_modules
 
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+WORKDIR ${FOLDER_TESTS_BASEPATH}
+
+# Mock vNSF Orchestrator.
+CMD ["canned", "${CNTR_FOLDER_VNSFO}", "-p", "${CNTR_MOCK_VNSFO_PORT}"]
+
+ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-qa.sh"]

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -22,25 +24,39 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+import threading
+
+import websocket
 
 
-#
-# Dashboard Data Store environment
-#
+class ReceiveOnlySocketClient:
+    """
+    Creates a receive-only socket which conveys the data received to a callback function.
 
-FROM centos:7
+    The callback function is responsible for handling the data as it sees fit and do whatever it requires with the
+    output provided in the instantiation.
+    """
 
-LABEL project="${CNTR_PROJECT}"
+    def __init__(self, url, callback, output=None):
+        self._callback = callback
+        self._output = output
 
-# Dependencies
-RUN yum update -y && \
-    yum install -y which && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
-    yum makecache fast && \
-    yum install -y python36u python36u-pip && \
-    pip3.6 install --upgrade pip && \
-    yum clean all
+        # websocket.enableTrace(True)
+        self._ws = websocket.WebSocketApp(url,
+                                          on_message=self.on_message,
+                                          on_error=self.on_error)
 
-WORKDIR ${CNTR_FOLDER_DEV_Q}
+        def run(*args):
+            self._ws.run_forever()
 
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+        threading.Thread(target=run).start()
+
+    def on_message(self, ws, message):
+        self._callback(message, self._output)
+
+    @staticmethod
+    def on_error(ws, error):
+        print('Socker Error: ' + str(error))
+
+    def close(self):
+        self._ws.close()

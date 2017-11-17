@@ -30,9 +30,9 @@ import logging
 
 import requests
 import xmlschema
+from dashboardutils import exceptions, http_codes
 from xmlschema import XMLSchemaValidationError
 
-from dashboardutils import exceptions, http_codes
 from . import dashboard_errors as err
 
 

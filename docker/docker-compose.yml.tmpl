@@ -34,7 +34,7 @@ services:
           context:       .
           dockerfile:    ${DOCKER_FILE_REVPROXY}
         ports:
-            - "80:80"
+            - "${DASHBOARD_GUI_PORT_WEB}:${DASHBOARD_GUI_PORT_WEB}"
             - "${MSGQ_PORT}:${MSGQ_PORT}"
             - "${DATASTORE_PORT}:${DATASTORE_PORT}"
             - "${BACKENDAPI_PORT}:${BACKENDAPI_PORT}"
@@ -49,6 +49,8 @@ services:
         build:
             context:       .
             dockerfile:    ${DOCKER_FILE_MSGQ}
+        ports:
+            - "15671:15671" # Management
 
 
     # Data Store.
@@ -73,7 +75,7 @@ services:
 
             # Source files.
             - ${SHARED_FOLDER_DEV_API}:${CNTR_FOLDER_DEV_API}
-        command:         python3 api.py
+        command:         python3.6 api.py
 
 
     # Dashboard Message Queue.
@@ -88,7 +90,7 @@ services:
 
             # Source files.
             - ${SHARED_FOLDER_DEV_Q}:${CNTR_FOLDER_DEV_Q}
-        command:         python3 dare_policy_pipe.py
+        command:         python3.6 dare_policy_pipe.py
 
 
     # Dashboard GUI.

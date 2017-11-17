@@ -25,12 +25,12 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-pip3 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard.txt
+pip3.6 install -r ${CNTR_FOLDER_DEV}/docker/requirements-dashboard.txt
 
 # Install SHIELD packages.
-cd ${CNTR_FOLDER_DEV}/backend/vnsfo && pip3 install --upgrade .
-cd ${CNTR_FOLDER_DEV}/backend/utils && pip3 install --upgrade .
-cd ${CNTR_FOLDER_DEV}/backend/persistence && pip3 install --upgrade .
+cd ${CNTR_FOLDER_DEV}/backend/vnsfo && pip3.6 install --upgrade .
+cd ${CNTR_FOLDER_DEV}/backend/utils && pip3.6 install --upgrade .
+cd ${CNTR_FOLDER_DEV}/backend/persistence && pip3.6 install --upgrade .
 
 
 

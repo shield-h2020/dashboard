@@ -31,3 +31,5 @@
 FROM rabbitmq:3.6.12-management
 
 LABEL project="${CNTR_PROJECT}"
+
+ENV RABBITMQ_NODE_PORT ${MSGQ_PORT}

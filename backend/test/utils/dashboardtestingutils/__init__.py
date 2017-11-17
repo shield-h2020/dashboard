@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -23,24 +25,13 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+# this is a namespace package
 
-#
-# Dashboard Data Store environment
-#
+try:
+    import pkg_resources
 
-FROM centos:7
+    pkg_resources.declare_namespace(__name__)
+except ImportError:
+    import pkgutil
 
-LABEL project="${CNTR_PROJECT}"
-
-# Dependencies
-RUN yum update -y && \
-    yum install -y which && \
-    yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
-    yum makecache fast && \
-    yum install -y python36u python36u-pip && \
-    pip3.6 install --upgrade pip && \
-    yum clean all
-
-WORKDIR ${CNTR_FOLDER_DEV_Q}
-
-ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-q.sh"]
+    __path__ = pkgutil.extend_path(__path__, __name__)

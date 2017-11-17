@@ -147,7 +147,6 @@ xpto = {
 # The DOMAIN dict explains which resources will be available and how they will
 # be accessible to the API consumer.
 DOMAIN = {
-    'xpto': xpto,
     'policies': policies,
     'policies_admin': policies_admin
 }
