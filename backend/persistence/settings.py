@@ -25,6 +25,7 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+import api_endpoints
 import os
 
 BACKENDAPI_PORT = int(os.environ.get('BACKENDAPI_PORT', 4000))
@@ -43,19 +44,8 @@ VNSFO_API = os.environ.get('VNSFO_API', '__missing_vnsfo_api_basepath__')
 # NOTE: this shall be removed once AAA is in place.
 VNSFO_TENANT_ID = os.environ.get('VNSFO_TENANT_ID', '__no_tenant_set__')
 
-# CORS-related settings.
-X_DOMAINS = '*'
+X_DOMAINS = '*'  # CORS-related settings.
 X_HEADERS = ['Content-Type, ''If-Match']
-
-#
-# Enable reads (GET), inserts (POST) and DELETE for resources/collections
-# (if you omit this line, the API will default to ['GET'] and provide
-# read-only access to the endpoint).
-RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
-
-# Enable reads (GET), edits (PATCH) and deletes of individual items
-# (defaults to read-only item access).
-ITEM_METHODS = ['GET', 'PATCH', 'DELETE']
 
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.
@@ -65,79 +55,17 @@ CACHE_EXPIRES = 20
 # Date format for fields to store - ISO 8601.
 DATETIME_FIELDS_INPUT_FMT = '%Y-%m-%dT%H:%M:%S'
 
+XML = False
+
 # Schema definition, based on Cerberus grammar. Check the Cerberus project
 # (https://github.com/pyeve/cerberus) for details.
 
-policy_model = {
-    # The tenant to whom the policy is for.
-    'tenant_id': {
-        'type': 'string',
-        'empty': False,
-        'required': True
-    },
-
-    # Time and date when the thread was detected. Format: ISO 8601.
-    'detection': {
-        # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
-        # string must be sent. The trick is to convert the string to a datetime instance in a hook function.
-        # The string type caters for the serialization to JSON so the type must match or Cerberus won't validate it
-        # and so it never gets to the hook function. Once it gets to the hook function it is converted to datetime
-        # and stored. Storing as datetime doesn't seem to be a problem as pymongo doesn't check the instance type (
-        # the assumption is that it was previously validated by Cerberus so it won't check it again).
-        # This is not the most elegant hack but it seems the most adequate given the constraints.
-        'type': 'string',
-        'empty': False,
-        'required': True
-    },
-
-    # The severity assigned to the threat. Format: user-defined.
-    'severity': {
-        'type': 'integer',
-        'empty': False,
-        'required': True
-    },
-
-    # The applicability of the policy for the tenant in question. Format: user-defined.
-    'status': {
-        'type': 'string',
-        'empty': False,
-        'required': True
-    },
-
-    # The kind of network attack. Format: user-defined.
-    'attack': {
-        'type': 'string',
-        'empty': False,
-        'required': True
-    },
-
-    # The recommendation to counter the threat. Format: user-defined.
-    'recommendation': {
-        'type': 'string',
-        'empty': False,
-        'required': True
-    }
-}
-
-policies = {
-    # 'title' tag used in item links.
-    'item_title': 'policies',
-    'schema': policy_model,
-    'resource_methods': ['GET']
-}
-
-policies_admin = {
-    'url': 'admin/policies',
-    'schema': policy_model,
-    'datasource': {
-        'source': 'policies'
-    },
-    'resource_methods': ['GET', 'POST', 'DELETE']
-}
+# https://github.com/pyeve/eve-swagger#description-fields-on-the-swagger-docs
+TRANSPARENT_SCHEMA_RULES = True
 
 # The DOMAIN dict explains which resources will be available and how they will
 # be accessible to the API consumer.
 DOMAIN = {
-    'policies': policies,
-    'policies_admin': policies_admin
+    'policies': api_endpoints.policies,
+    'policies_admin': api_endpoints.policies_admin
 }

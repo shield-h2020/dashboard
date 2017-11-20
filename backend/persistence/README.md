@@ -64,7 +64,7 @@ policy_model = {
 
 The API to interact with the recommendations follows the RESTful principles and serves for CRUD operations on the recommendations.
 
-The API documentation follows the [OpenAPI Specification](https://swagger.io/specification/) (fka Swagger RESTful API Documentation Specification) Version 2.0 and is defined in the [swagger.yaml](swagger.yaml) file. To have it in a user-friendly way simple paste its contents into the [Swagger Editor](https://editor.swagger.io/) and navigate the documentation Swagger style.
+The [API documentation](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/shield-h2020/dashboard/master/backend/persistence/swagger.json) follows the [OpenAPI Specification](https://swagger.io/specification/) (fka Swagger RESTful API Documentation Specification) Version 2.0 and is defined in the [swagger.json](swagger.json) file.
 
 
 ## Implementation

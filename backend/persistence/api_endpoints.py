@@ -25,30 +25,22 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-import logging
+import api_model
 
-import api_docs
-import settings as cfg
-from dashboardpersistence.persistence import DashboardPersistence
-from dashboardutils import log
-from eve import Eve
-from eve_swagger import swagger, add_documentation
+policies = {
+    'item_title': 'policies',
+    'description': 'Security recommendations',
+    'schema': api_model.policy_model,
+    'item_methods': ['GET', 'PATCH']
+}
 
-app = Eve()
-
-app.on_update_policies += DashboardPersistence.convey_policy
-app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
-
-app.register_blueprint(swagger)
-
-app.config['SWAGGER_INFO'] = api_docs.swagger_info
-
-add_documentation({'paths': api_docs.paths})
-
-if __name__ == '__main__':
-    log.setup_logging()
-    logger = logging.getLogger(__name__)
-
-    # use '0.0.0.0' to ensure your REST API is reachable from all your
-    # network (and not only your computer).
-    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True)
+policies_admin = {
+    'item_title': 'admin policies',
+    'url': 'admin/policies',
+    'schema': api_model.policy_model,
+    'datasource': {
+        'source': 'policies'
+    },
+    'resource_methods': ['POST'],
+    'item_methods': []
+}

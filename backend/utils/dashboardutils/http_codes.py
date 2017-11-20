@@ -25,9 +25,97 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+def _without_keys(dict_data, keyz):
+    """
+    Removes elements from a (copy of a) dictionary.
+
+    :param dict_data: the dictionary to remove entries from.
+    :param keyz: the keys to remove from the dictionary.
+    :return: a new dictionary withiout the intended keys.
+    """
+
+    cleaned_data = dict_data.copy()
+
+    for key in keyz:
+        cleaned_data.pop(key)
+
+    return cleaned_data
+
+
+def tailor_response(initial, changes, remove):
+    """
+    Takes an initial response data and modifies it by changing the intended keys and removing the unwanted ones.
+
+    :param initial: the initial response dictionary.
+    :param changes: the dictionary keys with the intended changes for the values.
+    :param remove: the list of key to remove from the response.
+    :return: the tailored response.
+    """
+
+    tailored = initial.copy()
+
+    if changes is not None:
+        tailored = {**tailored, **changes}
+
+    return _without_keys(tailored, remove)
+
+
 # HTTP status codes
 HTTP_200_OK = 200
 HTTP_201_CREATED = 201
+HTTP_202_ACCEPTED = 202
+HTTP_400_BAD_REQUEST = 400
+HTTP_401_UNAUTHORIZED = 401
+HTTP_404_NOT_FOUND = 404
 HTTP_406_NOT_ACCEPTABLE = 406
 HTTP_412_PRECONDITION_FAILED = 412
+HTTP_500_SERVER_ERROR = 500
+HTTP_501_NOT_IMPLEMENTED = 501
 HTTP_502_BAD_GATEWAY = 502
+HTTP_504_TIMEOUT = 504
+
+responses_full = {
+    str(HTTP_200_OK): {
+        'description': 'Request succeeded.'
+    },
+    str(HTTP_201_CREATED): {
+        'description': 'Resource created.'
+    },
+    str(HTTP_202_ACCEPTED): {
+        'description': "Request processing. You can retry your request, and when it's finished, you'll get a 200 "
+                       "instead."
+    },
+    str(HTTP_400_BAD_REQUEST): {
+        'description': 'Bad request. API specific parameters are incorrect or missing.'
+    },
+    str(HTTP_401_UNAUTHORIZED): {
+        'description': "Unauthorised. You're not authorised to access this resource."
+    },
+    str(HTTP_404_NOT_FOUND): {
+        'description': "Not found. The requested resource doesn't exist."
+    },
+    str(HTTP_500_SERVER_ERROR): {
+        'description': 'Server errors. Our bad!'
+    },
+    str(HTTP_501_NOT_IMPLEMENTED): {
+        'description': 'Not implemented yet.'
+    },
+    str(HTTP_502_BAD_GATEWAY): {
+        'description': 'Third-party unreachable.'
+    },
+    str(HTTP_504_TIMEOUT): {
+        'description': 'Timeout. A request to a third-party has taken too long to be served.'
+    }
+}
+
+responses = _without_keys(responses_full, [str(HTTP_501_NOT_IMPLEMENTED)])
+responses_created = _without_keys(responses, [str(HTTP_200_OK)])
+responses_read = _without_keys(responses, [str(HTTP_201_CREATED)])
+responses_updated = _without_keys(responses, [str(HTTP_201_CREATED)])
+responses_deleted = _without_keys(responses, [str(HTTP_201_CREATED)])
+responses_not_implemented = _without_keys(responses_full,
+                                          [str(HTTP_200_OK),
+                                           str(HTTP_201_CREATED),
+                                           str(HTTP_202_ACCEPTED),
+                                           str(HTTP_502_BAD_GATEWAY),
+                                           str(HTTP_504_TIMEOUT)])

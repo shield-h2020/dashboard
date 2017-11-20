@@ -27,7 +27,7 @@ The implementation makes use of the following modules:
 
 * [dare_policy_q.py](dashboarddare/dare_policy_q.py) implements the security recommendations queue following the observable concept for an Observer design pattern in which any new message received in the queue triggers the notification of all the registered observers. During its instantiation it registers itself as an input sink in the communications pipe provided.
 
-**Output Sinks**
+**Output Sink**
 
 * [dashboard_socket.py](dashboarddare/dashboard_socket.py) implements a web socket which only sends messages to its clients and ignores any message sent by a client. It follows the concrete observer concept for an Observer design pattern ensuring that every registered client receives the new security recommendation through the established socket. It supports multiple clients as it keeps a record of registered clients. During its instantiation it registers itself as an output sink in the communications pipe provided.
 

@@ -34,7 +34,6 @@ LABEL project="${CNTR_PROJECT}"
 
 # Dependencies
 RUN yum update -y && \
-    yum install -y which && \
     yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
     yum makecache fast && \
     yum install -y python36u python36u-pip && \
