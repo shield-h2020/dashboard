@@ -1,0 +1,18 @@
+@import 'variables';
+@import 'colors';
+
+@mixin font-face($path, $family, $weight) {
+
+    @font-face{
+        font-family: quote($family);
+        font-weight: $weight;
+        src: url($path);
+    }
+
+}
+
+@mixin card-style() {
+    border-radius: $card-border-radius;
+    background-color: $color-white;
+    box-shadow: 0 0 5px 0 $color-shadows;
+}

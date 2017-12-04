@@ -1,0 +1,313 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "Dashboard API",
+		"description": "\n                   This API handles the security recommendations CRUD operations.\n\n\n                   _Please note that consumers are not allowed to edit (`PATCH`), update (`PUT`) or delete (`DELETE`) \n                   a resource unless they provide an up-to-date `ETag` for the resource they are attempting to modify. \n                   This value, taken from the details (`GET`) request, is mandatory and should be provided in the \n                   `If-Match` header_.\n\n\n                   API version numbering as per http://semver.org/\n                   ",
+		"termsOfService": "my terms of service",
+		"contact": {
+			"name": "Filipe Ferreira",
+			"url": "https://github.com/betakoder"
+		},
+		"license": {
+			"name": "Apache License, Version 2.0",
+			"url": "http://www.apache.org/licenses/LICENSE-2.0"
+		},
+		"version": "0.1.0"
+	},
+	"host": "localhost:13030",
+	"schemes": [
+		"http"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"paths": {
+		"/policies": {
+			"get": {
+				"summary": "Lists all the security recommendations",
+				"responses": {
+					"200": {
+						"description": "Request succeeded.",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/policies"
+							}
+						}
+					},
+					"202": {
+						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+					},
+					"400": {
+						"description": "Bad request. API specific parameters are incorrect or missing."
+					},
+					"401": {
+						"description": "Unauthorised. You're not authorised to access this resource."
+					},
+					"404": {
+						"description": "Not found. The requested resource doesn't exist."
+					},
+					"500": {
+						"description": "Server errors. Our bad!"
+					},
+					"502": {
+						"description": "Third-party unreachable."
+					},
+					"504": {
+						"description": "Timeout. A request to a third-party has taken too long to be served."
+					}
+				},
+				"tags": [
+					"policies"
+				],
+				"description": "Provides a list of all the recommendations along with a description for each one."
+			}
+		},
+		"/policies/{policiesId}": {
+			"get": {
+				"summary": "Provides the details on a security recommendation",
+				"responses": {
+					"200": {
+						"description": "Request succeeded.",
+						"schema": {
+							"$ref": "#/definitions/policies"
+						}
+					},
+					"202": {
+						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+					},
+					"400": {
+						"description": "Bad request. API specific parameters are incorrect or missing."
+					},
+					"401": {
+						"description": "Unauthorised. You're not authorised to access this resource."
+					},
+					"404": {
+						"description": "Not found. The requested resource doesn't exist."
+					},
+					"500": {
+						"description": "Server errors. Our bad!"
+					},
+					"502": {
+						"description": "Third-party unreachable."
+					},
+					"504": {
+						"description": "Timeout. A request to a third-party has taken too long to be served."
+					}
+				},
+				"parameters": [
+					{
+						"$ref": "#/parameters/policies__id"
+					}
+				],
+				"tags": [
+					"policies"
+				],
+				"description": "Provides all the information on the security recommendation."
+			},
+			"patch": {
+				"summary": "Conveys the security recommendation to the Orchestrator",
+				"responses": {
+					"200": {
+						"description": "Request succeeded."
+					},
+					"202": {
+						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+					},
+					"400": {
+						"description": "Bad request. API specific parameters are incorrect or missing."
+					},
+					"401": {
+						"description": "Unauthorised. You're not authorised to access this resource."
+					},
+					"404": {
+						"description": "Not found. The requested resource doesn't exist."
+					},
+					"500": {
+						"description": "Server errors. Our bad!"
+					},
+					"502": {
+						"description": "Third-party unreachable."
+					},
+					"504": {
+						"description": "Timeout. A request to a third-party has taken too long to be served."
+					}
+				},
+				"parameters": [
+					{
+						"$ref": "#/parameters/policies__id"
+					},
+					{
+						"in": "body",
+						"name": "policies",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/policies"
+						}
+					},
+					{
+						"in": "header",
+						"name": "If-Match",
+						"description": "Current value of the _etag field",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"tags": [
+					"policies"
+				],
+				"description": "Forwards the security recommendation to the Orchestrator waiting for it’s reply."
+			}
+		},
+		"/admin/policies": {
+			"post": {
+				"summary": "Persists a new security recommendation",
+				"parameters": [
+					{
+						"in": "body",
+						"name": "admin policies",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/admin policies"
+						}
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Resource created."
+					},
+					"202": {
+						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+					},
+					"400": {
+						"description": "Bad request. API specific parameters are incorrect or missing."
+					},
+					"401": {
+						"description": "Unauthorised. You're not authorised to access this resource."
+					},
+					"404": {
+						"description": "Not found. The requested resource doesn't exist."
+					},
+					"500": {
+						"description": "Server errors. Our bad!"
+					},
+					"502": {
+						"description": "Third-party unreachable."
+					},
+					"504": {
+						"description": "Timeout. A request to a third-party has taken too long to be served."
+					}
+				},
+				"tags": [
+					"admin policies"
+				],
+				"description": "Stores a security recommendation and marks it as not applied."
+			}
+		}
+	},
+	"definitions": {
+		"policies": {
+			"type": "object",
+			"properties": {
+				"tenant_id": {
+					"description": "Description of the user resource",
+					"type": "string"
+				},
+				"detection": {
+					"type": "string"
+				},
+				"severity": {
+					"type": "integer"
+				},
+				"status": {
+					"type": "string"
+				},
+				"attack": {
+					"type": "string"
+				},
+				"recommendation": {
+					"type": "string"
+				},
+				"_id": {
+					"type": "string",
+					"format": "objectid"
+				}
+			},
+			"required": [
+				"tenant_id",
+				"detection",
+				"severity",
+				"status",
+				"attack",
+				"recommendation"
+			],
+			"description": "Security recommendations"
+		},
+		"admin policies": {
+			"type": "object",
+			"properties": {
+				"tenant_id": {
+					"description": "Description of the user resource",
+					"type": "string"
+				},
+				"detection": {
+					"type": "string"
+				},
+				"severity": {
+					"type": "integer"
+				},
+				"status": {
+					"type": "string"
+				},
+				"attack": {
+					"type": "string"
+				},
+				"recommendation": {
+					"type": "string"
+				},
+				"_id": {
+					"type": "string",
+					"format": "objectid"
+				}
+			},
+			"required": [
+				"tenant_id",
+				"detection",
+				"severity",
+				"status",
+				"attack",
+				"recommendation"
+			]
+		}
+	},
+	"parameters": {
+		"policies__id": {
+			"in": "path",
+			"name": "policiesId",
+			"required": true,
+			"description": "",
+			"type": "string",
+			"format": "objectid"
+		},
+		"admin policies__id": {
+			"in": "path",
+			"name": "admin policiesId",
+			"required": true,
+			"description": "",
+			"type": "string",
+			"format": "objectid"
+		}
+	},
+	"tags": [
+		{
+			"name": "policies",
+			"description": "Security recommendations"
+		},
+		{
+			"name": "admin policies"
+		}
+	]
+}

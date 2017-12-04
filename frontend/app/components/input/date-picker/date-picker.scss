@@ -1,0 +1,130 @@
+@import '~styleglobals/colors';
+
+.label {
+    margin: 0;
+    font-family: 'OpenSans';
+    color: $color-medium-grey;
+    font-size: 12px;
+    line-height: 40px;
+    width: 100%;
+    display: flex;
+}
+
+.label__text {
+    display: inline-block;
+    width: 40px;
+    line-height: 20px;
+}
+
+.input {
+    border: 1px solid $color-medium-grey;
+    padding: 10px 30px 10px 10px;
+    border-radius: 4px;
+    line-height: 20px;
+    background: url('../../../resources/images/icons/ic-calendar.svg');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    flex-grow: 100;
+    box-sizing: border-box;
+    cursor: pointer;
+    
+    &::-webkit-calendar-picker-indicator {
+        opacity: 0;
+    }
+}
+
+.footer {
+    display: flex;
+}
+
+.button {
+    color: $color-white;
+    font-family: 'OpenSans';
+    font-size: 14px;
+    height: 36px;
+    line-height: 36px;
+    width: 100%;
+    background-color: $color-blue;
+    border: none;
+}
+
+:global {
+    .angularjs-datetime-picker {
+        color: #333;
+        font: normal 14px 'OpenSans';
+        border: 1px solid $color-light-grey;
+        border-radius: 4px;
+        display: inline-block;
+        background: $color-white;
+        position: absolute;
+        z-index: 100;
+        left: 13%;
+    }
+    .angularjs-datetime-picker>.adp-month {
+        text-align: center;
+        line-height: 22px;
+        padding: 10px;
+        background: $color-white-shade;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-bottom: 1px solid $color-lightest-grey;
+        position: relative;
+    }
+    .angularjs-datetime-picker>.adp-month>button {
+        color: #555;
+        font: normal 14px 'OpenSans';
+        outline: none;
+        position: absolute;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+    .angularjs-datetime-picker>.adp-month>button:hover {
+        color: $color-med-dark-grey;
+    }
+    .angularjs-datetime-picker>.adp-month>button.adp-prev {
+        left: 10px;
+    }
+    .angularjs-datetime-picker>.adp-month>button.adp-next {
+        right: 10px;
+    }
+    .angularjs-datetime-picker>.adp-days {
+        width: 210px;
+        /* 30 x 7 */
+        margin: 10px;
+        text-align: center;
+    }
+    .angularjs-datetime-picker>.adp-days>.adp-day-of-week,
+    .angularjs-datetime-picker>.adp-days>.adp-day {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        border: 1px solid transparent;
+        width: 30px;
+        line-height: 28px;
+        float: left;
+    }
+    .angularjs-datetime-picker>.adp-days>.adp-day-of-week {
+        font-weight: bold;
+    }
+    .angularjs-datetime-picker>.adp-days>.adp-day:not(.selectable) {
+        opacity: 0.15;
+        cursor: default;
+    }
+    .angularjs-datetime-picker>.adp-days>.adp-day.selectable {
+        cursor: pointer;
+    }
+    .angularjs-datetime-picker>.adp-days>.adp-day.selected {
+        background: $color-blue;
+        color: $color-white;
+    }
+    .angularjs-datetime-picker>.adp-days>.adp-day.selectable:hover {
+        background: $color-blue;
+        color: $color-white;
+    }
+    .angularjs-datetime-picker>.adp-days:after {
+        content: '';
+        display: block;
+        clear: left;
+        height: 0;
+    }
+}

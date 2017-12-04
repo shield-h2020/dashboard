@@ -1,0 +1,27 @@
+<mspl-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://security.polito.it/shield/mspl">
+  <context>
+    <severity>3</severity>
+    <type>DoS</type>
+    <timestamp>2017-10-17T13:32:00</timestamp>
+  </context>
+  <it-resource id="vNSF-filtering">
+    <configuration xsi:type="filtering-configuration">
+      <default-action>accept</default-action>
+      <resolution-strategy>FMR</resolution-strategy>
+      <rule>
+        <priority>1</priority>
+        <action>drop</action>
+        <condition>
+          <packet-filter-condition>
+            <direction>inbound</direction>
+            <source-address>100.114.244.222</source-address>
+            <source-port>*</source-port>
+            <destination-address>10.101.20.230</destination-address>
+            <destination-port>80</destination-port>
+            <protocol>TCP</protocol>
+          </packet-filter-condition>
+        </condition>
+      </rule>
+    </configuration>
+  </it-resource>
+</mspl-set>

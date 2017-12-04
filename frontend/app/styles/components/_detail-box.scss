@@ -1,0 +1,38 @@
+.details-box {
+    position: absolute;
+    z-index: 1000;
+    background-color: $color-white;
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 1px solid $color-light-grey;
+    border-radius: 5px;
+    box-shadow: 1px 1px 6px $color-shadows;
+    padding: 10px 0;
+    top: 0;
+    left: 0;
+
+    &__header {
+        border-bottom: 1px solid $color-light-grey;
+        padding: 0 10px 10px;
+
+        .header__title {
+            max-width: 90%;
+            overflow: hidden;
+            display: inline-block;
+            margin: 0;
+        }
+    }
+
+    &__body {
+        padding: 0 10px;
+
+        .body__item {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 20px;
+            height: 20px;
+        }
+    }
+}

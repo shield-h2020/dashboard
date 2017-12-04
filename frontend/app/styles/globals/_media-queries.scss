@@ -1,0 +1,30 @@
+@import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables';
+
+$screen-small-desktop-height: 768px;
+$screen-desktop-height: 1200px; 
+
+@media(min-width: $screen-phone) {
+
+}
+
+@media(min-width: $screen-tablet) {
+
+}
+
+@media(min-width: $screen-desktop) {
+
+}
+
+@media(min-width: $screen-lg-desktop) {
+
+}
+
+@media (min-height: 500px) {
+  @include button--sm();
+  @include modal--sm();
+}
+
+@media (min-height: 800px) {
+  @include button--lg();
+  @include modal--lg();
+}

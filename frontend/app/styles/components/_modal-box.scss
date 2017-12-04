@@ -1,0 +1,107 @@
+.sn-modal {
+
+  &__background {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+  }
+
+  &__container {
+    width: 470px;
+    position: fixed;
+    top: 15vh;
+    left: calc(50vw - 235px);
+    background-color: $color-white;
+    border-radius: 4px;
+    box-shadow: 0 0 20px 0 rgba(0,0,0,0.15);
+
+    .container__header {
+      font-family: "OpenSans";
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 24px;
+      color: #333A4D;
+      padding: 20px 30px 15px;
+    }
+
+    .container__content {
+      font-family: "OpenSans";
+      font-size: 16px;
+      line-height: 24px;
+      color: $color-black;
+      padding: 0 30px 30px;
+    }
+
+    .container__footer {
+      border-top: 1px solid $color-lightest-grey;
+      display: flex;
+      border-radius: 0 0 4px 4px;
+      overflow: hidden;
+
+      .footer__button {
+        display: inline-block;
+        font-family: "OpenSans";
+        font-size: 14px;
+        line-height: 22px;
+        color: $color-black;
+        background-color: $color-app-background;
+        width: 50%;
+        min-height: 40px;
+        height: 5vh;
+        border: none;
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer__button:last-of-type {
+        box-shadow: inset 1px 0 0 0 #D8D8D8;
+      }
+
+      .footer__button[disabled] {
+        color: rgba($color-app-primary, 0.3);
+      }
+
+      .footer__button--delete {
+        color: $color-app-error;
+      }
+
+      .footer__button--confirm {
+        color: $color-app-primary;
+      }
+    }
+  }
+
+  &__container--large {
+    width: 940px;
+    left: calc(50vw - 470px);
+    top: 12.5vh;
+  }
+}
+
+.sn-modal--hidden {
+  display: none;
+}
+
+@mixin modal--sm() {
+   .sn-modal__container {
+     top: 8vh;
+   }
+}
+
+@mixin modal--lg() {
+   .sn-modal__container {
+     top: 12vh;
+   }
+}
+
+@media (min-height: 500px) {
+  @include modal--sm();
+}
+
+@media (min-height: 800px) {
+  @include modal--lg();
+}

@@ -1,0 +1,32 @@
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate--rotating {
+  animation: rotating 2s linear infinite;
+  display: inline-block;
+  position: relative;
+  top: 3px;
+  left: -10px;
+}
+
+.animate--rotating-light {
+  @extend .animate--rotating;
+  background-image: url('./../resources/images/icons/ic-saving.svg');
+  width: 20px;
+  height: 20px;
+  top: 3px;
+}
+
+.animate--rotating-dark {
+  @extend .animate--rotating;
+  background-image: url('./../resources/images/icons/ic-saving-grey.svg');
+  width: 32px;
+  height: 32px;
+  top: 10px;
+}

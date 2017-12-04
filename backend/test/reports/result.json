@@ -1,0 +1,340 @@
+[
+    {
+        "description": "Ensures the Store is up and running.",
+        "elements": [
+            {
+                "description": "",
+                "id": "1",
+                "keyword": "Scenario",
+                "line": 30,
+                "name": "Backend API ready",
+                "steps": [
+                    {
+                        "keyword": "When",
+                        "line": 31,
+                        "name": "When I list the backend API endpoints",
+                        "result": {
+                            "duration": 8600000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 32,
+                        "name": "Then I expect the JSON response to be as in api-endpoints.json",
+                        "result": {
+                            "duration": 734000.0,
+                            "status": "passed"
+                        }
+                    }
+                ],
+                "tags": [],
+                "type": "scenario"
+            },
+            {
+                "description": "",
+                "id": "2",
+                "keyword": "Scenario",
+                "line": 34,
+                "name": "Recommendations Queue ready",
+                "steps": [
+                    {
+                        "keyword": "When",
+                        "line": 35,
+                        "name": "When I check the Recommendations Queue",
+                        "result": {
+                            "duration": 25793000.0,
+                            "status": "pending"
+                        }
+                    }
+                ],
+                "tags": [],
+                "type": "scenario"
+            },
+            {
+                "description": "",
+                "id": "3",
+                "keyword": "Scenario",
+                "line": 38,
+                "name": "Recommendations Socket ready",
+                "steps": [
+                    {
+                        "keyword": "When",
+                        "line": 39,
+                        "name": "When I check the Recommendations Socket",
+                        "result": {
+                            "duration": 2764000.0,
+                            "status": "passed"
+                        }
+                    }
+                ],
+                "tags": [],
+                "type": "scenario"
+            }
+        ],
+        "id": "1",
+        "keyword": "Feature",
+        "line": 27,
+        "name": "Health Checks",
+        "tags": [
+            {
+                "line": 25,
+                "name": "@smoke"
+            },
+            {
+                "line": 26,
+                "name": "@health-check"
+            }
+        ],
+        "type": "feature",
+        "uri": "/usr/share/dev/dashboard/backend/test/features/health-checks.feature"
+    },
+    {
+        "description": "Validates the operation to convey security recommendations to the vNSF Orchestrator.",
+        "elements": [
+            {
+                "description": "",
+                "id": "2",
+                "keyword": "Scenario Outline",
+                "line": 29,
+                "name": "Recommendations successful notification - row 0",
+                "steps": [
+                    {
+                        "keyword": "Given",
+                        "line": 39,
+                        "name": "Given I mock the vNSFO response with mspl/mspl-apply-success.json",
+                        "result": {
+                            "duration": 19000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Given",
+                        "line": 39,
+                        "name": "Given I mock the latest security recommendation mspl/mspl-apply-success.json",
+                        "result": {
+                            "duration": 1008087000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "When",
+                        "line": 39,
+                        "name": "When I want to apply the latest security recommendation",
+                        "result": {
+                            "duration": 32784000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 39,
+                        "name": "Then I expect the response code 200",
+                        "result": {
+                            "duration": 155000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 39,
+                        "name": "Then I expect the JSON response to be as in mspl/mspl-apply-success.json",
+                        "result": {
+                            "duration": 406000.0,
+                            "status": "passed"
+                        }
+                    }
+                ],
+                "tags": [],
+                "type": "scenario"
+            }
+        ],
+        "id": "2",
+        "keyword": "Feature",
+        "line": 25,
+        "name": "Security Policies application",
+        "tags": [],
+        "type": "feature",
+        "uri": "/usr/share/dev/dashboard/backend/test/features/security-policies-apply.feature"
+    },
+    {
+        "description": "Validates the security recommendations notification operation.",
+        "elements": [
+            {
+                "description": "",
+                "id": "2",
+                "keyword": "Scenario Outline",
+                "line": 33,
+                "name": "Recommendations successful notification - row 0",
+                "steps": [
+                    {
+                        "keyword": "Given",
+                        "line": 29,
+                        "name": "Given The Recommendations Queue is ready",
+                        "result": {
+                            "duration": 38230000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Given",
+                        "line": 30,
+                        "name": "Given The Recommendations Socket is ready",
+                        "result": {
+                            "duration": 429000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "When",
+                        "line": 41,
+                        "name": "When I receive a security recommendation mspl/ddos-mspl-small.xml",
+                        "result": {
+                            "duration": 641000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 41,
+                        "name": "Then The security recommendation must be persisted mspl/ddos-mspl-persisted-small.json",
+                        "result": {
+                            "duration": 1027122000.0000001,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 41,
+                        "name": "Then The security recommendation notification must be received mspl/ddos-mspl-notification-small.json",
+                        "result": {
+                            "duration": 1003080999.9999999,
+                            "status": "passed"
+                        }
+                    }
+                ],
+                "tags": [],
+                "type": "scenario"
+            },
+            {
+                "description": "",
+                "id": "3",
+                "keyword": "Scenario Outline",
+                "line": 33,
+                "name": "Recommendations successful notification - row 1",
+                "steps": [
+                    {
+                        "keyword": "Given",
+                        "line": 29,
+                        "name": "Given The Recommendations Queue is ready",
+                        "result": {
+                            "duration": 110000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Given",
+                        "line": 30,
+                        "name": "Given The Recommendations Socket is ready",
+                        "result": {
+                            "duration": 57000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "When",
+                        "line": 43,
+                        "name": "When I receive a security recommendation mspl/ddos-mspl-multiple-vnsf.xml",
+                        "result": {
+                            "duration": 862000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 43,
+                        "name": "Then The security recommendation must be persisted mspl/ddos-mspl-persisted-multiple-vnsf.json",
+                        "result": {
+                            "duration": 1021975000.0000001,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 43,
+                        "name": "Then The security recommendation notification must be received mspl/ddos-mspl-notification-multiple-vnsf.json",
+                        "result": {
+                            "duration": 1002478000.0,
+                            "status": "passed"
+                        }
+                    }
+                ],
+                "tags": [],
+                "type": "scenario"
+            },
+            {
+                "description": "",
+                "id": "4",
+                "keyword": "Scenario Outline",
+                "line": 33,
+                "name": "Recommendations successful notification - row 2",
+                "steps": [
+                    {
+                        "keyword": "Given",
+                        "line": 29,
+                        "name": "Given The Recommendations Queue is ready",
+                        "result": {
+                            "duration": 67000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Given",
+                        "line": 30,
+                        "name": "Given The Recommendations Socket is ready",
+                        "result": {
+                            "duration": 69000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "When",
+                        "line": 45,
+                        "name": "When I receive a security recommendation mspl/ddos-mspl-large.xml",
+                        "result": {
+                            "duration": 12616000.0,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 45,
+                        "name": "Then The security recommendation must be persisted mspl/ddos-mspl-persisted-large.json",
+                        "result": {
+                            "duration": 1042362999.9999999,
+                            "status": "passed"
+                        }
+                    },
+                    {
+                        "keyword": "Then",
+                        "line": 45,
+                        "name": "Then The security recommendation notification must be received mspl/ddos-mspl-notification-large.json",
+                        "result": {
+                            "duration": 1007021000.0,
+                            "status": "passed"
+                        }
+                    }
+                ],
+                "tags": [],
+                "type": "scenario"
+            }
+        ],
+        "id": "3",
+        "keyword": "Feature",
+        "line": 25,
+        "name": "Security Policies",
+        "tags": [],
+        "type": "feature",
+        "uri": "/usr/share/dev/dashboard/backend/test/features/security-policies.feature"
+    }
+]

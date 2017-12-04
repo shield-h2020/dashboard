@@ -1,0 +1,84 @@
+<section>
+  <div class="row row--margin-bottom">
+    <div class="col-xs-5 col-sm-6">
+      <div class="row" ng-if="$ctrl.hasDate">
+        <div class="col-xs-6">
+          <sn-date-picker
+            label="Start Date:"
+            on-change="$ctrl.setFilter({ key: 'startDate', value: $event.value})"
+            current-date="$ctrl.setStartDate()"
+          />
+        </div>
+        <div class="col-xs-6">
+          <sn-date-picker label="End Date:" on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})" />
+        </div>
+      </div>
+    </div>
+    <div ng-if="$ctrl.filterInputs" class="col-xs-3 col-xs-offset-4 col-sm-offset-3">
+      <sn-select
+        label="'Status'"
+        selected="$ctrl.filterInputs.status[0].value"
+        options="$ctrl.filterInputs.status"
+        on-change="$ctrl.setFilter({ key: 'status', value: $event.value })"
+      ></sn-select>
+    </div>
+  </div>
+  <table class="sn-table">
+    <thead class="sn-table__header">
+      <tr>
+        <th class="header__title" ng-repeat="theader in $ctrl.headers">{{theader}}</th>
+        <th class="header__title" ng-if="$ctrl.actions || $ctrl.actions.length > 0">Available actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="sn-table__row" ng-repeat="item in $ctrl.items">
+        <td ng-repeat="key in $ctrl.keys">{{item[key]}}</td>
+        <td ng-if="$ctrl.actions.length > 0">
+          <ng-repeat ng-repeat="action in $ctrl.actions">
+            <span ng-if="action !== 'enable' && action !== 'disable'">
+              <span ng-if="$index !== 0">|</span> <a ng-click="$ctrl.action(action, item)" class="action-link">{{action}}</a>
+            </span>
+            <span ng-if="action === 'enable' && item[$ctrl.config.hasEnable.key] !== $ctrl.config.hasEnable.value">
+              | <a ng-click="$ctrl.action(action, item)" class="action-link">{{action}}</a>
+            </span>
+            <span ng-if="action === 'disable' && item[$ctrl.config.hasEnable.key] === $ctrl.config.hasEnable.value">
+              | <a ng-click="$ctrl.action(action, item)" class="action-link">{{action}}</a>
+            </span>
+          </ng-repeat>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div ng-show="$ctrl.isLoading" class="table__msg--loading">
+    <span>
+      <img src="./assets/ic-loading.svg" />
+      {{::$ctrl.strings.loading}}
+    </span>
+  </div>
+  <div ng-show="$ctrl.items.length === 0 && !$ctrl.isLoading">
+    <div class="table__msg--nocontent">
+      <div class="image"></div>
+      <h4 class="title">{{$ctrl.strings.nocontent.title}}</span>
+        <h5 class="subtitle">{{$ctrl.strings.nocontent.subtitle}}</span>
+    </div>
+  </div>
+  <div ng-show="!$ctrl.items && !$ctrl.isLoading">
+    <div class="table__msg--nocontent">
+      <div class="image"></div>
+      <h4 class="title">{{$ctrl.strings.errorcontent.title}}</span>
+        <h5 class="subtitle">{{$ctrl.strings.errorcontent.subtitle}}</span>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 16px;">
+    <div class="col-xs-3">
+      <sn-select label="''" selected="$ctrl.select[0].value" options="$ctrl.select" on-change="$ctrl.changePagination($event.value)"></sn-select>
+    </div>
+    <div class="col-xs-9" style="text-align: right;" ng-if="$ctrl.items.length">
+      <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+      <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+      <span class="sn-table__footer">
+          Showing {{$ctrl.paging.min}} to {{$ctrl.paging.max}} of {{$ctrl.pagination.total}}
+        </span>
+    </div>
+  </div>
+</section>

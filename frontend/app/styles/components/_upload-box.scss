@@ -1,0 +1,71 @@
+.sn-upload-box {
+  margin-bottom: 10px;
+  position: relative;
+
+  &__form {
+    height: 299px;
+    background-color: $color-white;
+    border: 2px dashed $color-app-background;
+    text-align: center;
+
+    .form__icon {
+      height: 80px;
+      width: 80px;
+      color: $color-lightest-grey;
+      font-size: 80px;
+      line-height: 80px;
+      margin: 42px 0 15px 0;
+    }
+
+    .form__info {
+      font-family: 'OpenSans';
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 22px;
+      color: $color-dark-grey;
+    }
+
+    .form__separators {
+      margin-top: 13px;
+      margin-bottom: 13px;
+    }
+
+    .form__separator {
+      border-bottom: 1px solid $color-light-grey;
+      display: inline-block;
+      width: 100px;
+      vertical-align: middle;
+    }
+
+    .form__separator--text {
+      font-family: sans-serif;
+      font-style: italic;
+      font-size: 16px;
+      line-height: 22px;
+      color: $color-black;
+    }
+
+    .form__input {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+  }
+}
+
+.is-dragover {
+  background-color: rgba(85,164,211,0.05);
+  border: 2px dashed $color-app-primary;
+}
+
+.upload__labels {
+  font-family: 'OpenSans';
+  font-size: 13px;
+  text-align: center;
+  line-height: 19px;
+  color: $color-medium-grey;
+}

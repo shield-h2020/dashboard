@@ -1,0 +1,54 @@
+.filters {
+    max-width: 360px;
+    width: 360px;
+
+    &__header {
+        background-color: $color-app-primary;
+        color: $color-white;
+        height: 40px;
+        line-height: 40px;
+        font-family: 'Rubik', sans-serif;
+        border-radius: 4px;
+        text-align: center;
+        padding: 0 10px;
+        margin-bottom: 20px;
+    }
+
+    &__list {
+      list-style: none;
+      border-top: 1px dashed $color-light-grey;
+      padding: 0;
+      margin: 0;
+
+      .list__item {
+        line-height: 35px;
+        height: 35px;
+        color: $color-black;
+        border-bottom: 1px dashed $color-light-grey;
+
+        .item__status {
+          display: inline-block;
+          border-radius: 8px;
+          height: 8px;
+          width: 8px;
+          margin-right: 12px;
+          margin-left: 12px;
+          
+        }
+
+        .item__icon {
+          color: $color-app-primary;
+          line-height: 35px;
+          margin-right: 12px;
+          float: right;
+          cursor: pointer;
+          
+
+          &--inactive {
+            color: $color-light-grey;
+          }
+        }
+
+      }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "ignore": [
+    "root['_links']",
+    "root['_id']",
+    "root['_updated']",
+    "root['_created']",
+    "root['_etag']"
+  ],
+  "expected": {
+    	"_status": "OK"
+    }
+}

@@ -1,0 +1,13 @@
+<div ng-class="{'{{::$ctrl.styles['modal--hidden']}}': !$ctrl.modalOpen}">
+    <div class="{{::$ctrl.styles.background}}"></div>
+    <div class="{{::$ctrl.styles.container}} {{::$ctrl.styles.modal}}">
+        <header class="{{::$ctrl.styles.header}}">
+            {{$ctrl.title}}
+        </header>
+        <article class="{{::$ctrl.styles.content}}">
+        </article>
+        <footer class="{{::$ctrl.styles.footer}}">
+          <button ng-click="$ctrl.toggleModal()" class="{{::$ctrl.styles.button}}">{{$ctrl.strings.buttons.cancel}}</button>
+        </footer>
+    </div>
+</div>

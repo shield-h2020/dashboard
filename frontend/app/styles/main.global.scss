@@ -1,0 +1,13 @@
+$icon-font-path: '../../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
+
+@import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+
+@import 'globals/mixins';
+@import 'globals/colors';
+@import 'globals/fonts';
+@import 'globals/variables';
+@import 'globals/animations';
+
+@import 'components/components';
+
+@import 'globals/media-queries';

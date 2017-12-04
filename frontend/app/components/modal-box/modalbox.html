@@ -1,0 +1,15 @@
+<div class="sn-modal" ng-class="{'sn-modal--hidden': $ctrl.isHidden}">
+  <div class="sn-modal__background"></div>
+  <div class="sn-modal__container">
+    <header class="container__header">
+      {{$ctrl.strings.box.title}}{{$ctrl.targetType}}
+    </header>
+    <article class="container__content">
+      <span>{{$ctrl.strings.box.message}}</span>
+    </article>
+    <footer class="container__footer">
+      <button ng-click="$ctrl.cancelAction()" class="footer__button">{{$ctrl.strings.common.cancel}}</button>
+      <button ng-click="$ctrl.action()" class="footer__button footer__button--delete">{{$ctrl.strings.common[$ctrl.actionType]}}</button>
+    </footer>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<section ng-hide="!$ctrl.isOpen" class="{{::$ctrl.styles.viewer}}" ng-class="{ '{{::$ctrl.styles['viewer--hidden']}}': !$ctrl.isOpen }">
+  <div class="{{::$ctrl.styles.bg}}"></div>
+  <div class="{{::$ctrl.styles.container}}">
+    <div class="{{::$ctrl.styles.scroller}}">
+      <header class="{{::$ctrl.styles.header}}">
+        <span>{{$ctrl.STRINGS.TITLE}}</span>
+      </header>
+      <div class="{{::$ctrl.styles.entrygroup}}">
+        <div class="{{::$ctrl.styles.entry}}">
+          <span class="{{::$ctrl.styles.label}}">Detection Date</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.incident.detection}}</span>
+        </div>
+        <div class="{{::$ctrl.styles.entry}}">
+          <span class="{{::$ctrl.styles.label}}">Severity</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.incident.severity}}</span>
+        </div>
+        <div class="{{::$ctrl.styles.entry}}">
+          <span class="{{::$ctrl.styles.label}}">Status</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.incident.status}}</span>
+        </div>
+        <div class="{{::$ctrl.styles.entry}}">
+          <span class="{{::$ctrl.styles.label}}">Type of attack</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.incident.attack}}</span>
+        </div>
+      </div>
+      <header class="{{::$ctrl.styles.header}}">
+        <span>{{$ctrl.STRINGS.SUBTITLE}}</span>
+      </header>
+      <div class="{{::$ctrl.styles.xmlviewer}}">
+        {{$ctrl.incident.recommendation}}
+      </div>
+    </div>
+    <footer class="{{::$ctrl.styles.footer}}">
+      <button class="{{::$ctrl.styles.button}}" ng-click="$ctrl.closeModal()">{{::$ctrl.STRINGS.CLOSE}}</button>
+      <button ng-if="$ctrl.incident.status && $ctrl.incident.status !== 'Applied'" class="{{::$ctrl.styles.button}}" ng-click="$ctrl.applyRecommendation()">{{::$ctrl.STRINGS.APPLY}}</button>
+    </footer>
+  </div>
+</section>

@@ -1,0 +1,105 @@
+@import '~styleglobals/colors';
+
+.background {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.3);
+    top: 0;
+    left: 0;
+}
+
+.container {
+    width: 470px;
+    position: fixed;
+    top: 15vh;
+    left: calc(50vw - 235px);
+    background-color: $color-white;
+    border-radius: 4px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+}
+
+.header {
+    font-family: "OpenSans";
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #333A4D;
+    padding: 20px 30px 15px;
+}
+
+.content {
+    font-family: "OpenSans";
+    font-size: 16px;
+    line-height: 24px;
+    color: $color-black;
+    padding: 0 30px 30px;
+}
+
+.footer {
+    border-top: 1px solid $color-lightest-grey;
+    display: flex;
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+}
+
+.button {
+    display: inline-block;
+    font-family: "OpenSans";
+    font-size: 14px;
+    line-height: 22px;
+    color: $color-black;
+    background-color: $color-app-background;
+    width: 100%;
+    min-height: 40px;
+    height: 5vh;
+    border: none;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.modal--hidden {
+    display: none;
+}
+
+.line+.line {
+    margin-top: 20px;
+}
+
+.text,
+.text--title {
+    color: $color-black;
+    font-family: OpenSans;
+    font-size: 14px;
+    line-height: 20px;
+    display: inline-block;
+}
+
+.text {
+  word-wrap: break-word;
+}
+
+.text--title {
+            color: $color-medium-grey;
+        }
+
+@mixin modal--sm() {
+    .container {
+        top: 8vh;
+    }
+}
+
+@mixin modal--lg() {
+    .container {
+        top: 12vh;
+    }
+}
+
+@media (min-height: 500px) {
+    @include modal--sm();
+}
+
+@media (min-height: 800px) {
+    @include modal--lg();
+}

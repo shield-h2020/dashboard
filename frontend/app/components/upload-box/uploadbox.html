@@ -1,0 +1,38 @@
+<div class="sn-modal" ng-class="{'sn-modal--hidden': $ctrl.isHidden}">
+  <div class="sn-modal__background"></div>
+  <div class="sn-modal__container">
+    <header class="container__header">
+      {{$ctrl.uploadTitle}}
+    </header>
+    <article class="container__content">
+      <div class="sn-upload-box">
+        <form class="sn-upload-box__form" method="post"  sn-file-uploader action="" enctype="multipart/form-data">
+          <div ng-if="!$ctrl.isLoading">
+            <div class="form__drop-area">
+              <div class="form__icon glyphicon glyphicon-open-file"></div>
+              <div class="form__info">{{$ctrl.filename}}</div>
+            </div>
+            <div class="form__separators">
+              <span class="form__separator"></span>
+              <span class="form__separator--text">or</span>
+              <span class="form__separator"></span>
+            </div>
+            <div>
+              <input file-on-change class="form__input" type="file" id="file1" name="file"/>
+              <label for="file1" class="sn-button sn-button--primary">Select 
+                <span ng-if="$ctrl.scope.files.length > 0">other</span> File</label>
+            </div>
+          </div>
+          <div class="{{::$ctrl.styles.loading}}" ng-if="$ctrl.isLoading"><div class="animate--rotating-dark"></div>Onboarding, please wait...</div>
+        </form>
+      </div>
+      <div class="upload__labels">
+        <span>{{$ctrl.strings.type}}{{$ctrl.fileType}}</span><span ng-if="$ctrl.fileSize">  |  {{$ctrl.strings.size}}{{$ctrl.fileSize}}</span>
+      </div>
+    </article>
+    <footer class="container__footer">
+      <button ng-click="$ctrl.cancelAction()" class="footer__button">{{$ctrl.strings.buttons.cancel}}</button>
+      <button ng-disabled="!$ctrl.enableButton || $ctrl.isLoading" ng-click="$ctrl.submit()" class="footer__button footer__button--confirm">{{$ctrl.uploadTitle}}</button>
+    </footer>
+  </div>
+</div>

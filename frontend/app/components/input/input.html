@@ -1,0 +1,6 @@
+<span class="sn-input">
+  <label class="sn-input__label" ng-if="$ctrl.fieldLabel">{{$ctrl.fieldLabel}}</label>
+  <input ng-disabled="$ctrl.fieldDisabled" ng-class="{'sn-input__input--disabled': $ctrl.fieldDisabled}" 
+    placeholder="{{$ctrl.placeholder}}" class="sn-input__input" 
+    type="{{$ctrl.fieldType}}" ng-change="$ctrl.change()" ng-model="$ctrl.fieldValue">
+</span>

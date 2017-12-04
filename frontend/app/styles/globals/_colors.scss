@@ -1,0 +1,38 @@
+$color-white: #fff;
+$color-white-shade: #f1f0f0;
+$color-lightest-grey: #d8d8d8;
+$color-light-grey: #ccc;
+$color-medium-grey: #818181;
+$color-med-dark-grey: #676767;
+$color-dark-grey: #1e1e1e;
+$color-black: rgba(#000, .78);
+
+$color-blue: #00B5E2;
+$color-blue-shade: #4483a8;
+$color-blue-dark: #004C97;
+$color-blue-dark-tint: #535a6f;
+$color-purple-dark: #333a4d;
+$color-purple-tint: #535a6f;
+$color-menu-tint-2: rgba(#535a6f,0.4);
+$color-red: #b32a2a;
+$color-green: #3aa389;
+$color-yellow: #e0d74e;
+
+$color-gradient-blue-dark: linear-gradient(89.79deg, $color-blue 0%, $color-blue-dark 100%);
+
+$color-app-primary: #00b5e2;
+$color-app-primary-shade: #4483A8;
+$color-app-error: #B32A2A;
+$color-app-success: #3aa389;
+$color-app-warning: #e0d74e;
+$color-app-background: #f1f0f0;
+$color-app-titles: #22293b;
+
+$color-card-title: #535a6f;
+
+$color-shadows: rgba(0, 0, 0, 0.1);
+
+$color-menu-shade: $color-app-titles;
+$color-menu-bg: #333a4d;
+$color-menu-tint: #535A6F;
+$color-menu-tint-b: rgba(83,90,111,0.4);
