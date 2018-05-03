@@ -37,15 +37,22 @@ MONGO_PASSWORD = os.environ.get('DATASTORE_PASSWORD', 'user')
 MONGO_DBNAME = os.environ.get('DATASTORE_DBNAME', 'shield-dashboard')
 
 VNSFO_PROTOCOL = os.environ.get('VNSFO_PROTOCOL', 'http')
-VNSFO_HOST = os.environ.get('VNSFO_HOST', '__missing_vnsfo_address__')
+VNSFO_HOST = os.environ.get('VNSFO_HOST', '__missing_vnsfo_host__')
 VNSFO_PORT = os.environ.get('VNSFO_PORT', '')
 VNSFO_API = os.environ.get('VNSFO_API', '__missing_vnsfo_api_basepath__')
+
+AAA_PROTOCOL = os.environ.get('AAA_PROTOCOL', 'http')
+AAA_HOST = os.environ.get('AAA_HOST', '__missing_aaa_host__')
+AAA_PORT = os.environ.get('AAA_PORT', 0)
+AAA_SVC_ADMIN_SCOPE = os.environ.get('AAA_SVC_ADMIN_SCOPE', '__missing_svc_scope__')
+AAA_SVC_ADMIN_USER = os.environ.get('AAA_SCV_ADMIN_USER', '__missing_svc_admin_user__')
+AAA_SVC_ADMIN_PASS = os.environ.get('AAA_SCV_ADMIN_PASS', '__missing_svc_admin_user__')
 
 # NOTE: this shall be removed once AAA is in place.
 VNSFO_TENANT_ID = os.environ.get('VNSFO_TENANT_ID', '__no_tenant_set__')
 
 X_DOMAINS = '*'  # CORS-related settings.
-X_HEADERS = ['Content-Type, ''If-Match']
+X_HEADERS = ['Content-Type', 'If-Match']
 
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.
@@ -66,6 +73,15 @@ TRANSPARENT_SCHEMA_RULES = True
 # The DOMAIN dict explains which resources will be available and how they will
 # be accessible to the API consumer.
 DOMAIN = {
-    'policies': api_endpoints.policies,
-    'policies_admin': api_endpoints.policies_admin
-}
+    'login':                  api_endpoints.login,
+    'login_user':             api_endpoints.login_user,
+    'tenants_catalogue':      api_endpoints.tenants_catalogue,
+    'tenant':                 api_endpoints.tenant,
+    # 'tenants_catalogue_delete': api_endpoints.tenants_catalogue_delete,
+    'tenant_users_catalogue': api_endpoints.tenant_users_catalogue,
+    'tenant_user':            api_endpoints.tenant_user,
+    # 'tenant_users_xpto': api_endpoints.tenant_users_xpto,
+    # 'vnsfs_catalogue': api_endpoints.vnsfs_catalogue,
+    'policies':               api_endpoints.policies,
+    'policies_admin':         api_endpoints.policies_admin
+    }

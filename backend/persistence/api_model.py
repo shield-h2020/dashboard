@@ -32,7 +32,7 @@ policy_model = {
         'type': 'string',
         'empty': False,
         'required': True
-    },
+        },
 
     # Time and date when the thread was detected. Format: ISO 8601.
     'detection': {
@@ -46,33 +46,147 @@ policy_model = {
         'type': 'string',
         'empty': False,
         'required': True
-    },
+        },
 
     # The severity assigned to the threat. Format: user-defined.
     'severity': {
         'type': 'integer',
         'empty': False,
         'required': True
-    },
+        },
 
     # The applicability of the policy for the tenant in question. Format: user-defined.
     'status': {
         'type': 'string',
         'empty': False,
         'required': True
-    },
+        },
 
     # The kind of network attack. Format: user-defined.
     'attack': {
         'type': 'string',
         'empty': False,
         'required': True
-    },
+        },
 
     # The recommendation to counter the threat. Format: user-defined.
     'recommendation': {
         'type': 'string',
         'empty': False,
         'required': True
+        }
     }
-}
+
+tenant_catalogue_model = {
+    # The tenant to whom the policy is for.
+    'tenant_name': {
+        'description': 'Description of the user resource',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        },
+
+    'description': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+        },
+
+    'tenant_id': {
+        'description': 'The tenant ID from the external authorization system',
+        'type': 'string'
+        },
+
+    'groups': {
+        'type': 'list',
+        'schema': {
+            'group': {
+                'type': 'dict',
+                'required': True,
+                'schema': {
+                    'group_id': {'type': 'string', 'empty': False, 'required': True},
+                    'description': {'type': 'string', 'empty': False, 'required': True},
+                    'domain_id': {'type': 'string', 'empty': False, 'required': True},
+                    'name': {'type': 'string', 'empty': False, 'required': True}
+                    }
+                }
+            }
+        }
+    }
+
+vnsfs_catalogue_model = {
+    # The tenant to whom the vNSF is for.
+    'tenant_id': {
+        'description': 'Description of the user resource',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        }
+    }
+
+nss_catalogue_model = {
+    # The tenant to whom the NS is for.
+    'tenant_id': {
+        'description': 'Description of the user resource',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        }
+    }
+
+nss_inventory_model = {
+    # The tenant to whom the NS is for.
+    'tenant_id': {
+        'description': 'Description of the user resource',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        }
+    }
+
+tenant_users_catalogue = {
+    'tenant_id': {
+        'description': 'TBD',
+        'type': 'string'
+        },
+
+    'user_id': {
+        'description': 'TBD',
+        'type': 'string'
+        },
+
+    'group_id': {
+        'description': 'TBD',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        },
+
+    'name': {
+        'description': 'TBD',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        },
+
+    'password': {
+        'description': 'TBD',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        },
+
+    'description': {
+        'description': 'TBD',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        },
+
+    'email': {
+        'description': 'TBD',
+        'type': 'string',
+        'empty': False,
+        'required': True
+        }
+    }

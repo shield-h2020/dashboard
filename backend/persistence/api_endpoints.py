@@ -26,21 +26,130 @@
 
 
 import api_model
+from api_endpoint_utils import EndpointHelper
+from api_endpoints_def import Endpoint, EndpointVar
+from security import LoginAuth
+
+login = {
+    'item_title':            'login',
+    'description':           'Authentication & Authorization',
+    'authentication':        LoginAuth,
+    'resource_methods':      ['POST', 'GET'],
+
+    # Allow 'token' to be returned with POST responses
+    'extra_response_fields': ['token'],
+
+    # We also disable endpoint caching as we don't want client apps to
+    # cache account data.
+    'cache_control':         '',
+    'cache_expires':         0
+    }
+
+login_user = {
+    'item_title':            'login_user',
+    'description':           'Authentication & Authorization',
+    'url':                   'login_user',
+    'authentication':        LoginAuth,
+    'resource_methods':      ['POST', 'GET'],
+
+    # Allow 'token' to be returned with POST responses
+    'extra_response_fields': ['token'],
+
+    # We also disable endpoint caching as we don't want client apps to
+    # cache account data.
+    'cache_control':         '',
+    'cache_expires':         0
+    }
 
 policies = {
-    'item_title': 'policies',
-    'description': 'Security recommendations',
-    'schema': api_model.policy_model,
-    'item_methods': ['GET', 'PATCH']
-}
+    'item_title':       'policies',
+    'description':      'Security recommendations',
+    'schema':           api_model.policy_model,
+    'resource_methods': ['POST', 'GET'],
+    'item_methods':     ['GET', 'PATCH'],
+    # 'allowed_roles': ['admin'],
+    # 'allowed_write_roles': ['xpto']
+    }
 
 policies_admin = {
-    'item_title': 'admin policies',
-    'url': 'admin/policies',
-    'schema': api_model.policy_model,
-    'datasource': {
+    'item_title':       'admin policies',
+    'url':              'admin/policies',
+    'schema':           api_model.policy_model,
+    'datasource':       {
         'source': 'policies'
-    },
+        },
     'resource_methods': ['POST'],
-    'item_methods': []
-}
+    'item_methods':     []
+    }
+
+tenants_catalogue = {
+    'item_title':            EndpointHelper.get_name(Endpoint.TENANTS),
+    'url':                   EndpointHelper.get_url(Endpoint.TENANTS),
+    'extra_response_fields': [EndpointVar.__TENANT_ID__],
+    'resource_methods':      EndpointHelper.get_resource_methods(Endpoint.TENANTS),
+    'allowed_roles':         [EndpointHelper.get_resource_policies(Endpoint.TENANTS)],
+    'item_methods':          [],
+    'schema':                EndpointHelper.get_schema(Endpoint.TENANTS)
+    }
+
+tenant = {
+    'item_title':            EndpointHelper.get_name(Endpoint.TENANTS),
+    'url':                   EndpointHelper.get_url(Endpoint.TENANTS),
+    'item_lookup_field':     EndpointVar.__TENANT_ID__,
+    'item_url':              EndpointVar.__TENANT_ID_FMT__,
+    'extra_response_fields': [EndpointVar.__TENANT_ID__],
+    'resource_methods':      [],
+    'item_methods':          EndpointHelper.get_item_methods(Endpoint.TENANTS),
+    'allowed_item_roles':    [EndpointHelper.get_item_policies(Endpoint.TENANTS)],
+    'schema':                tenants_catalogue['schema'],
+    'datasource':            {
+        'source': 'tenants_catalogue'
+        }
+    }
+
+tenant_users_catalogue = {
+    'item_title':            EndpointHelper.get_name(Endpoint.TENANT_USERS),
+    'url':                   EndpointHelper.get_url(Endpoint.TENANT_USERS),
+    'extra_response_fields': [EndpointVar.__USER_ID__],
+    'resource_methods':      EndpointHelper.get_resource_methods(Endpoint.TENANT_USERS),
+    'allowed_roles':         [EndpointHelper.get_resource_policies(Endpoint.TENANT_USERS)],
+    'item_methods':          [],
+    'schema':                EndpointHelper.get_schema(Endpoint.TENANT_USERS)
+    }
+
+tenant_user = {
+    'item_title':            EndpointHelper.get_name(Endpoint.TENANT_USERS),
+    'url':                   EndpointHelper.get_url(Endpoint.TENANT_USERS),
+    'item_lookup_field':     EndpointVar.__USER_ID__,
+    'item_url':              EndpointVar.__USER_ID_FMT__,
+    'extra_response_fields': [EndpointVar.__USER_ID__],
+    'resource_methods':      [],
+    'item_methods':          EndpointHelper.get_item_methods(Endpoint.TENANT_USERS),
+    'allowed_item_roles':    [EndpointHelper.get_item_policies(Endpoint.TENANT_USERS)],
+    'schema':                tenant_users_catalogue['schema'],
+    'datasource':            {
+        'source': 'tenant_users_catalogue'
+        }
+    }
+
+nss_catalogue = {
+    'item_title':         'nss_catalogue',
+    'url':                'catalogue/tenants/<regex(".*"):tenant_id>/nss',
+    'resource_methods':   ['POST', 'GET'],
+    'allowed_roles':      [{'POST': 'nss_catalogue:create', 'GET': 'nss_catalogue:read'}],
+    'item_methods':       ['GET', 'PUT', 'DELETE'],
+    'allowed_item_roles': [
+        {'GET': 'nss_catalogue:read_ns', 'PUT': 'nss_catalogue:update_ns', 'DELETE': 'nss_catalogue:delete_ns'}],
+    'schema':             api_model.nss_catalogue_model
+    }
+
+nss_inventory = {
+    'item_title':         'nss_inventory',
+    'url':                'inventory/tenants/<regex(".*"):tenant_id>/nss',
+    'resource_methods':   ['POST', 'GET'],
+    'allowed_roles':      [{'POST': 'nss_inventory:create', 'GET': 'nss_inventory:read'}],
+    'item_methods':       ['GET', 'PUT', 'DELETE'],
+    'allowed_item_roles': [
+        {'GET': 'nss_inventory:read_ns', 'PUT': 'nss_inventory:update_ns', 'DELETE': 'nss_catalogue:delete_ns'}],
+    'schema':             api_model.nss_inventory_model
+    }

@@ -24,12 +24,13 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
-from dashboardutils import http_codes
+
+from api_endpoints_def import Endpoint
 
 swagger_info = {
-    'title': 'Dashboard API',
-    'version': '0.1.0',
-    'description': """
+    'title':          'Dashboard API',
+    'version':        '0.1.0',
+    'description':    """
                    This API handles the security recommendations CRUD operations.
 
 
@@ -42,42 +43,41 @@ swagger_info = {
                    API version numbering as per http://semver.org/
                    """,
     'termsOfService': 'my terms of service',
-    'contact': {
+    'contact':        {
         'name': 'Filipe Ferreira',
-        'url': 'https://github.com/betakoder'
-    },
-    'license': {
-        'name': 'Apache License, Version 2.0',
-        'url': 'http://www.apache.org/licenses/LICENSE-2.0',
-    },
-    'schemes': ['http', 'https'],
-}
-
-paths = {
-    '/policies': {
-        'get': {
-            'summary': 'Lists all the security recommendations',
-            'description': 'Provides a list of all the recommendations along with a description for each one.',
-            'responses': http_codes.responses_read
-        }
-    },
-    '/policies/{policiesId}': {
-        'get': {
-            'summary': 'Provides the details on a security recommendation',
-            'description': 'Provides all the information on the security recommendation.',
-            'responses': http_codes.responses_read
+        'url':  'https://github.com/betakoder'
         },
-        'patch': {
-            'summary': 'Conveys the security recommendation to the Orchestrator',
-            'description': "Forwards the security recommendation to the Orchestrator waiting for it’s reply.",
-            'responses': http_codes.responses_updated
-        }
-    },
-    '/admin/policies': {
-        'post': {
-            'summary': 'Persists a new security recommendation',
-            'description': 'Stores a security recommendation and marks it as not applied.',
-            'responses': http_codes.responses_created
-        }
+    'license':        {
+        'name': 'Apache License, Version 2.0',
+        'url':  'http://www.apache.org/licenses/LICENSE-2.0',
+        },
+    'schemes':        ['http', 'https'],
     }
-}
+
+"""
+The documentation is built from the endpoints definition by overwriting the keys the Eve Swagger automatically builds 
+from the code.
+
+To hack the item endpoints properly, one must first generate the documentation as is to know which variable names to 
+use for the item endpoints (the {var_name} part of the endpoint).
+"""
+
+
+def _get_methods(endpoint_data):
+    methods = {}
+    for method in endpoint_data.keys():
+        methods[method.lower()] = endpoint_data[method][Endpoint.__DOCS__]
+
+    return methods
+
+
+paths = {}
+for name, member in Endpoint.__members__.items():
+    endpoint_data = member.value
+
+    paths['/' + endpoint_data[Endpoint.__URL__]] = _get_methods(endpoint_data[Endpoint.__RESOURCE__])
+
+    if Endpoint.__DOC_ID_VAR__ in endpoint_data:
+        paths['/{}/{{{}}}'.format(endpoint_data[Endpoint.__URL__],
+                                  endpoint_data[Endpoint.__DOC_ID_VAR__])] = _get_methods(
+                endpoint_data[Endpoint.__ITEM__])

@@ -27,15 +27,15 @@
 import logging
 
 from abc import abstractmethod, ABCMeta
+from dashboardutils import http_utils
+from dashboardutils.error_utils import ExceptionMessage, IssueHandling, IssueElement
 
-from dashboardutils import exceptions
 
-
-class VnsfOrchestratorPolicyIssue(exceptions.ExceptionMessage):
+class VnsfOrchestratorPolicyIssue(ExceptionMessage):
     """vNSFO policy operation failed."""
 
 
-class VnsfOrchestratorOnboardingIssue(exceptions.ExceptionMessage):
+class VnsfOrchestratorOnboardingIssue(ExceptionMessage):
     """vNSFO onboarding operation failed."""
 
 
@@ -55,19 +55,24 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
     calling the proper composer endpoint so it can carry out the intended operation. Ain't life great?!
     """
 
+    errors = {
+        'POLICY': {
+            'POLICY_ISSUE': {
+                IssueElement.ERROR.name: ['vNFSO policy at {}. Status: {}'],
+                IssueElement.EXCEPTION.name: VnsfOrchestratorPolicyIssue('Can not convey policy to the vNFSO')
+                },
+            'VNSFO_UNREACHABLE': {
+                IssueElement.ERROR.name: ['Error conveying policy at {}'],
+                IssueElement.EXCEPTION.name: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
+                }
+            }
+        }
+
     def __init__(self, protocol, server, port, api_basepath, logger=None):
-        self.logger = logging.getLogger(__name__)
+        self.logger = logger or logging.getLogger(__name__)
+        self.issue = IssueHandling(self.logger)
 
-        # Maintenance friendly.
-        self._policy_issue = VnsfOrchestratorPolicyIssue('Can not convey policy to the vNFSO')
-        self._unreachable = VnsfOrchestratorOnboardingIssue('Can not reach the Orquestrator')
-
-        if port is not None:
-            server += ':' + port
-
-        self.basepath = '{}://{}'.format(protocol, server)
-        if len(api_basepath) > 0:
-            self.basepath = '{}/{}'.format(self.basepath, api_basepath)
+        self.basepath = http_utils.build_url(server, port, api_basepath, protocol)
 
         self.logger.debug('vNSF Orchestrator API at: %s', self.basepath)
 

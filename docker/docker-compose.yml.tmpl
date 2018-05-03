@@ -53,6 +53,33 @@ services:
             - "15671:15671" # Management
 
 
+    ${CNTR_AAA_DB}:
+        image: mysql:5.7
+        # volumes:
+        #   - "./.data/db:/var/lib/mysql"
+        ports:
+          - ${AAA_DB_PORT}:${AAA_DB_PORT}
+        environment:
+          MYSQL_ROOT_PASSWORD: ${AAA_DB_ADMIN_PASS}
+        volumes:
+            - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
+
+    ${CNTR_AAA}:
+        depends_on:
+          - ${CNTR_AAA_DB}
+        env_file:          ${ENV_FILE}
+        build:
+            context:       .
+            dockerfile:    ${DOCKER_FILE_AAA}
+        links:
+          - mysql_db:mysql
+        ports:
+          - ${AAA_ADMIN_PORT}:${AAA_ADMIN_PORT}
+          - ${AAA_PORT}:${AAA_PORT}
+        # environment:
+        #   ADMIN_PASSWORD: SELFNET@admin
+
+
     # Data Store.
     ${CNTR_DATASTORE}:
         env_file:          ${ENV_FILE}

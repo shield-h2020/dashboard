@@ -27,5 +27,12 @@
 conn = new Mongo('127.0.0.1:' + PORT);
 db = conn.getDB(STORE_COLLECTION);
 
-// Remove all policies documents.
+db.login.deleteMany({})
+
+db.tenants_catalogue.deleteMany({})
+db.tenant_users_catalogue.deleteMany({})
+
+db.nss_catalogue.deleteMany({})
+db.vnsfs_catalogue.deleteMany({})
+
 db.policies.deleteMany({})

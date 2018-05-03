@@ -30,27 +30,35 @@ import logging
 
 import requests
 import xmlschema
-from dashboardutils import exceptions, http_codes
+from dashboardutils import http_utils
+from dashboardutils.error_utils import ExceptionMessage, IssueHandling, IssueElement
 from xmlschema import XMLSchemaValidationError
 
-from . import dashboard_errors as err
 
-
-class SecurityPolicyNotComplaint(exceptions.ExceptionMessage):
+class SecurityPolicyNotComplaint(ExceptionMessage):
     """Policy not compliant with the schema defined."""
 
 
-class SecurityPolicyNotPersisted(exceptions.ExceptionMessage):
+class SecurityPolicyNotPersisted(ExceptionMessage):
     """Error persisting the security policy."""
 
 
 class SecurityPolicyPersistence:
+    errors = {
+        'POLICY': {
+            'NOT_COMPLIANT': {
+                IssueElement.EXCEPTION.name: SecurityPolicyNotComplaint('Policy not compliant with the schema defined.')
+                },
+            'NOT_PERSISTED': {
+                IssueElement.ERROR.name: ['Persistence error for {}. Status: {}'],
+                IssueElement.EXCEPTION.name: SecurityPolicyNotPersisted('Error persisting the security policy.')
+                }
+            }
+        }
+
     def __init__(self, settings):
         self.logger = logging.getLogger(__name__)
-
-        # Maintenance friendly.
-        self._wrong_policy_format = SecurityPolicyNotComplaint(err.SECPOLICY_NOT_COMPLIANT)
-        self._policy_not_persisted = SecurityPolicyNotPersisted(err.SECPOLICY_NOT_PERSISTED)
+        self.issue = IssueHandling(self.logger)
 
         self.settings = settings
 
@@ -82,9 +90,9 @@ class SecurityPolicyPersistence:
             if len(r.text) > 0:
                 self.logger.debug(r.text)
 
-            if not r.status_code == http_codes.HTTP_201_CREATED:
-                self.logger.error('Persistence error for {}. Status: {}'.format(url, r.status_code))
-                raise self._policy_not_persisted
+            if not r.status_code == http_utils.HTTP_201_CREATED:
+                self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['NOT_PERSISTED'],
+                                    [[url, r.status_code]])
 
             # Include identification data for the policy just persisted.
             response_data = r.json()
@@ -94,7 +102,7 @@ class SecurityPolicyPersistence:
             return policy_info
 
         except XMLSchemaValidationError:
-            raise self._wrong_policy_format
+            self.issue.raise_ex_no_log(IssueElement.ERROR, self.errors['POLICY']['NOT_COMPLIANT'])
 
         except requests.exceptions.ConnectionError as e:
             self.logger.error('Error persisting the policy at {}.'.format(url), e)

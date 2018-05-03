@@ -25,10 +25,12 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 import json
+import logging
 
 import requests
+from dashboardutils import http_utils
+from dashboardutils.error_utils import IssueHandling, IssueElement
 
-from dashboardutils import http_codes
 from .vnsfo_adapter import VnsfOrchestratorAdapter
 
 
@@ -39,6 +41,8 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
     def __init__(self, protocol, server, port, api_basepath, logger=None):
         super().__init__(protocol, server, port, api_basepath, logger)
+        self.logger = logger or logging.getLogger(__name__)
+        self.issue = IssueHandling(self.logger)
 
     def apply_policy(self, tenant_id, policy):
         """
@@ -67,10 +71,10 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             if len(r.text) > 0:
                 self.logger.debug(r.text)
 
-            if not r.status_code == http_codes.HTTP_200_OK:
-                self.logger.error('vNFSO policy at {}. Status: {}'.format(url, r.status_code))
-                raise self._policy_issue
+            if not r.status_code == http_utils.HTTP_200_OK:
+                self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
+                                    [[url, r.status_code]])
 
         except requests.exceptions.ConnectionError:
-            self.logger.error('Error conveying policy at %s', url)
-            raise self._unreachable
+            self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
+                                [[url]])

@@ -25,6 +25,36 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+def build_url(server, port=None, basepath=None, protocol=None):
+    """
+    Build a URL given the parameters provided. Depending on the parameters it may just simply return a hostname/IP
+    address or None.
+
+    :param server: The server name or IP address.
+    :param port: The port where the server is listening for requests.
+    :param basepath: The base path where the "endpoints" are available.
+    :param protocol: The protocol to use for communicating with the server and reach the "endpoints"
+    :return: A full URL (depending on the parameters it may just simply return a hostname/IP address or None).
+    """
+
+    if server is None:
+        return None
+
+    host = server
+
+    if port is not None:
+        host += ':' + port
+
+    if protocol is None:
+        return host
+
+    url = '{}://{}'.format(protocol, host)
+    if basepath is not None and len(basepath) > 0:
+        url = '{}/{}'.format(url, basepath)
+
+    return url
+
+
 def _without_keys(dict_data, keyz):
     """
     Removes elements from a (copy of a) dictionary.
@@ -64,10 +94,12 @@ def tailor_response(initial, changes, remove):
 HTTP_200_OK = 200
 HTTP_201_CREATED = 201
 HTTP_202_ACCEPTED = 202
+HTTP_204_NO_CONTENT = 204
 HTTP_400_BAD_REQUEST = 400
 HTTP_401_UNAUTHORIZED = 401
 HTTP_404_NOT_FOUND = 404
 HTTP_406_NOT_ACCEPTABLE = 406
+HTTP_409_CONFLICT = 409
 HTTP_412_PRECONDITION_FAILED = 412
 HTTP_500_SERVER_ERROR = 500
 HTTP_501_NOT_IMPLEMENTED = 501
@@ -77,36 +109,36 @@ HTTP_504_TIMEOUT = 504
 responses_full = {
     str(HTTP_200_OK): {
         'description': 'Request succeeded.'
-    },
+        },
     str(HTTP_201_CREATED): {
         'description': 'Resource created.'
-    },
+        },
     str(HTTP_202_ACCEPTED): {
         'description': "Request processing. You can retry your request, and when it's finished, you'll get a 200 "
                        "instead."
-    },
+        },
     str(HTTP_400_BAD_REQUEST): {
         'description': 'Bad request. API specific parameters are incorrect or missing.'
-    },
+        },
     str(HTTP_401_UNAUTHORIZED): {
         'description': "Unauthorised. You're not authorised to access this resource."
-    },
+        },
     str(HTTP_404_NOT_FOUND): {
         'description': "Not found. The requested resource doesn't exist."
-    },
+        },
     str(HTTP_500_SERVER_ERROR): {
         'description': 'Server errors. Our bad!'
-    },
+        },
     str(HTTP_501_NOT_IMPLEMENTED): {
         'description': 'Not implemented yet.'
-    },
+        },
     str(HTTP_502_BAD_GATEWAY): {
         'description': 'Third-party unreachable.'
-    },
+        },
     str(HTTP_504_TIMEOUT): {
         'description': 'Timeout. A request to a third-party has taken too long to be served.'
+        }
     }
-}
 
 responses = _without_keys(responses_full, [str(HTTP_501_NOT_IMPLEMENTED)])
 responses_created = _without_keys(responses, [str(HTTP_200_OK)])

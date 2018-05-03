@@ -24,6 +24,7 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+
 import os
 from radish import world
 
@@ -32,41 +33,63 @@ world.env = {
         'backend_api': {
             'host': '{}://{}:{}'.format(os.environ['BACKENDAPI_PROTOCOL'], os.environ['BACKENDAPI_HOST'],
                                         os.environ['BACKENDAPI_PORT'])
-        },
-        'msg_q': {
-            'host': os.environ['MSGQ_HOST'],
-            'port': int(os.environ['MSGQ_PORT']),
-            'exchange': os.environ['MSGQ_EXCHANGE_DASHBOARD'],
+            },
+        'msg_q':       {
+            'host':          os.environ['MSGQ_HOST'],
+            'port':          int(os.environ['MSGQ_PORT']),
+            'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
-            'topic': os.environ['MSGQ_DARE_TOPIC']
-        },
-        'socket': {
+            'topic':         os.environ['MSGQ_DARE_TOPIC']
+            },
+        'socket':      {
             'host': 'ws://{}:{}/policy'.format(os.environ['SKT_HOST'],
                                                os.environ['SKT_PORT'])
-        },
-        'vnsfo': {
+            },
+        'vnsfo':       {
             'host': '{}://{}:{}/{}'.format(os.environ['VNSFO_PROTOCOL'], os.environ['VNSFO_HOST'],
                                            os.environ['VNSFO_PORT'], os.environ['VNSFO_API'])
-        }
-    },
-    'data': {
-        'input_data': os.environ['FOLDER_TESTS_INPUT_DATA'],
+            },
+        'aaa':         {
+            'host':            '{}://{}:{}/v3'.format(os.environ['AAA_PROTOCOL'], os.environ['AAA_HOST'],
+                                                      os.environ['AAA_PORT']),
+            'svc_admin_scope': os.environ['AAA_SVC_ADMIN_SCOPE'],
+            'svc_admin_user':  os.environ['AAA_SCV_ADMIN_USER'],
+            'svc_admin_pass':  os.environ['AAA_SCV_ADMIN_PASS']
+            },
+        },
+    'data':  {
+        'input_data':      os.environ['FOLDER_TESTS_INPUT_DATA'],
         'expected_output': os.environ['FOLDER_TESTS_EXPECTED_OUTPUT'],
-    },
-    'mock': {
-        'vnsfo_data': os.environ['FOLDER_TESTS_MOCK_VNSFO_DATA'],
+        },
+    'mock':  {
+        'vnsfo_data':   os.environ['FOLDER_TESTS_MOCK_VNSFO_DATA'],
         'vnsfo_folder': os.path.join(os.environ['CNTR_FOLDER_VNSFO'], os.environ['VNSFO_API'])
+        }
     }
-}
 
 world.endpoints = {
-    'policies_latest': '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", -1)]&max_results=1'.format(
-        world.env['hosts']['backend_api']['host'], 'policies'),
-    'policies_admin': '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'admin/policies'),
-    'policies_apply': '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies')
+    'login':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'login'),
+    'tenants':              '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/tenants'),
+    'tenant_info':          '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/tenants'),
+    # 'tenant_users': '{}/{}/{{}}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/tenants', 'users'),
+    # 'tenant_user_specific': '{}/{}/{{}}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
+    # 'catalogue/tenants',
+    #                                                     'users'),
+    'tenant_users':         '{}/{}?where={{{{"tenant_id": "{{}}"}}}}'.format(world.env['hosts']['backend_api']['host'],
+                                                                             'catalogue/users'),
+    'tenant_user_specific': '{}/{}/{{}}?where={{{{"tenant_id": "{{}}"}}}}'.format(world.env['hosts']['backend_api'][
+                                                                                      'host'],
+                                                                                  'catalogue/users'),
+    # 'tenant_user_specific': '{}/{}/{{}}?where={{{"tenant_id": {{}}}}}'.format(world.env['hosts']['backend_api'][
+    # 'host'],
+    #                                                                           'catalogue/users'),
+    'policies_latest':      '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", -1)]&max_results=1'.format(
+            world.env['hosts']['backend_api']['host'], 'policies'),
+    'policies_admin':       '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'admin/policies'),
+    'policies_apply':       '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies')
 
-}
+    }
 
 world.mock_vnsfo_endpoints = {
     'apply_policy': 'vnsf/action'
-}
+    }

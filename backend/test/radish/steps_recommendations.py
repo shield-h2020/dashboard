@@ -24,6 +24,7 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+
 from time import sleep
 
 import os
@@ -32,7 +33,7 @@ import re
 import websocket
 from dashboardtestingutils.socket_client import ReceiveOnlySocketClient
 from dashboardtestingutils.steps_utils import *
-from dashboardutils import http_codes
+from dashboardutils import http_utils
 from radish import given, when, then, world
 from radish.stepmodel import Step
 from shutil import copyfile
@@ -80,7 +81,7 @@ def persist_policy(step, policy):
     with open(os.path.join(world.env['data']['input_data'], policy), 'r') as mspl:
         # set_http_headers(step, {'Content-Type': 'application/json'})
         http_post_json(step, world.endpoints['policies_admin'], json.load(mspl))
-        expected_status_code(step, http_codes.HTTP_201_CREATED)
+        expected_status_code(step, http_utils.HTTP_201_CREATED)
 
         # Ensure that the system under test has enough time to send the notification.
         sleep(1)
@@ -105,7 +106,7 @@ def apply_latest_policy(step):
     #  Get latest policy data.
     #
     http_get(step, world.endpoints['policies_latest'])
-    expected_status_code(step, http_codes.HTTP_200_OK)
+    expected_status_code(step, http_utils.HTTP_200_OK)
 
     #
     # Apply the latest policy.
@@ -118,7 +119,8 @@ def apply_latest_policy(step):
 @when(u'I check the Recommendations Queue')
 def recommendations_queue_check(step):
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=world.env['hosts']['msg_q']['host'], port=world.env['hosts']['msg_q']['port']))
+            pika.ConnectionParameters(host=world.env['hosts']['msg_q']['host'],
+                                      port=world.env['hosts']['msg_q']['port']))
     channel = connection.channel()
 
     channel.exchange_declare(exchange=world.env['hosts']['msg_q']['exchange'],
@@ -136,8 +138,8 @@ def recommendations_queue_ready(step):
         return
 
     world.my_context['msgq_connection'] = pika.BlockingConnection(
-        pika.ConnectionParameters(host=world.env['hosts']['msg_q']['host'],
-                                  port=world.env['hosts']['msg_q']['port']))
+            pika.ConnectionParameters(host=world.env['hosts']['msg_q']['host'],
+                                      port=world.env['hosts']['msg_q']['port']))
 
     world.my_context['msgq_channel'] = world.my_context['msgq_connection'].channel()
 
