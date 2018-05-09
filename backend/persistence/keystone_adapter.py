@@ -34,7 +34,7 @@ from dashboardutils import http_utils
 
 
 class KeystoneAuthzApi(AaaApi):
-    # The dictionary is used only for fast lookup, hence the values are meaningful.
+    # The dictionary is used only for fast lookup, hence the values are meaningless.
     _roles_to_use = {
         'shield_tenant_admin': 'dummy',
         'shield_tenant_user':  'dummy'
@@ -45,6 +45,7 @@ class KeystoneAuthzApi(AaaApi):
         'shield_tenant_users':  'shield_tenant_user'
         }
 
+    # Define the keystone endpoints to serve the AAA API.
     login = 'auth/tokens?nocatalog'
     tenants = 'domains'
     tenant_query = '{}?name={{}}'.format(tenants)
@@ -125,6 +126,90 @@ class KeystoneAuthzApi(AaaApi):
             #                     [[url]])
             raise requests.exceptions.ConnectionError
 
+    def create_group(self, tenant_id, description, code, role_id):
+        group = {
+            "group": {
+                "description": description,
+                "domain_id":   tenant_id,
+                "name":        code
+                }
+            }
+
+        url = self.api_basepath + '/' + KeystoneAuthzApi.groups
+
+        headers = {'X-Auth-Token': self.service_token['token']['id']}
+
+        try:
+
+            self.logger.debug('create group\n' + pformat(group))
+
+            r = requests.post(url, headers=headers, json=group, verify=False)
+
+            if len(r.text) > 0:
+                self.logger.debug(r.text)
+
+            if r.status_code == http_utils.HTTP_409_CONFLICT:
+                raise FileExistsError
+
+            if not r.status_code == http_utils.HTTP_201_CREATED:
+                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
+                #                     [[url, r.status_code]])
+                raise PermissionError
+
+            group_data = r.json()
+
+            self.logger.debug('group created\n' + pformat(group_data))
+
+            self._add_role_to_group(tenant_id, group_data['group']['id'], role_id)
+
+            # Set data which is only available once the group is created in the external authorization system.
+            group['group']['group_id'] = group_data['group']['id']
+
+            return group
+
+        except requests.exceptions.ConnectionError:
+            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
+            #                     [[url]])
+            raise requests.exceptions.ConnectionError
+
+    def create_role(self, role_code, description):
+        role = {
+            "role": {
+                "name": role_code
+                }
+            }
+
+        self.logger.debug('role to create: ' + pformat(role))
+
+        url = self.api_basepath + '/' + KeystoneAuthzApi.roles
+
+        headers = {'X-Auth-Token': self.service_token['token']['id']}
+
+        try:
+            r = requests.post(url, headers=headers, json=role, verify=False)
+
+            if len(r.text) > 0:
+                self.logger.debug(r.text)
+
+            if r.status_code == http_utils.HTTP_409_CONFLICT:
+                raise FileExistsError
+
+            if not r.status_code == http_utils.HTTP_201_CREATED:
+                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
+                #                     [[url, r.status_code]])
+                raise PermissionError
+
+            role_data = r.json()
+
+            self.logger.debug('role created:\n' + pformat(role_data))
+
+            return role_data
+
+        except requests.exceptions.ConnectionError:
+            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
+            #                     [[url]])
+            raise requests.exceptions.ConnectionError
+
     def create_tenant(self, tenant, description):
         domain = {
             "domain": {
@@ -159,10 +244,6 @@ class KeystoneAuthzApi(AaaApi):
 
             if domain_data['domain']['enabled'] is not True:
                 raise FileNotFoundError
-
-            groups_data = self._create_groups(domain_data['domain']['id'])
-
-            domain_data['domain']['groups'] = groups_data
 
             return domain_data
 
@@ -256,62 +337,6 @@ class KeystoneAuthzApi(AaaApi):
             #                     [[url]])
             raise requests.exceptions.ConnectionError
 
-    def _create_groups(self, tentant_id):
-        groups = [
-            {
-                "group": {
-                    "description": "Tenant Admins",
-                    "domain_id":   tentant_id,
-                    "name":        "shield_tenant_admins",
-                    "role_id":     self.roles_available['shield_tenant_admin']['role_id']
-                    }
-                },
-            {
-                "group": {
-                    "description": "Tenant Users",
-                    "domain_id":   tentant_id,
-                    "name":        "shield_tenant_users",
-                    "role_id":     self.roles_available['shield_tenant_user']['role_id']
-                    }
-                }
-            ]
-
-        url = self.api_basepath + '/' + KeystoneAuthzApi.groups
-
-        headers = {'X-Auth-Token': self.service_token['token']['id']}
-
-        try:
-
-            for i, group in enumerate(groups):
-                self.logger.debug('create group\n' + pformat(group))
-
-                r = requests.post(url, headers=headers, json=group, verify=False)
-
-                if len(r.text) > 0:
-                    self.logger.debug(r.text)
-
-                if r.status_code == http_utils.HTTP_409_CONFLICT:
-                    raise FileExistsError
-
-                if not r.status_code == http_utils.HTTP_201_CREATED:
-                    # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                    #                     [[url, r.status_code]])
-                    raise PermissionError
-
-                group_data = r.json()
-
-                self._add_role_to_group(tentant_id, group_data['group']['id'], groups[i]['group']['role_id'])
-
-                # Set data which is only available once the group is created in the external authorization system.
-                groups[i]['group']['group_id'] = group_data['group']['id']
-
-            return groups
-
-        except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
-
     def _get_roles(self):
 
         url = self.api_basepath + '/' + KeystoneAuthzApi.roles
@@ -396,7 +421,7 @@ class KeystoneAuthzApi(AaaApi):
             r = requests.post(url, headers=headers, json=user, verify=False)
 
             if len(r.text) > 0:
-                self.logger.debug(r.text)
+                self.logger.debug('response:\n' + pformat(r.text))
 
             if r.status_code == http_utils.HTTP_409_CONFLICT:
                 raise FileExistsError
@@ -425,6 +450,12 @@ class KeystoneAuthzApi(AaaApi):
             raise requests.exceptions.ConnectionError
 
     def create_tenant_user(self, tenant_id, user_data):
+        created_user = self._create_user(tenant_id, user_data)
+        self._add_user_to_group(created_user['user']['id'], user_data['group_id'])
+
+        return created_user
+
+    def create_developer(self, tenant_id, user_data):
         created_user = self._create_user(tenant_id, user_data)
         self._add_user_to_group(created_user['user']['id'], user_data['group_id'])
 

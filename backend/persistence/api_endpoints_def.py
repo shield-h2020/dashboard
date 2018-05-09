@@ -66,6 +66,251 @@ class Endpoint(Enum):
     __HTTP_PATCH__ = 'PATCH'
     __HTTP_DELETE__ = 'DELETE'
 
+    TENANT_SCOPES = {__NAME__:     'tenant_scopes',
+                     __URL__:      'definitions/tenant_scopes',
+                     __SCHEMA__:   api_model.tenant_scopes_model,
+                     __RESOURCE__: {
+                         __HTTP_POST__: {
+                             __POLICY__: 'tenant_scopes:create',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_GET__:  {
+                             __POLICY__: 'tenant_scopes:read',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             }
+                         },
+                     __ITEM__:     {
+                         __HTTP_GET__:    {
+                             __POLICY__: 'tenant_scopes:read_scope',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_PUT__:    {
+                             __POLICY__: 'tenant_scopes:update_scope',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_DELETE__: {
+                             __POLICY__: 'tenant_scopes:delete_scope',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             }
+                         }
+                     }
+
+    TENANT_GROUPS = {__NAME__:     'tenant_groups',
+                     __URL__:      'definitions/tenant_groups',
+                     __SCHEMA__:   api_model.tenant_groups_model,
+                     __RESOURCE__: {
+                         __HTTP_POST__: {
+                             __POLICY__: 'tenant_groups:create',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_GET__:  {
+                             __POLICY__: 'tenant_groups:read',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             }
+                         },
+                     __ITEM__:     {
+                         __HTTP_GET__:    {
+                             __POLICY__: 'tenant_groups:read_group',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_PUT__:    {
+                             __POLICY__: 'tenant_groups:update_group',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_DELETE__: {
+                             __POLICY__: 'tenant_groups:delete_group',
+                             __DOCS__:   {
+                                 'summary':     'TBD',
+                                 'description': 'TBD',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             }
+                         }
+                     }
+
+    TENANT_ROLES = {__NAME__:     'tenant_roles',
+                    __URL__:      'definitions/tenant_roles',
+                    __SCHEMA__:   api_model.tenant_roles_model,
+                    __RESOURCE__: {
+                        __HTTP_POST__: {
+                            __POLICY__: 'tenant_roles:create',
+                            __DOCS__:   {
+                                'summary':     'TBD',
+                                'description': 'TBD',
+                                'responses':   http_utils.responses_read
+                                }
+                            },
+                        __HTTP_GET__:  {
+                            __POLICY__: 'tenant_roles:read',
+                            __DOCS__:   {
+                                'summary':     'TBD',
+                                'description': 'TBD',
+                                'responses':   http_utils.responses_read
+                                }
+                            }
+                        },
+                    __ITEM__:     {
+                        __HTTP_GET__:    {
+                            __POLICY__: 'tenant_roles:read_role',
+                            __DOCS__:   {
+                                'summary':     'TBD',
+                                'description': 'TBD',
+                                'responses':   http_utils.responses_read
+                                }
+                            },
+                        __HTTP_PUT__:    {
+                            __POLICY__: 'tenant_roles:update_role',
+                            __DOCS__:   {
+                                'summary':     'TBD',
+                                'description': 'TBD',
+                                'responses':   http_utils.responses_read
+                                }
+                            },
+                        __HTTP_DELETE__: {
+                            __POLICY__: 'tenant_roles:delete_role',
+                            __DOCS__:   {
+                                'summary':     'TBD',
+                                'description': 'TBD',
+                                'responses':   http_utils.responses_read
+                                }
+                            }
+                        }
+                    }
+
+    TENANT_SCOPE_GROUPS = {__NAME__:     'tenant_scope_groups',
+                           __URL__:      'definitions/tenant_scope_groups',
+                           __SCHEMA__:   api_model.tenant_scope_groups_model,
+                           __RESOURCE__: {
+                               __HTTP_POST__: {
+                                   __POLICY__: 'tenant_scope_groups:create',
+                                   __DOCS__:   {
+                                       'summary':     'TBD',
+                                       'description': 'TBD',
+                                       'responses':   http_utils.responses_read
+                                       }
+                                   },
+                               __HTTP_GET__:  {
+                                   __POLICY__: 'tenant_scope_groups:read',
+                                   __DOCS__:   {
+                                       'summary':     'TBD',
+                                       'description': 'TBD',
+                                       'responses':   http_utils.responses_read
+                                       }
+                                   }
+                               },
+                           __ITEM__:     {
+                               __HTTP_GET__:    {
+                                   __POLICY__: 'tenant_scope_groups:read_scope',
+                                   __DOCS__:   {
+                                       'summary':     'TBD',
+                                       'description': 'TBD',
+                                       'responses':   http_utils.responses_read
+                                       }
+                                   },
+                               __HTTP_PUT__:    {
+                                   __POLICY__: 'tenant_scope_groups:update_scope',
+                                   __DOCS__:   {
+                                       'summary':     'TBD',
+                                       'description': 'TBD',
+                                       'responses':   http_utils.responses_read
+                                       }
+                                   },
+                               __HTTP_DELETE__: {
+                                   __POLICY__: 'tenant_scope_groups:delete_scope',
+                                   __DOCS__:   {
+                                       'summary':     'TBD',
+                                       'description': 'TBD',
+                                       'responses':   http_utils.responses_read
+                                       }
+                                   }
+                               }
+                           }
+
+    TENANT_GROUP_ROLES = {__NAME__:     'tenant_group_roles',
+                          __URL__:      'definitions/tenant_group_roles',
+                          __SCHEMA__:   api_model.tenant_group_roles_model,
+                          __RESOURCE__: {
+                              __HTTP_POST__: {
+                                  __POLICY__: 'tenant_group_roles:create',
+                                  __DOCS__:   {
+                                      'summary':     'TBD',
+                                      'description': 'TBD',
+                                      'responses':   http_utils.responses_read
+                                      }
+                                  },
+                              __HTTP_GET__:  {
+                                  __POLICY__: 'tenant_group_roles:read',
+                                  __DOCS__:   {
+                                      'summary':     'TBD',
+                                      'description': 'TBD',
+                                      'responses':   http_utils.responses_read
+                                      }
+                                  }
+                              },
+                          __ITEM__:     {
+                              __HTTP_GET__:    {
+                                  __POLICY__: 'tenant_group_roles:read_role',
+                                  __DOCS__:   {
+                                      'summary':     'TBD',
+                                      'description': 'TBD',
+                                      'responses':   http_utils.responses_read
+                                      }
+                                  },
+                              __HTTP_PUT__:    {
+                                  __POLICY__: 'tenant_group_roles:update_role',
+                                  __DOCS__:   {
+                                      'summary':     'TBD',
+                                      'description': 'TBD',
+                                      'responses':   http_utils.responses_read
+                                      }
+                                  },
+                              __HTTP_DELETE__: {
+                                  __POLICY__: 'tenant_group_roles:delete_role',
+                                  __DOCS__:   {
+                                      'summary':     'TBD',
+                                      'description': 'TBD',
+                                      'responses':   http_utils.responses_read
+                                      }
+                                  }
+                              }
+                          }
+
     TENANTS = {__NAME__:       'tenants',
                __URL__:        'catalogue/tenants',
                __DOC_ID_VAR__: 'tenantsId',
@@ -183,3 +428,47 @@ class Endpoint(Enum):
                             }
                         }
                     }
+
+    VNSFS = {__NAME__:       'vnsfs',
+             __URL__:        'catalogue/vnsfs',
+             __DOC_ID_VAR__: 'vnsfsId',
+             __SCHEMA__:     api_model.vnsfs_catalogue_model,
+             __RESOURCE__:   {
+                 __HTTP_POST__: {
+                     __POLICY__: 'vnsfs:create',
+                     __DOCS__:   {
+                         'summary':     'Registers a new vNSF',
+                         'description': 'Performs the vNSF onboarding process. Upon successful completion, a new vNSF '
+                                        'is added to the catalogue and associated with the Developer doing the '
+                                        'onboarding operation.',
+                         'responses':   http_utils.responses_read
+                         }
+                     },
+                 __HTTP_GET__:  {
+                     __POLICY__: 'vnsfs:read',
+                     __DOCS__:   {
+                         'summary':     'Lists vNSFs associated with a Developer',
+                         'description': 'Shows all the registered vNSFs and their properties for a given Developer.',
+                         'responses':   http_utils.responses_read
+                         }
+                     }
+                 },
+             __ITEM__:       {
+                 __HTTP_GET__:    {
+                     __POLICY__: 'vnsfs:read_vnsf',
+                     __DOCS__:   {
+                         'summary':     'Shows a vNSF details',
+                         'description': 'Provides detailed information on a vNSF.',
+                         'responses':   http_utils.responses_read
+                         }
+                     },
+                 __HTTP_DELETE__: {
+                     __POLICY__: 'vnsfs:delete_vnsf',
+                     __DOCS__:   {
+                         'summary':     'Decommissions a vNSF',
+                         'description': 'Marks the vNSF as not available for usage.',
+                         'responses':   http_utils.responses_read
+                         }
+                     }
+                 }
+             }

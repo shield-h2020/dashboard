@@ -89,8 +89,8 @@ def http_post_json(step, url, data={}, **kwargs):
     set_http_response(step, r)
 
 
-def http_post_file(step, url, files, **kwargs):
-    r = requests.post(url, headers=http_headers_to_send, files=files, **kwargs)
+def http_post_file(step, url, files, data={}, **kwargs):
+    r = requests.post(url, headers=http_headers_to_send, data=data, files=files, **kwargs)
     set_http_response(step, r)
 
 

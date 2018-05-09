@@ -1,0 +1,5 @@
+{
+  "tenant_name": "shield-developers",
+  "description": "vNSF developers",
+  "scope_code": "shield_scope_developer"
+}

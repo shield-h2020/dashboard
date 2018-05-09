@@ -32,6 +32,12 @@ db.login.deleteMany({})
 db.tenants_catalogue.deleteMany({})
 db.tenant_users_catalogue.deleteMany({})
 
+db.tenant_scopes.deleteMany({})
+db.tenant_groups.deleteMany({})
+db.tenant_roles.deleteMany({})
+db.tenant_scope_groups.deleteMany({})
+db.tenant_group_roles.deleteMany({})
+
 db.nss_catalogue.deleteMany({})
 db.vnsfs_catalogue.deleteMany({})
 

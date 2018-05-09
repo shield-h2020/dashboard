@@ -68,25 +68,61 @@ world.env = {
     }
 
 world.endpoints = {
-    'login':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'login'),
-    'tenants':              '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/tenants'),
-    'tenant_info':          '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/tenants'),
-    # 'tenant_users': '{}/{}/{{}}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/tenants', 'users'),
-    # 'tenant_user_specific': '{}/{}/{{}}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
-    # 'catalogue/tenants',
-    #                                                     'users'),
-    'tenant_users':         '{}/{}?where={{{{"tenant_id": "{{}}"}}}}'.format(world.env['hosts']['backend_api']['host'],
-                                                                             'catalogue/users'),
-    'tenant_user_specific': '{}/{}/{{}}?where={{{{"tenant_id": "{{}}"}}}}'.format(world.env['hosts']['backend_api'][
-                                                                                      'host'],
-                                                                                  'catalogue/users'),
-    # 'tenant_user_specific': '{}/{}/{{}}?where={{{"tenant_id": {{}}}}}'.format(world.env['hosts']['backend_api'][
-    # 'host'],
-    #                                                                           'catalogue/users'),
-    'policies_latest':      '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", -1)]&max_results=1'.format(
+    'login':                      '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'login'),
+
+    'tenant_scopes':              '{}/{}'.format(world.env['hosts']['backend_api']['host'],
+                                                 'definitions/tenant_scopes'),
+
+    'tenant_scope_specific':      '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
+                                                      'definitions/tenant_scopes'),
+
+    'tenant_scope_specific_code': '{}/{}?where={{{{"code": "{{}}"}}}}'.format(world.env['hosts']['backend_api']['host'],
+                                                                              'definitions/tenant_scopes'),
+
+    'tenant_groups':              '{}/{}'.format(world.env['hosts']['backend_api']['host'],
+                                                 'definitions/tenant_groups'),
+
+    'tenant_group_specific':      '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
+                                                      'definitions/tenant_groups'),
+
+    'tenant_group_specific_code': '{}/{}?where={{{{"code": "{{}}"}}}}'.format(world.env['hosts']['backend_api']['host'],
+                                                                              'definitions/tenant_groups'),
+
+    'tenant_roles':               '{}/{}'.format(world.env['hosts']['backend_api']['host'],
+                                                 'definitions/tenant_roles'),
+
+    'tenant_role_specific':       '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
+                                                      'definitions/tenant_roles'),
+
+    'tenant_role_specific_code':  '{}/{}?where={{{{"code": "{{}}"}}}}'.format(world.env['hosts']['backend_api']['host'],
+                                                                              'definitions/tenant_roles'),
+
+    'tenant_scope_groups':        '{}/{}'.format(world.env['hosts']['backend_api']['host'],
+                                                 'definitions/tenant_scope_groups'),
+
+    'tenant_group_roles':         '{}/{}'.format(world.env['hosts']['backend_api']['host'],
+                                                 'definitions/tenant_group_roles'),
+
+    'tenants':                    '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/tenants'),
+
+    'tenant_info':                '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
+                                                      'catalogue/tenants'),
+
+    'tenant_users':               '{}/{}?where={{{{"tenant_id": "{{}}"}}}}'.format(
+            world.env['hosts']['backend_api']['host'], 'catalogue/users'),
+
+    'tenant_user_specific':       '{}/{}/{{}}?where={{{{"tenant_id": "{{}}"}}}}'.format(
+            world.env['hosts']['backend_api']['host'], 'catalogue/users'),
+
+    'vnsfs':                      '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/vnsfs'),
+
+    'policies_latest':            '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", '
+                                  '-1)]&max_results=1'.format(
             world.env['hosts']['backend_api']['host'], 'policies'),
-    'policies_admin':       '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'admin/policies'),
-    'policies_apply':       '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies')
+
+    'policies_admin':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'admin/policies'),
+
+    'policies_apply':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies')
 
     }
 

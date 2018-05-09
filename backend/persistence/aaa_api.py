@@ -85,6 +85,14 @@ class AaaApi(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    def create_group(self, tenant_id, description, code, role_id):
+        raise NotImplementedError
+
+    @abstractmethod
+    def create_role(self, role_code, description):
+        raise NotImplementedError
+
+    @abstractmethod
     def create_tenant(self, tenant, description):
         raise NotImplementedError
 

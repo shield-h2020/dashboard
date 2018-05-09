@@ -1,0 +1,6 @@
+{
+  "name": "Tenant Users Group",
+  "code": "shield_group_roles_user",
+  "group_code": "shield-tenant-users",
+  "roles": ["shield_tenant_user"]
+}

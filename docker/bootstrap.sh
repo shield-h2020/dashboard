@@ -72,10 +72,6 @@ keystone-manage bootstrap --bootstrap-password ${AAA_SCV_ADMIN_PASS} \
 
 sleep 5
 openstack role add --domain default --user admin admin
-openstack role create shield_platform_admin
-openstack role create shield_tenant_admin
-openstack role create shield_tenant_user
-openstack role create shield_developer
 sleep 5
 
 mv /etc/keystone/multi_policy.json /etc/keystone/policy.json

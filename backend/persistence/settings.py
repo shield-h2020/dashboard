@@ -75,13 +75,16 @@ TRANSPARENT_SCHEMA_RULES = True
 DOMAIN = {
     'login':                  api_endpoints.login,
     'login_user':             api_endpoints.login_user,
+    'tenant_scopes':          api_endpoints.tenant_scopes,
+    'tenant_groups':          api_endpoints.tenant_groups,
+    'tenant_roles':           api_endpoints.tenant_roles,
+    'tenant_scope_groups':    api_endpoints.tenant_scope_groups,
+    'tenant_group_roles':     api_endpoints.tenant_group_roles,
     'tenants_catalogue':      api_endpoints.tenants_catalogue,
     'tenant':                 api_endpoints.tenant,
-    # 'tenants_catalogue_delete': api_endpoints.tenants_catalogue_delete,
     'tenant_users_catalogue': api_endpoints.tenant_users_catalogue,
     'tenant_user':            api_endpoints.tenant_user,
-    # 'tenant_users_xpto': api_endpoints.tenant_users_xpto,
-    # 'vnsfs_catalogue': api_endpoints.vnsfs_catalogue,
+    'vnsfs_catalogue':        api_endpoints.vnsfs_catalogue,
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin
     }

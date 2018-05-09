@@ -2,14 +2,50 @@
   "platform.admin": "role:admin",
   "tenant.admin": "role:shield_tenant_admin",
   "tenant.user": "role:shield_tenant_user",
-  "developer": "role:developer",
+  "developer": "role:shield_developer",
 
   "tenant.scoped": "tenant_id:%(tenant_id)s",
   "tenant.user.scoped": "user_id:%(user_id)s",
 
+  "developers.group": "tenant_id:%(tenant_id)s",
+  "developer.scoped": "user_id:%(user_id)s",
+
   "any.tenant.admin": "(rule:tenant.admin and rule:tenant.scoped) or rule:platform.admin",
 
   "any.tenant.user": "(rule:tenant.user and rule:tenant.user.scoped) or rule:any.tenant.admin",
+
+  "any.developer": "(rule:developer and rule:developers.group) or rule:platform.admin",
+  "developer.owned": "(rule:developer and rule:developer.scoped) or rule:platform.admin",
+
+  "tenant_scopes:create": "rule:platform.admin",
+  "tenant_scopes:read": "rule:platform.admin",
+  "tenant_scopes:read_scope": "rule:platform.admin",
+  "tenant_scopes:update_scope": "rule:platform.admin",
+  "tenant_scopes:delete_scope": "rule:platform.admin",
+
+  "tenant_groups:create": "rule:platform.admin",
+  "tenant_groups:read": "rule:platform.admin",
+  "tenant_groups:read_group": "rule:platform.admin",
+  "tenant_groups:update_group": "rule:platform.admin",
+  "tenant_groups:delete_group": "rule:platform.admin",
+
+  "tenant_roles:create": "rule:platform.admin",
+  "tenant_roles:read": "rule:platform.admin",
+  "tenant_roles:read_role": "rule:platform.admin",
+  "tenant_roles:update_role": "rule:platform.admin",
+  "tenant_roles:delete_role": "rule:platform.admin",
+
+  "tenant_scope_groups:create": "rule:platform.admin",
+  "tenant_scope_groups:read": "rule:platform.admin",
+  "tenant_scope_groups:read_scope": "rule:platform.admin",
+  "tenant_scope_groups:update_scope": "rule:platform.admin",
+  "tenant_scope_groups:delete_scope": "rule:platform.admin",
+
+  "tenant_group_roles:create": "rule:platform.admin",
+  "tenant_group_roles:read": "rule:platform.admin",
+  "tenant_group_roles:read_role": "rule:platform.admin",
+  "tenant_group_roles:update_role": "rule:platform.admin",
+  "tenant_group_roles:delete_role": "rule:platform.admin",
 
   "tenants:create": "rule:platform.admin",
   "tenants:read": "rule:any.tenant.admin",
@@ -35,9 +71,8 @@
   "nss_inventory:update_ns": "rule:any.tenant.admin",
   "nss_inventory:delete_ns": "rule:any.tenant.admin",
 
-  "vnsfs:create": "rule:developer",
-  "vnsfs:read": "rule:resource.read",
-  "vnsfs:delete": "rule:resource.delete",
-  "vnsfs:read_vnsf": "rule:item.read",
-  "vnsfs:update_vnsf": "rule:item.update"
+  "vnsfs:create": "rule:any.developer",
+  "vnsfs:read": "rule:developer.owned",
+  "vnsfs:read_vnsf": "rule:developer.owned",
+  "vnsfs:delete_vnsf": "rule:platform.admin"
 }

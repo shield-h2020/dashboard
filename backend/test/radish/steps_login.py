@@ -25,14 +25,9 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-import json
-from pprint import pformat
-
-import os
-import re
 from dashboardtestingutils.steps_utils import *
 from dashboardutils import http_utils
-from radish import given, when, world
+from radish import given, world
 
 
 @given(u'The Platform Admin is logged in')
@@ -67,199 +62,12 @@ def tenant_user_login(step):
     world.my_context['tenant_user'] = step.context.api['response']['json']
 
 
-@given(re.compile(u'The Platform Admin creates a Tenant from (.*)'))
-def platform_admin_create_tenant(step, tenant_file):
-    file = os.path.join(world.env['data']['input_data'], tenant_file)
-    with open(file) as f:
-        http_post_json(step, url=world.endpoints['tenants'], data=json.load(f),
-                       auth=(world.my_context['platform_admin']['token']['id'], ''))
-
+@given(u'The Developer is logged in')
+def developer_login(step):
+    set_http_headers(step, {'Shield-Authz-Scope': world.my_context['tenant_info']['tenant_name']})
+    http_post_json(step, url=world.endpoints['login'], auth=(
+        world.my_context['developer_info']['name'],
+        world.my_context['developer_info']['password']))
     expected_status_code(step, http_utils.HTTP_201_CREATED)
 
-    url = world.endpoints['tenant_info'].format(step.context.api['response']['json']['tenant_id'])
-    http_get(step, url=url, auth=(world.my_context['platform_admin']['token']['id'], ''))
-    expected_status_code(step, http_utils.HTTP_200_OK)
-
-    world.my_context['tenant_info'] = step.context.api['response']['json']
-
-
-@given(re.compile(u'The Platform Admin creates a Tenant Admin from (.*)'))
-def platform_admin_create_tenant_admin(step, tenant_file):
-    file = os.path.join(world.env['data']['input_data'], tenant_file)
-    with open(file) as f:
-        user_data = json.load(f)
-
-    user_data['group_id'] = world.my_context['tenant_info']['groups'][0]['group']['group_id']
-
-    print('tenant_info\n' + pformat(world.my_context['tenant_info']))
-
-    print('template url for tenant_users: ' + world.endpoints['tenant_users'])
-
-    url = world.endpoints['tenant_users'].format(world.my_context['tenant_info']['tenant_id'])
-    print('url: ' + url)
-    print('url: ' + url)
-
-    http_post_json(step, url=url, data=user_data, auth=(world.my_context['platform_admin']['token']['id'], ''))
-
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
-
-    url = world.endpoints['tenant_user_specific'].format(step.context.api['response']['json']['user_id'],
-                                                         world.my_context['tenant_info']['tenant_id'])
-
-    print('url: ' + url)
-    print('url: ' + url)
-
-    http_get(step, url=url, auth=(world.my_context['platform_admin']['token']['id'], ''))
-    expected_status_code(step, http_utils.HTTP_200_OK)
-
-    world.my_context['tenant_admin_info'] = step.context.api['response']['json']
-    print('tenant_admin_info\n' + pformat(world.my_context['tenant_admin_info']))
-
-
-@given(re.compile(u'The Tenant Admin creates a User from (.*)'))
-def tenant_admin_create_user(step, user_file):
-    file = os.path.join(world.env['data']['input_data'], user_file)
-    with open(file) as f:
-        user_data = json.load(f)
-
-    user_data['group_id'] = world.my_context['tenant_info']['groups'][1]['group']['group_id']
-
-    url = world.endpoints['tenant_users'].format(world.my_context['tenant_info']['tenant_id'])
-    print('url: ' + url)
-    print('url: ' + url)
-
-    http_post_json(step, url=url, data=user_data, auth=(world.my_context['tenant_admin']['token']['id'], ''))
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
-
-    url = world.endpoints['tenant_user_specific'].format(step.context.api['response']['json']['user_id'],
-                                                         world.my_context['tenant_info']['tenant_id'])
-
-    print('url: ' + url)
-    print('url: ' + url)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_admin']['token']['id'], ''))
-    expected_status_code(step, http_utils.HTTP_200_OK)
-
-    world.my_context['tenant_user_info'] = step.context.api['response']['json']
-
-
-@when(u'The Tenant Admin deletes the User')
-def tenant_admin_delete_user(step):
-    print('tenant_user_info\n' + pformat(world.my_context['tenant_user_info']))
-
-    print('tenant_user\n' + pformat(world.my_context['tenant_user']))
-
-    url = world.endpoints['tenant_user_specific'].format(world.my_context['tenant_user_info']['user_id'],
-                                                         world.my_context['tenant_info']['tenant_id'])
-
-    print('url: ' + url)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_admin']['token']['id'], ''))
-    user_info = step.context.api['response']['json']
-
-    set_http_headers(step, {'If-Match': user_info['_etag']})
-    http_delete(step, url=url, auth=(world.my_context['tenant_admin']['token']['id'], ''))
-    expected_status_code(step, http_utils.HTTP_204_NO_CONTENT)
-
-
-@when(u'The Tenant User lists the users')
-def tenant_user_list_users(step):
-    url = world.endpoints['tenant_users'].format(world.my_context['tenant_info']['tenant_id'])
-    http_get(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-
-
-@when(u'The Tenant User lists itself')
-def tenant_user_info(step):
-    url = world.endpoints['tenant_user_specific'].format(world.my_context['tenant_user_info']['user_id'],
-                                                         world.my_context['tenant_info']['tenant_id'])
-
-    print('url: ' + url)
-    print('url: ' + url)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-
-    print('user_info\n' + pformat(step.context.api['response']['json']))
-
-
-@when(re.compile(u'The Tenant User updates from (.*)'))
-def tenant_user_update(step, update_file):
-    print('tenant_user_info\n' + pformat(world.my_context['tenant_user_info']))
-
-    print('tenant_user\n' + pformat(world.my_context['tenant_user']))
-
-    file = os.path.join(world.env['data']['input_data'], update_file)
-    with open(file) as f:
-        user_data = json.load(f)
-
-    user_data['group_id'] = world.my_context['tenant_user_info']['group_id']
-
-    url = world.endpoints['tenant_user_specific'].format(world.my_context['tenant_user_info']['user_id'],
-                                                         world.my_context['tenant_info']['tenant_id'])
-
-    print('url: ' + url)
-    print('url: ' + url)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-    user_info = step.context.api['response']['json']
-
-    print('user_info before\n' + pformat(user_info))
-
-    set_http_headers(step, {'If-Match': user_info['_etag']})
-    http_put_json(step, url=url, data=user_data, auth=(world.my_context['tenant_user']['token']['id'], ''))
-    expected_status_code(step, http_utils.HTTP_200_OK)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-
-    print('user_info\n' + pformat(step.context.api['response']['json']))
-
-
-@when(re.compile(u'The Tenant User patches from (.*)'))
-def tenant_user_patch(step, update_file):
-    print('tenant_user_info\n' + pformat(world.my_context['tenant_user_info']))
-
-    print('tenant_user\n' + pformat(world.my_context['tenant_user']))
-
-    file = os.path.join(world.env['data']['input_data'], update_file)
-    with open(file) as f:
-        user_data = json.load(f)
-
-    user_data['group_id'] = world.my_context['tenant_user_info']['group_id']
-
-    url = world.endpoints['tenant_user_specific'].format(world.my_context['tenant_user_info']['user_id'],
-                                                         world.my_context['tenant_info']['tenant_id'])
-
-    print('url: ' + url)
-    print('url: ' + url)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-    user_info = step.context.api['response']['json']
-
-    print('user_info before\n' + pformat(user_info))
-
-    set_http_headers(step, {'If-Match': user_info['_etag']})
-    http_patch_json(step, url=url, data=user_data, auth=(world.my_context['tenant_user']['token']['id'], ''))
-
-    expected_status_code(step, http_utils.HTTP_200_OK)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-
-    print('user_info\n' + pformat(step.context.api['response']['json']))
-
-
-@when(u'The Tenant User deletes itself')
-def tenant_user_delete(step):
-    print('tenant_user_info\n' + pformat(world.my_context['tenant_user_info']))
-
-    print('tenant_user\n' + pformat(world.my_context['tenant_user']))
-
-    url = world.endpoints['tenant_user_specific'].format(world.my_context['tenant_user_info']['user_id'],
-                                                         world.my_context['tenant_info']['tenant_id'])
-
-    print('url: ' + url)
-
-    http_get(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-    user_info = step.context.api['response']['json']
-
-    set_http_headers(step, {'If-Match': user_info['_etag']})
-    http_delete(step, url=url, auth=(world.my_context['tenant_user']['token']['id'], ''))
-    expected_status_code(step, http_utils.HTTP_204_NO_CONTENT)
+    world.my_context['developer'] = step.context.api['response']['json']

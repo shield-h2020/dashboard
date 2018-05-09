@@ -22,8 +22,9 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
-Feature: Security Policies
-  Validates the security recommendations notification operation.
+
+Feature: Users CRUD
+  Validates the user management operations.
 
   # Background: Ensure the environment is up and running
   #   Given The Recommendations Queue is ready
@@ -47,6 +48,17 @@ Feature: Security Policies
     When The Tenant Admin deletes the User
 
     Examples:
-      | tenant_data          | tenant_admin            | user                   | status | statuz | user_update                   | user_patch                   |
-      # Basic MSPL.
-      | login/tenant_uw.json | login/tenant_admin.json | login/tenant_user.json | 500    | 200    | login/tenant_user_update.json | login/tenant_user_patch.json |
+      | tenant_data            | tenant_admin            | user                   | status | statuz | user_update                   | user_patch                   |
+      | tenants/tenant_uw.json | users/tenant_admin.json | users/tenant_user.json | 500    | 200    | users/tenant_user_update.json | users/tenant_user_patch.json |
+
+
+  @smoke
+  Scenario Outline: Create developers
+    Given The Platform Admin is logged in
+    Given The Platform Admin creates a Tenant from <tenant_data>
+    Given The Platform Admin creates a Developer from <user>
+    Given The Developer is logged in
+
+    Examples:
+      | tenant_data                    | user                 |
+      | tenants/tenant_developers.json | users/developer.json |

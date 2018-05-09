@@ -1,0 +1,6 @@
+{
+  "name": "vNSF Developers Scope",
+  "code": "shield_scope_group_developers",
+  "scope_code": "shield_scope_developer",
+  "groups": ["shield-developers"]
+}

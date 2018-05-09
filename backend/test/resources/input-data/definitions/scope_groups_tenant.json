@@ -1,0 +1,6 @@
+{
+  "name": "Tenant Scope",
+  "code": "shield_scope_group_tenant",
+  "scope_code": "shield_scope_tenant",
+  "groups": ["shield-tenant-admins", "shield-tenant-users"]
+}
