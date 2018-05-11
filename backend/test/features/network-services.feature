@@ -76,9 +76,9 @@ Feature: NSs Inventory
     Then I expect the response code <status>
 
     Examples:
-      | credentials                | file                           | status |
-      | login/tenant_uw_admin.json | vnsf/vnsf_enroll_dpi.json      | 500    |
-      | login/tenant_uw_admin.json | vnsf/vnsf_enroll_ids.json      | 500    |
-      | login/tenant_uw_admin.json | vnsf/vnsf_enroll_vpn.json      | 500    |
-      | login/tenant_a_admin.json  | vnsf/vnsf_enroll_l3filter.json | 500    |
+      | credentials                | file                            | status |
+      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_dpi.json      | 500    |
+      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_ids.json      | 500    |
+      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_vpn.json      | 500    |
+      | login/tenant_a_admin.json  | vnsfs/vnsf_enroll_l3filter.json | 500    |
 
