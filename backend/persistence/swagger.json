@@ -1,313 +1,2222 @@
 {
-	"swagger": "2.0",
-	"info": {
-		"title": "Dashboard API",
-		"description": "\n                   This API handles the security recommendations CRUD operations.\n\n\n                   _Please note that consumers are not allowed to edit (`PATCH`), update (`PUT`) or delete (`DELETE`) \n                   a resource unless they provide an up-to-date `ETag` for the resource they are attempting to modify. \n                   This value, taken from the details (`GET`) request, is mandatory and should be provided in the \n                   `If-Match` header_.\n\n\n                   API version numbering as per http://semver.org/\n                   ",
-		"termsOfService": "my terms of service",
-		"contact": {
-			"name": "Filipe Ferreira",
-			"url": "https://github.com/betakoder"
-		},
-		"license": {
-			"name": "Apache License, Version 2.0",
-			"url": "http://www.apache.org/licenses/LICENSE-2.0"
-		},
-		"version": "0.1.0"
-	},
-	"host": "localhost:13030",
-	"schemes": [
-		"http"
-	],
-	"consumes": [
-		"application/json"
-	],
-	"produces": [
-		"application/json"
-	],
-	"paths": {
-		"/policies": {
-			"get": {
-				"summary": "Lists all the security recommendations",
-				"responses": {
-					"200": {
-						"description": "Request succeeded.",
-						"schema": {
-							"type": "array",
-							"items": {
-								"$ref": "#/definitions/policies"
-							}
-						}
-					},
-					"202": {
-						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
-					},
-					"400": {
-						"description": "Bad request. API specific parameters are incorrect or missing."
-					},
-					"401": {
-						"description": "Unauthorised. You're not authorised to access this resource."
-					},
-					"404": {
-						"description": "Not found. The requested resource doesn't exist."
-					},
-					"500": {
-						"description": "Server errors. Our bad!"
-					},
-					"502": {
-						"description": "Third-party unreachable."
-					},
-					"504": {
-						"description": "Timeout. A request to a third-party has taken too long to be served."
-					}
-				},
-				"tags": [
-					"policies"
-				],
-				"description": "Provides a list of all the recommendations along with a description for each one."
-			}
-		},
-		"/policies/{policiesId}": {
-			"get": {
-				"summary": "Provides the details on a security recommendation",
-				"responses": {
-					"200": {
-						"description": "Request succeeded.",
-						"schema": {
-							"$ref": "#/definitions/policies"
-						}
-					},
-					"202": {
-						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
-					},
-					"400": {
-						"description": "Bad request. API specific parameters are incorrect or missing."
-					},
-					"401": {
-						"description": "Unauthorised. You're not authorised to access this resource."
-					},
-					"404": {
-						"description": "Not found. The requested resource doesn't exist."
-					},
-					"500": {
-						"description": "Server errors. Our bad!"
-					},
-					"502": {
-						"description": "Third-party unreachable."
-					},
-					"504": {
-						"description": "Timeout. A request to a third-party has taken too long to be served."
-					}
-				},
-				"parameters": [
-					{
-						"$ref": "#/parameters/policies__id"
-					}
-				],
-				"tags": [
-					"policies"
-				],
-				"description": "Provides all the information on the security recommendation."
-			},
-			"patch": {
-				"summary": "Conveys the security recommendation to the Orchestrator",
-				"responses": {
-					"200": {
-						"description": "Request succeeded."
-					},
-					"202": {
-						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
-					},
-					"400": {
-						"description": "Bad request. API specific parameters are incorrect or missing."
-					},
-					"401": {
-						"description": "Unauthorised. You're not authorised to access this resource."
-					},
-					"404": {
-						"description": "Not found. The requested resource doesn't exist."
-					},
-					"500": {
-						"description": "Server errors. Our bad!"
-					},
-					"502": {
-						"description": "Third-party unreachable."
-					},
-					"504": {
-						"description": "Timeout. A request to a third-party has taken too long to be served."
-					}
-				},
-				"parameters": [
-					{
-						"$ref": "#/parameters/policies__id"
-					},
-					{
-						"in": "body",
-						"name": "policies",
-						"required": true,
-						"schema": {
-							"$ref": "#/definitions/policies"
-						}
-					},
-					{
-						"in": "header",
-						"name": "If-Match",
-						"description": "Current value of the _etag field",
-						"required": true,
-						"type": "string"
-					}
-				],
-				"tags": [
-					"policies"
-				],
-				"description": "Forwards the security recommendation to the Orchestrator waiting for it’s reply."
-			}
-		},
-		"/admin/policies": {
-			"post": {
-				"summary": "Persists a new security recommendation",
-				"parameters": [
-					{
-						"in": "body",
-						"name": "admin policies",
-						"required": true,
-						"schema": {
-							"$ref": "#/definitions/admin policies"
-						}
-					}
-				],
-				"responses": {
-					"201": {
-						"description": "Resource created."
-					},
-					"202": {
-						"description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
-					},
-					"400": {
-						"description": "Bad request. API specific parameters are incorrect or missing."
-					},
-					"401": {
-						"description": "Unauthorised. You're not authorised to access this resource."
-					},
-					"404": {
-						"description": "Not found. The requested resource doesn't exist."
-					},
-					"500": {
-						"description": "Server errors. Our bad!"
-					},
-					"502": {
-						"description": "Third-party unreachable."
-					},
-					"504": {
-						"description": "Timeout. A request to a third-party has taken too long to be served."
-					}
-				},
-				"tags": [
-					"admin policies"
-				],
-				"description": "Stores a security recommendation and marks it as not applied."
-			}
-		}
-	},
-	"definitions": {
-		"policies": {
-			"type": "object",
-			"properties": {
-				"tenant_id": {
-					"description": "Description of the user resource",
-					"type": "string"
-				},
-				"detection": {
-					"type": "string"
-				},
-				"severity": {
-					"type": "integer"
-				},
-				"status": {
-					"type": "string"
-				},
-				"attack": {
-					"type": "string"
-				},
-				"recommendation": {
-					"type": "string"
-				},
-				"_id": {
-					"type": "string",
-					"format": "objectid"
-				}
-			},
-			"required": [
-				"tenant_id",
-				"detection",
-				"severity",
-				"status",
-				"attack",
-				"recommendation"
-			],
-			"description": "Security recommendations"
-		},
-		"admin policies": {
-			"type": "object",
-			"properties": {
-				"tenant_id": {
-					"description": "Description of the user resource",
-					"type": "string"
-				},
-				"detection": {
-					"type": "string"
-				},
-				"severity": {
-					"type": "integer"
-				},
-				"status": {
-					"type": "string"
-				},
-				"attack": {
-					"type": "string"
-				},
-				"recommendation": {
-					"type": "string"
-				},
-				"_id": {
-					"type": "string",
-					"format": "objectid"
-				}
-			},
-			"required": [
-				"tenant_id",
-				"detection",
-				"severity",
-				"status",
-				"attack",
-				"recommendation"
-			]
-		}
-	},
-	"parameters": {
-		"policies__id": {
-			"in": "path",
-			"name": "policiesId",
-			"required": true,
-			"description": "",
-			"type": "string",
-			"format": "objectid"
-		},
-		"admin policies__id": {
-			"in": "path",
-			"name": "admin policiesId",
-			"required": true,
-			"description": "",
-			"type": "string",
-			"format": "objectid"
-		}
-	},
-	"tags": [
-		{
-			"name": "policies",
-			"description": "Security recommendations"
-		},
-		{
-			"name": "admin policies"
-		}
-	]
+  "swagger": "2.0",
+  "info": {
+    "title": "Dashboard API",
+    "description": "\n                   This API handles the security recommendations CRUD operations.\n\n\n                   _Please note that consumers are not allowed to edit (`PATCH`), update (`PUT`) or delete (`DELETE`) \n                   a resource unless they provide an up-to-date `ETag` for the resource they are attempting to modify. \n                   This value, taken from the details (`GET`) request, is mandatory and should be provided in the \n                   `If-Match` header_.\n\n\n                   API version numbering as per http://semver.org/\n                   ",
+    "termsOfService": "my terms of service",
+    "contact": {
+      "name": "Filipe Ferreira",
+      "url": "https://github.com/betakoder"
+    },
+    "license": {
+      "name": "Apache License, Version 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "0.1.0"
+  },
+  "host": "localhost:13030",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/login": {
+      "get": {
+        "summary": "Retrieves one or more login",
+        "responses": {
+          "200": {
+            "description": "An array of login",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/login"
+              }
+            }
+          }
+        },
+        "tags": [
+          "login"
+        ]
+      },
+      "post": {
+        "summary": "Stores one or more login",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          }
+        },
+        "tags": [
+          "login"
+        ]
+      }
+    },
+    "/login/{loginId}": {
+      "get": {
+        "summary": "Retrieves a login document",
+        "responses": {
+          "200": {
+            "description": "login document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/login__id"
+          }
+        ],
+        "tags": [
+          "login"
+        ]
+      }
+    },
+    "/login_user": {
+      "get": {
+        "summary": "Retrieves one or more login_user",
+        "responses": {
+          "200": {
+            "description": "An array of login_user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/login_user"
+              }
+            }
+          }
+        },
+        "tags": [
+          "login_user"
+        ]
+      },
+      "post": {
+        "summary": "Stores one or more login_user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "login_user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login_user"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          }
+        },
+        "tags": [
+          "login_user"
+        ]
+      }
+    },
+    "/login_user/{login_userId}": {
+      "get": {
+        "summary": "Retrieves a login_user document",
+        "responses": {
+          "200": {
+            "description": "login_user document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/login_user"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/login_user__id"
+          }
+        ],
+        "tags": [
+          "login_user"
+        ]
+      }
+    },
+    "/definitions/tenant_scopes": {
+      "get": {
+        "summary": "TBD",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tenant_scopes"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_scopes"
+        ],
+        "description": "TBD"
+      },
+      "post": {
+        "summary": "TBD",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "tenant_scopes",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_scopes"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_scopes"
+        ],
+        "description": "TBD"
+      }
+    },
+    "/definitions/tenant_scopes/{tenant_scopesId}": {
+      "get": {
+        "summary": "Retrieves a tenant_scopes document",
+        "responses": {
+          "200": {
+            "description": "tenant_scopes document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/tenant_scopes"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_scopes__id"
+          }
+        ],
+        "tags": [
+          "tenant_scopes"
+        ]
+      },
+      "put": {
+        "summary": "Replaces a tenant_scopes document",
+        "responses": {
+          "200": {
+            "description": "tenant_scopes document replaced successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_scopes__id"
+          },
+          {
+            "in": "body",
+            "name": "tenant_scopes",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_scopes"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_scopes"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a tenant_scopes document",
+        "responses": {
+          "204": {
+            "description": "tenant_scopes document deleted successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_scopes__id"
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_scopes"
+        ]
+      }
+    },
+    "/definitions/tenant_groups": {
+      "get": {
+        "summary": "TBD",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tenant_groups"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_groups"
+        ],
+        "description": "TBD"
+      },
+      "post": {
+        "summary": "TBD",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "tenant_groups",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_groups"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_groups"
+        ],
+        "description": "TBD"
+      }
+    },
+    "/definitions/tenant_groups/{tenant_groupsId}": {
+      "get": {
+        "summary": "Retrieves a tenant_groups document",
+        "responses": {
+          "200": {
+            "description": "tenant_groups document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/tenant_groups"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_groups__id"
+          }
+        ],
+        "tags": [
+          "tenant_groups"
+        ]
+      },
+      "put": {
+        "summary": "Replaces a tenant_groups document",
+        "responses": {
+          "200": {
+            "description": "tenant_groups document replaced successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_groups__id"
+          },
+          {
+            "in": "body",
+            "name": "tenant_groups",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_groups"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_groups"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a tenant_groups document",
+        "responses": {
+          "204": {
+            "description": "tenant_groups document deleted successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_groups__id"
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_groups"
+        ]
+      }
+    },
+    "/definitions/tenant_roles": {
+      "get": {
+        "summary": "TBD",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tenant_roles"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_roles"
+        ],
+        "description": "TBD"
+      },
+      "post": {
+        "summary": "TBD",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "tenant_roles",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_roles"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_roles"
+        ],
+        "description": "TBD"
+      }
+    },
+    "/definitions/tenant_roles/{tenant_rolesId}": {
+      "get": {
+        "summary": "Retrieves a tenant_roles document",
+        "responses": {
+          "200": {
+            "description": "tenant_roles document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/tenant_roles"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_roles__id"
+          }
+        ],
+        "tags": [
+          "tenant_roles"
+        ]
+      },
+      "put": {
+        "summary": "Replaces a tenant_roles document",
+        "responses": {
+          "200": {
+            "description": "tenant_roles document replaced successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_roles__id"
+          },
+          {
+            "in": "body",
+            "name": "tenant_roles",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_roles"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_roles"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a tenant_roles document",
+        "responses": {
+          "204": {
+            "description": "tenant_roles document deleted successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_roles__id"
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_roles"
+        ]
+      }
+    },
+    "/definitions/tenant_scope_groups": {
+      "get": {
+        "summary": "TBD",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tenant_scope_groups"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_scope_groups"
+        ],
+        "description": "TBD"
+      },
+      "post": {
+        "summary": "TBD",
+        "description": "TBD",
+        "responses": {
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        }
+      }
+    },
+    "/definitions/tenant_scope_groups/{tenant_scope_groupsId}": {
+      "get": {
+        "summary": "Retrieves a tenant_scope_groups document",
+        "responses": {
+          "200": {
+            "description": "tenant_scope_groups document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/tenant_scope_groups"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_scope_groups__id"
+          }
+        ],
+        "tags": [
+          "tenant_scope_groups"
+        ]
+      }
+    },
+    "/definitions/tenant_group_roles": {
+      "get": {
+        "summary": "TBD",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tenant_group_roles"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_group_roles"
+        ],
+        "description": "TBD"
+      },
+      "post": {
+        "summary": "TBD",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "tenant_group_roles",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_group_roles"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_group_roles"
+        ],
+        "description": "TBD"
+      }
+    },
+    "/definitions/tenant_group_roles/{tenant_group_rolesId}": {
+      "get": {
+        "summary": "Retrieves a tenant_group_roles document",
+        "responses": {
+          "200": {
+            "description": "tenant_group_roles document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/tenant_group_roles"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_group_roles__id"
+          }
+        ],
+        "tags": [
+          "tenant_group_roles"
+        ]
+      },
+      "put": {
+        "summary": "Replaces a tenant_group_roles document",
+        "responses": {
+          "200": {
+            "description": "tenant_group_roles document replaced successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_group_roles__id"
+          },
+          {
+            "in": "body",
+            "name": "tenant_group_roles",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_group_roles"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_group_roles"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a tenant_group_roles document",
+        "responses": {
+          "204": {
+            "description": "tenant_group_roles document deleted successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_group_roles__id"
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_group_roles"
+        ]
+      }
+    },
+    "/catalogue/tenants": {
+      "get": {
+        "summary": "Lists tenants",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tenants"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenants"
+        ],
+        "description": "Shows all the available tenants along with their properties."
+      },
+      "post": {
+        "summary": "Defines a new tenant",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "tenants",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenants"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenants"
+        ],
+        "description": "Creates a new tenant along with the associated roles so users can be assigned to the tenant."
+      }
+    },
+    "/catalogue/tenants/{tenantsId}": {
+      "get": {
+        "summary": "Shows a tenant details",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "$ref": "#/definitions/tenants"
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenants_tenant_id"
+          }
+        ],
+        "tags": [
+          "tenants"
+        ],
+        "description": "Provides detailed information on a tenant."
+      },
+      "put": {
+        "summary": "Updates a tenant",
+        "responses": {
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenants_tenant_id"
+          },
+          {
+            "in": "body",
+            "name": "tenants",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenants"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenants"
+        ],
+        "description": "Updates the details on a tenant."
+      },
+      "delete": {
+        "summary": "Defines a new tenant",
+        "responses": {
+          "204": {
+            "description": "tenants document deleted successfully"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenants_tenant_id"
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenants"
+        ],
+        "description": "Creates a new tenant."
+      }
+    },
+    "/catalogue/users": {
+      "get": {
+        "summary": "Defines a new tenant",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tenant_users"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_users"
+        ],
+        "description": "Creates a new tenant."
+      },
+      "post": {
+        "summary": "Defines a new tenant",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "tenant_users",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_users"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "tenant_users"
+        ],
+        "description": "Creates a new tenant."
+      }
+    },
+    "/catalogue/users/{tenant_usersId}": {
+      "get": {
+        "summary": "Defines a new tenant",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "$ref": "#/definitions/tenant_users"
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_users_user_id"
+          },
+          {
+            "in": "query",
+            "name": "where",
+            "required": true,
+            "description": "Tenant ID where to look for the user. Format: where={\"tenant_id\": \"<id_here>\"}",
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_users"
+        ],
+        "description": "Creates a new tenant."
+      },
+      "put": {
+        "summary": "Defines a new tenant",
+        "responses": {
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_users_user_id"
+          },
+          {
+            "in": "body",
+            "name": "tenant_users",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_users"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_users"
+        ],
+        "description": "Creates a new tenant."
+      },
+      "patch": {
+        "summary": "Defines a new tenant",
+        "responses": {
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_users_user_id"
+          },
+          {
+            "in": "body",
+            "name": "tenant_users",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/tenant_users"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_users"
+        ],
+        "description": "Creates a new tenant."
+      },
+      "delete": {
+        "summary": "Defines a new tenant",
+        "responses": {
+          "204": {
+            "description": "tenant_users document deleted successfully"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/tenant_users_user_id"
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "tenant_users"
+        ],
+        "description": "Creates a new tenant."
+      }
+    },
+    "/catalogue/nss": {
+      "get": {
+        "summary": "Lists vNSFs associated with a Developer",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/nss"
+              }
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "nss"
+        ],
+        "description": "Shows all the registered vNSFs and their properties for a given Developer."
+      },
+      "post": {
+        "summary": "Registers a new vNSF",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "nss",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/nss"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "tags": [
+          "nss"
+        ],
+        "description": "Performs the vNSF onboarding process. Upon successful completion, a new vNSF is added to the catalogue and associated with the Developer doing the onboarding operation."
+      }
+    },
+    "/catalogue/nss/{nssId}": {
+      "get": {
+        "summary": "Shows a vNSF details",
+        "responses": {
+          "200": {
+            "description": "Request succeeded.",
+            "schema": {
+              "$ref": "#/definitions/nss"
+            }
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/nss_tenant_id"
+          }
+        ],
+        "tags": [
+          "nss"
+        ],
+        "description": "Provides detailed information on a vNSF."
+      },
+      "delete": {
+        "summary": "Decommissions a vNSF",
+        "responses": {
+          "204": {
+            "description": "nss document deleted successfully"
+          },
+          "200": {
+            "description": "Request succeeded."
+          },
+          "202": {
+            "description": "Request processing. You can retry your request, and when it's finished, you'll get a 200 instead."
+          },
+          "400": {
+            "description": "Bad request. API specific parameters are incorrect or missing."
+          },
+          "401": {
+            "description": "Unauthorised. You're not authorised to access this resource."
+          },
+          "404": {
+            "description": "Not found. The requested resource doesn't exist."
+          },
+          "500": {
+            "description": "Server errors. Our bad!"
+          },
+          "502": {
+            "description": "Third-party unreachable."
+          },
+          "504": {
+            "description": "Timeout. A request to a third-party has taken too long to be served."
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/nss_tenant_id"
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "nss"
+        ],
+        "description": "Marks the vNSF as not available for usage."
+      }
+    },
+    "/policies": {
+      "get": {
+        "summary": "Retrieves one or more policies",
+        "responses": {
+          "200": {
+            "description": "An array of policies",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/policies"
+              }
+            }
+          }
+        },
+        "tags": [
+          "policies"
+        ]
+      },
+      "post": {
+        "summary": "Stores one or more policies",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "policies",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/policies"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          }
+        },
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/policies/{policiesId}": {
+      "get": {
+        "summary": "Retrieves a policies document",
+        "responses": {
+          "200": {
+            "description": "policies document fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/policies"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/policies__id"
+          }
+        ],
+        "tags": [
+          "policies"
+        ]
+      },
+      "patch": {
+        "summary": "Updates a policies document",
+        "responses": {
+          "200": {
+            "description": "policies document updated successfully"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/policies__id"
+          },
+          {
+            "in": "body",
+            "name": "policies",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/policies"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "description": "Current value of the _etag field",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "policies"
+        ]
+      }
+    },
+    "/admin/policies": {
+      "post": {
+        "summary": "Stores one or more admin/policies",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "admin policies",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/admin policies"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "operation has been successful"
+          }
+        },
+        "tags": [
+          "admin policies"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "login": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "description": "Authentication & Authorization"
+    },
+    "login_user": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "description": "Authentication & Authorization"
+    },
+    "tenant_scopes": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "A user friendly name to set for the scope",
+          "type": "string"
+        },
+        "code": {
+          "description": "A user-defined identification used for lookup purposes",
+          "type": "string"
+        },
+        "description": {
+          "description": "Additional information on the scope",
+          "type": "string"
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "name",
+        "code"
+      ]
+    },
+    "tenant_groups": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "A user friendly name to set for the group",
+          "type": "string"
+        },
+        "code": {
+          "description": "A user-defined identification used for lookup purposes",
+          "type": "string"
+        },
+        "description": {
+          "description": "Additional information on the group",
+          "type": "string"
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "name",
+        "code"
+      ]
+    },
+    "tenant_roles": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "A user friendly name to set for the group",
+          "type": "string"
+        },
+        "code": {
+          "description": "A user-defined identification used for lookup purposes",
+          "type": "string"
+        },
+        "aaa_id": {
+          "description": "The ID from the AAA system. Filled once the role is automatically created in the AAA system.",
+          "type": "string"
+        },
+        "description": {
+          "description": "Additional information on the group",
+          "type": "string"
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "name",
+        "code"
+      ]
+    },
+    "tenant_scope_groups": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "A user friendly name to set for the scope/groups association",
+          "type": "string"
+        },
+        "code": {
+          "description": "A user-defined identification used for lookup purposes",
+          "type": "string"
+        },
+        "scope_id": {
+          "description": "The scope ID to whom the groups are associated with",
+          "type": "string",
+          "format": "objectid"
+        },
+        "groups": {
+          "description": "The group(s) associated with the scope",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "name",
+        "code",
+        "scope_id",
+        "groups"
+      ]
+    },
+    "tenant_group_roles": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "A user friendly name to set for the group/roles association",
+          "type": "string"
+        },
+        "code": {
+          "description": "A user-defined identification used for lookup purposes",
+          "type": "string"
+        },
+        "group_id": {
+          "description": "The group ID to whom the roles are associated with",
+          "type": "string",
+          "format": "objectid"
+        },
+        "roles": {
+          "description": "The role(s) associated with the group",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "name",
+        "code",
+        "group_id",
+        "roles"
+      ]
+    },
+    "tenants": {
+      "type": "object",
+      "properties": {
+        "tenant_name": {
+          "description": "Description of the user resource",
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "description": "The tenant ID from the external authorization system",
+          "type": "string"
+        },
+        "scope_id": {
+          "description": "Which kind of entity the tenant holds. This is user-defined and can be named at will",
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {}
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "tenant_name",
+        "description"
+      ]
+    },
+    "tenant_users": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "description": "TBD",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "TBD",
+          "type": "string"
+        },
+        "group_id": {
+          "description": "TBD",
+          "type": "string"
+        },
+        "name": {
+          "description": "TBD",
+          "type": "string"
+        },
+        "password": {
+          "description": "TBD",
+          "type": "string"
+        },
+        "description": {
+          "description": "TBD",
+          "type": "string"
+        },
+        "email": {
+          "description": "TBD",
+          "type": "string"
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "group_id",
+        "name",
+        "password",
+        "description",
+        "email"
+      ]
+    },
+    "nss": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "description": "The tenant ID to whom the NS is enrolled",
+          "type": "string"
+        },
+        "ref_id": {
+          "description": "The ID as defined by the system storing the Network Service",
+          "type": "string"
+        },
+        "custom_tags": {
+          "description": "User-defined tags",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "ref_id"
+      ]
+    },
+    "policies": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "description": "Description of the user resource",
+          "type": "string"
+        },
+        "detection": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "attack": {
+          "type": "string"
+        },
+        "recommendation": {
+          "type": "string"
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "detection",
+        "severity",
+        "status",
+        "attack",
+        "recommendation"
+      ],
+      "description": "Security recommendations"
+    },
+    "admin policies": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "description": "Description of the user resource",
+          "type": "string"
+        },
+        "detection": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "string"
+        },
+        "attack": {
+          "type": "string"
+        },
+        "recommendation": {
+          "type": "string"
+        },
+        "_id": {
+          "type": "string",
+          "format": "objectid"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "detection",
+        "severity",
+        "status",
+        "attack",
+        "recommendation"
+      ]
+    }
+  },
+  "parameters": {
+    "login__id": {
+      "in": "path",
+      "name": "loginId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "login_user__id": {
+      "in": "path",
+      "name": "login_userId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenant_scopes__id": {
+      "in": "path",
+      "name": "tenant_scopesId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenant_groups__id": {
+      "in": "path",
+      "name": "tenant_groupsId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenant_roles__id": {
+      "in": "path",
+      "name": "tenant_rolesId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenant_scope_groups__id": {
+      "in": "path",
+      "name": "tenant_scope_groupsId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenant_group_roles__id": {
+      "in": "path",
+      "name": "tenant_group_rolesId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenants__id": {
+      "in": "path",
+      "name": "tenantsId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenants_tenant_id": {
+      "in": "path",
+      "name": "tenantsId",
+      "required": true,
+      "description": "The tenant ID from the external authorization system",
+      "type": "string"
+    },
+    "tenant_users__id": {
+      "in": "path",
+      "name": "tenant_usersId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "tenant_users_user_id": {
+      "in": "path",
+      "name": "tenant_usersId",
+      "required": true,
+      "description": "TBD",
+      "type": "string"
+    },
+    "nss__id": {
+      "in": "path",
+      "name": "nssId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "nss_tenant_id": {
+      "in": "path",
+      "name": "nssId",
+      "required": true,
+      "description": "The tenant ID to whom the NS is enrolled",
+      "type": "string"
+    },
+    "policies__id": {
+      "in": "path",
+      "name": "policiesId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    },
+    "admin policies__id": {
+      "in": "path",
+      "name": "admin policiesId",
+      "required": true,
+      "description": "",
+      "type": "string",
+      "format": "objectid"
+    }
+  },
+  "tags": [
+    {
+      "name": "login",
+      "description": "Authentication & Authorization"
+    },
+    {
+      "name": "login_user",
+      "description": "Authentication & Authorization"
+    },
+    {
+      "name": "tenant_scopes"
+    },
+    {
+      "name": "tenant_groups"
+    },
+    {
+      "name": "tenant_roles"
+    },
+    {
+      "name": "tenant_scope_groups"
+    },
+    {
+      "name": "tenant_group_roles"
+    },
+    {
+      "name": "tenants"
+    },
+    {
+      "name": "tenants"
+    },
+    {
+      "name": "tenant_users"
+    },
+    {
+      "name": "tenant_users"
+    },
+    {
+      "name": "nss"
+    },
+    {
+      "name": "nss"
+    },
+    {
+      "name": "policies",
+      "description": "Security recommendations"
+    },
+    {
+      "name": "admin policies"
+    }
+  ]
 }

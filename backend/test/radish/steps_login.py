@@ -25,6 +25,11 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+import json
+from pprint import pformat
+
+import os
+import re
 from dashboardtestingutils.steps_utils import *
 from dashboardutils import http_utils
 from radish import given, world
@@ -71,3 +76,19 @@ def developer_login(step):
     expected_status_code(step, http_utils.HTTP_201_CREATED)
 
     world.my_context['developer'] = step.context.api['response']['json']
+
+
+@given(re.compile(u'The User logs in with (.*)'))
+def tenant_admin_login(step, credentials_file):
+    file = os.path.join(world.env['data']['input_data'], credentials_file)
+    with open(file) as f:
+        login_data = json.load(f)
+
+    set_http_headers(step, {'Shield-Authz-Scope': login_data['tenant']})
+
+    http_post_json(step, url=world.endpoints['login'], auth=(login_data['username'], login_data['password']))
+    expected_status_code(step, http_utils.HTTP_201_CREATED)
+
+    world.my_context['user'] = step.context.api['response']['json']
+
+    print('logged user:\n' + pformat(world.my_context['user']))

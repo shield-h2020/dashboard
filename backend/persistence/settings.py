@@ -85,6 +85,10 @@ DOMAIN = {
     'tenant_users_catalogue': api_endpoints.tenant_users_catalogue,
     'tenant_user':            api_endpoints.tenant_user,
     'vnsfs_catalogue':        api_endpoints.vnsfs_catalogue,
+    'vnsf':                   api_endpoints.vnsf,
+    'nss_catalogue':          api_endpoints.nss_catalogue,
+    'nss':                    api_endpoints.ns,
     'policies':               api_endpoints.policies,
-    'policies_admin':         api_endpoints.policies_admin
+    'policies_admin':         api_endpoints.policies_admin,
+    'validations':            api_endpoints.validations
     }

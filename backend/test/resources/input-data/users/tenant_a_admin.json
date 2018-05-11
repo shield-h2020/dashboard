@@ -1,7 +1,7 @@
 {
-  "name": "shield.tenant.admin",
+  "name": "shield.tenant-a.admin",
   "password": "pass",
-  "description": "James Doe Admin",
+  "description": "Tenant A admin",
   "email": "jdoe@example.com",
   "group_code": "shield-tenant-admins"
 }

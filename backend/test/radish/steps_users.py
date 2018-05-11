@@ -250,3 +250,4 @@ def platform_admin_create_developer(step, user_file):
     expected_status_code(step, http_utils.HTTP_200_OK)
 
     world.my_context['developer_info'] = step.context.api['response']['json']
+

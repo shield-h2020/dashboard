@@ -294,30 +294,70 @@ tenant_users_catalogue = {
         }
     }
 
-vnsfs_catalogue_model = {
+vnsfs_inventory_model = {
     # The vNSF developer.
-    'user_id': {
-        'description': 'TBD',
+    'tenant_id': {
+        'description': 'The tenant ID to whom the vNSF is available',
         'type':        'string'
         },
     }
 
-nss_catalogue_model = {
-    # The tenant to whom the NS is for.
-    'tenant_id': {
-        'description': 'Description of the user resource',
+vnsfs_catalogue_model = {
+    'ref_id':      {
+        'description': 'The ID as defined by the system storing the vNSF',
         'type':        'string',
         'empty':       False,
         'required':    True
+        },
+
+    'custom_tags': {
+        'description': 'User-defined tags',
+        'type':        ['string', 'list']
         }
     }
 
-nss_inventory_model = {
-    # The tenant to whom the NS is for.
-    'tenant_id': {
-        'description': 'Description of the user resource',
+nss_catalogue_model = {
+    'ref_id':      {
+        'description': 'The ID as defined by the system storing the Network Service',
         'type':        'string',
         'empty':       False,
         'required':    True
+        },
+
+    'custom_tags': {
+        'description': 'User-defined tags',
+        'type':        ['string', 'list']
+        }
+    }
+
+validations_model = {
+    'result':   {
+        'type':     'dict',
+        'required': True,
+        'schema':   {
+            'error_count':   {'type': 'integer', 'empty': False, 'required': True},
+            'warning_count': {'type': 'integer', 'empty': False, 'required': True},
+            'issues':        {'type': 'string'}
+            }
+        },
+
+    'topology': {
+        'type':     'dict',
+        'required': True,
+        'schema':   {
+            'graph': {'type': 'string'}
+            }
+        },
+
+    'fwgraph':  {
+        'type':     'dict',
+        'required': True,
+        'schema':   {
+            'graph': {'type': 'string'}
+            }
+        },
+
+    'log':      {
+        'type': 'string'
         }
     }

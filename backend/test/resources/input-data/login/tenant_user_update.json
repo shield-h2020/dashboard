@@ -1,7 +1,0 @@
-{
-	"name": "shield.tenant.user",
-	"password": "secret",
-	"description": "James Doe user",
-	"email": "jdoe@example.com",
-  "group_id": "<set at runtime>"
-}

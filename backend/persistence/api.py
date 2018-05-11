@@ -65,9 +65,9 @@ def post_user_login(request, payload):
     flask.g.token = None
 
 
-def vnsfs_catalogue(items):
-    for item in items:
-        item['tenant_id'] = flask.request.view_args['tenant_id']
+# def vnsfs_catalogue(items):
+#     for item in items:
+#         item['tenant_id'] = flask.request.view_args['tenant_id']
 
 
 def get_service_admin_authz():
@@ -184,9 +184,20 @@ def create_role(items):
     role_data['aaa_id'] = aaa_role['role']['id']
 
 
+# def enroll_ns(items):
+#     user_data = items[0]
+#
+#     # TODO: If more than one "where" lookup there's an error in the URL query parameters.
+#     lookup = json.loads(flask.request.args.getlist('where')[0])
+#     print('lookup: ' + pformat(lookup))
+#
+#     # Set data which is only available once the tenant user is created in the external authorization system.
+#     user_data['tenant_id'] = lookup['tenant_id']
+
+
 app = Eve(auth=TokenAuthzOslo)
 
-app.on_insert_vnsfs_catalogue += vnsfs_catalogue
+# app.on_insert_vnsfs_catalogue += vnsfs_catalogue
 
 app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
@@ -200,6 +211,8 @@ app.on_insert_tenants_catalogue += create_tenant
 app.on_delete_resource_tenants_catalogue_delete += remove_tenant
 
 app.on_insert_tenant_users_catalogue += create_tenant_user
+
+# app.on_insert_nss_catalogue += enroll_ns
 
 app.register_blueprint(swagger)
 

@@ -59,11 +59,17 @@
   "tenant_users:update_user": "rule:any.tenant.user",
   "tenant_users:delete_user": "rule:any.tenant.admin",
 
-  "nss_catalogue:create": "rule:any.tenant.admin",
-  "nss_catalogue:read": "rule:any.tenant.admin",
-  "nss_catalogue:read_ns": "rule:any.tenant.admin",
-  "nss_catalogue:update_ns": "rule:any.tenant.admin",
-  "nss_catalogue:delete_ns": "rule:any.tenant.admin",
+  "vnsfs_catalogue:create": "rule:platform.admin",
+  "vnsfs_catalogue:read": "rule:platform.admin",
+  "vnsfs_catalogue:read_vnsf": "rule:platform.admin",
+  "vnsfs_catalogue:update_vnsf": "rule:platform.admin",
+  "vnsfs_catalogue:delete_vnsf": "rule:platform.admin",
+
+  "nss_catalogue:create": "rule:platform.admin",
+  "nss_catalogue:read": "rule:platform.admin",
+  "nss_catalogue:read_ns": "rule:platform.admin",
+  "nss_catalogue:update_ns": "rule:platform.admin",
+  "nss_catalogue:delete_ns": "rule:platform.admin",
 
   "nss_inventory:create": "rule:any.tenant.admin",
   "nss_inventory:read": "rule:any.tenant.admin",
@@ -74,5 +80,12 @@
   "vnsfs:create": "rule:any.developer",
   "vnsfs:read": "rule:developer.owned",
   "vnsfs:read_vnsf": "rule:developer.owned",
-  "vnsfs:delete_vnsf": "rule:platform.admin"
+  "vnsfs:delete_vnsf": "rule:platform.admin",
+
+  "validations:create": "rule:platform.admin",
+  "validations:read": "rule:platform.admin",
+  "validations:read_validation": "rule:platform.admin",
+  "validations:update_validation": "rule:platform.admin",
+  "validations:delete_validation": "rule:platform.admin",
+
 }

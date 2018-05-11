@@ -30,6 +30,29 @@ Feature: Users CRUD
   #   Given The Recommendations Queue is ready
   #   Given The Recommendations Socket is ready
 
+#  @smoke
+#  Scenario Outline: Create tenants
+#    Given The Platform Admin is logged in
+#    Given The Platform Admin creates a Tenant from <tenant_data>
+#    Given The Platform Admin creates a Tenant Admin from <tenant_admin>
+#    Given The Tenant Admin is logged in
+#    Given The Tenant Admin creates a User from <user>
+#    Given The Tenant User is logged in
+#    When The Tenant User lists the users
+#    Then I expect the response code <status>
+#    When The Tenant User lists itself
+#    Then I expect the response code <statuz>
+#    When The Tenant User updates from <user_update>
+#    When The Tenant User patches from <user_patch>
+##    When The Tenant User deletes itself
+##    When The Tenant Admin deletes the User
+#
+#    Examples:
+#      | tenant_data            | tenant_admin              | user                     | status | statuz | user_update                   | user_patch                   |
+#      | tenants/tenant_uw.json | users/tenant_admin.json   | users/tenant_user.json   | 500    | 200    | users/tenant_user_update.json | users/tenant_user_patch.json |
+#      | tenants/tenant_a.json  | users/tenant_a_admin.json | users/tenant_a_user.json | 500    | 200    | users/tenant_user_update.json | users/tenant_user_patch.json |
+
+
   @smoke
   Scenario Outline: Create tenants
     Given The Platform Admin is logged in
@@ -42,14 +65,11 @@ Feature: Users CRUD
     Then I expect the response code <status>
     When The Tenant User lists itself
     Then I expect the response code <statuz>
-    When The Tenant User updates from <user_update>
-    When The Tenant User patches from <user_patch>
-    # When The Tenant User deletes itself
-    When The Tenant Admin deletes the User
 
     Examples:
-      | tenant_data            | tenant_admin            | user                   | status | statuz | user_update                   | user_patch                   |
-      | tenants/tenant_uw.json | users/tenant_admin.json | users/tenant_user.json | 500    | 200    | users/tenant_user_update.json | users/tenant_user_patch.json |
+      | tenant_data            | tenant_admin              | user                     | status | statuz |
+      | tenants/tenant_uw.json | users/tenant_admin.json   | users/tenant_user.json   | 500    | 200    |
+      | tenants/tenant_a.json  | users/tenant_a_admin.json | users/tenant_a_user.json | 500    | 200    |
 
 
   @smoke

@@ -203,24 +203,24 @@ tenant_user = {
     }
 
 vnsfs_catalogue = {
-    'item_title':            EndpointHelper.get_name(Endpoint.VNSFS),
-    'url':                   EndpointHelper.get_url(Endpoint.VNSFS),
-    'extra_response_fields': [EndpointVar.__USER_ID__],
-    'resource_methods':      EndpointHelper.get_resource_methods(Endpoint.VNSFS),
-    'allowed_roles':         [EndpointHelper.get_resource_policies(Endpoint.VNSFS)],
+    'item_title':            EndpointHelper.get_name(Endpoint.VNSFS_CATALOGUE),
+    'url':                   EndpointHelper.get_url(Endpoint.VNSFS_CATALOGUE),
+    'extra_response_fields': [EndpointVar.__TENANT_ID__],
+    'resource_methods':      EndpointHelper.get_resource_methods(Endpoint.VNSFS_CATALOGUE),
+    'allowed_roles':         [EndpointHelper.get_resource_policies(Endpoint.VNSFS_CATALOGUE)],
     'item_methods':          [],
-    'schema':                EndpointHelper.get_schema(Endpoint.VNSFS)
+    'schema':                EndpointHelper.get_schema(Endpoint.VNSFS_CATALOGUE)
     }
 
 vnsf = {
-    'item_title':            EndpointHelper.get_name(Endpoint.VNSFS),
-    'url':                   EndpointHelper.get_url(Endpoint.VNSFS),
-    'item_lookup_field':     EndpointVar.__USER_ID__,
-    'item_url':              EndpointVar.__USER_ID_FMT__,
-    'extra_response_fields': [EndpointVar.__USER_ID__],
+    'item_title':            EndpointHelper.get_name(Endpoint.VNSFS_CATALOGUE),
+    'url':                   EndpointHelper.get_url(Endpoint.VNSFS_CATALOGUE),
+    'item_lookup_field':     EndpointVar.__TENANT_ID__,
+    'item_url':              EndpointVar.__TENANT_ID_FMT__,
+    'extra_response_fields': [EndpointVar.__TENANT_ID__],
     'resource_methods':      [],
-    'item_methods':          EndpointHelper.get_item_methods(Endpoint.VNSFS),
-    'allowed_item_roles':    [EndpointHelper.get_item_policies(Endpoint.VNSFS)],
+    'item_methods':          EndpointHelper.get_item_methods(Endpoint.VNSFS_CATALOGUE),
+    'allowed_item_roles':    [EndpointHelper.get_item_policies(Endpoint.VNSFS_CATALOGUE)],
     'schema':                vnsfs_catalogue['schema'],
     'datasource':            {
         'source': 'vnsfs_catalogue'
@@ -228,23 +228,36 @@ vnsf = {
     }
 
 nss_catalogue = {
-    'item_title':         'nss_catalogue',
-    'url':                'catalogue/tenants/<regex(".*"):tenant_id>/nss',
-    'resource_methods':   ['POST', 'GET'],
-    'allowed_roles':      [{'POST': 'nss_catalogue:create', 'GET': 'nss_catalogue:read'}],
-    'item_methods':       ['GET', 'PUT', 'DELETE'],
-    'allowed_item_roles': [
-        {'GET': 'nss_catalogue:read_ns', 'PUT': 'nss_catalogue:update_ns', 'DELETE': 'nss_catalogue:delete_ns'}],
-    'schema':             api_model.nss_catalogue_model
+    'item_title':            EndpointHelper.get_name(Endpoint.NSS_CATALOGUE),
+    'url':                   EndpointHelper.get_url(Endpoint.NSS_CATALOGUE),
+    'extra_response_fields': [EndpointVar.__TENANT_ID__],
+    'resource_methods':      EndpointHelper.get_resource_methods(Endpoint.NSS_CATALOGUE),
+    'allowed_roles':         [EndpointHelper.get_resource_policies(Endpoint.NSS_CATALOGUE)],
+    'item_methods':          [],
+    'schema':                EndpointHelper.get_schema(Endpoint.NSS_CATALOGUE)
     }
 
-nss_inventory = {
-    'item_title':         'nss_inventory',
-    'url':                'inventory/tenants/<regex(".*"):tenant_id>/nss',
-    'resource_methods':   ['POST', 'GET'],
-    'allowed_roles':      [{'POST': 'nss_inventory:create', 'GET': 'nss_inventory:read'}],
-    'item_methods':       ['GET', 'PUT', 'DELETE'],
-    'allowed_item_roles': [
-        {'GET': 'nss_inventory:read_ns', 'PUT': 'nss_inventory:update_ns', 'DELETE': 'nss_catalogue:delete_ns'}],
-    'schema':             api_model.nss_inventory_model
+ns = {
+    'item_title':            EndpointHelper.get_name(Endpoint.NSS_CATALOGUE),
+    'url':                   EndpointHelper.get_url(Endpoint.NSS_CATALOGUE),
+    'item_lookup_field':     EndpointVar.__TENANT_ID__,
+    'item_url':              EndpointVar.__TENANT_ID_FMT__,
+    'extra_response_fields': [EndpointVar.__TENANT_ID__],
+    'resource_methods':      [],
+    'item_methods':          EndpointHelper.get_item_methods(Endpoint.NSS_CATALOGUE),
+    'allowed_item_roles':    [EndpointHelper.get_item_policies(Endpoint.NSS_CATALOGUE)],
+    'schema':                nss_catalogue['schema'],
+    'datasource':            {
+        'source': 'nss_catalogue'
+        }
+    }
+
+validations = {
+    'item_title':         EndpointHelper.get_name(Endpoint.VALIDATION),
+    'url':                EndpointHelper.get_url(Endpoint.VALIDATION),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.VALIDATION),
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.VALIDATION)],
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.VALIDATION),
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.VALIDATION)],
+    'schema':             EndpointHelper.get_schema(Endpoint.VALIDATION)
     }

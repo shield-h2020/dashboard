@@ -114,7 +114,9 @@ world.endpoints = {
     'tenant_user_specific':       '{}/{}/{{}}?where={{{{"tenant_id": "{{}}"}}}}'.format(
             world.env['hosts']['backend_api']['host'], 'catalogue/users'),
 
-    'vnsfs':                      '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/vnsfs'),
+    'nss_catalogue':              '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/nss'),
+
+    'vnsfs_catalogue':            '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/vnsfs'),
 
     'policies_latest':            '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", '
                                   '-1)]&max_results=1'.format(
@@ -122,7 +124,9 @@ world.endpoints = {
 
     'policies_admin':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'admin/policies'),
 
-    'policies_apply':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies')
+    'policies_apply':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies'),
+
+    'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations')
 
     }
 

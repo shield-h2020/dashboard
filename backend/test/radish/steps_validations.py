@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -25,26 +23,16 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-from pprint import pformat
+import json
 
+import os
 import re
 from dashboardtestingutils.steps_utils import *
-from radish import when
+from radish import given, world
 
 
-@when(re.compile(u'The Developer onboards a (.*)'))
-def onboard_vnsf(step, vnsf_file):
-    print('developer_info\n' + pformat(world.my_context['developer_info']))
-
-    print('developer\n' + pformat(world.my_context['developer']))
-
-    print('xpto')
-    print('xpto')
-
-    data = {'developer_id': world.my_context['developer']['token']['user']['id']}
-
-    file = os.path.join(world.env['data']['input_data'], vnsf_file)
-    files = {'package': open(file, 'rb')}
-
-    http_post_file(step, url=world.endpoints['vnsfs'], files=files, data=data,
-                   auth=(world.my_context['developer']['token']['id'], ''))
+@given(re.compile(u'The Platform Admin loads validations from (.*)'))
+def persist_policy(step, file):
+    with open(os.path.join(world.env['data']['input_data'], file), 'r') as validation_data:
+        http_post_json(step, url=world.endpoints['validations'], data=json.load(validation_data),
+                       auth=(world.my_context['platform_admin']['token']['id'], ''))
