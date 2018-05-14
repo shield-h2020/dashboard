@@ -52,7 +52,7 @@ AAA_SVC_ADMIN_PASS = os.environ.get('AAA_SCV_ADMIN_PASS', '__missing_svc_admin_u
 VNSFO_TENANT_ID = os.environ.get('VNSFO_TENANT_ID', '__no_tenant_set__')
 
 X_DOMAINS = '*'  # CORS-related settings.
-X_HEADERS = ['Content-Type', 'If-Match']
+X_HEADERS = ['Content-Type', 'If-Match', 'Authorization', 'Shield-Authz-Scope']
 
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.
@@ -88,6 +88,8 @@ DOMAIN = {
     'vnsf':                   api_endpoints.vnsf,
     'nss_catalogue':          api_endpoints.nss_catalogue,
     'nss':                    api_endpoints.ns,
+    'nss_inventory':          api_endpoints.nss_inventory,
+    'ns_instance':            api_endpoints.ns_instance,
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin,
     'validations':            api_endpoints.validations

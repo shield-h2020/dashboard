@@ -31,6 +31,7 @@ from pprint import pformat
 import os
 import re
 from dashboardtestingutils.steps_utils import *
+from dashboardutils import http_utils
 from radish import when, world
 
 
@@ -86,3 +87,45 @@ def user_enrolls_vnsf(step, vnsf_file):
     file = os.path.join(world.env['data']['input_data'], vnsf_file)
     with open(file) as f:
         http_post_json(step, url=url, data=json.load(f), auth=(world.my_context['user']['token']['id'], ''))
+
+
+@when(re.compile(u'The User provisions a NS from (.*)'))
+def user_provisions_ns(step, ns_file):
+    file = os.path.join(world.env['data']['input_data'], ns_file)
+    with open(file) as f:
+        service_data = json.load(f)
+
+    http_get(step, url=world.endpoints['nss_catalogue'], auth=(world.my_context['user']['token']['id'], ''))
+    expected_status_code(step, http_utils.HTTP_200_OK)
+
+    nss_data = step.context.api['response']['json']
+    print('network services:\n' + pformat(nss_data))
+
+    # Get the service ID using the tag from the input data.
+    service_id = None
+    for service in nss_data['_items']:
+        print('service:\n' + pformat(service))
+        for tag in service['custom_tags']:
+            if tag == service_data['service_tag']:
+                service_id = service['_id']
+                break
+
+        if service_id is not None:
+            break
+
+    print('service id: ' + service_id)
+    print('service id: ' + service_id)
+
+    assert service_id is not None, service_id
+
+    del service_data['service_tag']
+    service_data['ns_id'] = service_id
+    service_data['status'] = 'available'
+
+    print('service data:\n' + pformat(service_data))
+
+    url = world.endpoints['nss_inventory'].format(world.my_context['user']['token']['user']['domain']['id'])
+
+    print('url: ' + url)
+
+    http_post_json(step, url=url, data=service_data, auth=(world.my_context['user']['token']['id'], ''))

@@ -294,14 +294,6 @@ tenant_users_catalogue = {
         }
     }
 
-vnsfs_inventory_model = {
-    # The vNSF developer.
-    'tenant_id': {
-        'description': 'The tenant ID to whom the vNSF is available',
-        'type':        'string'
-        },
-    }
-
 vnsfs_catalogue_model = {
     'ref_id':      {
         'description': 'The ID as defined by the system storing the vNSF',
@@ -327,6 +319,32 @@ nss_catalogue_model = {
     'custom_tags': {
         'description': 'User-defined tags',
         'type':        ['string', 'list']
+        }
+    }
+
+nss_inventory_model = {
+    'tenant_id': {
+        'description': 'The tenant ID to whom the Network Service is instantiated',
+        'type':        'string'
+        },
+
+    'ns_id':     {
+        'description':   'The service catalogue ID',
+        'type':          'objectid',
+        'data_relation': {
+            'resource':   'nss_catalogue',
+            'field':      '_id',
+            'embeddable': True
+            },
+        'empty':         False,
+        'required':      True
+        },
+
+    'status':    {
+        'type':     'string',
+        'empty':    False,
+        'allowed':  ["available", "started", "running"],
+        'required': True
         }
     }
 

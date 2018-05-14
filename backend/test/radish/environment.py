@@ -118,6 +118,9 @@ world.endpoints = {
 
     'vnsfs_catalogue':            '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'catalogue/vnsfs'),
 
+    'nss_inventory':              '{}/{}?where={{{{"tenant_id": "{{}}"}}}}'.format(
+            world.env['hosts']['backend_api']['host'], 'inventory/nss'),
+
     'policies_latest':            '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", '
                                   '-1)]&max_results=1'.format(
             world.env['hosts']['backend_api']['host'], 'policies'),

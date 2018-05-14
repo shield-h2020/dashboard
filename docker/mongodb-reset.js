@@ -41,4 +41,8 @@ db.tenant_group_roles.deleteMany({})
 db.nss_catalogue.deleteMany({})
 db.vnsfs_catalogue.deleteMany({})
 
+db.nss_inventory.deleteMany({})
+
+db.validations.deleteMany({})
+
 db.policies.deleteMany({})

@@ -522,6 +522,52 @@ class Endpoint(Enum):
                          }
                      }
 
+    NSS_INVENTORY = {__NAME__:       'nss',
+                     __URL__:        'inventory/nss',
+                     __DOC_ID_VAR__: 'nssId',
+                     __SCHEMA__:     api_model.nss_inventory_model,
+                     __RESOURCE__:   {
+                         __HTTP_POST__: {
+                             __POLICY__: 'nss_inventory:create',
+                             __DOCS__:   {
+                                 'summary':     'Registers a new vNSF',
+                                 'description': 'Performs the vNSF onboarding process. Upon successful completion, '
+                                                'a new vNSF '
+                                                'is added to the catalogue and associated with the Developer doing the '
+                                                'onboarding operation.',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_GET__:  {
+                             __POLICY__: 'nss_inventory:read',
+                             __DOCS__:   {
+                                 'summary':     'Lists vNSFs associated with a Developer',
+                                 'description': 'Shows all the registered vNSFs and their properties for a given '
+                                                'Developer.',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             }
+                         },
+                     __ITEM__:       {
+                         __HTTP_GET__:    {
+                             __POLICY__: 'nss_inventory:read_ns',
+                             __DOCS__:   {
+                                 'summary':     'Shows a vNSF details',
+                                 'description': 'Provides detailed information on a vNSF.',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_DELETE__: {
+                             __POLICY__: 'nss_inventory:delete_ns',
+                             __DOCS__:   {
+                                 'summary':     'Decommissions a vNSF',
+                                 'description': 'Marks the vNSF as not available for usage.',
+                                 'responses':   http_utils.responses_read
+                                 }
+                             }
+                         }
+                     }
+
     VALIDATION = {__NAME__:     'validations',
                   __URL__:      'validations',
                   # __DOC_ID_VAR__: 'tenantsId',

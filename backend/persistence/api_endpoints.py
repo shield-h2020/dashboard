@@ -252,6 +252,31 @@ ns = {
         }
     }
 
+nss_inventory = {
+    'item_title':       EndpointHelper.get_name(Endpoint.NSS_INVENTORY),
+    'url':              EndpointHelper.get_url(Endpoint.NSS_INVENTORY),
+    # 'extra_response_fields': [EndpointVar.__TENANT_ID__],
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.NSS_INVENTORY),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.NSS_INVENTORY)],
+    'item_methods':     [],
+    'schema':           EndpointHelper.get_schema(Endpoint.NSS_INVENTORY)
+    }
+
+ns_instance = {
+    'item_title':         EndpointHelper.get_name(Endpoint.NSS_INVENTORY),
+    'url':                EndpointHelper.get_url(Endpoint.NSS_INVENTORY),
+    'item_lookup_field':  EndpointVar.__TENANT_ID__,
+    'item_url':           EndpointVar.__TENANT_ID_FMT__,
+    # 'extra_response_fields': [EndpointVar.__TENANT_ID__],
+    'resource_methods':   [],
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.NSS_INVENTORY),
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.NSS_INVENTORY)],
+    'schema':             nss_inventory['schema'],
+    'datasource':         {
+        'source': 'nss_inventory'
+        }
+    }
+
 validations = {
     'item_title':         EndpointHelper.get_name(Endpoint.VALIDATION),
     'url':                EndpointHelper.get_url(Endpoint.VALIDATION),

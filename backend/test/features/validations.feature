@@ -34,5 +34,7 @@ Feature: Network Services validations
     Then I expect the response code <status>
 
     Examples:
-      | file                    | status |
-      | validations/cirros.json | 201    |
+      | file                               | status |
+      | validations/ns_cirros.json         | 201    |
+      | validations/ns_chaining.json       | 201    |
+      | validations/ns_topology_issue.json | 201    |

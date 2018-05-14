@@ -195,6 +195,17 @@ def create_role(items):
 #     user_data['tenant_id'] = lookup['tenant_id']
 
 
+def provision_network_service(items):
+    user_data = items[0]
+
+    # TODO: If more than one "where" lookup there's an error in the URL query parameters.
+    lookup = json.loads(flask.request.args.getlist('where')[0])
+    print('lookup: ' + pformat(lookup))
+
+    # The tenant ID must be set according to the one provided in the URL (which has been properly authorized).
+    user_data['tenant_id'] = lookup['tenant_id']
+
+
 app = Eve(auth=TokenAuthzOslo)
 
 # app.on_insert_vnsfs_catalogue += vnsfs_catalogue
@@ -213,6 +224,8 @@ app.on_delete_resource_tenants_catalogue_delete += remove_tenant
 app.on_insert_tenant_users_catalogue += create_tenant_user
 
 # app.on_insert_nss_catalogue += enroll_ns
+
+app.on_insert_nss_inventory += provision_network_service
 
 app.register_blueprint(swagger)
 

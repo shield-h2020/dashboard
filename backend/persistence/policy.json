@@ -10,9 +10,10 @@
   "developers.group": "tenant_id:%(tenant_id)s",
   "developer.scoped": "user_id:%(user_id)s",
 
-  "any.tenant.admin": "(rule:tenant.admin and rule:tenant.scoped) or rule:platform.admin",
+  "any.tenant.admin": "rule:tenant.admin or rule:platform.admin",
+  "the.tenant.admin": "(rule:tenant.admin and rule:tenant.scoped) or rule:platform.admin",
 
-  "any.tenant.user": "(rule:tenant.user and rule:tenant.user.scoped) or rule:any.tenant.admin",
+  "the.tenant.user": "(rule:tenant.user and rule:tenant.user.scoped) or rule:any.tenant.admin",
 
   "any.developer": "(rule:developer and rule:developers.group) or rule:platform.admin",
   "developer.owned": "(rule:developer and rule:developer.scoped) or rule:platform.admin",
@@ -49,15 +50,15 @@
 
   "tenants:create": "rule:platform.admin",
   "tenants:read": "rule:any.tenant.admin",
-  "tenants:read_tenant": "rule:any.tenant.admin",
-  "tenants:update_tenant": "rule:any.tenant.admin",
-  "tenants:delete_tenant": "rule:any.tenant.admin",
+  "tenants:read_tenant": "rule:the.tenant.admin",
+  "tenants:update_tenant": "rule:the.tenant.admin",
+  "tenants:delete_tenant": "rule:the.tenant.admin",
 
-  "tenant_users:create": "rule:any.tenant.admin",
-  "tenant_users:read": "rule:any.tenant.admin",
-  "tenant_users:read_user": "rule:any.tenant.user",
-  "tenant_users:update_user": "rule:any.tenant.user",
-  "tenant_users:delete_user": "rule:any.tenant.admin",
+  "tenant_users:create": "rule:the.tenant.admin",
+  "tenant_users:read": "rule:the.tenant.admin",
+  "tenant_users:read_user": "rule:the.tenant.user",
+  "tenant_users:update_user": "rule:the.tenant.user",
+  "tenant_users:delete_user": "rule:the.tenant.admin",
 
   "vnsfs_catalogue:create": "rule:platform.admin",
   "vnsfs_catalogue:read": "rule:platform.admin",
@@ -66,16 +67,16 @@
   "vnsfs_catalogue:delete_vnsf": "rule:platform.admin",
 
   "nss_catalogue:create": "rule:platform.admin",
-  "nss_catalogue:read": "rule:platform.admin",
-  "nss_catalogue:read_ns": "rule:platform.admin",
+  "nss_catalogue:read": "rule:any.tenant.admin",
+  "nss_catalogue:read_ns": "rule:the.tenant.admin",
   "nss_catalogue:update_ns": "rule:platform.admin",
   "nss_catalogue:delete_ns": "rule:platform.admin",
 
-  "nss_inventory:create": "rule:any.tenant.admin",
-  "nss_inventory:read": "rule:any.tenant.admin",
-  "nss_inventory:read_ns": "rule:any.tenant.admin",
-  "nss_inventory:update_ns": "rule:any.tenant.admin",
-  "nss_inventory:delete_ns": "rule:any.tenant.admin",
+  "nss_inventory:create": "rule:the.tenant.admin",
+  "nss_inventory:read": "rule:the.tenant.admin",
+  "nss_inventory:read_ns": "rule:the.tenant.admin",
+  "nss_inventory:update_ns": "rule:the.tenant.admin",
+  "nss_inventory:delete_ns": "rule:the.tenant.admin",
 
   "vnsfs:create": "rule:any.developer",
   "vnsfs:read": "rule:developer.owned",
