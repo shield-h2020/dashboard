@@ -38,3 +38,4 @@ Feature: Network Services validations
       | validations/ns_cirros.json         | 201    |
       | validations/ns_chaining.json       | 201    |
       | validations/ns_topology_issue.json | 201    |
+      | validations/vnsf_vdus_issue.json   | 201    |
