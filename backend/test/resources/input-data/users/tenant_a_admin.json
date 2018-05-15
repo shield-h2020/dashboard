@@ -1,5 +1,5 @@
 {
-  "name": "shield.tenant-a.admin",
+  "name": "shield.client-a.admin",
   "password": "pass",
   "description": "Tenant A admin",
   "email": "jdoe@example.com",

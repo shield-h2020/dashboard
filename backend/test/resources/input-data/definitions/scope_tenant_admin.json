@@ -1,5 +1,5 @@
 {
-  "name": "SHIELD Tenant Administrator",
+  "name": "SecaaS Client Administrator",
   "code": "shield_scope_tenant_admin",
   "description": "Administrator for a SecaaS Client"
 }
