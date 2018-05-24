@@ -4,9 +4,9 @@
   "description": "SHIELD user interface.",
   "main": "index.js",
   "scripts": {
-    "build:dev": "node_modules/.bin/webpack --config webpack.config.dev.js --progress --profile --colors",
-    "watch": "node_modules/.bin/webpack-dev-server --config webpack.config.dev.js",
-    "build:prod": "node_modules/.bin/webpack --config webpack.config.prod.js --progress --profile --colors"
+    "build:dev": "npx webpack --config ./webpack/webpack.config.dev.js --progress --profile --colors",
+    "watch": "npx webpack-dev-server --config ./webpack/webpack.config.dev.js",
+    "build:prod": "npx webpack --config ./webpack/webpack.config.prod.js --progress --profile --colors"
   },
   "author": "Telmo Alves",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "d3": "^4.4.1",
     "dat.gui": "^0.6.1",
     "date-fns": "^1.28.5",
+    "spaaace": "^1.0.2",
     "toastr": "^2.1.2"
   },
   "devDependencies": {

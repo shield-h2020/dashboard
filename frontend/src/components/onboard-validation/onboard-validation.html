@@ -1,0 +1,24 @@
+<section class="sv-viewer">
+  <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+  <div class="sn-card auto-resizer">
+    <button
+      ng-click="$ctrl.state.go('validations')"
+      class="sn-button sn-button--primary"
+    >Back</button>
+    <div class="sv-viewer__container">
+      <div ng-if="$ctrl.scope.topology" viewer-svg class="sv-viewer__draw-area"></div>
+      <sv-results
+        ng-if="$ctrl.errCount || $ctrl.warnCount"
+        errors="$ctrl.scope.errors"
+        warnings="$ctrl.scope.warnings"
+      ></sv-results>
+    </div>
+    <div class="sv-viewer__loader" ng-class="{ 'sv-viewer__loader--hidden': !$ctrl.isLoading }">
+      <span class="loader__animation"></span>
+      <span class="loader__text">
+        <div class="loader__title">Loading...</div>
+        <div class="loader__message">please wait</div>
+      </span>
+    </div>
+  </div>
+</section>
