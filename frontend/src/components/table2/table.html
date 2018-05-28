@@ -1,0 +1,37 @@
+<section>
+  <table class="{{::$ctrl.styles.table}}">
+    <thead class="{{::$ctrl.styles.table__header}}">
+      <tr>
+        <th
+          ng-repeat="(key, header) in $ctrl.headers"
+          class="{{::$ctrl.styles.header__text}}"
+        >{{ key !== 'actions' ? header : key }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="{{::$ctrl.styles.table__row}}"
+        ng-repeat="item in $ctrl.items"
+      >
+        <td
+          class="{{::$ctrl.styles.row__cell}}"
+          ng-repeat="(key, value) in $ctrl.headers"
+          ng-if="key !== 'actions'"
+          color-cell
+        >{{ item[key] }}</td>
+        <td class="{{::$ctrl.styles.row__cell}}" ng-if="$ctrl.headers.actions">
+          <a
+            class="inline-ss {{::$ctrl.styles['action-label']}}"
+            ng-repeat="val in $ctrl.headers.actions"
+            ng-click="val.action(item)"
+          >{{ val.label }}</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div ng-show="$ctrl.loading" class="{{::$ctrl.styles.table__loading}}">
+    <span>
+      <img class="inline-m" src="./assets/ic-loading.svg" />{{::$ctrl.strings.loading}}
+    </span>
+  </div>
+</section>

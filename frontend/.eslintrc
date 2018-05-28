@@ -1,7 +1,34 @@
-{ 
-    "extends": "airbnb-base",
-    "rules": {
-        "no-underscore-dangle": "off",
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }] 
+{
+  "extends": "airbnb-base",
+  "plugins": [
+      "import"
+  ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "webpack/webpack.config.common.js"
+      }
     }
+  },
+  "env": {
+      "browser": true
+  },
+  "rules": {
+      "linebreak-style": 0,
+      "no-param-reassign": 0,
+      "no-use-before-define": ["error", "nofunc"],
+      "no-unused-expressions": [
+          "error",
+          {
+              "allowShortCircuit": true
+          }
+      ],
+      "no-bitwise": [
+          "error",
+          { 
+              "int32Hint": true,
+              "allow": ["&", "|"] 
+          }
+      ]
+  }
 }
