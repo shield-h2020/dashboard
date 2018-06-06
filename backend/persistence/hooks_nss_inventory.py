@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -23,22 +25,25 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-certifi==2017.7.27.1
-chardet==3.0.4
-click==6.7
-DateTime==4.2
-enum-compat==0.0.2
-idna==2.6
-itsdangerous==0.24
-Jinja2==2.9.6
-MarkupSafe==1.0
-python3-pika==0.9.14
-pytz==2017.2
-PyYAML==3.12
-requests==2.18.4
-six==1.10.0
-tornado==4.5.2
-Werkzeug==0.11.15
-urllib3==1.22
-xmlschema==0.9.12
-zope.interface==4.4.3
+import json
+from pprint import pformat
+
+import flask
+
+
+class NssInventoryHooks:
+    """
+    Handles the backstage operations required for the Network Services Inventory part of the Dashboard API. These
+    operations are mostly targeted at pre and post hooks associated with the API.
+    """
+
+    @staticmethod
+    def provision_network_service(items):
+        user_data = items[0]
+
+        # TODO: If more than one "where" lookup there's an error in the URL query parameters.
+        lookup = json.loads(flask.request.args.getlist('where')[0])
+        print('lookup: ' + pformat(lookup))
+
+        # The tenant ID must be set according to the one provided in the URL (which has been properly authorized).
+        user_data['tenant_id'] = lookup['tenant_id']

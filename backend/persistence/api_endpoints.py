@@ -30,6 +30,79 @@ from api_endpoint_utils import EndpointHelper
 from api_endpoints_def import Endpoint, EndpointVar
 from security import LoginAuth
 
+"""
+(NOTE: this information is based on Eve v0.7.4.)
+
+The endpoints are crafted resorting to the definitions in the file api_endpoints_def.py.
+Any endpoint that is bound to a tenant must be defined as described next. Otherwise, the checks for the Role-Based 
+Access Control (RBAC) policies won't work properly.
+
+
+---------------------
+TL;DR
+
++ Define the URL to use regular expressions where the variable name to look for is defined (e.g. tenant_id instead of 
+_id).
+
++ Define the endpoint a first time (the actual collection) with only the resource_methods and allowed_roles settings. 
+The item_methods setting is an empty list.
+
++ Define the endpoint a second time (the document instances) with only the item_methods and allowed_item_roles. The 
+resource_methods setting is an empty list. Additionally the item_lookup_field setting is defined to state the variable
+name to look for, the URL changes are defined as per the first time, and the schema and datasource settings are 
+defined to use the same ones as the first resource definition.  
+---------------------
+
+
+An endpoint definition requires some tweaks to have things working properly when the (RBAC) comes into play to 
+determine whether a user is allowed to invoke the endpoint. When an invocation to an endpoint takes place, 
+an authorization check is carried out. This authorization employs data present in the request such as the user ID, 
+the endpoint resource ID (the /endpoint/{resource_id} path parameter), role, etc. Such data is conveyed to the 
+policy check library to determine whether the endpoint is allowed for the caller.
+
+This API delegates the authentication to an external AAA system where the tenants, groups, roles, and users are 
+created. Therefore, any authentication must be done on the IDs known to the AAA system. Since such elements must also 
+live in the API data model, they get created in the AAA system and its ID stored in the data model for proper lookup 
+on the AAA system. This leads to having two IDs for an element which need to be used properly.
+
+Given that pretty much all the requests to the API are associated with a tenant, the authorization check is dependent 
+on inspecting the user role and usually whether it has permissions to perform the operation on the tenant it belongs 
+to. Thus, all requests need to provide the AAA-system-defined tenant ID, user ID, group ID, etc. in the URL, 
+even for sub-resources. This is when problems start with Eve and some tweaks are required.
+
+Eve is hardwired to seek authorization for IDs it knows about. It does this also for sub-resources. Having an 
+endpoint like /endpoint/{tenant_id}/users/{user_id} will trigger Eve to associate the tenant_id and user_id with the 
+internal _id field it uses for lookups on the data model. Since the lookup needs to be on tenant_id and user_id fields 
+the first tweak is done to the URL part, introducing regular expressions and variable naming (
+http://python-eve.org/features.html#sub-resources) so it can provide the proper data for the authorization check. Even 
+though this should work, when using sub-resources the user_id isn't retrieved by the code so proper authorization 
+can't take place.
+
+Since only one (regex) ID works, and the tenant_id is very much mandatory for authorization checks, the other option 
+is to rework the endpoints. Instead of having /endpoint/{tenant_id}/users/{user_id} one now has /users/{
+user_id}?where={"tenant_id": "<tenant ID>"}. This caters for the retrieval of the user_id (through URL regex) and 
+also for the tenant_id. Since the lookup needs to be on the user_id field (and not on the _id one) the item_lookup_field
+setting must be defined for the endpoint (http://python-eve.org/config.html#resource-item-endpoints).
+
+Authorization checks are based on policies (https://docs.openstack.org/oslo.policy/latest) where each endpoint method 
+has its associated policy. Eve provides settings to define roles, namely the resource_methods and allowed_roles for 
+endpoints, and item_methods and allowed_item_roles for items. However, these settings are based on lists and don't 
+provide a fine-grained control over the methods (e.g. it doesn't differentiate a PUT from a PATCH). As such, an 
+additional tweak is employed where the roles have a dictionary stating the policy for each method.
+
+All these tweaks overcome Eve limitations on using IDs from an external AAA system to check for authentication and 
+having RBAC policies for authorization. Nonetheless a new issue arises, resulting from the use of different variables 
+names for lookup fields and having Eve do authorization on IDs it doesn't know about. The users/{user_id} doesn't work 
+properly when Eve tries to do authorization checks. Therefore a final tweak is needed.
+One must define the endpoint twice. The first time is for the resource part, where the variable names change get 
+defined and the resource_methods and allowed_roles settings are defined; the item methods are purposefully stated as 
+unavailable. The second time is the definition for the item methods, where only the settings for the item_methods and 
+allowed_item_roles are defined; the resource methods are purposefully stated as unavailable. Additionally the 
+item_lookup_field setting is defined to state the variable name to look for, the URL changes are defined as per the 
+first resource, and the schema and datasource settings are defined to use the same ones as the first resource 
+definition.  
+"""
+
 login = {
     'item_title':            'login',
     'description':           'Authentication & Authorization',
@@ -228,27 +301,35 @@ vnsf = {
     }
 
 nss_catalogue = {
-    'item_title':            EndpointHelper.get_name(Endpoint.NSS_CATALOGUE),
-    'url':                   EndpointHelper.get_url(Endpoint.NSS_CATALOGUE),
-    'extra_response_fields': [EndpointVar.__TENANT_ID__],
-    'resource_methods':      EndpointHelper.get_resource_methods(Endpoint.NSS_CATALOGUE),
-    'allowed_roles':         [EndpointHelper.get_resource_policies(Endpoint.NSS_CATALOGUE)],
-    'item_methods':          [],
-    'schema':                EndpointHelper.get_schema(Endpoint.NSS_CATALOGUE)
+    'item_title':         EndpointHelper.get_name(Endpoint.NSS_CATALOGUE),
+    'url':                EndpointHelper.get_url(Endpoint.NSS_CATALOGUE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.NSS_CATALOGUE),
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.NSS_CATALOGUE)],
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.NSS_CATALOGUE),
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.NSS_CATALOGUE)],
+    'schema':             EndpointHelper.get_schema(Endpoint.NSS_CATALOGUE)
     }
 
-ns = {
-    'item_title':            EndpointHelper.get_name(Endpoint.NSS_CATALOGUE),
-    'url':                   EndpointHelper.get_url(Endpoint.NSS_CATALOGUE),
-    'item_lookup_field':     EndpointVar.__TENANT_ID__,
-    'item_url':              EndpointVar.__TENANT_ID_FMT__,
-    'extra_response_fields': [EndpointVar.__TENANT_ID__],
-    'resource_methods':      [],
-    'item_methods':          EndpointHelper.get_item_methods(Endpoint.NSS_CATALOGUE),
-    'allowed_item_roles':    [EndpointHelper.get_item_policies(Endpoint.NSS_CATALOGUE)],
-    'schema':                nss_catalogue['schema'],
-    'datasource':            {
-        'source': 'nss_catalogue'
+nss_inventory = {
+    'item_title':       EndpointHelper.get_name(Endpoint.NSS_INVENTORY),
+    'url':              EndpointHelper.get_url(Endpoint.NSS_INVENTORY),
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.NSS_INVENTORY),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.NSS_INVENTORY)],
+    'item_methods':     [],
+    'schema':           EndpointHelper.get_schema(Endpoint.NSS_INVENTORY)
+    }
+
+ns_instance = {
+    'item_title':         EndpointHelper.get_name(Endpoint.NSS_INVENTORY),
+    'url':                EndpointHelper.get_url(Endpoint.NSS_INVENTORY),
+    'item_lookup_field':  EndpointVar.__TENANT_ID__,
+    'item_url':           EndpointVar.__TENANT_ID_FMT__,
+    'resource_methods':   [],
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.NSS_INVENTORY),
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.NSS_INVENTORY)],
+    'schema':             nss_inventory['schema'],
+    'datasource':         {
+        'source': 'nss_inventory'
         }
     }
 

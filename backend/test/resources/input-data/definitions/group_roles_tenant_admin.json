@@ -1,5 +1,5 @@
 {
-  "name": "Tenant Admins Group",
+  "name": "Client Admins Group",
   "code": "shield_group_roles_admin",
   "group_code": "shield-tenant-admins",
   "roles": ["shield_tenant_admin"]

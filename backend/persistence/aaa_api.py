@@ -85,6 +85,18 @@ class AaaApi(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
+    def password_login(self, username, password, scope):
+        raise NotImplementedError
+
+    @abstractmethod
+    def token_login(token, scope_id):
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_token_data(self, token):
+        raise NotImplementedError
+
+    @abstractmethod
     def create_group(self, tenant_id, description, code, role_id):
         raise NotImplementedError
 

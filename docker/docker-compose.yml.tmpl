@@ -55,8 +55,6 @@ services:
 
     ${CNTR_AAA_DB}:
         image: mysql:5.7
-        # volumes:
-        #   - "./.data/db:/var/lib/mysql"
         ports:
           - ${AAA_DB_PORT}:${AAA_DB_PORT}
         environment:
@@ -72,12 +70,10 @@ services:
             context:       .
             dockerfile:    ${DOCKER_FILE_AAA}
         links:
-          - mysql_db:mysql
+          - ${CNTR_AAA_DB}:mysql
         ports:
           - ${AAA_ADMIN_PORT}:${AAA_ADMIN_PORT}
           - ${AAA_PORT}:${AAA_PORT}
-        # environment:
-        #   ADMIN_PASSWORD: SELFNET@admin
 
 
     # Data Store.

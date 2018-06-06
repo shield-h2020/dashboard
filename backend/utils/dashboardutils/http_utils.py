@@ -25,6 +25,59 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+import requests
+from werkzeug.exceptions import *
+
+# HTTP status codes
+HTTP_200_OK = 200
+HTTP_201_CREATED = 201
+HTTP_202_ACCEPTED = 202
+HTTP_204_NO_CONTENT = 204
+HTTP_400_BAD_REQUEST = 400
+HTTP_401_UNAUTHORIZED = 401
+HTTP_404_NOT_FOUND = 404
+HTTP_406_NOT_ACCEPTABLE = 406
+HTTP_409_CONFLICT = 409
+HTTP_412_PRECONDITION_FAILED = 412
+HTTP_500_SERVER_ERROR = 500
+HTTP_501_NOT_IMPLEMENTED = 501
+HTTP_502_BAD_GATEWAY = 502
+HTTP_503_SVC_UNAVAILABLE = 503
+HTTP_504_TIMEOUT = 504
+
+
+def status_to_exception(status):
+    """
+    Retrieves an exception from an HTTP status code.
+
+    :param status: the HTTP status code to expect.
+    :return: the exception associated with the status code.
+    :exception:  KeyError when the status code has no exception defined.
+                  other exceptions from status_to_exception()
+    """
+
+    statuses = {
+        str(HTTP_400_BAD_REQUEST):         BadRequest,
+        str(HTTP_401_UNAUTHORIZED):        Unauthorized,
+        str(HTTP_404_NOT_FOUND):           NotFound,
+        str(HTTP_406_NOT_ACCEPTABLE):      NotAcceptable,
+        str(HTTP_409_CONFLICT):            Conflict,
+        str(HTTP_412_PRECONDITION_FAILED): PreconditionFailed,
+        str(HTTP_500_SERVER_ERROR):        InternalServerError,
+        str(HTTP_501_NOT_IMPLEMENTED):     NotImplemented,
+        str(HTTP_502_BAD_GATEWAY):         BadGateway,
+        str(HTTP_503_SVC_UNAVAILABLE):     ServiceUnavailable,
+        str(HTTP_504_TIMEOUT):             GatewayTimeout
+        }
+
+    ex = statuses.get(str(status), None)
+
+    if ex is None:
+        raise KeyError('status not implemented: ' + str(status))
+
+    return ex
+
+
 def build_url(server, port=None, basepath=None, protocol=None):
     """
     Build a URL given the parameters provided. Depending on the parameters it may just simply return a hostname/IP
@@ -53,6 +106,126 @@ def build_url(server, port=None, basepath=None, protocol=None):
         url = '{}/{}'.format(url, basepath)
 
     return url
+
+
+def post_json(url, data, headers=None, status=HTTP_201_CREATED, verify=False):
+    """
+    Helper for an HTTP POST.
+
+    :param url: the endpoint URL.
+    :param data: the data to send.
+    :param headers: the headers to send.
+    :param status: the HTTP status code to expect.
+    :param verify: whether to verify SSL certificates.
+    :return: the response object.
+    :exception:  requests.exceptions.ConnectionError when the remote server cannot be reached.
+                  other exceptions from status_to_exception()
+    """
+
+    r = requests.post(url, headers=headers, json=data, verify=verify)
+
+    if len(r.text) > 0:
+        print(r.text)
+
+    if not r.status_code == status:
+        raise status_to_exception(r.status_code)
+
+    return r
+
+
+def get(url, headers=None, status=HTTP_200_OK, verify=False):
+    """
+    Helper for an HTTP GET.
+
+    :param url: the endpoint URL.
+    :param headers: the headers to send.
+    :param status: the HTTP status code to expect.
+    :param verify: whether to verify SSL certificates.
+    :return: the response object.
+    :exception:  requests.exceptions.ConnectionError when the remote server cannot be reached.
+                  other exceptions from status_to_exception()
+    """
+
+    r = requests.get(url, headers=headers, verify=verify)
+
+    if len(r.text) > 0:
+        print(r.text)
+
+    if not r.status_code == status:
+        raise status_to_exception(r.status_code)
+
+    return r
+
+
+def put_json(url, data=None, headers=None, status=HTTP_204_NO_CONTENT, verify=False):
+    """
+    Helper for an HTTP PUT.
+
+    :param url: the endpoint URL.
+    :param data: the data to send.
+    :param headers: the headers to send.
+    :param status: the HTTP status code to expect.
+    :param verify: whether to verify SSL certificates.
+    :return: the response object.
+    :exception:  requests.exceptions.ConnectionError when the remote server cannot be reached.
+                  other exceptions from status_to_exception()
+    """
+
+    r = requests.put(url, headers=headers, json=data, verify=verify)
+
+    if len(r.text) > 0:
+        print(r.text)
+
+    if not r.status_code == status:
+        raise status_to_exception(r.status_code)
+
+    return r
+
+
+def patch_json(url, data, headers=None, status=HTTP_200_OK, verify=False):
+    """
+    Helper for an HTTP PATCH.
+
+    :param url: the endpoint URL.
+    :param data: the data to send.
+    :param headers: the headers to send.
+    :param status: the HTTP status code to expect.
+    :param verify: whether to verify SSL certificates.
+    :return: the response object.
+    :exception:  requests.exceptions.ConnectionError when the remote server cannot be reached.
+                  other exceptions from status_to_exception()
+    """
+
+    r = requests.patch(url, headers=headers, json=data, verify=verify)
+
+    if len(r.text) > 0:
+        print(r.text)
+
+    if not r.status_code == status:
+        raise status_to_exception(r.status_code)
+
+    return r
+
+
+def delete(url, headers=None, status=HTTP_204_NO_CONTENT, verify=False):
+    """
+    Helper for an HTTP DELETE.
+
+    :param url: the endpoint URL.
+    :param headers: the headers to send.
+    :param status: the HTTP status code to expect.
+    :param verify: whether to verify SSL certificates.
+    :return: the response object.
+    :exception:  requests.exceptions.ConnectionError when the remote server cannot be reached.
+                  other exceptions from status_to_exception()
+    """
+
+    r = requests.delete(url, headers=headers, verify=verify)
+
+    if not r.status_code == status:
+        raise status_to_exception(r.status_code)
+
+    return r
 
 
 def _without_keys(dict_data, keyz):
@@ -90,52 +263,36 @@ def tailor_response(initial, changes, remove):
     return _without_keys(tailored, remove)
 
 
-# HTTP status codes
-HTTP_200_OK = 200
-HTTP_201_CREATED = 201
-HTTP_202_ACCEPTED = 202
-HTTP_204_NO_CONTENT = 204
-HTTP_400_BAD_REQUEST = 400
-HTTP_401_UNAUTHORIZED = 401
-HTTP_404_NOT_FOUND = 404
-HTTP_406_NOT_ACCEPTABLE = 406
-HTTP_409_CONFLICT = 409
-HTTP_412_PRECONDITION_FAILED = 412
-HTTP_500_SERVER_ERROR = 500
-HTTP_501_NOT_IMPLEMENTED = 501
-HTTP_502_BAD_GATEWAY = 502
-HTTP_504_TIMEOUT = 504
-
 responses_full = {
-    str(HTTP_200_OK): {
+    str(HTTP_200_OK):              {
         'description': 'Request succeeded.'
         },
-    str(HTTP_201_CREATED): {
+    str(HTTP_201_CREATED):         {
         'description': 'Resource created.'
         },
-    str(HTTP_202_ACCEPTED): {
+    str(HTTP_202_ACCEPTED):        {
         'description': "Request processing. You can retry your request, and when it's finished, you'll get a 200 "
                        "instead."
         },
-    str(HTTP_400_BAD_REQUEST): {
+    str(HTTP_400_BAD_REQUEST):     {
         'description': 'Bad request. API specific parameters are incorrect or missing.'
         },
-    str(HTTP_401_UNAUTHORIZED): {
+    str(HTTP_401_UNAUTHORIZED):    {
         'description': "Unauthorised. You're not authorised to access this resource."
         },
-    str(HTTP_404_NOT_FOUND): {
+    str(HTTP_404_NOT_FOUND):       {
         'description': "Not found. The requested resource doesn't exist."
         },
-    str(HTTP_500_SERVER_ERROR): {
+    str(HTTP_500_SERVER_ERROR):    {
         'description': 'Server errors. Our bad!'
         },
     str(HTTP_501_NOT_IMPLEMENTED): {
         'description': 'Not implemented yet.'
         },
-    str(HTTP_502_BAD_GATEWAY): {
+    str(HTTP_502_BAD_GATEWAY):     {
         'description': 'Third-party unreachable.'
         },
-    str(HTTP_504_TIMEOUT): {
+    str(HTTP_504_TIMEOUT):         {
         'description': 'Timeout. A request to a third-party has taken too long to be served.'
         }
     }

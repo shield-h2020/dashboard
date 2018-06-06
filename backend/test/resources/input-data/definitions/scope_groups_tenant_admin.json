@@ -1,5 +1,5 @@
 {
-  "name": "Tenant Admins Scope",
+  "name": "Client Admins Scope",
   "code": "shield_scope_group_tenant_admins",
   "scope_code": "shield_scope_tenant_admin",
   "groups": ["shield-tenant-admins"]

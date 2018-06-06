@@ -71,10 +71,10 @@ keystone-manage bootstrap --bootstrap-password ${AAA_SCV_ADMIN_PASS} \
   --bootstrap-region-id RegionOne
 
 sleep 5
-openstack role add --domain default --user admin admin
+openstack role add --domain ${OS_PROJECT_DOMAIN_ID} --user ${OS_USERNAME} admin
 sleep 5
 
-mv /etc/keystone/multi_policy.json /etc/keystone/policy.json
+mv /etc/keystone/keystone-policy.json /etc/keystone/policy.json
 
 # reboot services
 pkill uwsgi

@@ -43,7 +43,7 @@ COPY keystone.conf /etc/keystone/keystone.conf
 COPY keystone.sql /root/keystone.sql
 
 # Add bootstrap script and make it executable
-COPY bootstrap.sh /etc/bootstrap.sh
+COPY setup-keystone.sh /etc/bootstrap.sh
 RUN chown root:root /etc/bootstrap.sh && chmod a+x /etc/bootstrap.sh
 
 ENTRYPOINT ["/etc/bootstrap.sh"]

@@ -87,7 +87,6 @@ DOMAIN = {
     'vnsfs_catalogue':        api_endpoints.vnsfs_catalogue,
     'vnsf':                   api_endpoints.vnsf,
     'nss_catalogue':          api_endpoints.nss_catalogue,
-    'nss':                    api_endpoints.ns,
     'nss_inventory':          api_endpoints.nss_inventory,
     'ns_instance':            api_endpoints.ns_instance,
     'policies':               api_endpoints.policies,

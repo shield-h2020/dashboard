@@ -7,6 +7,6 @@ DELETE FROM keystone.group;
 
 DELETE FROM project WHERE name LIKE 'shield%';
 
-DELETE FROM user WHERE extra LIKE '{"description": "James Doe user", "email": "jdoe@example.com"}';
+DELETE FROM user WHERE extra NOT LIKE '{}';
 
 DELETE FROM role WHERE name LIKE 'shield%';

@@ -31,22 +31,14 @@ from pprint import pformat
 import requests
 from aaa_api import AaaApi
 from dashboardutils import http_utils
+from dashboardutils.error_utils import IssueHandling, IssueElement
+from werkzeug.exceptions import *
 
 
 class KeystoneAuthzApi(AaaApi):
-    # The dictionary is used only for fast lookup, hence the values are meaningless.
-    _roles_to_use = {
-        'shield_tenant_admin': 'dummy',
-        'shield_tenant_user':  'dummy'
-        }
-
-    _group_roles = {
-        'shield_tenant_admins': 'shield_tenant_admin',
-        'shield_tenant_users':  'shield_tenant_user'
-        }
-
     # Define the keystone endpoints to serve the AAA API.
     login = 'auth/tokens?nocatalog'
+    tokens = 'auth/tokens?allow_expired=False'
     tenants = 'domains'
     tenant_query = '{}?name={{}}'.format(tenants)
     for_tenant = '{}/{{}}'.format(tenants)
@@ -58,16 +50,70 @@ class KeystoneAuthzApi(AaaApi):
     users = 'users'
     for_group_user = '{}/users/{{}}'.format(for_group)
 
+    __errors = {
+        'TENANTS': {
+            'CONFLICT_ISSUE': {
+                IssueElement.ERROR:     ["User already exists. User: '{}'."],
+                IssueElement.EXCEPTION: Conflict("User already exists.")
+                },
+            'CREATION_ISSUE': {
+                IssueElement.ERROR:     ["Domain creation failed as it's not enabled. Data: '{}'."],
+                IssueElement.EXCEPTION: InternalServerError("Domain creation failed.")
+                },
+            'UPDATE_ISSUE':   {
+                IssueElement.ERROR:     ["Domain update failed as it's not enabled. Data: '{}'."],
+                IssueElement.EXCEPTION: InternalServerError("Domain update failed.")
+                }
+            },
+        'USERS':   {
+            'CREATION_ISSUE': {
+                IssueElement.ERROR:     ["User creation failed as domain doesn't match. Data: '{}'."],
+                IssueElement.EXCEPTION: InternalServerError("User creation failed.")
+                }
+            },
+        'AAA':     {
+            'UNREACHABLE': {
+                IssueElement.ERROR:     ["AAA system can't be reached at '{}'"],
+                IssueElement.EXCEPTION: Conflict("User already exists.")
+                }
+            }
+        }
+
     def __init__(self, protocol, host, port, username, password, service_admin, logger=None):
         super().__init__(protocol, host, port, username, password, service_admin, logger)
 
         self.logger = logger or logging.getLogger(__name__)
+        self.issue = IssueHandling(self.logger)
 
-        self.service_token = self._service_login(username, password, service_admin)
+        self.service_token = self.password_login(username, password, service_admin)
 
-        self.roles_available = self._get_roles()
+    def _login(self, authentication):
+        """
+        Login helper method.
 
-    def _service_login(self, username, password, scope):
+        :param authentication: The authentication data to supply for the login request.
+        :return: the login token for the authenticated user.
+        """
+
+        self.logger.debug('authentication: ' + pformat(authentication))
+
+        url = self.api_basepath + '/' + KeystoneAuthzApi.login
+
+        try:
+            r = http_utils.post_json(url, data=authentication)
+
+            token = r.json()
+            token['token']['id'] = r.headers['X-Subject-Token']
+
+            del token['token']['methods']
+            del token['token']['audit_ids']
+
+            return token
+
+        except requests.exceptions.ConnectionError:
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
+
+    def password_login(self, username, password, scope):
         """
         Super Administrator login to get the service token for all interactions with the external authorization system.
 
@@ -101,30 +147,46 @@ class KeystoneAuthzApi(AaaApi):
                 }
             }
 
-        self.logger.debug('authentication: ' + pformat(authentication))
+        return self._login(authentication)
 
-        url = self.api_basepath + '/' + KeystoneAuthzApi.login
+    def token_login(self, token, scope_id):
+        authentication = {
+            'auth': {
+                'identity': {
+                    'methods': [
+                        'token'
+                        ],
+                    'token':   {
+                        'id': token
+                        }
+                    },
+                'scope':    {
+                    'domain': {
+                        'id': scope_id
+                        }
+                    }
+                }
+            }
 
-        try:
-            r = requests.post(url, json=authentication, verify=False)
+        return self._login(authentication)
 
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
+    def get_token_data(self, token):
+        service_token = self.password_login(username=self.username,
+                                            password=self.password,
+                                            scope=self.service_admin)
 
-            if not r.status_code == http_utils.HTTP_201_CREATED:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+        url = self.api_basepath + '/' + KeystoneAuthzApi.tokens
 
-            token = r.json()
-            token['token']['id'] = r.headers['X-Subject-Token']
+        headers = {'X-Auth-Token': service_token['token']['id'], 'X-Subject-Token': token}
 
-            return token
+        # Let the connection exception pass through as it's properly tailored to convey to the caller.
+        r = http_utils.get(url, headers=headers)
 
-        except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+        token = r.json()
+        del token['token']['methods']
+        del token['token']['audit_ids']
+
+        return token
 
     def create_group(self, tenant_id, description, code, role_id):
         group = {
@@ -143,18 +205,7 @@ class KeystoneAuthzApi(AaaApi):
 
             self.logger.debug('create group\n' + pformat(group))
 
-            r = requests.post(url, headers=headers, json=group, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if r.status_code == http_utils.HTTP_409_CONFLICT:
-                raise FileExistsError
-
-            if not r.status_code == http_utils.HTTP_201_CREATED:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            r = http_utils.post_json(url, headers=headers, data=group)
 
             group_data = r.json()
 
@@ -168,9 +219,7 @@ class KeystoneAuthzApi(AaaApi):
             return group
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def create_role(self, role_code, description):
         role = {
@@ -186,18 +235,7 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = requests.post(url, headers=headers, json=role, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if r.status_code == http_utils.HTTP_409_CONFLICT:
-                raise FileExistsError
-
-            if not r.status_code == http_utils.HTTP_201_CREATED:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            r = http_utils.post_json(url, headers=headers, data=role)
 
             role_data = r.json()
 
@@ -206,9 +244,7 @@ class KeystoneAuthzApi(AaaApi):
             return role_data
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def create_tenant(self, tenant, description):
         domain = {
@@ -225,32 +261,20 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = requests.post(url, headers=headers, json=domain, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if r.status_code == http_utils.HTTP_409_CONFLICT:
-                raise FileExistsError
-
-            if not r.status_code == http_utils.HTTP_201_CREATED:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            r = http_utils.post_json(url, headers=headers, data=domain)
 
             domain_data = r.json()
 
-            self.logger.debug('domain created:\n' + pformat(domain_data))
-
             if domain_data['domain']['enabled'] is not True:
-                raise FileNotFoundError
+                self.issue.raise_ex(IssueElement.ERROR, self.__errors['TENANTS']['CREATION_ISSUE'],
+                                    [[pformat(domain_data)]])
+
+            self.logger.debug('domain created:\n' + pformat(domain_data))
 
             return domain_data
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def remove_tenant(self, tenant):
         self.logger.debug('tenant data: ' + pformat(tenant))
@@ -265,22 +289,12 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = requests.get(url, headers=headers, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if not r.status_code == http_utils.HTTP_200_OK:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            r = http_utils.get(url, headers=headers)
 
             return r.json()
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def set_tenant_status(self, tenant_id, enabled):
         domain = {
@@ -296,25 +310,16 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = requests.patch(url, headers=headers, json=domain, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if not r.status_code == http_utils.HTTP_200_OK:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            r = http_utils.patch(url, headers=headers, data=domain)
 
             domain_data = r.json()
 
             if domain_data['domain']['enabled'] is not enabled:
-                raise FileNotFoundError
+                self.issue.raise_ex(IssueElement.ERROR, self.__errors['TENANTS']['UPDATE_ISSUE'],
+                                    [[pformat(domain_data)]])
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def _delete_tenant(self, tenant_id):
         url = self.api_basepath + '/' + KeystoneAuthzApi.for_tenant.format(tenant_id)
@@ -322,59 +327,10 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = requests.delete(url, headers=headers, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if not r.status_code == http_utils.HTTP_204_NO_CONTENT:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            r = http_utils.delete(url, headers=headers)
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
-
-    def _get_roles(self):
-
-        url = self.api_basepath + '/' + KeystoneAuthzApi.roles
-
-        headers = {'X-Auth-Token': self.service_token['token']['id']}
-
-        try:
-            r = requests.get(url, headers=headers, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if not r.status_code == http_utils.HTTP_200_OK:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
-
-            roles_data = r.json()
-
-            roles_available = dict()
-
-            # As the external authorization system provides a list of roles, we need to go through it ignoring the
-            # "irrelevant" ones.
-            for role in roles_data['roles']:
-                role_found = self._roles_to_use.get(role['name'], None)
-
-                if role_found is None:
-                    # Ignore roles not relevant for the business logic.
-                    continue
-
-                roles_available[role['name']] = {'role_id': role['id']}
-
-            return roles_available
-
-        except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def _add_role_to_group(self, tenant_id, group_id, role_id):
 
@@ -383,20 +339,10 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = requests.put(url, headers=headers, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if not r.status_code == http_utils.HTTP_204_NO_CONTENT:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            http_utils.put_json(url, headers=headers)
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def _create_user(self, tenant_id, user_data):
         user = {
@@ -418,24 +364,13 @@ class KeystoneAuthzApi(AaaApi):
 
             self.logger.debug('create user\n' + pformat(user))
 
-            r = requests.post(url, headers=headers, json=user, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug('response:\n' + pformat(r.text))
-
-            if r.status_code == http_utils.HTTP_409_CONFLICT:
-                raise FileExistsError
-
-            if not r.status_code == http_utils.HTTP_201_CREATED:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            r = http_utils.post_json(url, headers=headers, data=user)
 
             user_data = r.json()
 
             if not user_data['user']['domain_id'] == tenant_id:
                 # Something fishy here.
-                raise EnvironmentError
+                self.issue.raise_ex(IssueElement.ERROR, self.__errors['USERS']['CREATION_ISSUE'], [[user_data]])
 
             user_data['user']['tenant_id'] = tenant_id
 
@@ -445,9 +380,7 @@ class KeystoneAuthzApi(AaaApi):
             return user_data
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
     def create_tenant_user(self, tenant_id, user_data):
         created_user = self._create_user(tenant_id, user_data)
@@ -468,17 +401,7 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = requests.put(url, headers=headers, verify=False)
-
-            if len(r.text) > 0:
-                self.logger.debug(r.text)
-
-            if not r.status_code == http_utils.HTTP_204_NO_CONTENT:
-                # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                #                     [[url, r.status_code]])
-                raise PermissionError
+            http_utils.put_json(url, headers=headers)
 
         except requests.exceptions.ConnectionError:
-            # self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-            #                     [[url]])
-            raise requests.exceptions.ConnectionError
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])

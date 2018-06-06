@@ -1,5 +1,5 @@
 {
-  "name": "Tenant Users Scope",
+  "name": "Client Users Scope",
   "code": "shield_scope_group_tenant_users",
   "scope_code": "shield_scope_tenant_user",
   "groups": ["shield-tenant-users"]

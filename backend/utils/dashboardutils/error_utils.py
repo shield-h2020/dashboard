@@ -38,12 +38,12 @@ class ExceptionMessage(Exception):
 
 class IssueElement(Enum):
     # Standard error types.
-    CRITICAL = logging.CRITICAL,
-    FATAL = logging.FATAL,
-    ERROR = logging.ERROR,
-    WARNING = logging.WARNING,
-    INFO = logging.INFO,
-    DEBUG = logging.DEBUG,
+    CRITICAL = logging.CRITICAL
+    FATAL = logging.FATAL
+    ERROR = logging.ERROR
+    WARNING = logging.WARNING
+    INFO = logging.INFO
+    DEBUG = logging.DEBUG
 
     # Additional elements allowed.
     EXCEPTION = '_exception_'
@@ -77,15 +77,15 @@ class IssueHandling(object):
 
     def log(self, level, error_data, params=None):
         if params is not None:
-            for idx, msg in enumerate(error_data[level.name]):
-                self.logger.log(level.value[0], msg.format(*params[idx]))
+            for idx, msg in enumerate(error_data[level]):
+                self.logger.log(level.value, msg.format(*params[idx]))
         else:
-            self.logger.log(level.value[0], error_data[level.name][0])
+            self.logger.log(level.value, error_data[level][0])
 
     def raise_ex(self, level, error_data, params=None):
         self.log(level, error_data, params)
 
-        raise error_data[IssueElement.EXCEPTION.name]
+        raise error_data[IssueElement.EXCEPTION]
 
     def raise_ex_no_log(self, error_data):
-        raise error_data[IssueElement.EXCEPTION.name]
+        raise error_data[IssueElement.EXCEPTION]

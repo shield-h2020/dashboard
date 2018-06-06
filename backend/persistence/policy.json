@@ -68,7 +68,7 @@
 
   "nss_catalogue:create": "rule:platform.admin",
   "nss_catalogue:read": "rule:any.tenant.admin",
-  "nss_catalogue:read_ns": "rule:the.tenant.admin",
+  "nss_catalogue:read_ns": "rule:any.tenant.admin",
   "nss_catalogue:update_ns": "rule:platform.admin",
   "nss_catalogue:delete_ns": "rule:platform.admin",
 
