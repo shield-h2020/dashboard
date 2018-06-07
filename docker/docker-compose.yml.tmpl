@@ -23,7 +23,7 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-version:             '3'
+version:             '3.3'
 
 services:
 
@@ -55,6 +55,8 @@ services:
 
     ${CNTR_AAA_DB}:
         image: mysql:5.7
+        labels:
+          - "project=${CNTR_PROJECT}"
         ports:
           - ${AAA_DB_PORT}:${AAA_DB_PORT}
         environment:
