@@ -44,3 +44,12 @@ policies_admin = {
     'resource_methods': ['POST'],
     'item_methods': []
 }
+
+tenant_ip_association = {
+    'item_title': 'tenant ip association',
+    'url': 'association',
+    'description': 'Allows the association between tenant and IPs',
+    'schema': api_model.tenant_ip_association,
+    'item_methods': ['GET', 'DELETE'],
+    'resource_methods': ['POST', 'GET'],
+}

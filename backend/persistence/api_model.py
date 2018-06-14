@@ -76,3 +76,17 @@ policy_model = {
         'required': True
     }
 }
+
+tenant_ip_association = {
+    "ip": {
+        "type": "list",
+        "schema": {"type": "ipv4address"},
+        "empty": False,
+        "required": True
+    },
+    "tenant_id": {
+        'type': 'string',
+        "empty": False,
+        "required": True
+    }
+}

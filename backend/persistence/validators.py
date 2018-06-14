@@ -24,32 +24,20 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+import re
 
-import logging
+from eve.io.mongo import Validator
 
-import api_docs
-import settings as cfg
-from dashboardpersistence.persistence import DashboardPersistence
-from dashboardutils import log
-from eve import Eve
-from eve_swagger import swagger, add_documentation
-from validators import NetworkValidator
 
-app = Eve(validator=NetworkValidator)
+class NetworkValidator(Validator):
+    """
+    A simple JSON data validator with a custom data type for IPv4 addresses
+    """
 
-app.on_update_policies += DashboardPersistence.convey_policy
-app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
-
-app.register_blueprint(swagger)
-
-app.config['SWAGGER_INFO'] = api_docs.swagger_info
-
-add_documentation({'paths': api_docs.paths})
-
-if __name__ == '__main__':
-    log.setup_logging()
-    logger = logging.getLogger(__name__)
-
-    # use '0.0.0.0' to ensure your REST API is reachable from all your
-    # network (and not only your computer).
-    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True)
+    def _validate_type_ipv4address(self, field, value):
+        """
+        checks that the given value is a valid IPv4 address
+        """
+        m = re.search("^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$", value)
+        if not m:
+            self._error(field, "Not a valid IPv4 address")

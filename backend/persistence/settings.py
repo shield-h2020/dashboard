@@ -67,5 +67,7 @@ TRANSPARENT_SCHEMA_RULES = True
 # be accessible to the API consumer.
 DOMAIN = {
     'policies': api_endpoints.policies,
-    'policies_admin': api_endpoints.policies_admin
+    'policies_admin': api_endpoints.policies_admin,
+
+    'tenant_ip_association': api_endpoints.tenant_ip_association
 }
