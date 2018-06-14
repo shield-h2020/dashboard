@@ -50,7 +50,7 @@ class SecurityPolicyPersistence:
                 IssueElement.EXCEPTION.name: SecurityPolicyNotComplaint('Policy not compliant with the schema defined.')
                 },
             'NOT_PERSISTED': {
-                IssueElement.ERROR.name: ['Persistence error for {}. Status: {}'],
+                IssueElement.ERROR.name:     ['Persistence error for {}. Status: {}'],
                 IssueElement.EXCEPTION.name: SecurityPolicyNotPersisted('Error persisting the security policy.')
                 }
             }
@@ -84,6 +84,8 @@ class SecurityPolicyPersistence:
             # Persist policy.
             url = self.settings['persist_url']
             headers = self.settings['persist_headers']
+
+            self.logger.debug('url: {} | headers: {} | data: {}'.format(url, headers, policy_json))
 
             r = requests.post(url, headers=headers, data=policy_json)
 
