@@ -44,3 +44,22 @@ policies_admin = {
     'resource_methods': ['POST'],
     'item_methods': []
 }
+
+notifications = {
+    'item_title': 'notifications',
+    'url': 'notifications',
+    'description': 'vNSF notifications',
+    'schema': api_model.notification_model,
+    'item_methods': ['GET', 'PATCH', 'DELETE']
+}
+
+notifications_admin = {
+    'item_title': 'admin notifications',
+    'url': 'admin/notifications',
+    'schema': api_model.notification_model,
+    'datasource': {
+        'source': 'notifications'
+    },
+    'resource_methods': ['POST'],
+    'item_methods': []
+}

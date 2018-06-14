@@ -30,6 +30,9 @@ import logging
 import settings as cfg
 from dashboarddare.dare_policy_q import DarePolicyQ
 from dashboarddare.dashboard_socket import DashboardSocket
+from dashboarddare.socket_server import TornadoSocketServer
+from dashboarddare.vnsf_notification import VNSFNotification
+from dashboarddare.vnsf_socket import VNSFSocket
 from dashboardutils import log
 from dashboardutils.pipe import PipeManager
 
@@ -43,6 +46,18 @@ dare_queue_settings = {
     'queue': cfg.MSGQ_DARE,
     'queue_ack': cfg.MSGQ_DARE_ACK,
     'topic': cfg.MSGQ_DARE_TOPIC
+}
+
+vnsf_queue_settings = {
+    'host': cfg.MSGQ_HOST,
+    'port': cfg.MSGQ_PORT,
+    'user': 'guest',
+    'pass': 'guest',
+    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
+    'queue': cfg.MSGQ_VNSF,
+    'queue_ack': cfg.MSGQ_VNSF_ACK,
+    'topic': cfg.MSGQ_VNSF_TOPIC
 }
 
 dashboard_socket_settings = {
@@ -74,4 +89,10 @@ if __name__ == '__main__':
 
     manager = PipeManager()
     DarePolicyQ(dare_queue_settings, manager)
-    DashboardSocket(dashboard_socket_settings, manager)
+    dashboard_socket = DashboardSocket(manager)
+
+    manager_notifications = PipeManager()
+    VNSFNotification(vnsf_queue_settings, manager_notifications)
+    vnsf_socket = VNSFSocket(manager_notifications)
+
+    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket)

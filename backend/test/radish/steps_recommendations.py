@@ -24,35 +24,33 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+import os
+import re
+from shutil import copyfile
 from time import sleep
 
-import os
 import pika
-import re
 import websocket
-from dashboardtestingutils.socket_client import ReceiveOnlySocketClient
+from dashboardtestingutils.steps_rmsq import *
+from dashboardtestingutils.steps_sockets import *
 from dashboardtestingutils.steps_utils import *
 from dashboardutils import http_codes
 from radish import given, when, then, world
 from radish.stepmodel import Step
-from shutil import copyfile
 
 
 @when(re.compile(u'I receive a security recommendation (.*)'))
 def security_policy(step, policy):
-    if world.my_context['msgq_channel'] is None:
-        raise EnvironmentError('Recommendations Queue must be up and running!!!')
-
-    with open(os.path.join(world.env['data']['input_data'], policy), 'r') as msg:
-        world.my_context['msgq_channel'].basic_publish(exchange=world.env['hosts']['msg_q']['exchange'],
-                                                       routing_key=world.env['hosts']['msg_q']['topic'],
-                                                       body=msg.read())
+    send_notification(
+        os.path.join(world.env['data']['input_data']),
+        world.my_context['msgq_channel'], world.env['hosts']['msg_q']['exchange'],
+        world.env['hosts']['msg_q']['topic'], policy)
 
 
 @then(re.compile(u'The security recommendation must be persisted (.*)'))
 def is_policy_persisted(step, policy):
     # Ensure that the system under test has time to persist the recommendation.
-    sleep(1)
+    sleep(3)
 
     http_get(step, world.endpoints['policies_latest'])
     matches_json_file(step, policy)
@@ -60,19 +58,7 @@ def is_policy_persisted(step, policy):
 
 @then(re.compile(u'The security recommendation notification must be received (.*)'))
 def check_policy_notification(step, expected_notification):
-    if world.my_context['socket'] is None:
-        raise EnvironmentError('Recommendations Socket must be up and running!!!')
-
-    # Ensure that the system under test has enough time to send the notification.
-    sleep(1)
-
-    with open(world.my_context['socket_output_file'], 'r') as f:
-        actual_data = json.load(f)
-
-    with open(os.path.join(world.env['data']['expected_output'], expected_notification), 'r') as f:
-        expected_data = json.load(f)
-
-    matches_json(actual_data, expected_data)
+    check_socket_message(step, expected_notification)
 
 
 @given(re.compile(u'I mock the latest security recommendation (.*)'))
@@ -130,21 +116,6 @@ def recommendations_queue_check(step):
     connection.close()
 
 
-@given(u'The Recommendations Queue is ready')
-def recommendations_queue_ready(step):
-    if world.my_context['msgq_channel'] is not None:
-        return
-
-    world.my_context['msgq_connection'] = pika.BlockingConnection(
-        pika.ConnectionParameters(host=world.env['hosts']['msg_q']['host'],
-                                  port=world.env['hosts']['msg_q']['port']))
-
-    world.my_context['msgq_channel'] = world.my_context['msgq_connection'].channel()
-
-    world.my_context['msgq_channel'].exchange_declare(exchange=world.env['hosts']['msg_q']['exchange'],
-                                                      exchange_type=world.env['hosts']['msg_q']['exchange_type'])
-
-
 @when(u'I check the Recommendations Socket')
 def recommendations_socket_check(step):
     """
@@ -162,24 +133,4 @@ def recommendations_socket_ready(step):
     Connecting to a socket that isn't available yields the 'WebSocketBadStatusException: Handshake status 404'
     exception so no further checks are needed for the step purpose.
     """
-
-    if world.my_context['socket'] is not None:
-        return
-
-    world.my_context['socket'] = ReceiveOnlySocketClient(url=world.env['hosts']['socket']['host'],
-                                                         callback=recommendations_socket_msg,
-                                                         output=world.my_context['socket_output_file'])
-
-
-def recommendations_socket_msg(message, output_file):
-    """
-    Callback function for when a security recommendation is received on the socket. Every new recommendation
-    overwrites the output file.
-
-    :param message: The security recommendation.
-    :param output_file: The file path where to store the recommendation received in the socket.
-    """
-
-    # Any exception will cause a test failure which is the intended behaviour.
-    with open(output_file, 'w') as f:
-        json.dump(json.loads(message), f)
+    set_socket_client(world.sockets_endpoints['policy'])

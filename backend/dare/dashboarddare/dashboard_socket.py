@@ -27,12 +27,8 @@
 
 import logging
 
-from tornado.ioloop import IOLoop
-from tornado.web import Application
-from tornado.websocket import WebSocketClosedError
-
 from dashboardutils.pipe import PipeConsumer
-from .secpolicy_socket_handler import SecurityPolicySocketHandler
+from tornado.websocket import WebSocketClosedError
 
 
 class DashboardSocket(PipeConsumer):
@@ -59,16 +55,15 @@ class DashboardSocket(PipeConsumer):
     # Clients connected to the socket.
     clients = set([])
 
-    def __init__(self, settings, pipe):
+    def __init__(self, pipe):
         """
-        :param settings: The socket settings.
         :param pipe: The pipe manager where this instance is to be identified as an events consumer.
         :param logger: Logger object.
         """
 
         super().__init__()
         self.logger = logging.getLogger(__name__)
-
+        """
         self.application = Application([
 
             # Frontend Interface.
@@ -76,7 +71,7 @@ class DashboardSocket(PipeConsumer):
         ])
 
         self._settings = settings
-
+        """
         # Get the socket up and running.
         self.pipe = pipe
         self.pipe.boot_out_sink(self)
@@ -85,19 +80,21 @@ class DashboardSocket(PipeConsumer):
         """
         Sets up a web socket on a specific port.
         """
-
+        """
         self.logger.debug('Setup')
         self.application.listen(port=self._settings['port'])
+        """
 
     def bootup(self):
         """
         Gets the Web socket up and running to communicate with the dashboard.
         """
-
+        """
         self.logger.info(
             'Starting web socket on port {}'.format(self._settings['port']))
 
         IOLoop.instance().start()
+        """
 
     def register_socket(self, socket):
         """
@@ -117,7 +114,7 @@ class DashboardSocket(PipeConsumer):
         self.logger.debug('Unrolled socket %r', socket)
         self.clients.discard(socket)
 
-    def update(self, data):
+    def update(self, data, **kwargs):
         """
         Called when a new policy is received in the input pipe.
 

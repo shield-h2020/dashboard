@@ -76,3 +76,22 @@ policy_model = {
         'required': True
     }
 }
+
+notification_model = {
+    "tenant": {
+        "type": "string",
+        "empty": False,
+        "required": True
+    },
+    "type": {
+        "type": "string",
+        "empty": False,
+        "required": True
+    },
+    "data": {
+        "type": "string",
+        "empty": False,
+        "required": True
+    }
+}
+

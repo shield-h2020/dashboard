@@ -25,10 +25,14 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-# Security policy related.
-SECPOLICY_NOT_COMPLIANT = 'Policy not compliant with the schema defined.'
-SECPOLICY_NOT_PERSISTED = 'Error persisting the security policy.'
-
-VNSFNOT_NOT_PERSISTED = 'Error persisting the vNSF notification'
-
-ASSOCIATION_ERROR = 'Tenant IP association error'
+vnsf_notification = {
+    "event": {
+        'type': 'dict',
+        'allow_unknown': True,
+        'schema': {
+            'destination-ip': {
+                'type': 'string'
+            }
+        }
+    }
+}

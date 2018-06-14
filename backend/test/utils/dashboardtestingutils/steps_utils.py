@@ -25,9 +25,11 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 import json
-
 import os
 import re
+from pprint import pprint
+from shutil import copyfile
+
 import requests
 from deepdiff import DeepDiff
 from radish import given, when, then, world
@@ -197,3 +199,25 @@ def set_vnsfo_mock_response(step, file):
     """
 
     step.context.mock_vnsfo['response_file'] = file
+
+
+@given(re.compile(u'I mock the association response with (.*)'))
+def set_association_mock_response(step, file):
+    """
+    Defines the response to be sent by the mock Association IP tenant.
+
+    :param step: the test step context data
+    :param file: the file where the mock data lives. It is assumed that the file base path is the mock-vNSFO-data
+    folder defined in the testing environment settings.
+    """
+
+    # Set proper association response.
+    endpoint = os.path.dirname(file)
+    dest_file = os.path.join(world.env['mock']['vnsfo_folder'], endpoint, 'index.get.json')
+    dest_path = os.path.dirname(dest_file)
+    if not os.path.exists(dest_path):
+        os.makedirs(dest_path, exist_ok=True)
+
+    src_file = os.path.join(world.env['mock']['association_ip_data'], file)
+    assert os.path.isfile(src_file)
+    copyfile(src_file, dest_file)

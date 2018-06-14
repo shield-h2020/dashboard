@@ -24,11 +24,32 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+import os
+from time import sleep
 
-# Security policy related.
-SECPOLICY_NOT_COMPLIANT = 'Policy not compliant with the schema defined.'
-SECPOLICY_NOT_PERSISTED = 'Error persisting the security policy.'
+import pika
+from radish import given, world
 
-VNSFNOT_NOT_PERSISTED = 'Error persisting the vNSF notification'
 
-ASSOCIATION_ERROR = 'Tenant IP association error'
+@given(u'The Recommendations Queue is ready')
+def recommendations_queue_ready(step):
+    if world.my_context['msgq_channel'] is not None:
+        return
+
+    world.my_context['msgq_connection'] = pika.BlockingConnection(
+        pika.ConnectionParameters(host=world.env['hosts']['msg_q']['host'],
+                                  port=world.env['hosts']['msg_q']['port']))
+
+    world.my_context['msgq_channel'] = world.my_context['msgq_connection'].channel()
+
+    world.my_context['msgq_channel'].exchange_declare(exchange=world.env['hosts']['msg_q']['exchange'],
+                                                      exchange_type=world.env['hosts']['msg_q']['exchange_type'])
+
+
+def send_notification(input_data, channel, exchange, topic, data):
+    if channel is None:
+        raise EnvironmentError('Recommendations Queue must be up and running!!!')
+    with open(os.path.join(input_data, data), 'r') as msg:
+        channel.basic_publish(exchange=exchange, routing_key=topic,
+                              body=msg.read())
+    sleep(3)

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -25,10 +23,20 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-# Security policy related.
-SECPOLICY_NOT_COMPLIANT = 'Policy not compliant with the schema defined.'
-SECPOLICY_NOT_PERSISTED = 'Error persisting the security policy.'
+Feature: vNSF notifications
+  Validates the reception and storage of vNSF notifications.
 
-VNSFNOT_NOT_PERSISTED = 'Error persisting the vNSF notification'
+  Background: Ensure the environment is up and running
+    Given The Recommendations Queue is ready
 
-ASSOCIATION_ERROR = 'Tenant IP association error'
+  @smoke
+  Scenario Outline: VNSF notifications
+    Given A vnsf notification socket is ready for <tenant>
+    Given I mock the association response with <mock_file>
+    When I receive a VNSF notification with <vnsf_notifications>
+    Then The vNSF notification must be persisted <in_datastore>
+    Then The vNSF notification must be received <from_socket>
+
+    Examples:
+      | tenant | mock_file                                      | vnsf_notifications                                | in_datastore                                       | from_socket                              |
+      | af09   | association/tenant-ip-association-success.json | vnsf_notification/vnsf-notification.json          | vnsf_notification/vnsf-notification-persisted.json | vnsf_notification/vnsf-notification.json |

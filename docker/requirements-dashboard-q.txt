@@ -41,3 +41,4 @@ tornado==4.5.2
 urllib3==1.22
 xmlschema==0.9.12
 zope.interface==4.4.3
+cerberus==1.2           # Make JSON schema validations
