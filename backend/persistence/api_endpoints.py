@@ -186,6 +186,19 @@ notifications_admin = {
     'public_methods':   ['POST']
     }
 
+tenant_ip_association = {
+    'item_title':          'tenant ip association',
+    'url':                 'tenant_ips',
+    'description':         "Allows the association between tenant and it's assigned IPs",
+    'schema':              api_model.tenant_ip_association,
+    'resource_methods':    ['POST', 'GET'],
+    'item_methods':        ['GET', 'DELETE'],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':      ['POST', 'GET'],
+    'public_item_methods': ['GET', 'DELETE']
+    }
+
 tenant_scopes = {
     'item_title':         EndpointHelper.get_name(Endpoint.TENANT_SCOPES),
     'url':                EndpointHelper.get_url(Endpoint.TENANT_SCOPES),

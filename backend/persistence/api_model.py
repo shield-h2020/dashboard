@@ -397,3 +397,17 @@ notification_model = {
         "required": True
         }
     }
+
+tenant_ip_association = {
+    "tenant_id": {
+        'type':     'string',
+        "empty":    False,
+        "required": True
+        },
+    "ip":        {
+        "type":     "list",
+        "schema":   {"type": "ipv4address"},
+        "empty":    False,
+        "required": True
+        }
+    }

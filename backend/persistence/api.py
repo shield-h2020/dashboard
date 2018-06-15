@@ -37,8 +37,9 @@ from hooks_login import LoginHooks
 from hooks_nss_inventory import NssInventoryHooks
 from hooks_tenants import TenantHooks
 from security import TokenAuthzOslo
+from validators import NetworkValidator
 
-app = Eve(auth=TokenAuthzOslo)
+app = Eve(auth=TokenAuthzOslo, validator=NetworkValidator)
 
 app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
