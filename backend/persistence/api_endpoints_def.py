@@ -618,3 +618,44 @@ class Endpoint(Enum):
                           }
                       }
                   }
+
+    # NOTIFICATIONS = {__NAME__:     'notifications',
+    #                  __URL__:      'notifications',
+    #                  __SCHEMA__:   api_model.notification_model,
+    #                  __RESOURCE__: {
+    #                      __HTTP_POST__: {
+    #                          __POLICY__: 'notifications:create',
+    #                          __DOCS__:   {
+    #                              'summary':     'TBD',
+    #                              'description': 'TBD',
+    #                              'responses':   http_utils.responses_read
+    #                              }
+    #                          },
+    #                      __HTTP_GET__:  {
+    #                          __POLICY__: 'notifications:read',
+    #                          __DOCS__:   {
+    #                              'summary':     'TBD',
+    #                              'description': 'TBD',
+    #                              'responses':   http_utils.responses_read
+    #                              }
+    #                          }
+    #                      },
+    #                  __ITEM__:     {
+    #                      __HTTP_GET__:   {
+    #                          __POLICY__: 'notifications:read_notification',
+    #                          __DOCS__:   {
+    #                              'summary':     'Shows a tenant details',
+    #                              'description': 'Provides detailed information on a tenant.',
+    #                              'responses':   http_utils.responses_read
+    #                              }
+    #                          },
+    #                      __HTTP_PATCH__: {
+    #                          __POLICY__: 'notifications:update_notification',
+    #                          __DOCS__:   {
+    #                              'summary':     'TBD',
+    #                              'description': 'TBD',
+    #                              'responses':   http_utils.responses_read
+    #                              }
+    #                          }
+    #                      }
+    #                  }

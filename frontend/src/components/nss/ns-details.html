@@ -1,0 +1,25 @@
+<div class="{{::$ctrl.styles.scroller}}">
+  <header class="{{::$ctrl.styles.header}}">
+    <span>{{$ctrl.STRINGS.TITLE}}</span>
+  </header>
+  <div class="{{::$ctrl.styles.entrygroup}}">
+    <div class="{{::$ctrl.styles.entry}}">
+      <span class="{{::$ctrl.styles.label}}">Id</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.vnsf.id}}</span>
+    </div>
+    <div class="{{::$ctrl.styles.entry}}">
+      <span class="{{::$ctrl.styles.label}}">Created</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.vnsf.created}}</span>
+    </div>
+    <div class="{{::$ctrl.styles.entry}}">
+      <span class="{{::$ctrl.styles.label}}">Updated</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.vnsf.updated}}</span>
+    </div>
+    <div class="{{::$ctrl.styles.entry}}">
+      <span class="{{::$ctrl.styles.label}}">State</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.vnsf.state}}</span>
+    </div>
+  </div>
+  <header class="{{::$ctrl.styles.header}}">
+    <span>Descriptor (yaml)</span>
+  </header>
+  <div class="{{::$ctrl.styles.xmlviewer}}" ng-click="$ctrl.expandDescriptor" ng-class="{'{{::$ctrl.styles[xmlviewer--expand]}}': $ctrl.descriptorExpand}">
+    {{$ctrl.vnsf.descriptor}}
+  </div>
+</div>

@@ -1,4 +1,0 @@
-  <label class="{{::$ctrl.compact ? $ctrl.styles['label--compact'] : $ctrl.styles.label}}">
-    <div ng-if="$ctrl.label" class="{{::$ctrl.styles.label__text}}">{{$ctrl.label}}</div>
-    <select class="{{::$ctrl.styles.input}}" ng-change="$ctrl.change()" ng-model="$ctrl.selected" ng-options="selectedItem.value as selectedItem.text for selectedItem in $ctrl.options"></select>
-  </label>

@@ -160,6 +160,32 @@ policies_admin = {
     'public_methods':   ['POST']
     }
 
+notifications = {
+    'item_title':          'notifications',
+    'description':         'Notifications',
+    'schema':              api_model.notification_model,
+    'resource_methods':    ['POST', 'GET'],
+    'item_methods':        ['GET', 'PATCH'],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':      ['GET'],
+    'public_item_methods': ['GET', 'PATCH']
+    }
+
+notifications_admin = {
+    'item_title':       'admin notifications',
+    'url':              'admin/notifications',
+    'schema':           api_model.notification_model,
+    'datasource':       {
+        'source': 'notifications'
+        },
+    'resource_methods': ['POST'],
+    'item_methods':     [],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['POST']
+    }
+
 tenant_scopes = {
     'item_title':         EndpointHelper.get_name(Endpoint.TENANT_SCOPES),
     'url':                EndpointHelper.get_url(Endpoint.TENANT_SCOPES),

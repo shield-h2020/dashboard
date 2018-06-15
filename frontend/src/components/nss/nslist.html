@@ -1,0 +1,55 @@
+<section>
+    <h4 class="sn-uppertitle">{{$ctrl.strings.title}}</h4>
+    <div auto-resizer class="sn-card">
+        <header class="sn-card__header">
+            <h5 class="header__title">{{$ctrl.strings.table.title}}</h5>
+            <button ng-click="$ctrl.fileCreateApp()" class="sn-button sn-button--primary">{{$ctrl.strings.button}}</button>
+        </header>
+        <sn-table
+          config="$ctrl.tableConf"
+          item-source="$ctrl.tableSource(pagination, filters)"
+          needs-refresh="$ctrl.refreshTable"
+          has-pagination="true"
+          actions="$ctrl.strings.table.actions"
+          actions-callback="$ctrl.onAction($event.value.item, $event.value.action)"
+          auto-call="true"
+        ></sn-table>
+    </div>
+    <sn-upload-box on-submit="$ctrl.uploadApp($event.file)"></sn-upload-box>
+    <sn-modal
+      modal-open="$ctrl.modalOpen"
+      modal-handler="$ctrl.modalHandler($event.value)"
+      modal-data="$ctrl.selectedNS"
+    >
+      <div class="{{::$ctrl.styles.scroller}}">
+        <header class="{{::$ctrl.styles.header}}">
+          <span>NS Details</span>
+        </header>
+        <div class="{{::$ctrl.styles.entrygroup}}">
+          <div class="{{::$ctrl.styles.entry}}">
+            <span class="{{::$ctrl.styles.label}}">Id</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._id}}</span>
+          </div>
+          <div class="{{::$ctrl.styles.entry}}">
+            <span class="{{::$ctrl.styles.label}}">Created</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._created}}</span>
+          </div>
+          <div class="{{::$ctrl.styles.entry}}">
+            <span class="{{::$ctrl.styles.label}}">Updated</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._updated}}</span>
+          </div>
+          <div class="{{::$ctrl.styles.entry}}">
+            <span class="{{::$ctrl.styles.label}}">State</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData.state}}</span>
+          </div>
+          <div class="{{::$ctrl.styles.entry}}">
+            <span class="{{::$ctrl.styles.label}}">Vendor</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData.vendor}}</span>
+          </div>
+        </div>
+        <div collapsible>
+          <header class="{{::$ctrl.styles.header}}">
+            <span>Descriptor</span>
+          </header>
+          <div class="{{::$ctrl.styles.xmlviewer}}" ng-class="{'{{::$ctrl.styles[xmlviewer--expand]}}': $ctrl.descriptorExpand}">
+            {{$ctrl.modalData.descriptor}}
+          </div>
+        </div>
+      </div>
+    </sn-modal>
+</section>

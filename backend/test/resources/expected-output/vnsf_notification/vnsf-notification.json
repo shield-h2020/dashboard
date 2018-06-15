@@ -1,0 +1,15 @@
+{
+  "event": {
+    "signature-id": 10000002,
+    "event-id": 1,
+    "protocol": 6,
+    "event-second": 1458746598,
+    "event-microsecond": 778441,
+    "classification-id": 24,
+    "classification": "Detection of Malicious traffic",
+    "destination-ip": "192.168.1.237",
+    "dport-icode": 80,
+    "source-ip": "23.144.220.60",
+    "sport-itype": 34276
+  }
+}

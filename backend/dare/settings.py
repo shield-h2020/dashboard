@@ -49,6 +49,11 @@ MSGQ_DARE = os.environ.get('MSGQ_DARE', '__no_DARE_queue_set__')
 MSGQ_DARE_ACK = bool(os.environ.get('MSGQ_DARE_ACK', False))
 MSGQ_DARE_TOPIC = os.environ.get('MSGQ_DARE_TOPIC', 'shield.dare.policy')
 
+# VNSF message queue settings
+MSGQ_VNSF = os.environ.get('MSGQ_VNSF', '__no_VNSF_queue_set__')
+MSGQ_VNSF_ACK = bool(os.environ.get('MSGQ_VNSF_ACK', False))
+MSGQ_VNSF_TOPIC = os.environ.get('MSGQ_VNSF_TOPIC', 'shield.notifications.vnsf')
+
 ###
 #   Websocket
 ###
@@ -67,16 +72,49 @@ BACKENDAPI_URL = '{}://{}:{}'.format(BACKENDAPI_PROTOCOL, BACKENDAPI_HOST, BACKE
 
 __policy_rest__ = {
     'persist_policy': {
-        'url': '{}/{}'.format(BACKENDAPI_URL, 'admin/policies'),
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'admin/policies'),
         'headers': {'Content-Type': 'application/json'}
+        }
     }
-}
 
 POLICYAPI_PERSIST_URL = __policy_rest__['persist_policy']['url']
 POLICYAPI_PERSIST_HEADERS = __policy_rest__['persist_policy']['headers']
 
 ###
-#   Policy schema
+#   Notification persistence
+###
+
+__vnsf_notification_rest__ = {
+    'persist_notification': {
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'admin/notifications'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+NOTIFICATION_API_PERSIST_URL = __vnsf_notification_rest__['persist_notification']['url']
+NOTIFICATION_API_PERSIST_HEADERS = __vnsf_notification_rest__['persist_notification']['headers']
+
+###
+#   Association Tenant IP
+###
+
+TENANT_IP_PROTOCOL = os.environ.get('TENANT_IP_PROTOCOL', None)
+TENANT_IP_HOST = os.environ.get('TENANT_IP_HOST', 'localhost')
+TENANT_IP_PORT = os.environ.get('TENANT_IP_PORT', -1)
+TENANT_IP_URL = '{}://{}:{}'.format(TENANT_IP_PROTOCOL, TENANT_IP_HOST, TENANT_IP_PORT)
+
+__association_rest__ = {
+    'association': {
+        'url':     '{}/{}'.format(TENANT_IP_URL, 'association'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+ASSOCIATION_API_URL = __association_rest__['association']['url']
+ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
+
+###
+#   Schemas
 ###
 
 POLICYSCHEMA_FILE = 'schema/mspl.xsd'

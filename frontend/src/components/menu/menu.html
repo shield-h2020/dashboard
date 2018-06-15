@@ -1,0 +1,54 @@
+<nav class="{{::$ctrl.styles.menu}}">
+  <div class="{{::$ctrl.styles.logo}}">
+      <img src="~assets/images/shield-logo.svg" alt="">
+  </div>
+  <div class="{{::$ctrl.styles.section}}">
+      <span>{{$ctrl.user.user.domain.name}}</span>
+      <span ng-if="$ctrl.userRole">({{ $ctrl.userRole }})</span>
+  </div>
+  <ul class="{{::$ctrl.styles.list}}">
+    <li
+      ng-class="{'{{::$ctrl.styles.item}}' : entry.route || entry.children}"
+      ng-repeat="entry in $ctrl.menuEntries"
+    >
+      <a
+        ng-if="entry.route"
+        ui-sref={{entry.route}}
+        ui-sref-active="{{::$ctrl.styles['item--active']}}"
+        class="{{::$ctrl.styles.item__label}}"
+      >
+        <i class="glyphicon glyphicon-th-large"></i>
+        {{entry.text}}
+      </a>
+      <div
+        ng-if="!entry.route && !entry.children"
+        class="{{::$ctrl.styles.section}}"
+      >
+        {{ entry.text }}
+      </div>
+    </li>
+  </ul>
+  <div class="{{::$ctrl.styles.profile}}" ng-click="$ctrl.toggleUserOptions()">
+    <ul
+      class="{{::$ctrl.styles.profile__menu}}"
+      ng-class="{'{{$ctrl.styles.profile__menuOpen}}': $ctrl.userOptionsOpen}"
+    >
+      <li class="{{::$ctrl.styles.profile__item}}">{{::$ctrl.strings.profile.changePass}}</li>
+      <li
+        class="{{::$ctrl.styles.profile__item}}"
+        ng-click="$ctrl.logout()"
+      >{{::$ctrl.strings.profile.logout}}</li>
+    </ul>
+    <div class="{{::$ctrl.styles.container}}">
+      <div class="{{::$ctrl.styles.profile__user}}">
+        <span>{{$ctrl.user.user.name}}</span>
+      </div>
+      <div
+        class="{{::$ctrl.styles.profile__actions}}"
+        ng-class="{'{{$ctrl.styles.profile__actionsActive}}': $ctrl.userOptionsOpen}"
+      >
+        <div class="{{::$ctrl.styles.downicon}}"></div>
+      </div>
+    </div>
+  </div>
+</nav>

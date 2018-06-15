@@ -30,26 +30,37 @@ from radish import world
 
 world.env = {
     'hosts': {
-        'backend_api': {
+        'backend_api':   {
             'host': '{}://{}:{}'.format(os.environ['BACKENDAPI_PROTOCOL'], os.environ['BACKENDAPI_HOST'],
                                         os.environ['BACKENDAPI_PORT'])
             },
-        'msg_q':       {
+        'tenant_ip_api': {
+            'host': '{}://{}:{}'.format(os.environ['TENANT_IP_PROTOCOL'], os.environ['TENANT_IP_HOST'],
+                                        os.environ['TENANT_IP_PORT'])
+            },
+        'msg_q':         {
             'host':          os.environ['MSGQ_HOST'],
             'port':          int(os.environ['MSGQ_PORT']),
             'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
             'topic':         os.environ['MSGQ_DARE_TOPIC']
             },
-        'socket':      {
-            'host': 'ws://{}:{}/policy'.format(os.environ['SKT_HOST'],
-                                               os.environ['SKT_PORT'])
+        'vnsf_msg_q':    {
+            'host':          os.environ['MSGQ_HOST'],
+            'port':          int(os.environ['MSGQ_PORT']),
+            'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
+            'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
+            'topic':         os.environ['MSGQ_VNSF_TOPIC']
             },
-        'vnsfo':       {
+        'socket_server': {
+            'host': 'ws://{}:{}'.format(os.environ['SKT_HOST'],
+                                        os.environ['SKT_PORT'])
+            },
+        'vnsfo':         {
             'host': '{}://{}:{}/{}'.format(os.environ['VNSFO_PROTOCOL'], os.environ['VNSFO_HOST'],
                                            os.environ['VNSFO_PORT'], os.environ['VNSFO_API'])
             },
-        'aaa':         {
+        'aaa':           {
             'host':            '{}://{}:{}/v3'.format(os.environ['AAA_PROTOCOL'], os.environ['AAA_HOST'],
                                                       os.environ['AAA_PORT']),
             'svc_admin_scope': os.environ['AAA_SVC_ADMIN_SCOPE'],
@@ -62,8 +73,12 @@ world.env = {
         'expected_output': os.environ['FOLDER_TESTS_EXPECTED_OUTPUT'],
         },
     'mock':  {
-        'vnsfo_data':   os.environ['FOLDER_TESTS_MOCK_VNSFO_DATA'],
-        'vnsfo_folder': os.path.join(os.environ['CNTR_FOLDER_VNSFO'], os.environ['VNSFO_API'])
+        'vnsfo_data':       os.environ['FOLDER_TESTS_MOCK_VNSFO_DATA'],
+        'vnsfo_folder':     os.path.join(os.environ['CNTR_FOLDER_VNSFO'], os.environ['VNSFO_API']),
+
+        # Association Mocks
+        'tenant_ip_data':   os.environ['FOLDER_TESTS_MOCK_TENANT_IP_DATA'],
+        'tenant_ip_folder': os.environ['CNTR_FOLDER_VNSFO']
         }
     }
 
@@ -129,10 +144,14 @@ world.endpoints = {
 
     'policies_apply':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies'),
 
+    'vnsf_notifications_latest':  '{}/{}?sort=[("_updated", -1)]&max_results=1'.format(
+            world.env['hosts']['backend_api']['host'], 'notifications'),
+
     'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations')
 
     }
 
-world.mock_vnsfo_endpoints = {
-    'apply_policy': 'vnsf/action'
+world.sockets_endpoints = {
+    'policy':            '{}/policy'.format(world.env['hosts']['socket_server']['host']),
+    'vnsf_notification': '{}/vnsf/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}')
     }

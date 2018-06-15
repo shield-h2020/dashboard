@@ -1,0 +1,23 @@
+{
+  "ignore": [
+    "root['_links']",
+    "root['_meta']",
+    "root['self']",
+    "root['next']",
+    "root['parent']",
+    "root['_items'][0]['_links']",
+    "root['_items'][0]['_id']",
+    "root['_items'][0]['_etag']",
+    "root['_items'][0]['_created']",
+    "root['_items'][0]['_updated']"
+  ],
+  "expected": {
+    "_items": [
+      {
+        "tenant_id": "af09",
+        "type": "VNSF",
+        "data": "{\"event\": {\"signature-id\": 10000002, \"event-id\": 1, \"protocol\": 6, \"event-second\": 1458746598, \"event-microsecond\": 778441, \"classification-id\": 24, \"classification\": \"Detection of Malicious traffic\", \"destination-ip\": \"192.168.1.237\", \"dport-icode\": 80, \"source-ip\": \"23.144.220.60\", \"sport-itype\": 34276}}"
+      }
+    ]
+  }
+}

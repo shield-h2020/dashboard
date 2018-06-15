@@ -379,3 +379,21 @@ validations_model = {
         'type': 'string'
         }
     }
+
+notification_model = {
+    "tenant_id": {
+        "type":     "string",
+        "empty":    False,
+        "required": True
+        },
+    "type":      {
+        "type":     "string",
+        "empty":    False,
+        "required": True
+        },
+    "data":      {
+        "type":     "string",
+        "empty":    False,
+        "required": True
+        }
+    }

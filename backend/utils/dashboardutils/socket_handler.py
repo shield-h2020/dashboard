@@ -26,8 +26,8 @@
 
 
 import logging
-
 from abc import ABCMeta, abstractmethod
+
 from tornado.websocket import WebSocketHandler
 
 
@@ -41,7 +41,6 @@ class AbstractSocketHandler(WebSocketHandler, metaclass=ABCMeta):
         self.logger = logging.getLogger(__name__)
 
         self.controller = kwargs.get('controller')
-        self.controller.register_socket(self)
         self.logger.debug('Initialize with controller: %r', self.controller)
 
     def initialize(self, **kwargs):
@@ -56,8 +55,9 @@ class AbstractSocketHandler(WebSocketHandler, metaclass=ABCMeta):
         # Socket controller instance (used for the subscriber pattern) to reference this socket instance.
         self.controller = None
 
-    def open(self):
+    def open(self, **kwargs):
         self.logger.debug('New client connected - %r', self)
+        self.controller.register_socket(self, **kwargs)
 
     def check_origin(self, origin):
         # Avoids CORS when using clients from localhost.
@@ -72,4 +72,4 @@ class AbstractSocketHandler(WebSocketHandler, metaclass=ABCMeta):
 
     def on_close(self):
         self.logger.debug('Client disconnected - %r', self)
-        self.controller.unroll_socket(self)
+        self.controller.unroll_socket(self, **self.open_kwargs)

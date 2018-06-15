@@ -91,5 +91,7 @@ DOMAIN = {
     'ns_instance':            api_endpoints.ns_instance,
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin,
-    'validations':            api_endpoints.validations
+    'validations':            api_endpoints.validations,
+    'notifications':          api_endpoints.notifications,
+    'notifications_admin':    api_endpoints.notifications_admin,
     }

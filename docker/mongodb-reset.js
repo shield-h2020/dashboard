@@ -46,3 +46,4 @@ db.nss_inventory.deleteMany({})
 db.validations.deleteMany({})
 
 db.policies.deleteMany({})
+db.notifications.deleteMany({})
