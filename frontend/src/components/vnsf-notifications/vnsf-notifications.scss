@@ -1,0 +1,12 @@
+.event-entry {
+  display: flex;
+  font-size: 15px;
+
+  &__title {
+    font-size: 14px;
+    display: inline-block;
+    width: 40%;
+    color: #acacac;
+    vertical-align: bottom;
+  }
+}

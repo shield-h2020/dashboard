@@ -34,4 +34,7 @@
       <img class="inline-m" src="./assets/ic-loading.svg" />{{::$ctrl.strings.loading}}
     </span>
   </div>
+  <div ng-show="!$ctrl.loading && !$ctrl.items.length" class="{{::$ctrl.styles.table__nodata}}">
+    <span>{{ ::$ctrl.strings.noData }}</span>
+  </div>
 </section>

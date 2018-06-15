@@ -1,7 +1,4 @@
-const TENANT_ADMIN = 'shield_tenant_admin';
-const SUPER_ADMIN = 'admin';
-const TENANT_USER = 'shield_tenant_user';
-const DEVELOPER = 'shield_developer';
+import { TENANT_ADMIN, SUPER_ADMIN, TENANT_USER, DEVELOPER } from '../../strings/role-strings';
 
 export const MENU_ENTRIES = [
   {
@@ -45,6 +42,11 @@ export const MENU_ENTRIES = [
     text: 'Onboard validation',
     route: 'validations',
     roles: [SUPER_ADMIN, DEVELOPER],
+  },
+  {
+    text: 'VNSF notifications',
+    route: 'vnsfnotificationslist',
+    roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN],
   },
 ];
 
