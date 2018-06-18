@@ -27,7 +27,6 @@ export const ModalDirective = () => {
     link(scope, element) {
       scope.styles = styles;
       scope.$watch('open', (newVal) => {
-        console.log(newVal)
         if (newVal) {
           element.removeClass(scope.styles['modal--hidden']);
         } else {

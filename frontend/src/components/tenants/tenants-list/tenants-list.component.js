@@ -61,12 +61,6 @@ export const TenantsListComponent = {
         });
     }
 
-    /**
-     * Create and update need a scope id instead of scope code. Also if update,
-     * the header { headers: { 'if-match': etag } } etag should be in the list item.
-     * since multiple promises need to be resolved, best aproach should be q.all
-     */
-
     toggleCreate(tenant) {
       this.createOpen = !this.createOpen;
       if (this.createOpen) {
@@ -79,13 +73,19 @@ export const TenantsListComponent = {
       if (tenant) {
         this.currTenant = {
           ...tenant,
+          prevIps: true,
           scope_code: 'shield_scope_tenant',
         };
         this.tenantsService.getTenantIps(tenant.tenant_id)
           .then((ip) => {
             if (ip) this.currTenant.ip = [...ip];
           })
-          .catch(() => { this.currTenant.ip = []; });
+          .catch((err) => {
+            if (err === 404) {
+              this.currTenant.prevIps = false;
+            }
+            this.currTenant.ip = [];
+          });
       } else {
         this.currTenant = {
           tenant_name: '',
