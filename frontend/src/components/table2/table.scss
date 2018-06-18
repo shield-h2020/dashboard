@@ -83,6 +83,7 @@
 
 .error {
   color: white;
+  font-size: 0;
   &:after {
     content: '!';
     width: 0;
@@ -90,7 +91,7 @@
     display: inline-block;
     color: #fff;
     top: 15px;
-    left: -20px;
+    left: 8px;
     position: relative;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -108,7 +109,7 @@
     display: inline-block;
     color: #fff;
     top: 15px;
-    left: -20px;
+    left: 8px;
     position: relative;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;

@@ -6,6 +6,7 @@ import { AreaInputComponent } from './areainput.component';
 import { InputFocusDirective } from './inputfocus.directive';
 import { ActionFeedbackDirective } from './actionfeedback.directive';
 import { DatePickerComponent } from './date-picker/date-picker.component';
+import { ListInputComponent } from './list-input/list-input.component';
 
 export const InputModule = angular.module('input', [])
   .component('snInput', InputComponent)
@@ -13,6 +14,7 @@ export const InputModule = angular.module('input', [])
   .component('snSelect', SelectComponent)
   .component('snAreaInput', AreaInputComponent)
   .component('snDatePicker', DatePickerComponent)
+  .component('snListInput', ListInputComponent)
   .directive('focus', ['$timeout', InputFocusDirective])
   .directive('actionFeedback', ['$timeout', '$compile', '$interpolate', ActionFeedbackDirective])
   .name;

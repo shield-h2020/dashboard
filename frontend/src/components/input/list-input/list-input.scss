@@ -1,0 +1,40 @@
+.label {
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 20px;
+  color: #818181;
+  font-weight: 400;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.item-entry-wrapper {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.item-entry {
+  background-color: #00b5e2;
+  border-radius: 3px;
+  font-weight: 400;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.input-container {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 8px 0;
+
+  & > input {
+    border: none;
+    margin-bottom: 8px;
+  }
+}
+
+.container {
+  font-weight: 400;
+  width: 100%;
+}

@@ -115,6 +115,7 @@ module.exports = {
   ],
   resolve: {
     alias: {
+      '@': path.join(DIR, 'src'),
       styleglobals: path.join(DIR, 'src', 'styles', 'globals'),
       api: path.join(DIR, 'src', 'api'),
       assets: path.join(DIR, 'src', 'assets'),
