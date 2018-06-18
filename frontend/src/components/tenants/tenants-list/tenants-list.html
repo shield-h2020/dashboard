@@ -2,7 +2,7 @@
   <h4 class="sn-uppertitle">{{::$ctrl.strings.title}}</h4>
   <div class="sn-card" auto-resizer>
     <header class="sn-card__header">
-      <h5 class="header__title">{{::$ctrl.tableConf.title}}</h5>
+      <h5 class="header__title">{{::$ctrl.strings.tableTitle}}</h5>
       <button ng-click="$ctrl.createTenant()" class="sn-button sn-button--primary">{{$ctrl.strings.create}}</button>
     </header>
     <s-table
@@ -13,14 +13,34 @@
 
   <div sn-modal title="$ctrl.strings.modalCreateTitle" open="$ctrl.createOpen">
       <article class="row">
+        <div class="col-xs-12 stack-m">
+          <sn-input
+            field-label="Client name"
+            on-update="$ctrl.changeCurrTenant('tenant_name', $event.value)"
+            field-value="$ctrl.currTenant.tenant_name"
+          ></sn-input>
+        </div>
+        <div class="col-xs-12 stack-m">
+          <sn-input
+            field-label="Client description"
+            on-update="$ctrl.changeCurrTenant('description', $event.value)"
+            field-value="$ctrl.currTenant.description"
+          ></sn-input>
+        </div>
         <div class="col-xs-12">
-          <sn-input field-label="username"></sn-input>
+          <sn-list-input
+            id="ips"
+            label="Client IPs"
+            on-change="$ctrl.changeCurrTenant('ip', $event.value)"
+            items="$ctrl.currTenant.ip"
+            validator="$ctrl.ipValidator"
+          ></sn-list-input>
         </div>
       </article>
       <footer class="row">
         <div class="col-xs-12">
           <button ng-click="$ctrl.toggleCreate()" class="sn-button">{{$ctrl.strings.cancel}}</button>
-          <button ng-click="$ctrl.createUser()" class="sn-button sn-button--primary">{{$ctrl.strings.create}}</button>
+          <button ng-click="$ctrl.createOrUpdateTenant()" class="sn-button sn-button--primary">{{$ctrl.isCreate ? $ctrl.strings.create : $ctrl.strings.update}}</button>
         </div>
       </footer>
     </div>
