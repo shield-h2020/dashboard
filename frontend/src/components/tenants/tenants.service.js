@@ -111,9 +111,8 @@ export class TenantsService {
   }
 
   updateTenantIps(tenantId, ip) {
-    return this.http.put(API_TENANT_IPS, {
+    return this.http.patch(`${API_TENANT_IPS}/${tenantId}`, {
       ip,
-      tenant_id: tenantId,
     })
     .catch(() => {
       this.toast.error(TOAST_STRINGS.UPDATE_ERROR_IP.MESSAGE,
