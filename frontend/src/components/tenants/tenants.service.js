@@ -27,6 +27,18 @@ const TOAST_STRINGS = {
     TITLE: 'Client IP association updated',
     MESSAGE: 'Association updated successfully',
   },
+  CREATE_ERROR_IP: {
+    TITLE: 'Client IP association creation failed',
+    MESSAGE: 'Client IP association creation error',
+  },
+  UPDATE_ERROR_IP: {
+    TITLE: 'Client IP association update failed',
+    MESSAGE: 'Client IP association update error',
+  },
+  GET_ERROR_IP: {
+    TITLE: 'Client IP association retrieval failed',
+    MESSAGE: 'Client IP association retrieval error',
+  }
 };
 
 export class TenantsService {
@@ -92,7 +104,10 @@ export class TenantsService {
       ip,
       tenant_id: tenantId,
     })
-    .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
+    .catch(() => {
+      this.toast.error(TOAST_STRINGS.CREATE_ERROR_IP.MESSAGE,
+        TOAST_STRINGS.CREATE_ERROR_IP.TITLE);
+    });
   }
 
   updateTenantIps(tenantId, ip) {
@@ -100,7 +115,10 @@ export class TenantsService {
       ip,
       tenant_id: tenantId,
     })
-    .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
+    .catch(() => {
+      this.toast.error(TOAST_STRINGS.UPDATE_ERROR_IP.MESSAGE,
+        TOAST_STRINGS.UPDATE_ERROR_IP.TITLE);
+    });
   }
 
   getTenantIps(tenantId) {
@@ -108,7 +126,8 @@ export class TenantsService {
       .then(response => response.data.ip)
       .catch((err) => {
         if (err.data._error.code !== 404) {
-          this.toast.error(STRINGS.TENANT_ERROR);
+          this.toast.error(TOAST_STRINGS.GET_ERROR_IP.MESSAGE,
+            TOAST_STRINGS.GET_ERROR_IP.TITLE);
         }
 
         return this.q.reject(err.data._error.code);
