@@ -188,8 +188,10 @@ notifications_admin = {
 
 tenant_ip_association = {
     'item_title':          'tenant ip association',
-    'url':                 'tenant_ips',
     'description':         "Allows the association between tenant and it's assigned IPs",
+    'url':                 'tenant_ips',
+    'item_lookup_field':   EndpointVar.__TENANT_ID__,
+    'item_url':            EndpointVar.__TENANT_ID_FMT__,
     'schema':              api_model.tenant_ip_association,
     'resource_methods':    ['POST', 'GET'],
     'item_methods':        ['GET', 'DELETE'],

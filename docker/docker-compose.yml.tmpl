@@ -50,7 +50,7 @@ services:
             context:       .
             dockerfile:    ${DOCKER_FILE_MSGQ}
         ports:
-            - "15671:15671" # Management
+            - "15672:15672" # Management
 
 
     ${CNTR_AAA_DB}:
