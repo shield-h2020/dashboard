@@ -31,15 +31,11 @@ export const ListInputComponent = {
       if (changesObj.items && changesObj.items.currentValue) {
         this.innerItems = [...changesObj.items.currentValue];
       }
-
-      if (changesObj.open && !changesObj.open.currentValue) {
-        this.currInput = '';
-      }
     }
 
     onKeypress(event) {
       const keyCode = event.which || event.keyCode;
-      if (keyCode === 13) {
+      if (keyCode === 13 || keyCode === 32) {
         if (this.innerItems.indexOf(this.currInput) === -1) {
           this.validateAndAddToList();
         }

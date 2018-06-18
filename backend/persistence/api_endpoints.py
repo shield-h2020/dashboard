@@ -194,11 +194,11 @@ tenant_ip_association = {
     'item_url':            EndpointVar.__TENANT_ID_FMT__,
     'schema':              api_model.tenant_ip_association,
     'resource_methods':    ['POST', 'GET'],
-    'item_methods':        ['GET', 'DELETE'],
+    'item_methods':        ['GET', 'PATCH', 'DELETE'],
 
     # TODO remove once inter-component authentication is in place.
     'public_methods':      ['POST', 'GET'],
-    'public_item_methods': ['GET', 'DELETE']
+    'public_item_methods': ['GET', 'PATCH', 'DELETE']
     }
 
 tenant_scopes = {

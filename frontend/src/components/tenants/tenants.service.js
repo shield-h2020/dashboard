@@ -10,6 +10,25 @@ const STRINGS = {
   TENANTS_ERROR: 'An error occurred',
 };
 
+const TOAST_STRINGS = {
+  UPDATE_SUCCESS_TENANT: {
+    TITLE: 'Secaas client updated',
+    MESSAGE: 'Client updated successfully',
+  },
+  CREATE_SUCCESS_TENANT: {
+    TITLE: 'Secaas client created',
+    MESSAGE: 'Client created successfully',
+  },
+  CREATE_SUCCESS_IP: {
+    TITLE: 'Client IP association created',
+    MESSAGE: 'Association created successfully',
+  },
+  UPDATE_SUCCESS_IP: {
+    TITLE: 'Client IP association updated',
+    MESSAGE: 'Association updated successfully',
+  },
+};
+
 export class TenantsService {
   constructor($http, $q, toastr, AuthService) {
     'ngInject';
@@ -34,34 +53,33 @@ export class TenantsService {
       .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
   }
 
-  updateTenant({ tenant_id, tenant_name, description, scope_code }) {
-    return this.http.put(API_TENANT.replace(ACC_ID, tenant_id),
-      { tenant_name, description, scope_code })
-      .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
-  }
-
-  updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip }) {
+  updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip, prevIps }) {
     return this.http.put(API_TENANT.replace(ACC_ID, tenant_id),
       { tenant_name, description, scope_id }, { headers: { 'if-match': _etag } })
-      .then((response) => {
+      .then(() => {
+        this.toast.info(TOAST_STRINGS.UPDATE_SUCCESS_TENANT.MESSAGE,
+          TOAST_STRINGS.UPDATE_SUCCESS_TENANT.TITLE);
         if (ip.length) {
-          return this.updateTenantIps(response.data.tenant_id, ip)
+          if (prevIps) {
+            return this.updateTenantIps(tenant_id, ip);
+          }
+          return this.createTenantIps(tenant_id, ip);
         }
         return this.q.resolve('');
       })
-      .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
-  }
-
-  createTenant({ tenant_name, description, scope_id }) {
-    return this.http.post(API_TENANTS, { tenant_name, description, scope_id })
-      .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
+      .catch(() => {
+        this.toast.error(STRINGS.TENANT_ERROR);
+        return this.q.resolve('');
+      });
   }
 
   createTenantAndIps({ tenant_name, description, scope_id, ip }) {
     return this.http.post(API_TENANTS, { tenant_name, description, scope_id })
       .then((response) => {
+        this.toast.success(TOAST_STRINGS.CREATE_SUCCESS_TENANT.MESSAGE,
+          TOAST_STRINGS.CREATE_SUCCESS_TENANT.TITLE);
         if (ip.length) {
-          return this.updateTenantIps(response.data.tenant_id, ip);
+          return this.createTenantIps(response.data.tenant_id, ip);
         }
 
         return this.q.resolve('');
@@ -69,8 +87,16 @@ export class TenantsService {
       .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
   }
 
-  updateTenantIps(tenantId, ip) {
+  createTenantIps(tenantId, ip) {
     return this.http.post(API_TENANT_IPS, {
+      ip,
+      tenant_id: tenantId,
+    })
+    .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
+  }
+
+  updateTenantIps(tenantId, ip) {
+    return this.http.put(API_TENANT_IPS, {
       ip,
       tenant_id: tenantId,
     })
@@ -80,9 +106,12 @@ export class TenantsService {
   getTenantIps(tenantId) {
     return this.http.get(`${API_TENANT_IPS}/${tenantId}`)
       .then(response => response.data.ip)
-      .catch(() => {
-        this.toast.error(STRINGS.TENANT_ERROR);
-        return this.q.reject('error');
+      .catch((err) => {
+        if (err.data._error.code !== 404) {
+          this.toast.error(STRINGS.TENANT_ERROR);
+        }
+
+        return this.q.reject(err.data._error.code);
       });
   }
 
