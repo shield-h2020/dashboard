@@ -19,6 +19,8 @@ import { TenantsModule } from './tenants/tenants.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
 import { InventoryModule } from './inventory/inventory.module';
+import { VnsfNotificationsModule } from './vnsf-notifications/vnsf-notifications.module';
+
 import Table2Module from './table2/table.module';
 
 export const ComponentsModule = angular.module('root.components', [
@@ -43,6 +45,7 @@ export const ComponentsModule = angular.module('root.components', [
   CatalogueModule,
   OnboardValidationModule,
   InventoryModule,
+  VnsfNotificationsModule,
 ])
   .name;
 

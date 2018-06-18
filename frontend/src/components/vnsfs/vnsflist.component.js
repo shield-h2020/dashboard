@@ -46,6 +46,7 @@ export const VNSFListComponent = {
         value: 'ENABLED',
       };
       this.tableConf.rowSizes = [10, 20, 30];
+      this.tableSource = this.tableSource.bind(this)
     }
 
     $onInit() {

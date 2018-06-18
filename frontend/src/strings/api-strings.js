@@ -8,7 +8,7 @@ const ADDRESS = __API_URL__ || BACKEND_HOST;
 const SOCKET_URL = BACKEND_HOST;
 const STORE_URL = __API_STORE_HOST__;
 
-const baseUrl = `http://${'localhost'}`;
+const baseUrl = `http://${ADDRESS}`;
 const socketsUrl = `ws://${SOCKET_URL}`;
 const storeUrl = `http://${STORE_URL}`;
 

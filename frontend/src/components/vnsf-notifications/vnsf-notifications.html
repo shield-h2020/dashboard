@@ -1,0 +1,12 @@
+<section>
+  <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+  <div class="sn-card" auto-resizer>
+    <header class="sn-card__header">
+      <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
+    </header>
+    <s-table
+      items="$ctrl.items"
+      headers="$ctrl.tableHeaders"
+      loading="$ctrl.loading"
+    ></s-table>
+</section>

@@ -29,6 +29,7 @@ export const TableComponent = {
     pagination: '<',
     filterInputs: '<',
     autoCall: '<',
+    itemSource: '<'
   },
   controller: class TableComponent {
     constructor() {
@@ -60,13 +61,11 @@ export const TableComponent = {
       this.isLoading = true;
       this.items = [];
       const { source } = this.config;
-      if (source) {
-        source({ pagination: this.pagination, filters: this.filters })
-        .then((data) => {
-          this.getData(data && data.items);
-          this.pagination.total = (data && data.meta.total) || 0;
-        });
-      }
+      this.itemSource(this.pagination, this.filters)
+      .then((data) => {
+        this.getData(data && data.items);
+        this.pagination.total = (data && data.meta.total) || 0;
+      });
     }
 
     changePage(amount) {

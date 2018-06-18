@@ -6,7 +6,7 @@
     </header>
     <sn-table
       config="$ctrl.tableConf"
-      item-source="$ctrl.tableSource(pagination, filters)"
+      item-source="$ctrl.tableSource"
       actions-callback="$ctrl.onAction($event.value.item, $event.value.action)"
       actions="['recommendation']"
       needs-refresh="$ctrl.refreshTable"

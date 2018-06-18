@@ -34,7 +34,10 @@ export const InventoryComponent = {
         limit: this.limit,
       }, this.filters)
         .then((items) => {
-          this.items = items;
+          this.items = items.map(item => ({
+            ...item,
+            custom_tags: item.custom_tags.join(', '),
+          }));
         });
     }
   },

@@ -29,7 +29,7 @@ export const ModalComponent = {
     }
 
     $onInit() {
-      this.transclude(this.scope, (clone) => { this.element.find('article').append(clone); });
+      this.transclude(this.scope, (clone) => { this.element.find('section').append(clone); });
     }
 
     toggleModal() {

@@ -140,6 +140,9 @@ export const UsersListComponent = {
         .then((items) => {
           this.users = items;
           this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
         });
     }
   },
