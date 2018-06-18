@@ -65,7 +65,7 @@ export class TenantsService {
       .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
   }
 
-  updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip, prevIps }) {
+  updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip, prevIps, ipEtag }) {
     return this.http.put(API_TENANT.replace(ACC_ID, tenant_id),
       { tenant_name, description, scope_id }, { headers: { 'if-match': _etag } })
       .then(() => {
@@ -73,7 +73,7 @@ export class TenantsService {
           TOAST_STRINGS.UPDATE_SUCCESS_TENANT.TITLE);
         if (ip.length) {
           if (prevIps) {
-            return this.updateTenantIps(tenant_id, ip);
+            return this.updateTenantIps(tenant_id, ip, ipEtag);
           }
           return this.createTenantIps(tenant_id, ip);
         }
@@ -110,10 +110,10 @@ export class TenantsService {
     });
   }
 
-  updateTenantIps(tenantId, ip) {
+  updateTenantIps(tenantId, ip, etag) {
     return this.http.patch(`${API_TENANT_IPS}/${tenantId}`, {
       ip,
-    })
+    }, { headers: { 'if-match': etag } })
     .catch(() => {
       this.toast.error(TOAST_STRINGS.UPDATE_ERROR_IP.MESSAGE,
         TOAST_STRINGS.UPDATE_ERROR_IP.TITLE);
@@ -122,7 +122,7 @@ export class TenantsService {
 
   getTenantIps(tenantId) {
     return this.http.get(`${API_TENANT_IPS}/${tenantId}`)
-      .then(response => response.data.ip)
+      .then(response => ({ ip: response.data.ip, etag: response.data._etag }))
       .catch((err) => {
         if (err.data._error.code !== 404) {
           this.toast.error(TOAST_STRINGS.GET_ERROR_IP.MESSAGE,

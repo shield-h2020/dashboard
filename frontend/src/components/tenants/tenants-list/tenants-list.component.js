@@ -77,8 +77,11 @@ export const TenantsListComponent = {
           scope_code: 'shield_scope_tenant',
         };
         this.tenantsService.getTenantIps(tenant.tenant_id)
-          .then((ip) => {
-            if (ip) this.currTenant.ip = [...ip];
+          .then((data) => {
+            if (data) {
+              this.currTenant.ip = [...data.ip];
+              this.currTenant.ipEtag = data.etag;
+            }
           })
           .catch((err) => {
             if (err === 404) {
