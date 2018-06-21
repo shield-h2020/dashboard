@@ -38,5 +38,6 @@ Feature: vNSF notifications
     Then The vNSF notification must be received <from_socket>
 
     Examples:
-      | tenant | mock_file                                      | vnsf_notifications                                | in_datastore                                       | from_socket                              |
-      | af09   | association/tenant-ip-association-success.json | vnsf_notification/vnsf-notification.json          | vnsf_notification/vnsf-notification-persisted.json | vnsf_notification/vnsf-notification.json |
+      | tenant | mock_file                                     | vnsf_notifications                       | in_datastore                                       | from_socket                              |
+      | af09   | tenant_ips/tenant-ip-association-success.json | vnsf_notification/vnsf-notification.json | vnsf_notification/vnsf-notification-persisted.json | vnsf_notification/vnsf-notification.json |
+    

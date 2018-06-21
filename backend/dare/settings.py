@@ -105,7 +105,7 @@ TENANT_IP_URL = '{}://{}:{}'.format(TENANT_IP_PROTOCOL, TENANT_IP_HOST, TENANT_I
 
 __association_rest__ = {
     'association': {
-        'url':     '{}/{}'.format(TENANT_IP_URL, 'association'),
+        'url':     '{}/{}'.format(TENANT_IP_URL, 'tenant_ips'),
         'headers': {'Content-Type': 'application/json'}
         }
     }
