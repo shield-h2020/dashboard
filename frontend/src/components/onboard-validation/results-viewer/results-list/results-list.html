@@ -1,8 +1,8 @@
 <section >
   <div class="section__content">
   <span class="sv-reslist__title sv-reslist__title--{{::$ctrl.type}}" ng-click="$ctrl.toggleListCollapse()">
-                                  {{::$ctrl.type}}s ({{$ctrl.filteredItems.length}})
-          <span class="title__icon"> {{$ctrl.isCollapsed ? '&#9660' : '&#9650'}}</span>
+    {{::$ctrl.type}}s ({{$ctrl.filteredItems.length}})
+    <span class="title__icon"> {{$ctrl.isCollapsed ? '&#9660' : '&#9650'}}</span>
   </span>
   <span class="sv-reslist__title sv-reslist__title--count">({{$ctrl.items.length - $ctrl.filteredItems.length}} hidden)</span>
 </div>

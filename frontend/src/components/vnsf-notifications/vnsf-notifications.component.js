@@ -7,7 +7,7 @@ const UI_STRINGS = {
 
 const TABLE_HEADERS = {
   _id: 'Id',
-  tenant: 'Client',
+  tenant_name: 'Client',
   type: 'Type',
 };
 

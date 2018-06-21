@@ -29,10 +29,15 @@ export class VnsfNotificationService {
         const notifs = response.data._items;
         for (let i = 0, len = notifs.length; i < len; i += 1) {
           vnsfPromises.push(this.tenantsService.getTenant(notifs[i].tenant_id)
-            .then(tenant => ({
+          .catch(() =>
+            ({
               ...notifs[i],
-              tenant_name: tenant.tenant_name,
-            })));
+              tenant_name: 'not found',
+            }))
+          .then(tenant => ({
+            ...notifs[i],
+            tenant_name: tenant.tenant_name,
+          })));
         }
 
         return this.q.all(vnsfPromises)

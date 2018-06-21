@@ -1,6 +1,4 @@
 @import '~styleglobals/colors';
-$menu-logo-height: 60px;
-$menu-item-height: 35px;
 
 .menu {
   background: $color-gradient-blue-dark;
@@ -12,7 +10,7 @@ $menu-item-height: 35px;
 }
 
 .logo {
-  height: $menu-logo-height;
+  height: 60px;
   background-color: $color-white;
   text-align: center;
   padding-top: 12px;
@@ -20,12 +18,10 @@ $menu-item-height: 35px;
 
 .section {
   height: 40px;
-  line-height: 45px;
   color: #fff;
   font-family: 'OpenSans';
   font-size: 14px;
   font-weight: 600;
-  padding-left: 30px;
   background-color: rgba(0, 0, 0, 0.25);
 }
 
@@ -33,19 +29,18 @@ $menu-item-height: 35px;
   list-style: none;
   padding: 0;
   margin: 0;
+
   .item {
     border-bottom: 1px solid $color-blue-dark;
     color: $color-white;
-    min-height: $menu-item-height;
+    min-height: 35px;
     cursor: pointer;
     transition: background-color 0.2s;
+
     .item__label {
       color: $color-white;
-      line-height: $menu-item-height;
       font-size: 13px;
-      padding-left: 30px;
       text-decoration: none;
-      height: 35px;
       display: inline-block;
       width: 100%;
       .glyphicon {
@@ -84,7 +79,7 @@ $menu-item-height: 35px;
 }
 
 .profile {
-  height: $menu-item-height;
+  height: 35px;
   color: $color-light-grey;
   position: absolute;
   width: 100%;
@@ -92,11 +87,12 @@ $menu-item-height: 35px;
   font-family: "OpenSans";
   font-size: 13px;
   font-weight: 600;
-  line-height: $menu-item-height;
+  line-height: 35px;
   color: $color-white;
   box-shadow: inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
   cursor: pointer;
   z-index: 100;
+  background: $color-gradient-blue-dark;
 
   .container {
     overflow: hidden;
@@ -125,7 +121,7 @@ $menu-item-height: 35px;
   &__item {
     padding-left: 30px;
     box-shadow: inset 0 1px 0 0 $color-app-titles;
-    line-height: $menu-item-height;
+    line-height: 35px;
   }
 
   &__menuOpen {
@@ -152,137 +148,6 @@ $menu-item-height: 35px;
   }
 }
 
-.sn-sidenav {
-  background-color: $color-purple-dark;
-  font-family: 'OpenSans', sans-serif;
-  font-weight: 600;
-  height: 100vh;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-  position: relative;
-  &__brand {
-    height: $menu-logo-height;
-    background-color: $color-white;
-    text-align: center;
-    padding-top: 15px;
-  }
-  &__menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    .menu__item {
-      border-bottom: 1px solid $color-blue-dark;
-      color: $color-white;
-      min-height: $menu-item-height;
-      cursor: pointer;
-      .item__label {
-        color: $color-white;
-        line-height: $menu-item-height;
-        font-size: 13px;
-        padding-left: 30px;
-        text-decoration: none;
-        .glyphicon {
-          font-size: 10px;
-          top: 3px;
-          left: 5px;
-        }
-      }
-    }
-    .menu__item--active {
-      background: $color-purple-tint;
-    }
-    .menu__accordion {
-      max-height: 0;
-      transition: max-height 0.2s;
-      background-color: $color-purple-dark;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      overflow: hidden;
-      .accordion__item {
-        height: 30px;
-        box-shadow: inset 0 1px 0 0 $color-app-titles;
-        line-height: 30px;
-        padding-left: 60px;
-        font-family: "OpenSans";
-        font-size: 12px;
-        font-weight: 600;
-        color: $color-white;
-      }
-    }
-    .menu__accordion--open {
-      max-height: 200px;
-    }
-  }
-  &__sub-section {
-    height: 40px;
-    line-height: 45px;
-    color: $color-app-primary;
-    font-family: 'OpenSans';
-    font-size: 12px;
-    font-weight: 600;
-    padding-left: 30px;
-    border-bottom: 1px solid $color-menu-shade;
-  }
-  &__profile {
-    height: $menu-item-height;
-    color: $color-white;
-    background-color: $color-menu-bg;
-    position: absolute;
-    width: 100%;
-    bottom: 2px;
-    box-shadow: inset 0 1px 0 0 rgba(0, 0, 0, 0.1);
-    font-family: "OpenSans";
-    font-size: 13px;
-    font-weight: 600;
-    line-height: $menu-item-height;
-    color: $color-white;
-    cursor: pointer;
-    z-index: 100;
-    .profile__container {
-      overflow: hidden;
-    }
-    .profile__user {
-      width: calc(100% - 65px);
-      display: inline-block;
-      padding-left: 30px;
-    }
-    .profile__menu {
-      position: absolute;
-      bottom: 35px;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      background-color: $color-menu-bg;
-      &__item {
-        padding-left: 30px;
-        box-shadow: inset 0 1px 0 0 $color-app-titles;
-        line-height: $menu-item-height;
-        background-color: $color-menu-tint-b;
-      }
-    }
-    .profile__menu--closed {
-      display: none;
-    }
-    .profile__actions {
-      text-align: center;
-      font-size: 18px;
-      width: 60px;
-      height: 35px;
-      background-color: $color-menu-bg;
-      display: inline-block;
-      &:hover {
-        background-color: $color-menu-tint;
-        box-shadow: inset 1px 0 0 0 $color-app-titles;
-      }
-    }
-    .profile__actions--active {
-      background-color: $color-menu-tint-b;
-      box-shadow: inset 1px 0 0 0 $color-app-titles;
-    }
-  }
-}
-
 .downicon {
   box-sizing: border-box;
   height: 12px;
@@ -297,29 +162,48 @@ $menu-item-height: 35px;
 }
 
 @mixin menu--sm() {
-  .sn-sidenav {
-    &__menu {
-      .menu__item {
-        min-height: 35px;
-      }
+  .menu {
+
+    .logo > img {
+      width: 90%;
+    }
+
+    .item__label {
+      padding: 8px;
+      line-height: initial;
+    }
+
+    .section {
+      padding-left: 8px;
+      line-height: initial;
     }
   }
 }
 
 @mixin menu--lg() {
-  .sn-sidenav {
-    &__menu {
-      .menu__item {
-        min-height: 40px;
-      }
+  .menu {
+    .logo > img {
+      width: initial;
+    }
+
+    .item__label {
+      padding-left: 32px;
+      line-height: initial;
+      height: 35px;
+    }
+
+    .section {
+      padding-left: 32px;
+      line-height: 45px;
     }
   }
 }
 
-@media (min-height: 500px) {
+@media only screen and (min-width: 500px) {
   @include menu--sm();
 }
 
-@media (min-height: 800px) {
+@media only screen and (min-width: 1124px) {
   @include menu--lg();
 }
+

@@ -365,14 +365,6 @@
     position: relative;
     left: -30px;
     top: 50vh;
-
-    .drawer-puller__icon {
-      width: 8px;
-      height: 8px;
-      border-right: 3px solid $grey4;
-      border-top: 3px solid $grey4;
-      transform: rotate(45deg);
-    }
   }
 }
 
@@ -385,13 +377,5 @@
 
   .sv-resviewer__section--closed {
     display: block;
-  }
-
-  .drawer-puller {
-    padding-left: 12px;
-  }
-
-  .drawer-puller__icon {
-    transform: rotate(225deg);
   }
 }

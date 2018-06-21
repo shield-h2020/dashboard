@@ -62,7 +62,10 @@ export class TenantsService {
   getTenant(id) {
     return this.http.get(API_TENANT.replace(ACC_ID, id))
       .then(response => response.data)
-      .catch(() => { this.toast.error(STRINGS.TENANT_ERROR); });
+      .catch((response) => {
+        this.toast.error(STRINGS.TENANT_ERROR);
+        return this.q.reject(response);
+      });
   }
 
   updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip, prevIps, ipEtag }) {
