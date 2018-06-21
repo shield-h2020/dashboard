@@ -4,14 +4,13 @@ const AUTH_API = '/login';
 
 export class AuthService {
 
-  constructor($http, $window, $q, $state, DataService) {
+  constructor($http, $window, $q, $state) {
     'ngInject';
 
     this.http = $http;
     this.window = $window;
     this.q = $q;
     this.state = $state;
-    this.dataService = DataService;
   }
 
   login(username, password, scope) {

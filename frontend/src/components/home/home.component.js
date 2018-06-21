@@ -1,5 +1,5 @@
 import template from './home.html';
-import { SUPER_ADMIN } from '@/strings/role-strings.js';
+import { TENANT_ADMIN, TENANT_USER } from '@/strings/role-strings.js';
 
 function templateNotification(data) {
   return `
@@ -24,7 +24,7 @@ export const HomeComponent = {
     }
 
     $onInit() {
-      if (this.userdata.roles.find(r => r.name === SUPER_ADMIN)) {
+      if (this.userdata.roles.find(r => r.name === TENANT_ADMIN || r.name === TENANT_USER)) {
         this.vnsfNotificationService.connectNotificationsSocket(this.userdata.user.domain.id)
         .onmessage = (message) => {
           const data = JSON.parse(message.data);
@@ -34,6 +34,10 @@ export const HomeComponent = {
           });
         };
       }
+
+      this.scope.$on('NSVF_NOTIF_EMIT', (event, data) => {
+        this.openNotificationDetails(data);
+      });
     }
 
     openNotificationDetails(data) {

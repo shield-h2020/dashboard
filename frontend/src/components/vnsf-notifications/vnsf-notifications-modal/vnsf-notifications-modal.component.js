@@ -2,7 +2,7 @@ import template from './vnsf-notifications-modal.html';
 import styles from '../vnsf-notifications.scss';
 
 const VIEW_STRINGS = {
-  title: 'VNSF Notification',
+  title: 'vNSF Notification',
   close: 'Close',
   classification: 'Classification',
   'classification-id': 'Classification Id',

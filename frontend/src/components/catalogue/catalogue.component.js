@@ -25,6 +25,7 @@ export const CatalogueComponent = {
 
       this.offset = 0;
       this.limit = 25;
+      this.isLoading = false;
       this.filters = {};
       this.headers = { ...TABLE_HEADERS };
 
@@ -43,6 +44,7 @@ export const CatalogueComponent = {
     }
 
     $onInit() {
+      this.isLoading = true;
       this.catalogueService.getCatalogueServices({
         page: this.offset,
         limit: this.limit,
@@ -52,7 +54,8 @@ export const CatalogueComponent = {
             ...item,
             custom_tags: item.custom_tags.join(', '),
           }));
-        });
+        })
+        .finally(() => { this.isLoading = false; });
     }
 
     addToInventory({ _id }) {

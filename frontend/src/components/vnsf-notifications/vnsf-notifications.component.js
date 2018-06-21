@@ -7,7 +7,7 @@ const UI_STRINGS = {
 
 const TABLE_HEADERS = {
   _id: 'Id',
-  tenant: 'Tenant',
+  tenant: 'Client',
   type: 'Type',
 };
 
@@ -17,15 +17,22 @@ export const VnsfNotificationsComponent = {
     tenant: '<',
   },
   controller: class UsersListComponent {
-    constructor(VnsfNotificationService) {
+    constructor($scope, VnsfNotificationService) {
       'ngInject';
 
+      this.scope = $scope;
       this.vnsfNotificationService = VnsfNotificationService;
       this.viewStrings = UI_STRINGS;
       this.selectedUser = null;
       this.isCreate = true;
       this.tableHeaders = {
         ...TABLE_HEADERS,
+        actions: [
+          {
+            label: 'view',
+            action: this.toggleNotificationsModal.bind(this),
+          },
+        ],
       };
       // Table control
       this.pagination = {
@@ -37,6 +44,10 @@ export const VnsfNotificationsComponent = {
 
     $onInit() {
       this.getNotifications();
+    }
+
+    toggleNotificationsModal(notif) {
+      this.scope.$emit('NSVF_NOTIF_EMIT', JSON.parse(notif.data));
     }
 
     getNotifications() {

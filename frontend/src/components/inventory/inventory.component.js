@@ -24,11 +24,13 @@ export const InventoryComponent = {
 
       this.offset = 0;
       this.limit = 25;
+      this.isLoading = false;
       this.filters = {};
       this.headers = { ...TABLE_HEADERS };
     }
 
     $onInit() {
+      this.isLoading = true;
       this.inventoryService.getInventoryServices({
         page: this.offset,
         limit: this.limit,
@@ -38,7 +40,8 @@ export const InventoryComponent = {
             ...item,
             custom_tags: item.custom_tags.join(', '),
           }));
-        });
+        })
+        .finally(() => { this.isLoading = false; });
     }
   },
 };

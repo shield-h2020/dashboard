@@ -2,11 +2,12 @@
   <h4 class="sn-uppertitle">{{::$ctrl.strings.title}}</h4>
   <div class="sn-card" auto-resizer>
     <header class="sn-card__header">
-      <h5 class="header__title">{{::$ctrl.tableConf.title}}</h5>
+      <h5 class="header__title">{{::$ctrl.strings.tableTitle}}</h5>
     </header>
     <s-table
       headers="$ctrl.headers"
       items="$ctrl.items"
+      loading="$ctrl.isLoading"
     ></s-table>
   </div>
 </section>

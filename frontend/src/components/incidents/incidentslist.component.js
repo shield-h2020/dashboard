@@ -62,7 +62,7 @@ export const IncidentsListComponent = {
       };
       this.tableConf.rowSizes = [10, 20, 30];
       this.modalOpen = false;
-      this.tableSource = this.tableSource.bind(this)
+      this.tableSource = this.tableSource.bind(this);
     }
 
     $onInit() {

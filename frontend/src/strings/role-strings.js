@@ -6,6 +6,6 @@ export const DEVELOPER = 'shield_developer';
 export default {
   tenant_admin: TENANT_ADMIN,
   super_admin: SUPER_ADMIN,
-  tenant_user: TENANT_ADMIN,
+  tenant_user: TENANT_USER,
   developer: DEVELOPER,
 };

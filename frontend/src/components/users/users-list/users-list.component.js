@@ -59,9 +59,11 @@ export const UsersListComponent = {
     }
 
     $onInit() {
-      this.getUsers();
-      this.getRoles();
       this.isPlatformAdmin = this.authService.isUserPlatformAdmin();
+      this.getUsers();
+      if (!this.isPlatformAdmin) {
+        this.getRoles();
+      }
     }
 
     toggleCreate(user) {

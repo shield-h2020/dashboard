@@ -16,6 +16,11 @@ export const MENU_ENTRIES = [
     roles: [TENANT_ADMIN, SUPER_ADMIN, TENANT_USER],
   },
   {
+    text: 'vNSF notifications',
+    route: 'vnsfnotificationslist',
+    roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN],
+  },
+  {
     text: 'Global options',
   },
   {
@@ -42,11 +47,6 @@ export const MENU_ENTRIES = [
     text: 'Onboard validation',
     route: 'validations',
     roles: [SUPER_ADMIN, DEVELOPER],
-  },
-  {
-    text: 'vNSF notifications',
-    route: 'vnsfnotificationslist',
-    roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN],
   },
 ];
 

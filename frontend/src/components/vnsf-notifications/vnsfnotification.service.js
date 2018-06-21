@@ -4,13 +4,14 @@ const API_VNSF_NOTIFICATIONS = `${API_ADDRESS}/notifications`;
 const API_VNSF_NOTIFICATIONS_SOCKET = `${SOCKET_ADDRESS}/vnsf/notifications/${ACC_ID}`;
 
 export class VnsfNotificationService {
-  constructor($http, $q, toastr, AuthService) {
+  constructor($http, $q, toastr, AuthService, TenantsService) {
     'ngInject';
 
     this.q = $q;
     this.http = $http;
     this.toast = toastr;
     this.authService = AuthService;
+    this.tenantsService = TenantsService;
   }
 
   getNotifications({ page = 1, limit = 25 }, filters = {}) {
@@ -22,8 +23,21 @@ export class VnsfNotificationService {
       });
     }
 
+    const vnsfPromises = [];
     return this.http.get(API_VNSF_NOTIFICATIONS, { params })
-      .then(response => response.data._items);
+      .then((response) => {
+        const notifs = response.data._items;
+        for (let i = 0, len = notifs.length; i < len; i += 1) {
+          vnsfPromises.push(this.tenantsService.getTenant(notifs[i].tenant_id)
+            .then(tenant => ({
+              ...notifs[i],
+              tenant_name: tenant.tenant_name,
+            })));
+        }
+
+        return this.q.all(vnsfPromises)
+          .then(values => values);
+      });
   }
 
   connectNotificationsSocket(tenantId) {
