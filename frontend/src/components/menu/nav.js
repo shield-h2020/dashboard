@@ -28,11 +28,11 @@ export const MENU_ENTRIES = [
     route: 'tenantslist',
     roles: [SUPER_ADMIN],
   },
-  // {
-  //   text: 'vNSFs Store',
-  //   route: 'vnsfslist',
-  //   roles: [TENANT_ADMIN, SUPER_ADMIN, DEVELOPER],
-  // },
+  {
+    text: 'vNSFs Store',
+    route: 'vnsfslist',
+    roles: [TENANT_ADMIN, SUPER_ADMIN, DEVELOPER],
+  },
   {
     text: 'NS Catalogue',
     route: 'nscatalogue',

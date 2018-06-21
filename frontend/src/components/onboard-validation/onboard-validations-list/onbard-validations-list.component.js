@@ -43,19 +43,20 @@ export const OnboardValidationsListComponent = {
         limit: this.limit,
       }, this.filters)
         .then((items) => {
-          this.items = items.map(item => ({
-            ...item,
-            status: this.setStatus(item),
-          }));
+          this.items = OnboardValidationsListComponent.addExtraClasses(items);
         });
     }
 
-    setStatus(validation) {
-      const { result: { error_count, warning_count } } = validation;
-
-      if (error_count) return 'error';
-      if (warning_count) return 'warn';
-      return '';
+    static addExtraClasses(items) {
+      return items.map(item => ({
+        ...item,
+        status: '',
+        cellClasses: {
+          status: (item.result.error_count || item.result.warning_count) ?
+            `glyphicon glyphicon-exclamation-sign ${item.result.error_count ? 'icon-red' : ''}
+              ${!item.result.error_count && item.result.warning_count ? 'icon-yellow' : ''}` : '',
+        },
+      }));
     }
 
     viewValidation(validation) {
