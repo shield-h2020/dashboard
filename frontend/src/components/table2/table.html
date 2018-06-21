@@ -15,6 +15,7 @@
       >
         <td
           class="{{::$ctrl.styles.row__cell}}"
+          ng-class="{ '{{item.cellClasses[key]}}': !!item.cellClasses && item.cellClasses[key] }"
           ng-repeat="(key, value) in $ctrl.headers"
           ng-if="key !== 'actions'"
           color-cell

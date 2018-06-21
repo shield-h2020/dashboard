@@ -70,7 +70,7 @@ export const IncidentsListComponent = {
       this.socket.onmessage = (message) => {
         const data = JSON.parse(message.data);
         const attackType = data.attack;
-        this.toast.info(`Type of attack: ${attackType}`, 'A new security incident was detected', {
+        this.toast.error(`Type of attack: ${attackType}`, 'A new security incident was detected', {
           onTap: () => this.openRecommendation(data),
           onHidden: () => { this.refreshTable = true; },
           closeButton: true,

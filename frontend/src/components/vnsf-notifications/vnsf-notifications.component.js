@@ -50,12 +50,21 @@ export const VnsfNotificationsComponent = {
       this.scope.$emit('NSVF_NOTIF_EMIT', JSON.parse(notif.data));
     }
 
+    static addExtraClasses(items) {
+      return items.map(item => ({
+        ...item,
+        cellClasses: {
+          tenant_name: item.tenant_name === 'not found' ? 'cell--unimportant' : '',
+        },
+      }));
+    }
+
     getNotifications() {
       this.loading = true;
       this.items = [];
       this.vnsfNotificationService.getNotifications(this.pagination, this.filters)
         .then((items) => {
-          this.items = items;
+          this.items = UsersListComponent.addExtraClasses(items);
           this.loading = false;
         })
         .catch(() => {
