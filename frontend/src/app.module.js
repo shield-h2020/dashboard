@@ -2,6 +2,7 @@ import angular from 'angular';
 import toastr from 'angular-toastr';
 import uiRouter from '@uirouter/angularjs';
 import { AuthService } from './services/auth.service';
+import { ErrorHandleService } from './services/error-handle.service';
 import { AppComponent, appAbsState, homeState } from './app.component';
 import { ComponentsModule } from 'components/components.module';
 import { INTERNAL_ERROR_MODAL_EVENT } from 'components/modal-box/internal-error/internal-error.component';
@@ -18,6 +19,7 @@ export const AppModule = angular
     ])
     .component('root', AppComponent)
     .service('AuthService', AuthService)
+    .service('ErrorHandleService', ErrorHandleService)
     .config(($stateProvider, $urlServiceProvider) => {
       'ngInject';
 
