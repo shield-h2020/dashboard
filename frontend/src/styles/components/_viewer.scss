@@ -8,8 +8,12 @@
 .sv-viewer {
   position: relative;
 
+  &__container {
+    height: 95%;
+  }
+
   &__draw-area {
-      height: 90vh;
+      height: 100%;
   }
 
   &__no-topo {
@@ -351,31 +355,5 @@
 
   &__section--bordered {
     border-bottom: 1px solid $grey3;
-  }
-
-  &__drawer-puller {
-    background-color: $grey0;
-    box-shadow: 0px 1px 10px 0px rgba($black, 0.5);
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    padding-top: 25px;
-    box-sizing: border-box;
-    padding-left: 10px;
-    position: relative;
-    left: -30px;
-    top: 50vh;
-  }
-}
-
-.sv-resviewer--closed {
-  right: -340px;
-
-  .sv-resviewer__section {
-    display: none;
-  }
-
-  .sv-resviewer__section--closed {
-    display: block;
   }
 }

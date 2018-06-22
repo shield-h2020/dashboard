@@ -25,6 +25,7 @@ export const OnboardValidationsListComponent = {
 
       this.offset = 0;
       this.limit = 25;
+      this.isLoading = false;
       this.filters = {};
       this.headers = {
         ...TABLE_HEADERS,
@@ -38,13 +39,19 @@ export const OnboardValidationsListComponent = {
     }
 
     $onInit() {
+      this.getData();
+    }
+
+    getData() {
+      this.isLoading = true;
       this.onboardValidationService.getValidations({
         page: this.offset,
         limit: this.limit,
       }, this.filters)
         .then((items) => {
           this.items = OnboardValidationsListComponent.addExtraClasses(items);
-        });
+        })
+        .finally(() => { this.isLoading = false; });
     }
 
     static addExtraClasses(items) {
