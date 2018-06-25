@@ -12,7 +12,6 @@ import { JsonViewerModule } from './json-viewer/json-viewer.module';
 import { IncidentsModule } from './incidents/incidents.module';
 import { VNSFModule } from './vnsfs/vnsf.module';
 import { ModalModule } from './modal2/modal.module';
-import { NSModule } from './nss/ns.module';
 import { FooterModule } from './footer/footer.module';
 import { UsersModule } from './users/users.module';
 import { TenantsModule } from './tenants/tenants.module';
@@ -37,7 +36,6 @@ export const ComponentsModule = angular.module('root.components', [
   IncidentsModule,
   VNSFModule,
   ModalModule,
-  NSModule,
   FooterModule,
   UsersModule,
   TenantsModule,

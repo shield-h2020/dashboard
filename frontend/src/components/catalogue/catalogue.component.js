@@ -1,14 +1,23 @@
 import template from './catalogue.html';
+import styles from './catalogue.scss';
 
-const UI_STRINGS = {
+const VIEW_STRINGS = {
   title: 'NS catalogue',
   tableTitle: 'Catalogue',
+  modalTitle: 'Details',
+  modalTitle2: 'Descriptor',
+  close: 'Close',
 };
 
 const TABLE_HEADERS = {
   custom_tags: 'Tags',
-  ref_id: 'Id',
+  _id: 'Id',
   _created: 'Created',
+};
+
+const MODAL_ENTRIES = {
+  _id: 'Id',
+  state: 'State',
 };
 
 export const CatalogueComponent = {
@@ -17,26 +26,37 @@ export const CatalogueComponent = {
     constructor(CatalogueService, AuthService) {
       'ngInject';
 
-      this.strings = UI_STRINGS;
+      this.viewStrings = VIEW_STRINGS;
+      this.styles = styles;
+      this.modalEntries = MODAL_ENTRIES;
       this.catalogueService = CatalogueService;
       this.authService = AuthService;
       this.createOpen = false;
       this.deleteOpen = false;
-
-      this.offset = 0;
+      this.detailsOpen = false;
+      this.offset = 1;
       this.limit = 25;
       this.isLoading = false;
       this.filters = {};
-      this.headers = { ...TABLE_HEADERS };
+      this.headers = {
+        ...TABLE_HEADERS,
+        actions: [
+          {
+            label: 'view',
+            action: this.toggleDetailsModal.bind(this),
+          },
+        ],
+      };
 
       if (this.authService.isUserTenantAdmin()) {
         this.headers.actions = [
+          ...this.headers.actions,
           {
             label: 'enroll',
             action: this.addToInventory.bind(this),
           },
           {
-            label: 'unroll',
+            label: 'withdraw',
             action: this.removeFromInventory.bind(this),
           },
         ];
@@ -52,7 +72,7 @@ export const CatalogueComponent = {
         .then((items) => {
           this.items = items.map(item => ({
             ...item,
-            custom_tags: item.custom_tags.join(', '),
+            custom_tags: 'tbd' || item.custom_tags.join(', '),
           }));
         })
         .finally(() => { this.isLoading = false; });
@@ -62,8 +82,13 @@ export const CatalogueComponent = {
       this.catalogueService.addServiceToInventory(_id);
     }
 
-    removeFromInventory({ _id }) {
-      this.catalogueService.removeServiceFromInventory(_id);
+    removeFromInventory({ _id, _etag }) {
+      this.catalogueService.removeServiceFromInventory(_id, _etag);
+    }
+
+    toggleDetailsModal(ns) {
+      this.ns = ns;
+      this.detailsOpen = !this.detailsOpen;
     }
   },
 };

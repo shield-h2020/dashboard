@@ -1,66 +1,55 @@
 import format from 'date-fns/format';
 import { INCIDENTS_API, INCIDENTS_SOCKET_API, ACCESSORS } from '../../strings/api-strings';
+import { API_ADDRESS, SOCKET_ADDRESS } from 'api/api-config';
+
+const API_INCIDENTS = `${API_ADDRESS}/policies`;
+const API_INCIDENT_SOCKET = `${SOCKET_ADDRESS}/policy`;
 
 /* global WebSocket */
 export class IncidentsService {
-  constructor($http, toastr) {
+  constructor($http, toastr, ErrorHandleService) {
     'ngInject';
 
     this.http = $http;
     this.toast = toastr;
-    this.datastream = null;
+    this.errorHandlerService = ErrorHandleService;
   }
 
   connectIncidentSocket() {
-    this.datastream = new WebSocket(INCIDENTS_SOCKET_API.CONNECT);
-
-    return this.datastream;
+    return new WebSocket(INCIDENTS_SOCKET_API.CONNECT);
   }
 
-  getAllIncidents({ page = 1, limit = 25 }, filters) {
+  getIncidents({ page = 1, limit = 25 }, filters) {
     const params = { max_results: limit, page };
     if (Object.keys(filters).length !== 0) params.where = JSON.stringify(filters);
 
-    return this.http.get(INCIDENTS_API.ALL, { params })
+    return this.http.get(API_INCIDENTS, { params })
       .then((response) => {
-        const items = response.data._items.map((item) => {
-          const it = { ...item };
-          it.detection = format(item.detection, 'DD/MM/YYYY - HH:mm');
-
-          return it;
-        });
+        const items = response.data._items.map(item =>
+        ({
+          ...item,
+          detection: format(item.detection, 'DD/MM/YYYY - HH:mm'),
+        }));
 
         return {
           items,
           meta: response.data._meta,
         };
       })
-      .catch(() => {
-        this.toast.error('An error occurred');
-      });
+      .catch(this.errorHandlerService.handleHttpError);
   }
 
   getIncident(id) {
-    return this.http.get(INCIDENTS_API.ONE.replace(ACCESSORS.id, id))
+    return this.http.get(`${API_INCIDENTS}/${id}`)
       .then(response => response.data)
-      .catch(() => {
-        this.toast.error('An error occurred');
-      });
+      .catch(this.errorHandlerService.handleHttpError);
   }
 
   recommendAction(id, etag) {
-    return this.http.patch(INCIDENTS_API.ONE.replace(ACCESSORS.id, id),
+    return this.http.patch(`${API_INCIDENTS}/${id}`,
       { status: 'Applied' }, { headers: { 'if-match': etag } })
-      .catch((response) => {
-        if (response && response.data) {
-          this.toast.error(response.data._error.message, 'An error occurred');
-        } else {
-          this.toast.error('An error occurred');
-        }
-
-        return this.q.reject(response);
-      });
+      .catch(this.errorHandlerService.handleHttpError);
   }
-  }
+}
 
 export default IncidentsService;

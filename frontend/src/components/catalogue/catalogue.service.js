@@ -1,15 +1,17 @@
-import { API_ADDRESS, ACC_ID } from 'api/api-config';
+import { API_ADDRESS, STORE_ADDRESS, ACC_ID } from 'api/api-config';
 
 const API_CATALOGUE = `${API_ADDRESS}/catalogue/nss`;
+const API_CATALOGUE_2 = `${STORE_ADDRESS}/nss`;
 const API_INVENTORY = `${API_ADDRESS}/inventory/nss`;
 const API_INVENTORY_ONE = `${API_INVENTORY}/${ACC_ID}`;
 
 export class CatalogueService {
-  constructor($http, AuthService, toastr) {
+  constructor($http, AuthService, toastr, ErrorHandleService) {
     'ngInject';
 
     this.http = $http;
     this.authService = AuthService;
+    this.errorHandlerService = ErrorHandleService;
     this.toast = toastr;
   }
 
@@ -17,7 +19,11 @@ export class CatalogueService {
     const params = { max_results: limit, page };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
 
-    return this.http.get(API_CATALOGUE, { params })
+    return this.http.get(API_CATALOGUE_2, {
+      params,
+      headers: {
+        Authorization: undefined,
+      } })
       .then(response => response.data._items);
   }
 
@@ -34,24 +40,21 @@ export class CatalogueService {
       .then(() => {
         this.toast.success('Service added to tenant\'s inventory');
       })
-      .catch(() => {
-        this.toast.error('An error occurred');
-      });
+      .catch(this.errorHandlerService.handleHttpError);
   }
 
-  removeServiceFromInventory(id) {
+  removeServiceFromInventory(id, etag) {
     const params = {};
     params.where = JSON.stringify({
       tenant_id: this.authService.getTenant(),
     });
 
-    return this.http.delete(API_INVENTORY_ONE.replace(ACC_ID, id), { params })
+    return this.http.delete(API_INVENTORY_ONE.replace(ACC_ID, id),
+      { params, headers: { 'if-match': etag } })
       .then(() => {
         this.toast.success('Service was removed from tenant\'s inventory');
       })
-      .catch(() => {
-        this.toast.error('An error occurred');
-      });
+      .catch(this.errorHandlerService.handleHttpError);
   }
 }
 

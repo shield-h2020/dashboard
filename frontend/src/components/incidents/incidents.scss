@@ -1,0 +1,107 @@
+@import '~styleglobals/colors';
+
+.modal-title {
+  font-size: 20px;
+  line-height: 24px;
+  color: $color-blue;
+  font-family: Orbitron;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.scroller {
+  overflow-y: auto;
+  max-height: 600px;
+  padding-right: 8px;
+  margin-bottom: 32px;
+}
+
+.event-entry {
+  display: flex;
+  font-size: 15px;
+
+  &__title {
+    font-size: 14px;
+    display: inline-block;
+    width: 40%;
+    color: #acacac;
+    vertical-align: bottom;
+  }
+}
+
+.xmlviewer {
+  border: 1px solid #D8D8D8;
+  background-color: #F1F0F0;
+  padding: 9px;
+  color: #22293B;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 19px;
+  margin: 12px 0;
+  white-space: pre-line;
+}
+
+.footer {
+  display: flex;
+  border-top: 1px solid #D8D8D8;
+  position: absolute;
+  background-color: #fff;
+  bottom: 0;
+  width: 100%;
+  padding: 0 !important;
+}
+
+.button {
+  display: inline-block;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 22px;
+  color: $color-black;
+  background-color: $color-app-background;
+  min-height: 40px;
+  width: 100%;
+  height: 5vh;
+  border: none;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  transition: background-color 0.2s ease;
+
+  & + & {
+    box-shadow: inset 1px 0 0 #D8D8D8;
+    color: $color-blue;
+  }
+
+  &:hover {
+    background-color: darken($color-app-background, 5%);
+  }
+}
+
+.filters-container {
+  display: flex;
+}
+
+.page-button {
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  display: inline-block;
+  padding: 0;
+}
+
+.prev-button {
+  @extend .page-button;
+  border-left: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(45deg);
+}
+
+.next-button {
+  @extend .page-button;
+  border-right: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(-45deg);
+}

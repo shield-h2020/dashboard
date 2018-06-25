@@ -1,8 +1,11 @@
 import template from './inventory.html';
+import styles from './inventory.scss';
 
-const UI_STRINGS = {
+const VIEW_STRINGS = {
   title: 'NS inventory',
   tableTitle: 'Inventory',
+  modalTitle: 'NS Details',
+  close: 'Close',
 };
 
 const TABLE_HEADERS = {
@@ -11,13 +14,21 @@ const TABLE_HEADERS = {
   _created: 'Created',
 };
 
+const MODAL_ENTRIES = {
+  _id: 'Id',
+  custom_tags: 'Custom_tags',
+  _created: 'Created',
+}
+
 export const InventoryComponent = {
   template,
   controller: class InventoryComponent {
     constructor(InventoryService) {
       'ngInject';
 
-      this.strings = UI_STRINGS;
+      this.viewStrings = VIEW_STRINGS;
+      this.modalEntries = MODAL_ENTRIES;
+      this.styles = styles;
       this.inventoryService = InventoryService;
       this.createOpen = false;
       this.deleteOpen = false;
@@ -26,7 +37,16 @@ export const InventoryComponent = {
       this.limit = 25;
       this.isLoading = false;
       this.filters = {};
-      this.headers = { ...TABLE_HEADERS };
+      this.headers = {
+        ...TABLE_HEADERS,
+        actions: [
+          {
+            label: 'view',
+            action: this.toggleNSDetails.bind(this),
+          },
+        ],
+      };
+      this.modalOpen = false;
     }
 
     $onInit() {
@@ -42,6 +62,11 @@ export const InventoryComponent = {
           }));
         })
         .finally(() => { this.isLoading = false; });
+    }
+
+    toggleNSDetails(ns) {
+      this.ns = ns;
+      this.modalOpen = !this.modalOpen;
     }
   },
 };

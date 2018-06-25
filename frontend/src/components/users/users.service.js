@@ -1,10 +1,6 @@
-import { API_ADDRESS, ACC_ID } from 'api/api-config';
+import { API_ADDRESS } from 'api/api-config';
 
 const API_USERS = `${API_ADDRESS}/catalogue/users`;
-const STRINGS = {
-  USER_ERROR: 'An error occurred',
-  USERS_ERROR: 'An error occurred',
-};
 
 export class UsersService {
   constructor($http, $httpParamSerializer, $q, toastr, AuthService, TenantsService) {
@@ -48,12 +44,28 @@ export class UsersService {
       .catch(() => { this.toast.error('An error occurred'); });
   }
 
-  getRoles() {
-    return this.tenantsService.getTenant(this.authService.getTenant())
+  getRoles(tenantId = this.authService.getTenant()) {
+    return this.tenantsService.getTenant(tenantId)
       .then(tenant => tenant.groups.map(group => ({
         text: group.group.description,
         value: group.group.group_id,
       })));
+  }
+
+  getTenantName(tenantId) {
+    return this.tenantsService.getTenant(tenantId)
+      .then(tenant => tenant.tenant_name);
+  }
+
+  getTenantInfo(tenantId = this.authService.getTenant()) {
+    return this.tenantsService.getTenant(tenantId)
+      .then(tenant => ({
+        groups: tenant.groups.map(group => ({
+          text: group.group.description,
+          value: group.group.group_id,
+        })),
+        tenant_name: tenant.tenant_name,
+      }));
   }
 }
 

@@ -1,0 +1,25 @@
+<article class="row">
+  <div class="col-xs-12 stack-m">
+    <sn-input
+      field-label="Client name"
+      on-update="$ctrl.changeCurrTenant('tenant_name', $event.value)"
+      field-value="$ctrl.currTenant.tenant_name"
+    ></sn-input>
+  </div>
+  <div class="col-xs-12 stack-m">
+    <sn-input
+      field-label="Client description"
+      on-update="$ctrl.changeCurrTenant('description', $event.value)"
+      field-value="$ctrl.currTenant.description"
+    ></sn-input>
+  </div>
+  <div class="col-xs-12">
+    <sn-list-input
+      id="ips"
+      label="Client IPs"
+      on-change="$ctrl.changeCurrTenant('ip', $event.value)"
+      items="$ctrl.currTenant.ip"
+      validator="$ctrl.ipValidator"
+    ></sn-list-input>
+  </div>
+</article>

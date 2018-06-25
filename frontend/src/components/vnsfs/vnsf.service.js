@@ -1,12 +1,16 @@
 // import format from 'date-fns/format';
+import { STORE_ADDRESS } from 'api/api-config';
 import { VNSF_API, ACCESSORS } from '../../strings/api-strings';
 
+const API_VNSF = `${STORE_ADDRESS}/vnsfs`;
+
 export class VNSFService {
-  constructor($http, toastr, $q, FileUploadService) {
+  constructor($http, toastr, $q, FileUploadService, ErrorHandleService) {
     'ngInject';
 
     this.http = $http;
     this.q = $q;
+    this.errorHandleService = ErrorHandleService;
     this.toast = toastr;
     this.uploadService = FileUploadService;
   }
@@ -15,35 +19,29 @@ export class VNSFService {
     const params = { max_results: limit, page };
     if (Object.keys(filters).length !== 0) params.where = JSON.stringify(filters);
 
-    return this.http.get(VNSF_API.ALL, { params })
+    return this.http.get(API_VNSF, {
+      params,
+      headers: {
+        Authorization: undefined,
+      } })
         .then((response) => {
-          // const items = response.data._items.map((item) => {
-          //   const it = { ...item };
-          //   it.detection = format(item.detection, 'DD/MM/YYYY - HH:mm');
-
-          //   return it;
-          // });
-          const { _items: items, _meta: meta } = response.data;
+          const { _items, _meta } = response.data;
           return {
-            items: items.map(item => ({
+            items: _items.map(item => ({
               ...item,
               vendor: item.manifest['manifest:vnsf'].properties.vendor,
               security: item.manifest[Object.keys(item.manifest)[0]].security_info,
             })),
-            meta,
+            meta: _meta,
           };
         })
-        .catch((error) => {
-          this.toast.error(`An error occurred - ${error}`);
-        });
+        .catch(this.errorHandleService.handleHttpError);
   }
 
   getVNSF(id) {
     return this.http.get(VNSF_API.ONE.replace(ACCESSORS.id, id))
-        .then(response => response.data)
-        .catch(() => {
-          this.toast.error('An error occurred');
-        });
+      .then(response => response.data)
+      .catch(this.errorHandleService.handleHttpError);
   }
 
   uploadVNSF(file) {

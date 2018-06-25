@@ -23,15 +23,14 @@
 
 .scroller {
   overflow-y: auto;
-  height: calc(100% - 55px);
-  padding-top: 48px;
+  height: 600px;
+  margin-bottom: 42px;
 }
 
 .header {
     font-size: 20px;
     line-height: 24px;
     color: $color-blue;
-    padding: 0px 48px;
     font-family: Orbitron;
     font-size: 20px;
     font-weight: 500;
@@ -40,7 +39,7 @@
 
 .entrygroup {
   border-bottom: 1px solid #D8D8D8;
-  margin: 0 48px 24px;
+  margin: 0 0 16px;
   padding-bottom: 24px;
 }
 
@@ -73,8 +72,9 @@
   font-family: "OpenSans";
   font-size: 14px;
   line-height: 19px;
-  margin: 12px 48px;
+  margin: 12px 0;
   white-space: pre-line;
+  word-break: break-all;
 }
 
 .text {
@@ -94,6 +94,8 @@
   position: absolute;
   bottom: 0;
   width: 100%;
+  background-color: #fff;
+  padding: 0 !important;
 }
 
 .button {

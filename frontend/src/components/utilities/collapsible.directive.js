@@ -3,7 +3,7 @@ import angular from 'angular';
 export const CollapsibleDirective = () => ({
   restrict: 'A',
   link(scope, element) {
-    const found = element.find('header');
+    const found = element.find('h5');
     const content = angular.element(element.children()[1]);
 
     if (content) {

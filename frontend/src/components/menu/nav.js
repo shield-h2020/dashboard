@@ -29,7 +29,7 @@ export const MENU_ENTRIES = [
     roles: [SUPER_ADMIN],
   },
   {
-    text: 'vNSFs Store',
+    text: 'vNSF Catalogue',
     route: 'vnsfslist',
     roles: [TENANT_ADMIN, SUPER_ADMIN, DEVELOPER],
   },

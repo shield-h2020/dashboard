@@ -4,6 +4,7 @@ const API_TENANTS = `${API_ADDRESS}/catalogue/tenants`;
 const API_TENANT = `${API_TENANTS}/${ACC_ID}`;
 const API_TENANT_IPS = `${API_ADDRESS}/tenant_ips`;
 const API_TENANT_SCOPES = `${API_ADDRESS}/definitions/tenant_scopes`;
+const API_TENANT_GROUPS = `${API_ADDRESS}/definitions/tenant_groups`;
 
 const STRINGS = {
   TENANT_ERROR: 'An error occurred',
@@ -42,13 +43,14 @@ const TOAST_STRINGS = {
 };
 
 export class TenantsService {
-  constructor($http, $q, toastr, AuthService) {
+  constructor($http, $q, toastr, AuthService, ErrorHandleService) {
     'ngInject';
 
     this.q = $q;
     this.http = $http;
     this.toast = toastr;
     this.authService = AuthService;
+    this.errorHandleService = ErrorHandleService;
   }
 
   getTenants({ page, limit } = { page: 0, limit: 25 }, filters = {}) {
@@ -62,10 +64,7 @@ export class TenantsService {
   getTenant(id) {
     return this.http.get(API_TENANT.replace(ACC_ID, id))
       .then(response => response.data)
-      .catch((response) => {
-        this.toast.error(STRINGS.TENANT_ERROR);
-        return this.q.reject(response);
-      });
+      .catch(this.errorHandleService.handleHttpError);
   }
 
   updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip, prevIps, ipEtag }) {
@@ -139,6 +138,12 @@ export class TenantsService {
   getScopeId(scopeCode) {
     return this.http.get(`${API_TENANT_SCOPES}/${scopeCode}`)
       .then(response => response.data._id);
+  }
+
+  getTenantGroups() {
+    return this.http.get(`${API_TENANT_GROUPS}`)
+      .then(response => response.data._items)
+      .catch(this.errorHandleService.handleHttpError);
   }
 }
 

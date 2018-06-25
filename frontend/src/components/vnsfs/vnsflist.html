@@ -1,103 +1,44 @@
 <section>
-    <h4 class="sn-uppertitle">{{$ctrl.strings.title}}</h4>
-    <div auto-resizer class="sn-card">
-        <header class="sn-card__header">
-            <h5 class="header__title">{{$ctrl.strings.table.title}}</h5>
-            <button ng-click="$ctrl.fileCreateApp()" class="sn-button sn-button--primary">{{$ctrl.strings.button}}</button>
-        </header>
-        <sn-table
-            config="$ctrl.tableConf"
-            item-source="$ctrl.tableSource"
-            needs-refresh="$ctrl.refreshTable"
-            has-pagination="true"
-            actions="$ctrl.strings.table.actions"
-            actions-callback="$ctrl.onAction($event.value.item, $event.value.action)"
-            auto-call="true"
-        ></sn-table>
-    </div>
-    <sn-upload-box on-submit="$ctrl.uploadApp($event.file)"></sn-upload-box>
+  <h4 class="sn-uppertitle">{{ ::$ctrl.viewStrings.title }}</h4>
+  <div auto-resizer class="sn-card">
+    <header class="sn-card__header">
+      <h5 class="header__title">{{ ::$ctrl.viewStrings.tableTitle }}</h5>
+      <button ng-click="$ctrl.toggleFileUploadModal()" class="sn-button sn-button--primary">{{ ::$ctrl.viewStrings.button }}</button>
+    </header>
+    <s-table
+      items="$ctrl.items"
+      headers="$ctrl.tableHeaders"
+    ></s-table>
+  </div>
 
-    <div sn-modal title="'VNSF Details'" open="$ctrl.modalOpen">
-      <article class="row">
-        <div class="{{::$ctrl.styles.entrygroup}}">
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Id</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._id}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Created</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._created}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Updated</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._updated}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">State</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData.state}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Vendor</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData.vendor}}</span>
-          </div>
-        </div>
-        <div collapsible>
-          <header class="{{::$ctrl.styles.header}}">
-            <span>Descriptor</span>
-          </header>
-          <div class="{{::$ctrl.styles.xmlviewer}}" ng-class="{'{{::$ctrl.styles[xmlviewer--expand]}}': $ctrl.descriptorExpand}">
-            {{$ctrl.modalData.descriptor}}
-          </div>
-        </div>
-        <div collapsible>
-          <header class="{{::$ctrl.styles.header}}">
-            <span>Security Info</span>
-          </header>
-          <div class="{{::$ctrl.styles.xmlviewer}}" ng-class="{'{{::$ctrl.styles[xmlviewer--expand]}}': $ctrl.securityExpand}">
-            {{$ctrl.prettyJSON($ctrl.modalData.security)}}
-          </div>
-        </div>
-      </article>
-      <footer></footer>
-    </div>
+  <sn-upload-box on-submit="$ctrl.uploadApp($event.file)"></sn-upload-box>
 
-<!--     <sn-modal
-      modal-open="$ctrl.modalOpen"
-      modal-handler="$ctrl.modalHandler($event.value)"
-      modal-data="$ctrl.selectedVNSF"
-    >
-      <div class="{{::$ctrl.styles.scroller}}">
-        <header class="{{::$ctrl.styles.header}}">
-          <span>VNSF Details</span>
-        </header>
-        <div class="{{::$ctrl.styles.entrygroup}}">
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Id</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._id}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Created</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._created}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Updated</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData._updated}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">State</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData.state}}</span>
-          </div>
-          <div class="{{::$ctrl.styles.entry}}">
-            <span class="{{::$ctrl.styles.label}}">Vendor</span><span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.modalData.vendor}}</span>
-          </div>
-        </div>
-        <div collapsible>
-          <header class="{{::$ctrl.styles.header}}">
-            <span>Descriptor</span>
-          </header>
-          <div class="{{::$ctrl.styles.xmlviewer}}" ng-class="{'{{::$ctrl.styles[xmlviewer--expand]}}': $ctrl.descriptorExpand}">
-            {{$ctrl.modalData.descriptor}}
-          </div>
-        </div>
-        <div collapsible>
-          <header class="{{::$ctrl.styles.header}}">
-            <span>Security Info</span>
-          </header>
-          <div class="{{::$ctrl.styles.xmlviewer}}" ng-class="{'{{::$ctrl.styles[xmlviewer--expand]}}': $ctrl.securityExpand}">
-            {{$ctrl.prettyJSON($ctrl.modalData.security)}}
-          </div>
+  <div sn-modal title="$ctrl.viewStrings.modalTitle" open="$ctrl.modalOpen">
+    <article class="{{::$ctrl.styles.scroller}}">
+      <div class="{{::$ctrl.styles.entrygroup}}">
+        <div class={{::$ctrl.styles.entry}} ng-repeat="(key, val) in $ctrl.viewStrings.modalHeaders">
+          <span class="{{::$ctrl.styles.label}}">{{ val }}</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.currVnsf[key] }}</span>
         </div>
       </div>
-    </sn-modal> -->
+      <div collapsible>
+        <h5 class="{{::$ctrl.styles.header}}">{{::$ctrl.viewStrings.modalTitle2}}</h5>
+        <div class="{{::$ctrl.styles.xmlviewer}}">
+          {{$ctrl.currVnsf.descriptor}}
+        </div>
+      </div>
+      <div collapsible>
+        <h5 class="{{::$ctrl.styles.header}}">{{::$ctrl.viewStrings.modalTitle3}}</h5>
+        <div class="{{::$ctrl.styles.xmlviewer}}">
+          {{$ctrl.prettyJSON($ctrl.currVnsf.security)}}
+        </div>
+      </div>
+    </article>
+    <footer class="{{::$ctrl.styles.footer}}">
+      <button
+        class="{{::$ctrl.styles.button}}"
+        ng-click="$ctrl.toggleVNSFDetails()"
+      >{{::$ctrl.viewStrings.close}}</button>
+    </footer>
+  </div>
 </section>

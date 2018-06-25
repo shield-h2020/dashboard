@@ -1,13 +1,43 @@
 <section>
-  <h4 class="sn-uppertitle">{{::$ctrl.strings.title}}</h4>
+  <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
   <div class="sn-card" auto-resizer>
     <header class="sn-card__header">
-      <h5 class="header__title">{{::$ctrl.strings.tableTitle}}</h5>
+      <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
     </header>
     <s-table
       headers="$ctrl.headers"
       items="$ctrl.items"
       loading="$ctrl.isLoading"
     ></s-table>
+
+    <div
+      sn-modal
+      open="$ctrl.detailsOpen"
+      title="$ctrl.viewStrings.modalTitle"
+    >
+      <article class="{{::$ctrl.styles.scroller}}">
+        <div class="{{::$ctrl.styles.entrygroup}}">
+          <div
+            ng-repeat="(key, val) in $ctrl.modalEntries"
+            class="{{::$ctrl.styles.entry}}"
+          >
+            <span class="{{::$ctrl.styles.label}}">{{ val }}</span>
+            <span class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.ns[key] }}</span>
+          </div>
+        </div>
+        <div collapsible>
+          <h5 class="{{::$ctrl.styles.header}}">{{::$ctrl.viewStrings.modalTitle2}}</h5>
+          <div class="{{::$ctrl.styles.xmlviewer}}">
+            {{$ctrl.ns.descriptor}}
+          </div>
+        </div>
+      </article>
+      <footer class="{{::$ctrl.styles.footer}}">
+        <button
+          ng-click="$ctrl.toggleDetailsModal()"
+          class="{{::$ctrl.styles.button}}"
+        >{{ ::$ctrl.viewStrings.close }}</button>
+      </footer>
+    </div>
   </div>
 </section>

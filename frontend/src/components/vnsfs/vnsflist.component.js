@@ -1,19 +1,28 @@
+import { UPLOAD_MODAL_EVENT } from '@/strings/event-strings';
 import template from './vnsflist.html';
 import styles from './vnsf.scss';
-import { UPLOAD_MODAL_EVENT } from '../../strings/event-strings';
 
-const UI_STRINGS = {
-  title: 'VNSF Store',
-  button: 'Onboard VNSF',
-  table: {
-    title: 'VNSF Store',
-    headers: [
-      { label: 'Id', key: '_id' },
-      { label: 'State', key: 'state' },
-      { label: 'Vendor', key: 'vendor' },
-    ],
-    actions: ['details'],
+const VIEW_STRINGS = {
+  title: 'vNSF Catalogue',
+  tableTitle: 'Catalogue',
+  button: 'Onboard vNSF',
+  modalHeaders: {
+    _id: 'Id',
+    _created: 'Created',
+    _updated: 'Updated',
+    state: 'State',
+    vendor: 'Vendor',
   },
+  modalTitle: 'vNSF details',
+  modalTitle2: 'Descriptor (yaml)',
+  modalTitle3: 'Security Info',
+  close: 'close',
+};
+
+const TABLE_HEADERS = {
+  _id: 'Id',
+  state: 'State',
+  vendor: 'Vendor',
 };
 
 export const VNSFListComponent = {
@@ -22,47 +31,54 @@ export const VNSFListComponent = {
     constructor($state, $scope, toastr, VNSFService) {
       'ngInject';
 
-      this.strings = UI_STRINGS;
+      this.viewStrings = VIEW_STRINGS;
+      this.styles = styles;
       this.state = $state;
       this.scope = $scope;
       this.toast = toastr;
       this.vnsfsService = VNSFService;
-      this.styles = styles;
-      this.isLoading = true;
-      this.modalOpen = true;
-      this.selectedVNSF = null;
-      this.tableConf = {
-        headers: [],
-      };
 
-      UI_STRINGS.table.headers.forEach((header) => {
-        this.tableConf.headers.push({
-          header: header.label,
-          key: header.key,
-        });
-      });
-      this.tableConf.hasEnable = {
-        key: 'status',
-        value: 'ENABLED',
+      this.tableHeaders = {
+        ...TABLE_HEADERS,
+        actions: [
+          {
+            label: 'view',
+            action: this.toggleVNSFDetails.bind(this),
+          },
+        ],
       };
-      this.tableConf.rowSizes = [10, 20, 30];
-      this.tableSource = this.tableSource.bind(this)
+      this.page = 0;
+      this.filters = {};
+      this.items = [];
+      this.currVnsf = null;
+      this.modalOpen = false;
+      this.modalControls = {
+        descriptorExpanded: false,
+        securityExpanded: false,
+      };
     }
 
     $onInit() {
-      this.strings.button = this.strings.button;
+      this.vnsfsService.getAllVNSFs(this.page, this.filters)
+        .then((data) => {
+          this.items = [...data.items];
+        });
     }
 
-    tableSource(pagination, filters) {
-      this.refreshTable = false;
-      return this.vnsfsService.getAllVNSFs(pagination, filters);
+    toggleVNSFDetails(vnsf) {
+      this.currVnsf = vnsf;
+      this.modalOpen = !this.modalOpen;
     }
 
-    fileCreateApp() {
+    prettyJSON(obj) {
+      return JSON.stringify(obj, null, 2);
+    }
+
+    toggleFileUploadModal() {
       this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.OPEN, {
         fileType: '.tar.gz',
         fileSize: null,
-        uploadTitle: this.strings.button,
+        uploadTitle: this.viewStrings.button,
       });
     }
 
@@ -79,36 +95,10 @@ export const VNSFListComponent = {
         this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);
       }
     }
-
-    modalHandler(value) {
-      this.modalOpen = value;
-    }
-
-    uploadApp(file) {
-      this.vnsfsService.uploadVNSF(file)
-        .then(() => {
-          this.toast.success('vNSF onboarded', '', {
-            onHidden: () => { this.refreshTable = true; },
-          });
-          this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.LOADING);
-        })
-        .finally(() => {
-          this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);
-          this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.LOADING);
-        });
-    }
-
-    onAction(vnsf, action) {
-      switch (action) {
-        case 'details':
-          this.selectedVNSF = vnsf;
-          this.modalOpen = true;
-          break;
-        default:
-      }
-    }
   },
 };
+
+export default VNSFListComponent;
 
 export const vnsfListState = {
   parent: 'home',

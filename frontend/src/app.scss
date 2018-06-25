@@ -77,6 +77,7 @@
 
     .isCollapsed {
       .collapse_icon {
+        margin-left: 8px;
         &:before {
           content: '▾';
         }
@@ -84,6 +85,7 @@
     }
 
     .collapse_icon {
+      margin-left: 8px;
       &:before {
         content: '▴';
       }

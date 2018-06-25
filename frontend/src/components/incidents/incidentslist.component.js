@@ -80,7 +80,7 @@ export const IncidentsListComponent = {
 
     tableSource(pagination, filters) {
       this.refreshTable = false;
-      return this.incidentsService.getAllIncidents(pagination, filters);
+      return this.incidentsService.getIncidents(pagination, filters);
     }
 
     openRecommendation(incident) {

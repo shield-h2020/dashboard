@@ -1,9 +1,10 @@
 import template from './users-list.html';
 
-const UI_STRINGS = {
+const VIEW_STRINGS = {
   title: 'Users',
   tableTitle: 'Users list',
   modalCreateTitle: 'Create user',
+  modalUpdateTitle: 'User information',
   modalDeleteTitle: 'Delete user',
   confirmDelete: 'Are you sure you want to delete this user?',
   create: 'Create',
@@ -26,7 +27,7 @@ export const UsersListComponent = {
     constructor($scope, UsersService, TenantsService, AuthService) {
       'ngInject';
 
-      this.strings = UI_STRINGS;
+      this.viewStrings = VIEW_STRINGS;
       this.scope = $scope;
       this.usersService = UsersService;
       this.tenantsService = TenantsService;
@@ -61,9 +62,6 @@ export const UsersListComponent = {
     $onInit() {
       this.isPlatformAdmin = this.authService.isUserPlatformAdmin();
       this.getUsers();
-      if (!this.isPlatformAdmin) {
-        this.getRoles();
-      }
     }
 
     toggleCreate(user) {
@@ -79,6 +77,9 @@ export const UsersListComponent = {
           tenant: this.tenant,
           password: '',
         };
+      }
+      if (this.createOpen) {
+        this.getTenantInfo(this.newUser);
       }
     }
 
@@ -128,10 +129,11 @@ export const UsersListComponent = {
         });
     }
 
-    getRoles() {
-      this.usersService.getRoles()
-        .then((roles) => {
-          this.roles = roles;
+    getTenantInfo({ tenant_id }) {
+      this.usersService.getTenantInfo(tenant_id)
+        .then((info) => {
+          this.newUser.tenant = info.tenant_name;
+          this.roles = info.groups;
         });
     }
 

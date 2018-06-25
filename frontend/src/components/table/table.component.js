@@ -29,7 +29,7 @@ export const TableComponent = {
     pagination: '<',
     filterInputs: '<',
     autoCall: '<',
-    itemSource: '<'
+    itemSource: '<',
   },
   controller: class TableComponent {
     constructor() {
