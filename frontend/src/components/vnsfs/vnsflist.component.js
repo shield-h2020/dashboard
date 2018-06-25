@@ -86,6 +86,10 @@ export const VNSFListComponent = {
     uploadApp(file) {
       try {
         this.vnsfsService.uploadVNSF(file)
+          .then(() => {
+            this.toast.success('vNSF file uploaded', 'Successful onboard');
+            this.getData();
+          })
           .finally(() => {
             this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);
             this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.LOADING);
