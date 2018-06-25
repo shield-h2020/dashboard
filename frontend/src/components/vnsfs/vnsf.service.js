@@ -45,16 +45,8 @@ export class VNSFService {
   }
 
   uploadVNSF(file) {
-    return this.uploadService.uploadFile(VNSF_API.ONE_UPLOAD, 'POST', file)
-      .catch((response) => {
-        if (response && response.data) {
-          this.toast.error(response.data._error.message, 'An error occurred');
-        } else {
-          this.toast.error('An error occurred');
-        }
-
-        return this.q.reject(response);
-      });
+    return this.uploadService.uploadFile(API_VNSF, 'POST', file)
+      .catch(this.errorHandleService.handleHttpError);
   }
 }
 

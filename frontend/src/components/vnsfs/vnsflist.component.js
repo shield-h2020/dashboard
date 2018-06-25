@@ -17,6 +17,7 @@ const VIEW_STRINGS = {
   modalTitle2: 'Descriptor (yaml)',
   modalTitle3: 'Security Info',
   close: 'close',
+  uploadError: 'Error uploading app file',
 };
 
 const TABLE_HEADERS = {
@@ -82,17 +83,17 @@ export const VNSFListComponent = {
       });
     }
 
-    updateApp(id, app) {
-      let parsed;
+    uploadApp(file) {
       try {
-        parsed = JSON.parse(app);
-        this.vnsfsService.updateApp(id, parsed)
+        this.vnsfsService.uploadVNSF(file)
           .finally(() => {
             this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);
+            this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.LOADING);
           });
       } catch (e) {
-        this.toast.error('vNSF can\'t be creacted', this.strings.ERROR.INVALID_JSON);
+        this.toast.error('vNSF can\'t be created', this.viewStrings.uploadError);
         this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);
+        this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.LOADING);
       }
     }
   },
