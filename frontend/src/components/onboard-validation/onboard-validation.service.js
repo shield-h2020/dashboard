@@ -31,13 +31,9 @@ export class OnboardValidationService {
     return this.http.get(`${API_VALIDATIONS}/${id}`, { headers: { Authorization: undefined } })
       .then((response) => {
         const { topology: { graph }, result } = response.data;
-        let parsed = graph;
-        if (graph) {
-          parsed = graph.substr(1).substr(0, graph.length - 2);
-        }
 
         return {
-          graph: syncParseXML(parsed),
+          graph: syncParseXML(graph),
           errors: result.error_count,
           warnings: result.warning_count,
           issues: result.issues.length ? result.issues : [],
