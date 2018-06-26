@@ -3,12 +3,15 @@
   <div class="sn-card" auto-resizer>
     <header class="sn-card__header">
       <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
+      <button ng-click="$ctrl.toggleFileUploadModal()" class="sn-button sn-button--primary">{{ ::$ctrl.viewStrings.button }}</button>
     </header>
     <s-table
       headers="$ctrl.headers"
       items="$ctrl.items"
       loading="$ctrl.isLoading"
     ></s-table>
+
+    <sn-upload-box on-submit="$ctrl.uploadApp($event.file)"></sn-upload-box>
 
     <div
       sn-modal
@@ -24,6 +27,10 @@
             <span class="{{::$ctrl.styles.label}}">{{ val }}</span>
             <span class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.ns[key] }}</span>
           </div>
+          <div class="{{::$ctrl.styles.entry}}">
+              <span class="{{::$ctrl.styles.label}}">{{ $ctrl.viewStrings.validations }}</span>
+              <a ui-sref="validation({id: $ctrl.ns.validation })" class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.ns.validation }}</a>
+          </div>
         </div>
         <div collapsible>
           <h5 class="{{::$ctrl.styles.header}}">{{::$ctrl.viewStrings.modalTitle2}}</h5>
@@ -37,6 +44,16 @@
           ng-click="$ctrl.toggleDetailsModal()"
           class="{{::$ctrl.styles.button}}"
         >{{ ::$ctrl.viewStrings.close }}</button>
+      </footer>
+    </div>
+
+    <div sn-modal title="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
+      <article>
+        {{::$ctrl.viewStrings.deleteMessage}}
+      </article>
+      <footer class="inset-ss text-right">
+        <button class="sn-button inline-ss" ng-click="$ctrl.toggleDeleteModal()">{{::$ctrl.viewStrings.cancelButton}}</button>
+        <button class="sn-button sn-button--delete" ng-click="$ctrl.deleteNs()">{{::$ctrl.viewStrings.deleteButton}}</button>
       </footer>
     </div>
   </div>

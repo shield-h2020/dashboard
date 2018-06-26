@@ -9,7 +9,7 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
-  custom_tags: 'Tags',
+  capabilities: 'Capabilities',
   ref_id: 'Id',
   _created: 'Created',
 };
@@ -58,7 +58,7 @@ export const InventoryComponent = {
         .then((items) => {
           this.items = items.map(item => ({
             ...item,
-            custom_tags: item.custom_tags.join(', '),
+            capabilities: item.manifest['manifest:ns'].properties.capabilities.join(', '),
           }));
         })
         .finally(() => { this.isLoading = false; });

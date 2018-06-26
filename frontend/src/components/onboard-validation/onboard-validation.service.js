@@ -1,41 +1,49 @@
-import { API_ADDRESS } from 'api/api-config';
-import { parseXML } from './utils/parser';
+import { STORE_ADDRESS } from 'api/api-config';
+import { parseXML, syncParseXML } from './utils/parser';
 
-const API_VALIDATIONS = `${API_ADDRESS}/validations`;
+const API_VALIDATIONS = `${STORE_ADDRESS}/validation`;
 
 export class OnboardValidationService {
-  constructor($http, $q, toastr) {
+  constructor($http, $q, toastr, ErrorHandleService) {
     'ngInject';
 
     this.q = $q;
     this.http = $http;
     this.toast = toastr;
+    this.errorHandlerService = ErrorHandleService;
   }
 
-  getValidations() {
-    return this.http.get(API_VALIDATIONS)
-      .then(response => response.data._items);
+  getValidations({ page = 0, limit = 10 }, filters = {}) {
+    const params = { max_results: limit, page };
+    if (Object.keys(filters).length) params.where = JSON.stringify(filters);
+
+    return this.http.get(API_VALIDATIONS, {
+      params,
+      headers: { Authorization: undefined },
+    })
+      .then(response => ({
+        items: response.data._items,
+        meta: response.data._meta,
+      }));
   }
 
-  getValidation(validation) {
-    const { topology: { graph } } = validation;
-    let parsed = graph;
-    if (graph) {
-      parsed = graph.substr(1).substr(0, graph.length - 2);
-    }
+  getValidationById(id) {
+    return this.http.get(`${API_VALIDATIONS}/${id}`, { headers: { Authorization: undefined } })
+      .then((response) => {
+        const { topology: { graph }, result } = response.data;
+        let parsed = graph;
+        if (graph) {
+          parsed = graph.substr(1).substr(0, graph.length - 2);
+        }
 
-    return parseXML(parsed);
-  }
-
-  getResults(validation) {
-    const { result } = validation;
-    return new Promise((resolve, reject) => {
-      resolve({
-        errors: result.error_count,
-        warnings: result.warning_count,
-        issues: JSON.parse(result.issues),
-      });
-    });
+        return {
+          graph: syncParseXML(parsed),
+          errors: result.error_count,
+          warnings: result.warning_count,
+          issues: result.issues.length ? result.issues : [],
+        };
+      })
+      .catch(this.errorHandlerService.handleHttpError);
   }
 }
 

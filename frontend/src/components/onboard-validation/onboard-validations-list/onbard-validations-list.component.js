@@ -1,14 +1,32 @@
 import template from './onboard-validations-list.html';
+import styles from '../onboard-validation.scss';
 
 const VIEW_STRINGS = {
   title: 'Validations list',
   cardTitle: 'Validations',
+  type: [
+    {
+      text: 'All',
+      value: 'all',
+    },
+    {
+      text: 'vNSF',
+      value: 'vNSF',
+    },
+    {
+      text: 'NS',
+      value: 'NS',
+    },
+  ],
+  startDate: 'Start date',
+  endDate: 'End date',
 };
 
 const TABLE_HEADERS = {
   _id: 'Id',
-  _created: 'Created',
+  _updated: 'Date',
   status: 'Status',
+  type: 'Type',
 };
 
 export const OnboardValidationsListComponent = {
@@ -18,13 +36,16 @@ export const OnboardValidationsListComponent = {
       'ngInject';
 
       this.viewStrings = VIEW_STRINGS;
+      this.styles = styles;
       this.onboardValidationService = OnboardValidationService;
       this.state = $state;
       this.createOpen = false;
       this.deleteOpen = false;
 
-      this.offset = 0;
-      this.limit = 25;
+      this.pagination = {
+        page: 1,
+        limit: 10,
+      };
       this.isLoading = false;
       this.filters = {};
       this.headers = {
@@ -44,12 +65,11 @@ export const OnboardValidationsListComponent = {
 
     getData() {
       this.isLoading = true;
-      this.onboardValidationService.getValidations({
-        page: this.offset,
-        limit: this.limit,
-      }, this.filters)
-        .then((items) => {
+      this.onboardValidationService.getValidations(this.pagination, this.filters)
+        .then(({ items, meta }) => {
           this.items = OnboardValidationsListComponent.addExtraClasses(items);
+          this.pagination.total = (meta && meta.total) || 0;
+          this.paging = this.calcPageItems();
         })
         .finally(() => { this.isLoading = false; });
     }
@@ -66,8 +86,56 @@ export const OnboardValidationsListComponent = {
       }));
     }
 
-    viewValidation(validation) {
-      this.state.go('validation', { validation });
+    viewValidation({ _id }) {
+      this.state.go('validation', { id: _id });
+    }
+
+    setFilter(filter) {
+      if (filter.key === 'startDate' || filter.key === 'endDate') {
+        const query = filter.key === 'startDate' ? '$gte' : '$lte';
+        if (!this.filters._updated) this.filters._updated = {};
+        const date = new Date(filter.value);
+        if (filter.key === 'endDate') {
+          date.setSeconds(59);
+        }
+        this.filters._updated[query] = date.toUTCString();
+      } else if (filter.key === 'type') {
+        if (filter.value === 'all') {
+          delete this.filters.type;
+        } else {
+          this.filters[filter.key] = filter.value;
+        }
+      } else {
+        this.filters[filter.key] = filter.value;
+      }
+
+      this.getData();
+    }
+
+    changePage(amount) {
+      const condition = amount > 0 ?
+        this.items.length >= this.pagination.limit : this.pagination.page > 0;
+      if (condition) {
+        this.pagination.page += amount;
+        this.getData();
+      }
+    }
+
+    calcPageItems() {
+      const { page, limit } = this.pagination;
+      const length = this.items.length || 10;
+
+      const res = ((page * limit) - (length < limit ? limit : length)) + 1;
+      const res2 = (page * limit) + (length < limit ? -(limit - length) : 0);
+
+      return { min: res, max: res2 };
+    }
+
+    setStartDate() {
+      this.startDate = new Date();
+      this.startDate.setFullYear(this.startDate.getFullYear() - 1);
+
+      return this.startDate.toString();
     }
   },
 };

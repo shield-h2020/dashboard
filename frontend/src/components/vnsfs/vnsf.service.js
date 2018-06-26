@@ -3,6 +3,7 @@ import { STORE_ADDRESS } from 'api/api-config';
 import { VNSF_API, ACCESSORS } from '../../strings/api-strings';
 
 const API_VNSF = `${STORE_ADDRESS}/vnsfs`;
+const API_NSS = `${STORE_ADDRESS}/nss`;
 
 export class VNSFService {
   constructor($http, toastr, $q, FileUploadService, ErrorHandleService) {
@@ -16,7 +17,7 @@ export class VNSFService {
   }
 
   getAllVNSFs({ page = 1, limit = 25 }, filters) {
-    const params = { max_results: limit, page };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length !== 0) params.where = JSON.stringify(filters);
 
     return this.http.get(API_VNSF, {
@@ -46,6 +47,21 @@ export class VNSFService {
 
   uploadVNSF(file) {
     return this.uploadService.uploadFile(API_VNSF, 'POST', file)
+      .catch(this.errorHandleService.handleHttpError);
+  }
+
+  uploadNS(file) {
+    return this.uploadService.uploadFile(API_NSS, 'POST', file)
+      .catch(this.errorHandleService.handleHttpError);
+  }
+
+  deleteVnsf({ _id, _etag }) {
+    return this.http.delete(`${API_VNSF}/${_id}`, { headers: { Authorization: undefined, 'If-Match': _etag } })
+      .catch(this.errorHandleService.handleHttpError);
+  }
+
+  deleteNs({ _id, _etag }) {
+    return this.http.delete(`${API_NSS}/${_id}`, { headers: { Authorization: undefined, 'If-Match': _etag } })
       .catch(this.errorHandleService.handleHttpError);
   }
 }

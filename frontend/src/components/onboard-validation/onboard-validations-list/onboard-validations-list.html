@@ -4,10 +4,40 @@
     <header class="sn-card__header">
       <h5 class="header__title">{{::$ctrl.viewStrings.cardTitle}}</h5>
     </header>
+    <div class="row stack-m">
+      <div class="col-xs-3" style="padding-top: 16px;">
+        <sn-date-picker
+          label="{{::$ctrl.viewStrings.startDate}}"
+          on-change="$ctrl.setFilter({ key: 'startDate', value: $event.value})"
+          current-date="$ctrl.setStartDate()"
+        ></sn-date-picker>
+      </div>
+      <div class="col-xs-3" style="padding-top: 16px;">
+        <sn-date-picker
+          label="{{::$ctrl.viewStrings.endDate}}"
+          on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})"
+        ></sn-date-picker>
+      </div>
+      <div class="col-xs-2 col-xs-offset-4">
+        <sn-select
+          label="'Type'"
+          selected="$ctrl.viewStrings.type[0].value"
+          options="$ctrl.viewStrings.type"
+          on-change="$ctrl.setFilter({ key: 'type', value: $event.value })"
+        ></sn-select>  
+      </div>
+    </div>
     <s-table
       headers="$ctrl.headers"
       items="$ctrl.items"
       loading="$ctrl.isLoading"
     ></s-table>
+    <div style="text-align: right; margin-top: 16px;" ng-if="$ctrl.items.length">
+      <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+      <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+      <span class="sn-table__footer">
+        Showing {{$ctrl.paging.min}} to {{$ctrl.paging.max}} of {{$ctrl.pagination.total}}
+      </span>
+    </div>
   </div>
 </section>

@@ -8,6 +8,7 @@
     <s-table
       items="$ctrl.items"
       headers="$ctrl.tableHeaders"
+      loading="$ctrl.isLoading"
     ></s-table>
   </div>
 
@@ -19,6 +20,10 @@
         <div class={{::$ctrl.styles.entry}} ng-repeat="(key, val) in $ctrl.viewStrings.modalHeaders">
           <span class="{{::$ctrl.styles.label}}">{{ val }}</span>
           <span class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.currVnsf[key] }}</span>
+        </div>
+        <div class="{{::$ctrl.styles.entry}}">
+          <span class="{{::$ctrl.styles.label}}">{{ $ctrl.viewStrings.validations }}</span>
+          <a ui-sref="validation({id: $ctrl.currVnsf.validation })" class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.currVnsf.validation }}</a>
         </div>
       </div>
       <div collapsible>
@@ -39,6 +44,16 @@
         class="{{::$ctrl.styles.button}}"
         ng-click="$ctrl.toggleVNSFDetails()"
       >{{::$ctrl.viewStrings.close}}</button>
+    </footer>
+  </div>
+
+  <div sn-modal title="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
+    <article>
+      {{::$ctrl.viewStrings.deleteMessage}}
+    </article>
+    <footer class="inset-ss text-right">
+      <button class="sn-button inline-ss" ng-click="$ctrl.toggleDeleteModal()">{{::$ctrl.viewStrings.cancelButton}}</button>
+      <button class="sn-button sn-button--delete" ng-click="$ctrl.deleteVnfs()">{{::$ctrl.viewStrings.deleteButton}}</button>
     </footer>
   </div>
 </section>

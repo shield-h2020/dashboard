@@ -7,7 +7,6 @@ const VIEW_STRINGS = {
   tableTitle: 'Catalogue',
   button: 'Onboard vNSF',
   modalHeaders: {
-    _id: 'Id',
     _created: 'Created',
     _updated: 'Updated',
     state: 'State',
@@ -18,12 +17,17 @@ const VIEW_STRINGS = {
   modalTitle3: 'Security Info',
   close: 'close',
   uploadError: 'Error uploading app file',
+  validations: 'Validation',
+  deleteModalTitle: 'Delete vNSF',
+  deleteButton: 'Delete',
+  cancelButton: 'Cancel',
+  deleteMessage: 'Confirm vNSF deletion',
 };
 
 const TABLE_HEADERS = {
-  _id: 'Id',
   state: 'State',
   vendor: 'Vendor',
+  capabilities: 'Capabilities',
 };
 
 export const VNSFListComponent = {
@@ -46,6 +50,10 @@ export const VNSFListComponent = {
             label: 'view',
             action: this.toggleVNSFDetails.bind(this),
           },
+          {
+            label: 'delete',
+            action: this.toggleDeleteModal.bind(this),
+          },
         ],
       };
       this.page = 0;
@@ -53,22 +61,53 @@ export const VNSFListComponent = {
       this.items = [];
       this.currVnsf = null;
       this.modalOpen = false;
+      this.deleteModalOpen = false;
       this.modalControls = {
         descriptorExpanded: false,
         securityExpanded: false,
       };
+      this.isLoading = false;
     }
 
     $onInit() {
       this.vnsfsService.getAllVNSFs(this.page, this.filters)
         .then((data) => {
-          this.items = [...data.items];
+          this.items = data.items.map(item => ({
+            ...item,
+            capabilities: item.manifest['manifest:vnsf'].properties.capabilities.join(', '),
+          }));
         });
+    }
+
+    getData() {
+      this.isLoading = true;
+      this.vnsfsService.getAllVNSFs(this.page, this.filters)
+        .then((data) => {
+          this.items = data.items.map(item => ({
+            ...item,
+            capabilities: item.manifest['manifest:vnsf'].properties.capabilities.join(', '),
+          }));
+        })
+        .finally(() => { this.isLoading = false; });
     }
 
     toggleVNSFDetails(vnsf) {
       this.currVnsf = vnsf;
       this.modalOpen = !this.modalOpen;
+    }
+
+    toggleDeleteModal(vnsf) {
+      this.currVnsf = vnsf;
+      this.deleteModalOpen = !this.deleteModalOpen;
+    }
+
+    deleteVnfs() {
+      this.vnsfsService.deleteVnsf(this.currVnsf)
+        .then(() => {
+          this.toast.success('vNSF deleted successfully', 'vNSF delete');
+          this.toggleDeleteModal();
+          this.getData();
+        });
     }
 
     prettyJSON(obj) {
@@ -86,9 +125,9 @@ export const VNSFListComponent = {
     uploadApp(file) {
       try {
         this.vnsfsService.uploadVNSF(file)
-          .then(() => {
-            this.toast.success('vNSF file uploaded', 'Successful onboard');
+          .then((response) => {
             this.getData();
+            this.toast.success('vNSF file uploaded', 'Successful onboard');
           })
           .finally(() => {
             this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);

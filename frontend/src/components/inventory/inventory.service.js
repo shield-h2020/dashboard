@@ -1,7 +1,7 @@
-import { API_ADDRESS, ACC_ID } from 'api/api-config';
+import { API_ADDRESS, STORE_ADDRESS, ACC_ID } from 'api/api-config';
 
 const API_INVENTORY = `${API_ADDRESS}/inventory/nss`;
-const API_CATALOGUE = `${API_ADDRESS}/catalogue/nss/${ACC_ID}`;
+const API_CATALOGUE = `${STORE_ADDRESS}/nss/${ACC_ID}`;
 // /id?where={tenant_id: ''}
 export class InventoryService {
   constructor($http, $q, toastr, AuthService) {
@@ -41,7 +41,7 @@ export class InventoryService {
         tenant_id: this.authService.getTenant(),
       });
     }
-    return this.http.get(API_CATALOGUE.replace(ACC_ID, id), { params })
+    return this.http.get(API_CATALOGUE.replace(ACC_ID, id), { params, headers: { Authorization: undefined } })
       .then(response => response.data);
   }
 }

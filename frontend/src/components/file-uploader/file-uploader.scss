@@ -1,0 +1,32 @@
+.container {
+
+}
+
+.drop-area {
+
+}
+
+.separator {
+  &::before,
+  &::after {
+    content: '';
+    border-bottom: 1px solid #ccc;
+    width: 45%;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &::before {
+    margin-right: 8px;
+  }
+  
+  &::after {    
+    margin-left: 8px;
+  }
+}
+
+.loading {
+  position: relative;
+  top: 40%;
+  font-weight: 600;
+}

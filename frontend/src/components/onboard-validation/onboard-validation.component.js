@@ -18,17 +18,14 @@ export const OnboardValidationComponent = {
     }
 
     $onInit() {
-      this.validationService.getResults(this.stateParams.validation)
-        .then((obj) => {
-          this.errCount = obj.errors;
-          this.warnCount = obj.warnings;
-          this.scope.errors = obj.issues.filter(i => i.level === 'error');
-          this.scope.warnings = obj.issues.filter(i => i.level === 'warning');
-        });
-      this.validationService.getValidation(this.stateParams.validation)
-        .then((obj) => {
-          if (obj.nodes.length || obj.links.length) {
-            this.scope.topology = obj;
+      this.validationService.getValidationById(this.stateParams.id)
+        .then((data) => {
+          this.errCount = data.errors;
+          this.warnCount = data.warnings;
+          this.scope.errors = data.issues.filter(i => i.level === 'error');
+          this.scope.warnings = data.issues.filter(i => i.level === 'warning');
+          if (data.graph.nodes.length || data.graph.links.length) {
+            this.scope.topology = data.graph;
           }
         });
     }
@@ -109,9 +106,6 @@ export const OnboardValidationComponent = {
 export const validationState = {
   parent: 'home',
   name: 'validation',
-  url: '/validation',
+  url: '/validation/:id',
   component: 'validationView',
-  params: {
-    validation: null,
-  },
 };

@@ -138,6 +138,13 @@ export const IncidentsListComponent = {
         this.toggleIncidentModal();
       });
     }
+
+    setStartDate() {
+      this.startDate = new Date();
+      this.startDate.setFullYear(this.startDate.getFullYear() - 1);
+
+      return this.startDate.toString();
+    }
   },
 };
 
