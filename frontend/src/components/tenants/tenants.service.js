@@ -39,7 +39,7 @@ const TOAST_STRINGS = {
   GET_ERROR_IP: {
     TITLE: 'Client IP association retrieval failed',
     MESSAGE: 'Client IP association retrieval error',
-  }
+  },
 };
 
 export class TenantsService {
@@ -72,7 +72,16 @@ export class TenantsService {
       headers: { 'if-match': _etag } });
   }
 
-  updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip, prevIps, ipEtag }) {
+  updateTenantAndIps({
+    tenant_id,
+    tenant_name,
+    _etag,
+    description,
+    scope_id,
+    ip,
+    prevIps,
+    ipEtag,
+  }) {
     return this.http.put(API_TENANT.replace(ACC_ID, tenant_id),
       { tenant_name, description, scope_id }, { headers: { 'if-match': _etag } })
       .then(() => {
@@ -130,14 +139,7 @@ export class TenantsService {
   getTenantIps(tenantId) {
     return this.http.get(`${API_TENANT_IPS}/${tenantId}`)
       .then(response => ({ ip: response.data.ip, etag: response.data._etag }))
-      .catch((err) => {
-        if (err.data._error.code !== 404) {
-          this.toast.error(TOAST_STRINGS.GET_ERROR_IP.MESSAGE,
-            TOAST_STRINGS.GET_ERROR_IP.TITLE);
-        }
-
-        return this.q.reject(err.data._error.code);
-      });
+      .catch(this.errorHandleService.handleHttpError);
   }
 
   getScopeId(scopeCode) {

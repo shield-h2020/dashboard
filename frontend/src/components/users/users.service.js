@@ -42,12 +42,26 @@ export class UsersService {
       email,
       group_id,
     }, { params })
-      .catch(() => { this.toast.error('An error occurred'); });
+      .catch(this.errorHandleService.handleHttpError);
+  }
+
+  updateUser({ user_id, name, password, tenant_id, description, email, group_id, _etag }) {
+    return this.http.put(`${API_USERS}/${user_id}`, {
+      name,
+      password,
+      tenant_id,
+      description,
+      email,
+      group_id,
+    }, { headers: { 'if-match': _etag } })
+      .then(this.errorHandleService.handleHttpSuccess)
+      .catch(this.errorHandleService.handleHttpError);
   }
 
   deleteUser({ user_id, _etag }) {
     return this.http.delete(`${API_USERS}/${user_id}`, {
       headers: { 'if-match': _etag } })
+      .then(this.errorHandleService.handleHttpSuccess)
       .catch(this.errorHandleService.handleHttpError);
   }
 
