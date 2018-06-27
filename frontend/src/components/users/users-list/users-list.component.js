@@ -6,7 +6,7 @@ const VIEW_STRINGS = {
   modalCreateTitle: 'Create user',
   modalUpdateTitle: 'User information',
   modalDeleteTitle: 'Delete user',
-  confirmDelete: 'Are you sure you want to delete this user?',
+  confirmDelete: 'Are you sure you want to delete the user ',
   create: 'Create',
   update: 'Update',
   cancel: 'Cancel',
@@ -24,17 +24,17 @@ export const UsersListComponent = {
     tenant: '<',
   },
   controller: class UsersListComponent {
-    constructor($scope, UsersService, TenantsService, AuthService) {
+    constructor($scope, toastr, UsersService, TenantsService, AuthService) {
       'ngInject';
 
       this.viewStrings = VIEW_STRINGS;
+      this.toast = toastr;
       this.scope = $scope;
       this.usersService = UsersService;
       this.tenantsService = TenantsService;
       this.authService = AuthService;
       this.createOpen = false;
       this.deleteOpen = false;
-      this.toggleDelete = this.toggleDelete.bind(this);
       this.toggleCreate = this.toggleCreate.bind(this);
       this.selectedUser = null;
       this.isCreate = true;
@@ -47,7 +47,7 @@ export const UsersListComponent = {
           },
           {
             label: 'delete',
-            action: this.toggleDelete,
+            action: this.toggleDeleteModal.bind(this),
           },
         ],
       };
@@ -61,7 +61,7 @@ export const UsersListComponent = {
 
     $onInit() {
       this.isPlatformAdmin = this.authService.isUserPlatformAdmin();
-      this.getUsers();
+      this.getData();
     }
 
     toggleCreate(user) {
@@ -83,11 +83,9 @@ export const UsersListComponent = {
       }
     }
 
-    toggleDelete(user) {
+    toggleDeleteModal(user) {
+      this.selectedUser = user;
       this.deleteOpen = !this.deleteOpen;
-      if (user) {
-        this.selectedUser = user;
-      }
     }
 
     setNewUser(property, val) {
@@ -106,7 +104,7 @@ export const UsersListComponent = {
       if (this.newUser) {
         this.usersService.createUser(this.newUser)
         .then(() => {
-          this.getUsers();
+          this.getData();
           this.toggleCreate();
           this.newUser = null;
         });
@@ -116,16 +114,18 @@ export const UsersListComponent = {
     updateUser() {
       this.usersService.updateUser(this.newUser)
         .then(() => {
-          this.getUsers();
+          this.getData();
           this.toggleCreate();
           this.newUser = null;
         });
     }
 
-    removeUser() {
+    deleteUser() {
       this.usersService.deleteUser(this.selectedUser)
         .then(() => {
-          this.toggleDelete();
+          this.toast.success('Client deleted successfully', 'Client delete');
+          this.toggleDeleteModal();
+          this.getData();
         });
     }
 
@@ -137,7 +137,7 @@ export const UsersListComponent = {
         });
     }
 
-    getUsers() {
+    getData() {
       this.loading = true;
       this.users = [];
       this.usersService.getUsers(this.pagination, this.filters)

@@ -14,9 +14,9 @@ export class OnboardValidationService {
   }
 
   getValidations({ page = 0, limit = 10 }, filters = {}) {
-    const params = { max_results: limit, page };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
-
+    params.sort = '-_updated';
     return this.http.get(API_VALIDATIONS, {
       params,
       headers: { Authorization: undefined },
@@ -40,6 +40,10 @@ export class OnboardValidationService {
         };
       })
       .catch(this.errorHandlerService.handleHttpError);
+  }
+
+  deleteValidation({ _id, _etag }) {
+    return this.http.delete(`${API_VALIDATIONS}/${_id}`, { headers: { 'if-match': _etag, Authorization: undefined } });
   }
 }
 

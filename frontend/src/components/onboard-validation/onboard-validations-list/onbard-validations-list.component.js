@@ -20,25 +20,29 @@ const VIEW_STRINGS = {
   ],
   startDate: 'Start date',
   endDate: 'End date',
+  deleteModalTitle: 'Delete Validation',
+  deleteButton: 'Delete',
+  cancelButton: 'Cancel',
+  confirmDelete: 'Are you sure you want to delete the validation for the',
 };
 
 const TABLE_HEADERS = {
   _id: 'Id',
   _updated: 'Date',
-  status: 'Status',
   type: 'Type',
 };
 
 export const OnboardValidationsListComponent = {
   template,
   controller: class OnboardValidationsListComponent {
-    constructor(OnboardValidationService, $state) {
+    constructor(OnboardValidationService, $state, toastr) {
       'ngInject';
 
       this.viewStrings = VIEW_STRINGS;
       this.styles = styles;
       this.onboardValidationService = OnboardValidationService;
       this.state = $state;
+      this.toast = toastr;
       this.createOpen = false;
       this.deleteOpen = false;
 
@@ -54,6 +58,10 @@ export const OnboardValidationsListComponent = {
           {
             label: 'view',
             action: this.viewValidation.bind(this),
+          },
+          {
+            label: 'delete',
+            action: this.toggleDeleteModal.bind(this),
           },
         ],
       };
@@ -136,6 +144,20 @@ export const OnboardValidationsListComponent = {
       this.startDate.setFullYear(this.startDate.getFullYear() - 1);
 
       return this.startDate.toString();
+    }
+
+    toggleDeleteModal(validation) {
+      this.validation = validation;
+      this.deleteModalOpen = !this.deleteModalOpen;
+    }
+
+    deleteValidation() {
+      this.onboardValidationService.deleteValidation(this.validation)
+        .then(() => {
+          this.toast.success('Validation deleted successfully', 'Validation deletion');
+          this.toggleDeleteModal();
+          this.getData();
+        });
     }
   },
 };

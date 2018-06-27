@@ -8,7 +8,7 @@ const UI_STRINGS = {
   update: 'Update',
   modalCreateTitle: 'Create client',
   modalDeleteTitle: 'Delete client',
-  confirmDelete: 'Are you sure you want to delete this client?',
+  confirmDelete: 'Are you sure you want to delete the client',
   cancel: 'Cancel',
   delete: 'Delete',
 };
@@ -21,16 +21,17 @@ const TABLE_HEADERS = {
 export const TenantsListComponent = {
   template,
   controller: class TenantsListComponent {
-    constructor($q, TenantsService) {
+    constructor($q, TenantsService, AuthService, toastr) {
       'ngInject';
 
       this.q = $q;
       this.strings = UI_STRINGS;
       this.tenantsService = TenantsService;
+      this.authService = AuthService;
+      this.toast = toastr;
       this.createOpen = false;
       this.deleteOpen = false;
 
-      this.removeTenant = this.removeTenant.bind(this);
       this.updateTenant = this.updateTenant.bind(this);
       this.ipValidator = ipValidator;
       this.offset = 0;
@@ -45,13 +46,20 @@ export const TenantsListComponent = {
           },
         ],
       };
+
+      if (this.authService.isUserPlatformAdmin()) {
+        this.headers.actions.push({
+          label: 'delete',
+          action: this.toggleDeleteModal.bind(this),
+        });
+      }
     }
 
     $onInit() {
-      this.getItems();
+      this.getData();
     }
 
-    getItems() {
+    getData() {
       this.tenantsService.getTenants({
         page: this.offset,
         limit: this.limit,
@@ -105,7 +113,8 @@ export const TenantsListComponent = {
       }
     }
 
-    toggleDelete() {
+    toggleDeleteModal(tenant) {
+      this.currTenant = tenant;
       this.deleteOpen = !this.deleteOpen;
     }
 
@@ -117,8 +126,13 @@ export const TenantsListComponent = {
       this.toggleCreate(tenant);
     }
 
-    removeTenant(tenant) {
-      this.toggleDelete(tenant);
+    deleteTenant() {
+      this.tenantsService.deleteTenant(this.currTenant)
+        .then(() => {
+          this.toast.success('Client deleted successfully', 'Client delete');
+          this.toggleDeleteModal();
+          this.getData();
+        });
     }
 
     changeCurrTenant(key, value) {

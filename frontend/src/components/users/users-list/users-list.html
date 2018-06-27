@@ -86,12 +86,13 @@
     <article class="row">
       <div class="col-xs-12">
         {{::$ctrl.viewStrings.confirmDelete}}
+        <span class="delete-modal--target">{{$ctrl.selectedUser.name}}</span>?
       </div>
     </article>
     <footer class="row">
       <div class="col-xs-12">
-        <button class="sn-button" ng-click="$ctrl.toggleDelete()">{{$ctrl.viewStrings.cancel}}</button>
-        <button class="sn-button sn-button--delete" ng-click="$ctrl.removeUser()">{{$ctrl.viewStrings.delete}}</button>
+        <button class="sn-button" ng-click="$ctrl.toggleDeleteModal()">{{$ctrl.viewStrings.cancel}}</button>
+        <button class="sn-button sn-button--delete" ng-click="$ctrl.deleteUser()">{{$ctrl.viewStrings.delete}}</button>
       </div>
     </footer>
   </div>

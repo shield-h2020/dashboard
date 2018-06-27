@@ -10,21 +10,21 @@ const VIEW_STRINGS = {
   modalTitle2: 'Descriptor',
   close: 'Close',
   validations: 'Validation',
-  deleteModalTitle: 'Delete vNSF',
+  deleteModalTitle: 'Delete NS',
   deleteButton: 'Delete',
   cancelButton: 'Cancel',
-  deleteMessage: 'Confirm vNSF deletion',
+  confirmDelete: 'Are you sure you want to delete the NS',
 };
 
 const TABLE_HEADERS = {
   capabilities: 'Capabilities',
-  _id: 'Id',
   _created: 'Created',
 };
 
 const MODAL_ENTRIES = {
   _id: 'Id',
   state: 'State',
+  capabilities: 'Capabilities',
 };
 
 export const CatalogueComponent = {

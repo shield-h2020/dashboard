@@ -10,15 +10,15 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   capabilities: 'Capabilities',
-  ref_id: 'Id',
+  _id: 'Id',
   _created: 'Created',
 };
 
 const MODAL_ENTRIES = {
   _id: 'Id',
-  custom_tags: 'Custom_tags',
+  capabilities: 'Capabilities',
   _created: 'Created',
-}
+};
 
 export const InventoryComponent = {
   template,
@@ -56,7 +56,7 @@ export const InventoryComponent = {
         limit: this.limit,
       }, this.filters)
         .then((items) => {
-          this.items = items.map(item => ({
+          this.items = items.filter(it => it).map(item => ({
             ...item,
             capabilities: item.manifest['manifest:ns'].properties.capabilities.join(', '),
           }));

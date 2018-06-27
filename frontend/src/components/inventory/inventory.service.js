@@ -14,7 +14,7 @@ export class InventoryService {
   }
 
   getInventoryServices({ page = 0, limit = 25 }, filters = {}) {
-    const params = { max_results: limit, page };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime()  };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
@@ -27,7 +27,8 @@ export class InventoryService {
       .then((response) => {
         for (let i = 0; i < response.data._items.length; i += 1) {
           nsPromises.push(this.getCatalogueService(response.data._items[i].ns_id)
-            .then(item => item));
+            .then(item => item)
+            .catch(() => this.q.resolve(null)));
         }
         return this.q.all(nsPromises)
           .then(values => values);
@@ -36,11 +37,11 @@ export class InventoryService {
 
   async getCatalogueService(id) {
     const params = {};
-    if (!this.authService.isUserPlatformAdmin()) {
+/*     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
         tenant_id: this.authService.getTenant(),
       });
-    }
+    } */
     return this.http.get(API_CATALOGUE.replace(ACC_ID, id), { params, headers: { Authorization: undefined } })
       .then(response => response.data);
   }

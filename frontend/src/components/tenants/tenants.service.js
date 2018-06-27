@@ -54,7 +54,7 @@ export class TenantsService {
   }
 
   getTenants({ page, limit } = { page: 0, limit: 25 }, filters = {}) {
-    const params = { max_results: limit, page };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
 
     return this.http.get(API_TENANTS, { params })
@@ -65,6 +65,11 @@ export class TenantsService {
     return this.http.get(API_TENANT.replace(ACC_ID, id))
       .then(response => response.data)
       .catch(this.errorHandleService.handleHttpError);
+  }
+
+  deleteTenant({ tenant_id, _etag }) {
+    return this.http.delete(API_TENANT.replace(ACC_ID, tenant_id), {
+      headers: { 'if-match': _etag } });
   }
 
   updateTenantAndIps({ tenant_id, tenant_name, _etag, description, scope_id, ip, prevIps, ipEtag }) {

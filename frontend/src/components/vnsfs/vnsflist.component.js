@@ -7,10 +7,12 @@ const VIEW_STRINGS = {
   tableTitle: 'Catalogue',
   button: 'Onboard vNSF',
   modalHeaders: {
+    _id: 'Id',
     _created: 'Created',
     _updated: 'Updated',
     state: 'State',
     vendor: 'Vendor',
+    capabilities: 'Capabilities',
   },
   modalTitle: 'vNSF details',
   modalTitle2: 'Descriptor (yaml)',
@@ -21,13 +23,13 @@ const VIEW_STRINGS = {
   deleteModalTitle: 'Delete vNSF',
   deleteButton: 'Delete',
   cancelButton: 'Cancel',
-  deleteMessage: 'Confirm vNSF deletion',
+  confirmDelete: 'Are you sure you want to delete the vNSF',
 };
 
 const TABLE_HEADERS = {
+  capabilities: 'Capabilities',
   state: 'State',
   vendor: 'Vendor',
-  capabilities: 'Capabilities',
 };
 
 export const VNSFListComponent = {

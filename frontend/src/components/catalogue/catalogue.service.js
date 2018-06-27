@@ -1,7 +1,6 @@
 import { API_ADDRESS, STORE_ADDRESS, ACC_ID } from 'api/api-config';
 
-const API_CATALOGUE = `${API_ADDRESS}/catalogue/nss`;
-const API_CATALOGUE_2 = `${STORE_ADDRESS}/nss`;
+const API_CATALOGUE = `${STORE_ADDRESS}/nss`;
 const API_INVENTORY = `${API_ADDRESS}/inventory/nss`;
 const API_INVENTORY_ONE = `${API_INVENTORY}/${ACC_ID}`;
 
@@ -15,15 +14,13 @@ export class CatalogueService {
     this.toast = toastr;
   }
 
-  getCatalogueServices({ page = 0, limit = 25 }, filters = {}) {
-    const params = { max_results: limit, page };
+  getCatalogueServices({ page = 0, limit = 10 }, filters = {}) {
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
 
-    return this.http.get(API_CATALOGUE_2, {
+    return this.http.get(API_CATALOGUE, {
       params,
-      headers: {
-        Authorization: undefined,
-      } })
+      headers: { Authorization: undefined } })
       .then(response => response.data._items);
   }
 

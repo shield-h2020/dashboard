@@ -41,10 +41,10 @@ export const MENU_ENTRIES = [
   {
     text: 'NS Inventory',
     route: 'nsinventory',
-    roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN],
+    roles: [TENANT_ADMIN, TENANT_USER],
   },
   {
-    text: 'Onboard validation',
+    text: 'Onboard validations',
     route: 'validations',
     roles: [SUPER_ADMIN, DEVELOPER],
   },

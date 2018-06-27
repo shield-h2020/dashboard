@@ -3,7 +3,7 @@ import { API_ADDRESS } from 'api/api-config';
 const API_USERS = `${API_ADDRESS}/catalogue/users`;
 
 export class UsersService {
-  constructor($http, $httpParamSerializer, $q, toastr, AuthService, TenantsService) {
+  constructor($http, $httpParamSerializer, $q, toastr, AuthService, TenantsService, ErrorHandleService) {
     'ngInject';
 
     this.q = $q;
@@ -12,10 +12,11 @@ export class UsersService {
     this.toast = toastr;
     this.authService = AuthService;
     this.tenantsService = TenantsService;
+    this.errorHandleService = ErrorHandleService;
   }
 
   getUsers({ page = 1, limit = 25 }, filters = {}) {
-    const params = { max_results: limit, page };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
@@ -42,6 +43,12 @@ export class UsersService {
       group_id,
     }, { params })
       .catch(() => { this.toast.error('An error occurred'); });
+  }
+
+  deleteUser({ user_id, _etag }) {
+    return this.http.delete(`${API_USERS}/${user_id}`, {
+      headers: { 'if-match': _etag } })
+      .catch(this.errorHandleService.handleHttpError);
   }
 
   getRoles(tenantId = this.authService.getTenant()) {

@@ -39,5 +39,16 @@
         Showing {{$ctrl.paging.min}} to {{$ctrl.paging.max}} of {{$ctrl.pagination.total}}
       </span>
     </div>
+
+    <div sn-modal title="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
+        <article>
+          {{::$ctrl.viewStrings.confirmDelete}}<br />
+          <span class="delete-modal--target">{{$ctrl.validation.type}} {{$ctrl.validation._id}}</span>?
+        </article>
+        <footer class="inset-ss text-right">
+          <button class="sn-button inline-ss" ng-click="$ctrl.toggleDeleteModal()">{{::$ctrl.viewStrings.cancelButton}}</button>
+          <button class="sn-button sn-button--delete" ng-click="$ctrl.deleteValidation()">{{::$ctrl.viewStrings.deleteButton}}</button>
+        </footer>
+      </div>
   </div>
 </section>
