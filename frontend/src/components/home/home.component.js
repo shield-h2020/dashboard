@@ -15,12 +15,13 @@ export const HomeComponent = {
     userdata: '<',
   },
   controller: class HomeComponent {
-    constructor($scope, toastr, VnsfNotificationService) {
+    constructor($scope, toastr, VnsfNotificationService, IncidentsService) {
       'ngInject';
 
       this.scope = $scope;
       this.toast = toastr;
       this.vnsfNotificationService = VnsfNotificationService;
+      this.incidentsService = IncidentsService;
     }
 
     $onInit() {
@@ -35,13 +36,31 @@ export const HomeComponent = {
         };
       }
 
+      this.incidentsService.connectIncidentSocket()
+        .onmessage = (message) => {
+          const data = JSON.parse(message.data);
+          const { attack } = data;
+          this.toast.error(`Type of attack: ${attack}`, 'A new security incident was detected', {
+            onTap: () => this.openRecommendation(data),
+            closeButton: true,
+          });
+        };
+
       this.scope.$on('NSVF_NOTIF_EMIT', (event, data) => {
         this.openNotificationDetails(data);
+      });
+
+      this.scope.$on('INCIDENT_NOTIF_EMIT', (event, data) => {
+        this.openRecommendation(data);
       });
     }
 
     openNotificationDetails(data) {
       this.scope.$broadcast('NSVF_NOTIF_BROADCAST', data);
+    }
+
+    openRecommendation(data) {
+      this.scope.$broadcast('INCIDENT_NOTIF_BROADCAST', data);
     }
   },
 };

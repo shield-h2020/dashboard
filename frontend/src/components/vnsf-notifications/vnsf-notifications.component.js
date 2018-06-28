@@ -1,8 +1,9 @@
 import template from './vnsf-notifications.html';
 
-const UI_STRINGS = {
+const VIEW_STRINGS = {
   title: 'vNSF Notifications',
   tableTitle: 'vNSF notifications list',
+  confirmDelete: 'Are you sure you want to delete the notification ',
 };
 
 const TABLE_HEADERS = {
@@ -22,8 +23,8 @@ export const VnsfNotificationsComponent = {
 
       this.scope = $scope;
       this.vnsfNotificationService = VnsfNotificationService;
-      this.viewStrings = UI_STRINGS;
-      this.selectedUser = null;
+      this.viewStrings = VIEW_STRINGS;
+      this.selectedNotif = null;
       this.isCreate = true;
       this.tableHeaders = {
         ...TABLE_HEADERS,
@@ -31,6 +32,10 @@ export const VnsfNotificationsComponent = {
           {
             label: 'view',
             action: this.toggleNotificationsModal.bind(this),
+          },
+          {
+            label: 'delete',
+            action: this.toggleDeleteModal.bind(this),
           },
         ],
       };
@@ -40,10 +45,24 @@ export const VnsfNotificationsComponent = {
         limit: 20,
       };
       this.filters = {};
+      this.deleteModalOpen = false;
     }
 
     $onInit() {
       this.getNotifications();
+    }
+
+    toggleDeleteModal(notif) {
+      this.selectedNotif = notif;
+      this.deleteModalOpen = !this.deleteModalOpen;
+    }
+
+    deleteNotification() {
+      this.vnsfNotificationService.deleteNotification(this.selectedNotif)
+        .then(() => {
+          this.toggleDeleteModal();
+          this.getNotifications();
+        });
     }
 
     toggleNotificationsModal(notif) {

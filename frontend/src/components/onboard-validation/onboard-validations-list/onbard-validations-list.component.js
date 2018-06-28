@@ -28,8 +28,8 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   _id: 'Id',
-  _updated: 'Date',
   type: 'Type',
+  _updated: 'Date',
 };
 
 export const OnboardValidationsListComponent = {

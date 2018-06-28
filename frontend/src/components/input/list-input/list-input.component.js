@@ -30,6 +30,7 @@ export const ListInputComponent = {
     $onChanges(changesObj) {
       if (changesObj.items && changesObj.items.currentValue) {
         this.innerItems = [...changesObj.items.currentValue];
+        this.currInput = '';
       }
     }
 

@@ -26,17 +26,18 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
+  attack: 'Type of attack',
   detection: 'Detection Date',
   severity: 'Severity',
   status: 'Status',
-  attack: 'Type of attack',
 };
 
 const MODAL_ENTRIES = {
+  _id: 'Id',
+  attack: 'Type of attack',
   detection: 'Detection Date',
   severity: 'Severity',
   status: 'Status',
-  attack: 'Type of attack',
 };
 
 export const IncidentsListComponent = {

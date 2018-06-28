@@ -1,9 +1,9 @@
 <section>
-  <h4 class="sn-uppertitle">{{::$ctrl.strings.title}}</h4>
+  <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
   <div class="sn-card" auto-resizer>
     <header class="sn-card__header">
-      <h5 class="header__title">{{::$ctrl.strings.tableTitle}}</h5>
-      <button ng-click="$ctrl.createTenant()" class="sn-button sn-button--primary">{{$ctrl.strings.create}}</button>
+      <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
+      <button ng-click="$ctrl.createTenant()" class="sn-button sn-button--primary">{{$ctrl.viewStrings.create}}</button>
     </header>
     <s-table
       headers="$ctrl.headers"
@@ -11,7 +11,11 @@
     ></s-table>
   </div>
 
-  <div sn-modal title="$ctrl.strings.modalCreateTitle" open="$ctrl.createOpen">
+  <div
+    sn-modal
+    title="$ctrl.isCreate ? $ctrl.viewStrings.modalCreateTitle : $ctrl.viewStrings.modalUpdateTitle" 
+    open="$ctrl.createOpen"
+  >
       <article class="row">
         <div class="col-xs-12 stack-m">
           <sn-input
@@ -39,23 +43,23 @@
       </article>
       <footer class="row">
         <div class="col-xs-12">
-          <button ng-click="$ctrl.toggleCreate()" class="sn-button">{{$ctrl.strings.cancel}}</button>
-          <button ng-click="$ctrl.createOrUpdateTenant()" class="sn-button sn-button--primary">{{$ctrl.isCreate ? $ctrl.strings.create : $ctrl.strings.update}}</button>
+          <button ng-click="$ctrl.toggleCreate()" class="sn-button">{{$ctrl.viewStrings.cancel}}</button>
+          <button ng-click="$ctrl.createOrUpdateTenant()" class="sn-button sn-button--primary">{{$ctrl.isCreate ? $ctrl.viewStrings.create : $ctrl.viewStrings.update}}</button>
         </div>
       </footer>
     </div>
 
-    <div sn-modal title="$ctrl.strings.modalDeleteTitle" open="$ctrl.deleteOpen">
+    <div sn-modal title="$ctrl.viewStrings.modalDeleteTitle" open="$ctrl.deleteOpen">
         <article class="row">
           <div class="col-xs-12">
-            {{::$ctrl.strings.confirmDelete}}
+            {{::$ctrl.viewStrings.confirmDelete}}
             <span class="delete-modal--target">{{$ctrl.currTenant.tenant_name}}</span>?
           </div>
         </article>
         <footer class="row">
           <div class="col-xs-12">
-            <button class="sn-button" ng-click="$ctrl.toggleDeleteModal()">{{$ctrl.strings.cancel}}</button>
-            <button class="sn-button sn-button--delete" ng-click="$ctrl.deleteTenant()">{{$ctrl.strings.delete}}</button>
+            <button class="sn-button" ng-click="$ctrl.toggleDeleteModal()">{{$ctrl.viewStrings.cancel}}</button>
+            <button class="sn-button sn-button--delete" ng-click="$ctrl.deleteTenant()">{{$ctrl.viewStrings.delete}}</button>
           </div>
         </footer>
       </div>

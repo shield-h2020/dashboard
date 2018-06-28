@@ -27,6 +27,32 @@ export class UsersService {
       .then(response => response.data._items);
   }
 
+  getUsersWithTenant({ page = 1, limit = 10 }, filters = {}) {
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
+    if (Object.keys(filters).length) params.where = JSON.stringify(filters);
+
+    if (!this.authService.isUserPlatformAdmin()) {
+      params.where = JSON.stringify({
+        tenant_id: this.authService.getTenant(),
+      });
+    }
+
+    return this.http.get(API_USERS, { params })
+      .then((response) => {
+        const promises = [];
+        const { _items } = response.data;
+        for (let i = 0, len = _items.length; i < len; i += 1) {
+          promises.push(this.getTenantInfo(_items[i])
+            .then(tInfo => ({
+              ..._items[i],
+              ...tInfo,
+              roles: tInfo.groups.map(g => g.text).join(', '),
+            })));
+        }
+        return this.q.all(promises).then(values => values);
+      });
+  }
+
   createUser({ name, password, description, email, group_id }) {
     const params = {};
     if (!this.authService.isUserPlatformAdmin()) {
@@ -78,8 +104,8 @@ export class UsersService {
       .then(tenant => tenant.tenant_name);
   }
 
-  getTenantInfo(tenantId = this.authService.getTenant()) {
-    return this.tenantsService.getTenant(tenantId)
+  getTenantInfo({ tenant_id = this.authService.getTenant() }) {
+    return this.tenantsService.getTenant(tenant_id)
       .then(tenant => ({
         groups: tenant.groups.map(group => ({
           text: group.group.description,

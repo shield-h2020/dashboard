@@ -1,12 +1,13 @@
 import { ipValidator } from '@/validators';
 import template from './tenants-list.html';
 
-const UI_STRINGS = {
+const VIEW_STRINGS = {
   title: 'Secaas clients',
   tableTitle: 'Secaas clients list',
   create: 'Create',
   update: 'Update',
   modalCreateTitle: 'Create client',
+  modalUpdateTitle: 'Update client',
   modalDeleteTitle: 'Delete client',
   confirmDelete: 'Are you sure you want to delete the client',
   cancel: 'Cancel',
@@ -25,7 +26,7 @@ export const TenantsListComponent = {
       'ngInject';
 
       this.q = $q;
-      this.strings = UI_STRINGS;
+      this.viewStrings = VIEW_STRINGS;
       this.tenantsService = TenantsService;
       this.authService = AuthService;
       this.toast = toastr;
@@ -46,6 +47,7 @@ export const TenantsListComponent = {
           },
         ],
       };
+      this.isCreate = true;
 
       if (this.authService.isUserPlatformAdmin()) {
         this.headers.actions.push({
@@ -149,7 +151,7 @@ export const TenantsListComponent = {
 
       httpPromise.then(() => {
         this.toggleCreate();
-        this.getItems();
+        this.getData();
       });
     }
   },

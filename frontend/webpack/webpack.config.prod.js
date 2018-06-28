@@ -17,10 +17,6 @@ module.exports = webpackMerge(commonConfig, {
   },
 
   plugins: [
-    new UglifyJSPlugin({
-      compress: true,
-      mangle: false,
-    }),
     new ExtractTextPlugin('[name].[hash].css'),
     new CleanWebpackPlugin(['prod']),
     new webpack.DefinePlugin({

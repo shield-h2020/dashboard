@@ -39,18 +39,20 @@ export const IncidentsModalComponent = {
     }
 
     $onInit() {
-      this.scope.$on(INCIDENTS_MODAL_EVENT.BROADCAST.OPEN, (event, data) => {
-        this.isOpen = true;
-        this.incident = data.data;
+      this.scope.$on('INCIDENT_NOTIF_BROADCAST', (event, data) => {
+        this.data = data.event;
+        this.open = true;
       });
     }
 
     applyRecommendation() {
-      this.closeModal();
       this.incidentsService.recommendAction(this.incident._id, this.incident._etag)
-      .then(() => this.toast.success('', 'Your recommendation was sent to the Orchestrator', {
-        onHidden: () => this.closeHandler && this.closeHandler(),
-      }));
+      .then(() => {
+        this.toast.success('', 'Your recommendation was sent to the Orchestrator', {
+          onHidden: () => this.closeHandler && this.closeHandler(),
+        });
+        this.toggleIncidentModal();
+      });
     }
 
     openModal() {

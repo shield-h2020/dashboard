@@ -9,4 +9,19 @@
       headers="$ctrl.tableHeaders"
       loading="$ctrl.loading"
     ></s-table>
+
+    <div sn-modal title="$ctrl.viewStrings.modalDeleteTitle" open="$ctrl.deleteOpen">
+      <article class="row">
+        <div class="col-xs-12">
+          {{::$ctrl.viewStrings.confirmDelete}}
+          <span class="delete-modal--target">{{$ctrl.selectedNotif._id}}</span>?
+        </div>
+      </article>
+      <footer class="row">
+        <div class="col-xs-12">
+          <button class="sn-button" ng-click="$ctrl.toggleDeleteModal()">{{$ctrl.viewStrings.cancel}}</button>
+          <button class="sn-button sn-button--delete" ng-click="$ctrl.deleteNotifications()">{{$ctrl.viewStrings.delete}}</button>
+        </div>
+      </footer>
+    </div>
 </section>

@@ -15,7 +15,13 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   name: 'Name',
-  email: 'Email',
+  tenant_name: 'Secaas client',
+  roles: 'Roles',
+  // email: 'Email',
+
+  // secaaas_client,
+  // roles
+  // remove: email
 };
 
 export const UsersListComponent = {
@@ -68,6 +74,8 @@ export const UsersListComponent = {
       this.createOpen = !this.createOpen;
       if (user) {
         this.newUser = { ...user };
+        this.newUser.tenant = this.newUser.tenant_name;
+        this.roles = this.newUser.groups;
         this.isCreate = false;
       } else {
         this.isCreate = true;
@@ -77,9 +85,6 @@ export const UsersListComponent = {
           tenant: this.tenant,
           password: '',
         };
-      }
-      if (this.createOpen) {
-        this.getTenantInfo(this.newUser);
       }
     }
 
@@ -140,7 +145,7 @@ export const UsersListComponent = {
     getData() {
       this.loading = true;
       this.users = [];
-      this.usersService.getUsers(this.pagination, this.filters)
+      this.usersService.getUsersWithTenant(this.pagination, this.filters)
         .then((items) => {
           this.users = items;
           this.loading = false;
