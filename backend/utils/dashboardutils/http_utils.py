@@ -35,6 +35,7 @@ HTTP_202_ACCEPTED = 202
 HTTP_204_NO_CONTENT = 204
 HTTP_400_BAD_REQUEST = 400
 HTTP_401_UNAUTHORIZED = 401
+HTTP_403_FORBIDDEN = 403
 HTTP_404_NOT_FOUND = 404
 HTTP_406_NOT_ACCEPTABLE = 406
 HTTP_409_CONFLICT = 409
@@ -59,6 +60,7 @@ def status_to_exception(status):
     statuses = {
         str(HTTP_400_BAD_REQUEST):         BadRequest,
         str(HTTP_401_UNAUTHORIZED):        Unauthorized,
+        str(HTTP_403_FORBIDDEN):           Forbidden,
         str(HTTP_404_NOT_FOUND):           NotFound,
         str(HTTP_406_NOT_ACCEPTABLE):      NotAcceptable,
         str(HTTP_409_CONFLICT):            Conflict,
@@ -106,6 +108,25 @@ def build_url(server, port=None, basepath=None, protocol=None):
         url = '{}/{}'.format(url, basepath)
 
     return url
+
+
+def build_error_response(http_code):
+    """
+    Build a error response based on the HTTP status code provided.
+
+    :param http_code: The HTTP code to generate the response to.
+    :return: The response based on the HTTP code provided.
+    """
+
+    response = {
+        "_status": "ERR",
+        "_error":  {
+            "code":    http_code,
+            "message": responses_full[str(http_code)]['description']
+            }
+        }
+
+    return response
 
 
 def post_json(url, data, headers=None, status=HTTP_201_CREATED, verify=False):
@@ -279,6 +300,9 @@ responses_full = {
         },
     str(HTTP_401_UNAUTHORIZED):    {
         'description': "Unauthorised. You're not authorised to access this resource."
+        },
+    str(HTTP_403_FORBIDDEN):       {
+        'description': "Forbidden. You're not allowed to use this resource."
         },
     str(HTTP_404_NOT_FOUND):       {
         'description': "Not found. The requested resource doesn't exist."

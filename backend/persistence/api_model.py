@@ -329,15 +329,10 @@ nss_inventory_model = {
         },
 
     'ns_id':     {
-        'description':   'The service catalogue ID',
-        'type':          'objectid',
-        'data_relation': {
-            'resource':   'nss_catalogue',
-            'field':      '_id',
-            'embeddable': True
-            },
-        'empty':         False,
-        'required':      True
+        'description': 'The Store catalogue ID',
+        'type':        'string',
+        'empty':       False,
+        'required':    True
         },
 
     'status':    {

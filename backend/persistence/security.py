@@ -33,15 +33,18 @@ import api_endpoints
 import os
 import settings as cfg
 from api_endpoints_def import EndpointParam
+from dashboardutils import http_utils
+from dashboardutils.error_utils import IssueHandling, IssueElement
 from eve.auth import BasicAuth, TokenAuth
-from flask import request, g
+from flask import request, g, abort, make_response, jsonify
 from keystone_adapter import KeystoneAuthzApi
 from oslo_config import cfg as oslocfg
-from oslo_policy import policy
+from oslo_policy import policy as thepolicy
+from werkzeug.exceptions import NotFound, SecurityError, Forbidden
 
 oslocfg.CONF()
 
-enforcer = policy.Enforcer(oslocfg.CONF, policy_file=os.path.abspath('policy.json'))
+enforcer = thepolicy.Enforcer(oslocfg.CONF, policy_file=os.path.abspath('policy.json'))
 
 enforcer.check_rules(True)
 enforcer.load_rules(True)
@@ -67,7 +70,26 @@ class LoginAuth(BasicAuth):
 
 
 class TokenAuthzOslo(TokenAuth):
-    logger = logging.getLogger(__name__)
+    __logger = logging.getLogger(__name__)
+
+    __issue = IssueHandling(__logger)
+
+    __errors = {
+        'AUTHZ_TOKEN': {
+            'NOT_FOUND':      {
+                IssueElement.ERROR:     ["No API endpoint defined for '{}'"],
+                IssueElement.EXCEPTION: NotFound("No API endpoint defined for '{}'")
+                },
+            'FORBIDDEN':      {
+                IssueElement.ERROR:     ["{}"],
+                IssueElement.EXCEPTION: Forbidden("xpto")
+                },
+            'MISSING_POLICY': {
+                IssueElement.ERROR:     ["policy: {} | key: {}"],
+                IssueElement.EXCEPTION: SecurityError("Missing authorization policy.")
+                }
+            }
+        }
 
     # Which key to lookup in the endpoint definition to retrieve the roles allowed to use the endpoint.
     __roles_lookup_key__ = {
@@ -81,13 +103,13 @@ class TokenAuthzOslo(TokenAuth):
         try:
             endpoint_settings = getattr(api_endpoints, resource)
         except TypeError:
-            self.logger.error('"home" has no endpoint data')
+            self.__logger.error('"home" has no endpoint data')
             return True
         except AttributeError:
-            self.logger.error('No API endpoint defined for: ' + resource)
-            return False
+            TokenAuthzOslo.__issue.raise_ex(IssueElement.ERROR, TokenAuthzOslo.__errors['AUTHZ_TOKEN']['NOT_FOUND'],
+                                            [[resource]], resource)
 
-        self.logger.debug('endpoint data: ' + pformat(endpoint_settings))
+        self.__logger.debug('endpoint data: ' + pformat(endpoint_settings))
 
         aaa = KeystoneAuthzApi(protocol=cfg.AAA_PROTOCOL,
                                host=cfg.AAA_HOST,
@@ -105,17 +127,17 @@ class TokenAuthzOslo(TokenAuth):
         for key in request.view_args:
             target[key] = request.view_args[key]
 
-        self.logger.debug('go for request.args')
+        self.__logger.debug('go for request.args')
 
         if len(request.args) > 0:
             for lookup in request.args.getlist(EndpointParam.__QUERY_KEYWORD__):
-                self.logger.debug('lookup: ' + pformat(lookup))
+                self.__logger.debug('lookup: ' + pformat(lookup))
                 data = json.loads(lookup)
-                self.logger.debug('data: ' + pformat(data))
+                self.__logger.debug('data: ' + pformat(data))
                 for key in data:
                     target[key] = data[key]
 
-        self.logger.debug('target: ' + pformat(target))
+        self.__logger.debug('target: ' + pformat(target))
 
         # Credentials eagerly retrieved from the user token.
         credentials = dict()
@@ -125,16 +147,29 @@ class TokenAuthzOslo(TokenAuth):
         credentials['tenant_name'] = user_token['token']['user']['domain']['name']
         credentials['roles'] = [role['name'] for role in user_token['token']['roles']]
 
-        self.logger.debug('credentials: ' + pformat(credentials))
+        self.__logger.debug('credentials: ' + pformat(credentials))
 
         # Key to look for in the endpoint definition when retrieving the authorization policy associated with the
         # endpoint.
         roles_key = request.endpoint.split('|')
         policy_data = endpoint_settings.get(self.__roles_lookup_key__[roles_key[1]], None)
         if policy_data is None:
-            raise NotImplementedError('policy: {} | key: {}'.format(policy_data, roles_key[1]))
+            TokenAuthzOslo.__issue.raise_ex(IssueElement.ERROR,
+                                            TokenAuthzOslo.__errors['AUTHZ_TOKEN']['MISSING_POLICY'],
+                                            [[policy_data, roles_key[1]]])
 
         policy = policy_data[0][method]
-        self.logger.debug("policy to check for: '{}'".format(policy))
+        self.__logger.debug("policy to check for: '{}'".format(policy))
 
-        return enforcer.enforce(rule=policy, target=target, creds=credentials, do_raise=True)
+        try:
+            authorized = enforcer.enforce(rule=policy, target=target, creds=credentials, do_raise=True)
+        except thepolicy.PolicyNotAuthorized as e:
+
+            self.__logger.debug("Authorization issue: " + str(e))
+
+            # For some reason the forbidden exception returns HTML and not JSON. The workaround is to manually create
+            #  the response instead of using the regular exception raising as above.
+            resp = http_utils.build_error_response(http_utils.HTTP_403_FORBIDDEN)
+            abort(make_response(jsonify(**resp), resp['_error']['code']))
+
+        return authorized

@@ -33,6 +33,7 @@ from dashboardpersistence.persistence import DashboardPersistence
 from dashboardutils import log
 from eve import Eve
 from eve_swagger import swagger, add_documentation
+from flask_cors import CORS
 from hooks_login import LoginHooks
 from hooks_nss_inventory import NssInventoryHooks
 from hooks_tenants import TenantHooks
@@ -40,6 +41,7 @@ from security import TokenAuthzOslo
 from validators import NetworkValidator
 
 app = Eve(auth=TokenAuthzOslo, validator=NetworkValidator)
+CORS(app)
 
 app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime

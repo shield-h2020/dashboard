@@ -41,6 +41,10 @@ class EndpointVar(object):
     __USER_ID__ = 'user_id'
     __USER_ID_URL__ = '<{}:{}>'.format(__USER_ID_FMT__, __USER_ID__)
 
+    __NS_ID_FMT__ = __ID_FMT__
+    __NS_ID__ = 'ns_id'
+    __NS_ID_URL__ = '<{}:{}>'.format(__NS_ID_FMT__, __NS_ID__)
+
 
 class EndpointParam(object):
     __QUERY_KEYWORD__ = 'where'

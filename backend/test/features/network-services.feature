@@ -51,9 +51,9 @@ Feature: NSs Inventory
 
     Examples:
       | credentials                | file                        | status |
-      | login/tenant_uw_admin.json | nss/ns_enroll_idps.json     | 500    |
-      | login/tenant_a_admin.json  | nss/ns_enroll_firewall.json | 500    |
-      | login/tenant_uw_user.json  | nss/ns_enroll_idps.json     | 500    |
+      | login/tenant_uw_admin.json | nss/ns_enroll_idps.json     | 403    |
+      | login/tenant_a_admin.json  | nss/ns_enroll_firewall.json | 403    |
+      | login/tenant_uw_user.json  | nss/ns_enroll_idps.json     | 403    |
 
   @smoke
   Scenario Outline: Enroll vNSF successfully
@@ -77,10 +77,10 @@ Feature: NSs Inventory
 
     Examples:
       | credentials                | file                            | status |
-      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_dpi.json      | 500    |
-      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_ids.json      | 500    |
-      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_vpn.json      | 500    |
-      | login/tenant_a_admin.json  | vnsfs/vnsf_enroll_l3filter.json | 500    |
+      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_dpi.json      | 403    |
+      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_ids.json      | 403    |
+      | login/tenant_uw_admin.json | vnsfs/vnsf_enroll_vpn.json      | 403    |
+      | login/tenant_a_admin.json  | vnsfs/vnsf_enroll_l3filter.json | 403    |
 
 
   @smoke

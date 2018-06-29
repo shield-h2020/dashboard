@@ -41,8 +41,8 @@ Feature: Users CRUD
 
     Examples:
       | tenant_data            | tenant_admin              | user                     | status | statuz |
-      | tenants/tenant_uw.json | users/tenant_admin.json   | users/tenant_user.json   | 500    | 200    |
-      | tenants/tenant_a.json  | users/tenant_a_admin.json | users/tenant_a_user.json | 500    | 200    |
+      | tenants/tenant_uw.json | users/tenant_admin.json   | users/tenant_user.json   | 403    | 200    |
+      | tenants/tenant_a.json  | users/tenant_a_admin.json | users/tenant_a_user.json | 403    | 200    |
 
 
   @smoke
