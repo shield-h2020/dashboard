@@ -29,7 +29,7 @@ export class InventoryService {
         for (let i = 0; i < response.data._items.length; i += 1) {
           nsPromises.push(this.getCatalogueService(response.data._items[i].ns_id)
             .then((item) => {
-              const { _etag, ...tagless } = item;
+              const { _etag, ns_id, ...tagless } = item;
               return { ...response.data._items[i], ...tagless };
             })
             .catch(() => this.q.resolve(null)));
