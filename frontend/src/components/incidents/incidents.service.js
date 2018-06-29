@@ -1,5 +1,4 @@
 import format from 'date-fns/format';
-import { INCIDENTS_API, INCIDENTS_SOCKET_API, ACCESSORS } from '../../strings/api-strings';
 import { API_ADDRESS, SOCKET_ADDRESS } from 'api/api-config';
 
 const API_INCIDENTS = `${API_ADDRESS}/policies`;
@@ -16,7 +15,7 @@ export class IncidentsService {
   }
 
   connectIncidentSocket() {
-    return new WebSocket(INCIDENTS_SOCKET_API.CONNECT);
+    return new WebSocket(API_INCIDENT_SOCKET);
   }
 
   getIncidents({ page = 1, limit = 25 }, filters) {

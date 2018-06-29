@@ -1,17 +1,17 @@
 <div
   sn-modal
-  open="$ctrl.modalOpen"
+  open="$ctrl.isOpen"
   title="$ctrl.viewStrings.modalTitle"
 >
   <article class="{{::$ctrl.styles.scroller}}">
     <div
       ng-repeat="(key, val) in $ctrl.modalEntries"
-      class="{{::$ctrl.styles['event-entry']}}"
+      class="{{::$ctrl.styles.entry}}"
     >
-      <span class="{{::$ctrl.styles['event-entry__title']}}">{{ val }}</span>
-      <span>{{ $ctrl.data[key] }}</span>
+      <span class="{{::$ctrl.styles.label}}">{{ val }}</span>
+      <span class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.data[key] }}</span>
     </div>
-    <h5 class="{{::$ctrl.styles['modal-title']}}">{{::$ctrl.viewStrings.modalSubtitle}}</h5>
+    <h5 class="{{::$ctrl.styles.header}}">{{::$ctrl.viewStrings.modalSubtitle}}</h5>
     <div class="{{::$ctrl.styles.xmlviewer}}">
         {{$ctrl.data.recommendation}}
       </div>

@@ -10,14 +10,14 @@ import { TableModule } from './table/table.module';
 import { UtilitiesModule } from './utilities/utilities.module';
 import { JsonViewerModule } from './json-viewer/json-viewer.module';
 import { IncidentsModule } from './incidents/incidents.module';
-import { VNSFModule } from './vnsfs/vnsf.module';
+import { VNSFCatalogueModule } from './vnsfs-catalogue/vnsfs-catalogue.module';
 import { ModalModule } from './modal2/modal.module';
 import { FooterModule } from './footer/footer.module';
 import { UsersModule } from './users/users.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
-import { InventoryModule } from './inventory/inventory.module';
+import { NsInventoryModule } from './ns-inventory/ns-inventory.module';
 import { VnsfNotificationsModule } from './vnsf-notifications/vnsf-notifications.module';
 
 import Table2Module from './table2/table.module';
@@ -34,7 +34,7 @@ export const ComponentsModule = angular.module('root.components', [
   UtilitiesModule,
   JsonViewerModule,
   IncidentsModule,
-  VNSFModule,
+  VNSFCatalogueModule,
   ModalModule,
   FooterModule,
   UsersModule,
@@ -42,7 +42,7 @@ export const ComponentsModule = angular.module('root.components', [
   Table2Module,
   CatalogueModule,
   OnboardValidationModule,
-  InventoryModule,
+  NsInventoryModule,
   VnsfNotificationsModule,
 ])
   .name;

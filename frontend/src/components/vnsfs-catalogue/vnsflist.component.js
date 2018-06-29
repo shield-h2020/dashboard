@@ -1,6 +1,6 @@
 import { UPLOAD_MODAL_EVENT } from '@/strings/event-strings';
 import template from './vnsflist.html';
-import styles from './vnsf.scss';
+import styles from './vnsfs-catalogue.scss';
 
 const VIEW_STRINGS = {
   title: 'vNSF Catalogue',
@@ -8,11 +8,11 @@ const VIEW_STRINGS = {
   button: 'Onboard vNSF',
   modalHeaders: {
     _id: 'Id',
+    capabilities: 'Capabilities',
     _created: 'Created',
     _updated: 'Updated',
     state: 'State',
     vendor: 'Vendor',
-    capabilities: 'Capabilities',
   },
   modalTitle: 'vNSF details',
   modalTitle2: 'Descriptor (yaml)',

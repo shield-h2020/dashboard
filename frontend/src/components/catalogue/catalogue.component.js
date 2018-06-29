@@ -23,8 +23,11 @@ const TABLE_HEADERS = {
 
 const MODAL_ENTRIES = {
   _id: 'Id',
-  state: 'State',
   capabilities: 'Capabilities',
+  _created: 'Created',
+  _updated: 'Updated',
+  state: 'State',
+  vendor: 'Vendor',
 };
 
 export const CatalogueComponent = {
@@ -70,10 +73,6 @@ export const CatalogueComponent = {
             label: 'enroll',
             action: this.addToInventory.bind(this),
           },
-          {
-            label: 'withdraw',
-            action: this.removeFromInventory.bind(this),
-          },
         ];
       }
     }
@@ -99,10 +98,6 @@ export const CatalogueComponent = {
 
     addToInventory({ _id }) {
       this.catalogueService.addServiceToInventory(_id);
-    }
-
-    removeFromInventory({ _id, _etag }) {
-      this.catalogueService.removeServiceFromInventory(_id, _etag);
     }
 
     toggleDetailsModal(ns) {

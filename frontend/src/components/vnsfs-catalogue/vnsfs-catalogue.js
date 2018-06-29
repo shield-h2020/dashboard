@@ -1,6 +1,6 @@
 import angular from 'angular';
 import { VNSFListComponent, vnsfListState } from './vnsflist.component';
-import { VNSFService } from './vnsf.service';
+import { VNSFService } from './vnsfs-catalogue.service';
 
 export const VNSFModule = angular.module('vnsf', ['ui.router'])
   .component('vnsfsListView', VNSFListComponent)

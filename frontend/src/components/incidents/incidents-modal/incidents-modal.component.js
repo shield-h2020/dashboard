@@ -1,11 +1,19 @@
 import template from './incidents-modal.html';
 import styles from './incidents-modal.scss';
 
-const UI_STRINGS = {
-  CLOSE: 'Back',
-  APPLY: 'Apply Recommendation',
-  TITLE: 'General information',
-  SUBTITLE: 'Recommended action',
+const VIEW_STRINGS = {
+  modalTitle: 'Incident Details',
+  modalSubtitle: 'Recommendation action',
+  apply: 'Apply',
+  close: 'Close',
+};
+
+const MODAL_ENTRIES = {
+  _id: 'Id',
+  attack: 'Type of attack',
+  detection: 'Detection Date',
+  severity: 'Severity',
+  status: 'Status',
 };
 
 export const INCIDENTS_MODAL_EVENT = {
@@ -31,7 +39,8 @@ export const IncidentsModalComponent = {
       'ngInject';
 
       this.isOpen = false;
-      this.STRINGS = UI_STRINGS;
+      this.viewStrings = VIEW_STRINGS;
+      this.modalEntries = MODAL_ENTRIES;
       this.styles = styles;
       this.scope = $scope;
       this.toast = toastr;
@@ -40,27 +49,24 @@ export const IncidentsModalComponent = {
 
     $onInit() {
       this.scope.$on('INCIDENT_NOTIF_BROADCAST', (event, data) => {
-        this.data = data.event;
-        this.open = true;
-      });
-    }
-
-    applyRecommendation() {
-      this.incidentsService.recommendAction(this.incident._id, this.incident._etag)
-      .then(() => {
-        this.toast.success('', 'Your recommendation was sent to the Orchestrator', {
-          onHidden: () => this.closeHandler && this.closeHandler(),
-        });
+        this.data = data;
         this.toggleIncidentModal();
       });
     }
 
-    openModal() {
-      this.isOpen = true;
+    applyRecommendation() {
+      const { _id, _etag } = this.data;
+      this.incidentsService.recommendAction(_id, _etag)
+        .then(() => {
+          this.toast.success('', 'Your recommendation was sent to the Orchestrator', {
+            onHidden: () => this.closeHandler && this.closeHandler(),
+          });
+          this.toggleIncidentModal();
+        });
     }
 
-    closeModal() {
-      this.isOpen = false;
+    toggleIncidentModal() {
+      this.isOpen = !this.isOpen;
     }
   },
 };

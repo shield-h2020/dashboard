@@ -39,7 +39,7 @@ export const AppModule = angular
         return {
           responseError(response) {
             if (response.status === 401) {
-              $state.go('login');
+              $state.go('login', { prevRoute: $state.current.name });
             } else if (response.data && response.data.code === '205') {
               $rootScope.$broadcast(INTERNAL_ERROR_MODAL_EVENT.CAST.OPEN, response.data);
             }

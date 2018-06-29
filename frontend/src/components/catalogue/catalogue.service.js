@@ -35,21 +35,7 @@ export class CatalogueService {
       status: 'available',
     }, { params })
       .then(() => {
-        this.toast.success('Service added to tenant\'s inventory');
-      })
-      .catch(this.errorHandlerService.handleHttpError);
-  }
-
-  removeServiceFromInventory(id, etag) {
-    const params = {};
-    params.where = JSON.stringify({
-      tenant_id: this.authService.getTenant(),
-    });
-
-    return this.http.delete(API_INVENTORY_ONE.replace(ACC_ID, id),
-      { params, headers: { 'if-match': etag } })
-      .then(() => {
-        this.toast.success('Service was removed from tenant\'s inventory');
+        this.toast.success('Service added to client\'s inventory');
       })
       .catch(this.errorHandlerService.handleHttpError);
   }

@@ -27,8 +27,8 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
-  _id: 'Id',
   type: 'Type',
+  _id: 'Id',
   _updated: 'Date',
 };
 

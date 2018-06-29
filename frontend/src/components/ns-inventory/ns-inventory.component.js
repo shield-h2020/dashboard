@@ -1,5 +1,5 @@
-import template from './inventory.html';
-import styles from './inventory.scss';
+import template from './ns-inventory.html';
+import styles from './ns-inventory.scss';
 
 const VIEW_STRINGS = {
   title: 'NS inventory',
@@ -10,8 +10,8 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   capabilities: 'Capabilities',
-  _id: 'Id',
   _created: 'Created',
+  state: 'Status',
 };
 
 const MODAL_ENTRIES = {
@@ -44,6 +44,10 @@ export const InventoryComponent = {
             label: 'view',
             action: this.toggleNSDetails.bind(this),
           },
+          {
+            label: 'withdraw',
+            action: this.removeFromInventory.bind(this),
+          },
         ],
       };
       this.modalOpen = false;
@@ -67,6 +71,10 @@ export const InventoryComponent = {
     toggleNSDetails(ns) {
       this.ns = ns;
       this.modalOpen = !this.modalOpen;
+    }
+
+    removeFromInventory({ ns_id, _etag }) {
+      this.inventoryService.removeServiceFromInventory(ns_id, _etag);
     }
   },
 };
