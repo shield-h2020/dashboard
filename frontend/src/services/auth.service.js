@@ -61,7 +61,7 @@ export class AuthService {
 
   isUserTenantAdmin() {
     const user = this.getSessionInfo();
-    return !!user.session.roles.find(r => r.name === 'shield_tenant_admin');
+    return !!user.session.roles.find(r => r.name === 'shield_client_admin');
   }
 
   getTenant() {

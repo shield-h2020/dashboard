@@ -54,6 +54,10 @@ export const InventoryComponent = {
     }
 
     $onInit() {
+      this.getData();
+    }
+
+    getData() {
       this.isLoading = true;
       this.inventoryService.getInventoryServices({
         page: this.offset,
@@ -73,8 +77,9 @@ export const InventoryComponent = {
       this.modalOpen = !this.modalOpen;
     }
 
-    removeFromInventory({ ns_id, _etag }) {
-      this.inventoryService.removeServiceFromInventory(ns_id, _etag);
+    removeFromInventory({ _id, _etag }) {
+      this.inventoryService.removeServiceFromInventory(_id, _etag);
+      this.getData();
     }
   },
 };
@@ -85,4 +90,3 @@ export const inventoryState = {
   url: '/inventory',
   component: 'inventoryView',
 };
-
