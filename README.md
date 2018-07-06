@@ -39,7 +39,7 @@ sudo pip install docker-compose
 
 Finally, add current user to the docker group (allows issuing Docker commands w/o sudo):
 ```
-sudo usermod -G docker $(whoami)
+sudo usermod -aG docker $(whoami)
 ```
 
 ### Setup

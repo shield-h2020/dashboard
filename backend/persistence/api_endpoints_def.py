@@ -526,7 +526,7 @@ class Endpoint(Enum):
                          }
                      }
 
-    NSS_INVENTORY = {__NAME__:       'nss',
+    NSS_INVENTORY = {__NAME__:       'nss_inventory',
                      __URL__:        'inventory/nss',
                      __DOC_ID_VAR__: 'nssId',
                      __SCHEMA__:     api_model.nss_inventory_model,

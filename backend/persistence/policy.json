@@ -1,7 +1,7 @@
 {
   "platform.admin": "role:admin",
-  "tenant.admin": "role:shield_tenant_admin",
-  "tenant.user": "role:shield_tenant_user",
+  "tenant.admin": "role:shield_client_admin",
+  "tenant.user": "role:shield_client_user",
   "developer": "role:shield_developer",
 
   "tenant.scoped": "tenant_id:%(tenant_id)s",

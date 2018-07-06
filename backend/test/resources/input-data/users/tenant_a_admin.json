@@ -3,5 +3,5 @@
   "password": "pass",
   "description": "Tenant A admin",
   "email": "jdoe@example.com",
-  "group_code": "shield-tenant-admins"
+  "group_code": "shield-client-admins"
 }

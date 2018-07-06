@@ -1,5 +1,5 @@
 {
   "name": "Client Admin",
-  "code": "shield_tenant_admin",
+  "code": "shield_client_admin",
   "description": "Client administrator"
 }

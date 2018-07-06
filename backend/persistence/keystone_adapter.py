@@ -51,6 +51,12 @@ class KeystoneAuthzApi(AaaApi):
     for_group_user = '{}/users/{{}}'.format(for_group)
 
     __errors = {
+        'TOKEN':   {
+            'UNAUTHORIZED': {
+                IssueElement.ERROR:     ["Invalid token."],
+                IssueElement.EXCEPTION: Unauthorized("Please provide proper credentials.")
+                }
+            },
         'TENANTS': {
             'CONFLICT_ISSUE': {
                 IssueElement.ERROR:     ["User already exists. User: '{}'."],
@@ -179,8 +185,11 @@ class KeystoneAuthzApi(AaaApi):
 
         headers = {'X-Auth-Token': service_token['token']['id'], 'X-Subject-Token': token}
 
-        # Let the connection exception pass through as it's properly tailored to convey to the caller.
-        r = http_utils.get(url, headers=headers)
+        try:
+            r = http_utils.get(url, headers=headers)
+        except NotFound:
+            # Token isn't valid.
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['TOKEN']['UNAUTHORIZED'])
 
         token = r.json()
         del token['token']['methods']

@@ -1,6 +1,6 @@
 {
   "name": "Client Users Group",
   "code": "shield_group_roles_user",
-  "group_code": "shield-tenant-users",
-  "roles": ["shield_tenant_user"]
+  "group_code": "shield-client-users",
+  "roles": ["shield_client_user"]
 }
