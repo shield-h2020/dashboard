@@ -92,3 +92,14 @@ def tenant_admin_login(step, credentials_file):
     world.my_context['user'] = step.context.api['response']['json']
 
     print('logged user:\n' + pformat(world.my_context['user']))
+
+
+@given(u'The Cyber-Agent is logged in')
+def cyber_agent_login(step):
+    set_http_headers(step, {'Shield-Authz-Scope': world.my_context['tenant_info']['tenant_name']})
+    http_post_json(step, url=world.endpoints['login'], auth=(
+        world.my_context['cyber_agent_info']['name'],
+        world.my_context['cyber_agent_info']['password']))
+    expected_status_code(step, http_utils.HTTP_201_CREATED)
+
+    world.my_context['cyber_agent'] = step.context.api['response']['json']

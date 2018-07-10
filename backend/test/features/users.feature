@@ -55,3 +55,15 @@ Feature: Users CRUD
     Examples:
       | tenant_data                    | user                 |
       | tenants/tenant_developers.json | users/developer.json |
+
+
+  @smoke
+  Scenario Outline: Create cyber-agents
+    Given The Platform Admin is logged in
+    Given The Platform Admin creates a Tenant from <tenant_data>
+    Given The Platform Admin creates a Cyber-Agent from <user>
+    Given The Cyber-Agent is logged in
+
+    Examples:
+      | tenant_data                      | user                   |
+      | tenants/tenant_cyber-agency.json | users/cyber-agent.json |

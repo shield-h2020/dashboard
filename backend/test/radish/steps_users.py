@@ -251,3 +251,51 @@ def platform_admin_create_developer(step, user_file):
 
     world.my_context['developer_info'] = step.context.api['response']['json']
 
+
+@given(re.compile(u'The Platform Admin creates a Cyber-Agent from (.*)'))
+def platform_admin_create_cyber_agent(step, user_file):
+    # In a proper API usage, the caller needs to supply the correct tenant user group ID, so the user to create
+    # belongs to the appropriate group.
+    # In this test environment, this must be simulated by providing the group code in the input data, have the test
+    # code lookup the proper group ID and replace this data in the one to provide to the API.
+
+    file = os.path.join(world.env['data']['input_data'], user_file)
+    with open(file) as f:
+        user_data = json.load(f)
+
+    print('tenant info\n' + pformat(world.my_context['tenant_info']))
+
+    # The tenant the user must belong to has the information on the groups it holds. Simply go through them and find
+    # a match to the group code provided in the input data.
+    group_id = None
+    for group_data in world.my_context['tenant_info']['groups']:
+        if group_data['group']['name'] == user_data['group_code']:
+            print('group data to set:\n' + pformat(group_data))
+            group_id = group_data['group']['group_id']
+            break
+
+    if group_id is None:
+        raise EnvironmentError
+
+    # The tenant user creation endpoint expects a group ID and not a code.
+    user_data['group_id'] = group_id
+    del user_data['group_code']
+
+    # Create the tenant user.
+    url = world.endpoints['tenant_users'].format(world.my_context['tenant_info']['tenant_id'])
+    print('url: ' + url)
+
+    http_post_json(step, url=url, data=user_data, auth=(world.my_context['platform_admin']['token']['id'], ''))
+    expected_status_code(step, http_utils.HTTP_201_CREATED)
+
+    # The tenant user data is stored into the testing context for later usage.
+    url = world.endpoints['tenant_user_specific'].format(step.context.api['response']['json']['user_id'],
+                                                         world.my_context['tenant_info']['tenant_id'])
+
+    print('url: ' + url)
+
+    http_get(step, url=url, auth=(world.my_context['platform_admin']['token']['id'], ''))
+    expected_status_code(step, http_utils.HTTP_200_OK)
+
+    world.my_context['cyber_agent_info'] = step.context.api['response']['json']
+

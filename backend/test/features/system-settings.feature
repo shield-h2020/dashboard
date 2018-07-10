@@ -39,6 +39,7 @@ Feature: Setup the platform
       | definitions/scope_tenant_admin.json | 201    |
       | definitions/scope_tenant_user.json  | 201    |
       | definitions/scope_developer.json    | 201    |
+      | definitions/scope_cyber-agent.json  | 201    |
 
 
   @smoke
@@ -52,6 +53,7 @@ Feature: Setup the platform
       | definitions/group_tenant_admins.json | 201    |
       | definitions/group_tenant_users.json  | 201    |
       | definitions/group_developers.json    | 201    |
+      | definitions/group_cyber-agents.json  | 201    |
 
 
   @smoke
@@ -65,6 +67,7 @@ Feature: Setup the platform
       | definitions/role_tenant_admin.json | 201    |
       | definitions/role_tenant_user.json  | 201    |
       | definitions/role_developer.json    | 201    |
+      | definitions/role_cyber-agent.json  | 201    |
 
 
   @smoke
@@ -79,6 +82,7 @@ Feature: Setup the platform
       | definitions/scope_groups_tenant_admin.json | 201    |
       | definitions/scope_groups_tenant_user.json  | 201    |
       | definitions/scope_groups_developer.json    | 201    |
+      | definitions/scope_groups_cyber-agent.json  | 201    |
 
 
   @smoke
@@ -92,3 +96,4 @@ Feature: Setup the platform
       | definitions/group_roles_tenant_admin.json | 201    |
       | definitions/group_roles_tenant_user.json  | 201    |
       | definitions/group_roles_developer.json    | 201    |
+      | definitions/group_roles_cyber-agent.json  | 201    |

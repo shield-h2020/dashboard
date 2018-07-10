@@ -32,7 +32,7 @@ const strings = {
 const topologyEndpoint = '/topology/subscribe';
 
 export const APP_ADDRESSES = {
-  authAddress: `${baseUrl}:${13030}`,
+  authAddress: `${baseUrl}:${__API_PORT__}`,
   baseAddress: `${baseUrl}:${__API_PORT__}`,
   cataAddress: `${baseUrl}:${__API_PORT__}`,
   sockAddress: `${socketsUrl}:${__API_SOCKET_PORT__}`,
