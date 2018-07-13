@@ -29,41 +29,53 @@ Feature: Users CRUD
   @smoke
   Scenario Outline: Create tenants
     Given The Platform Admin is logged in
-    Given The Platform Admin creates a Tenant from <tenant_data>
-    Given The Platform Admin creates a Tenant Admin from <tenant_admin>
-    Given The Tenant Admin is logged in
-    Given The Tenant Admin creates a User from <user>
-    Given The Tenant User is logged in
-    When The Tenant User lists the users
+    When The Platform Admin creates a Tenant from <tenant_data>
     Then I expect the response code <status>
-    When The Tenant User lists itself
-    Then I expect the response code <statuz>
 
     Examples:
-      | tenant_data            | tenant_admin              | user                     | status | statuz |
-      | tenants/tenant_uw.json | users/tenant_admin.json   | users/tenant_user.json   | 403    | 200    |
-      | tenants/tenant_a.json  | users/tenant_a_admin.json | users/tenant_a_user.json | 403    | 200    |
+      | tenant_data                    | status |
+      | tenants/tenant_uw.json         | 201    |
+      | tenants/tenant_a.json          | 201    |
+      | tenants/tenant_developers.json | 201    |
+
+
+  @smoke
+  Scenario Outline: Create tenant administrators
+    Given The Platform Admin is logged in
+    Given The Tenant in use is <tenant_data>
+    When The Platform Admin creates a Tenant Admin from <tenant_admin>
+    When The Tenant Admin is logged in
+    Then I expect the response code <status>
+
+    Examples:
+      | tenant_data            | tenant_admin              | status |
+      | tenants/tenant_uw.json | users/tenant_admin.json   | 201    |
+      | tenants/tenant_a.json  | users/tenant_a_admin.json | 201    |
+
+
+  @smoke
+  Scenario Outline: Create users
+    Given The User logs in using <credentials>
+    Given The User creates another from <user_data>
+    When The New User logs in
+    Then I expect the response code <status>
+
+    Examples:
+      | credentials                | user_data                | status |
+      | login/tenant_uw_admin.json | users/tenant_user.json   | 201    |
+      | login/tenant_uw_admin.json | users/cyberagent.json    | 201    |
+      | login/tenant_a_admin.json  | users/tenant_a_user.json | 201    |
 
 
   @smoke
   Scenario Outline: Create developers
     Given The Platform Admin is logged in
-    Given The Platform Admin creates a Tenant from <tenant_data>
-    Given The Platform Admin creates a Developer from <user>
-    Given The Developer is logged in
+    Given The Tenant in use is <tenant_data>
+    When The Platform Admin creates a Developer from <user>
+    When The Developer is logged in
+    Then I expect the response code <status>
 
     Examples:
-      | tenant_data                    | user                 |
-      | tenants/tenant_developers.json | users/developer.json |
+      | tenant_data                    | user                 | status |
+      | tenants/tenant_developers.json | users/developer.json | 201    |
 
-
-  @smoke
-  Scenario Outline: Create cyber-agents
-    Given The Platform Admin is logged in
-    Given The Platform Admin creates a Tenant from <tenant_data>
-    Given The Platform Admin creates a Cyber-Agent from <user>
-    Given The Cyber-Agent is logged in
-
-    Examples:
-      | tenant_data                      | user                   |
-      | tenants/tenant_cyber-agency.json | users/cyber-agent.json |

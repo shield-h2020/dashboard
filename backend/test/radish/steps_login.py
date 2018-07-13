@@ -32,7 +32,24 @@ import os
 import re
 from dashboardtestingutils.steps_utils import *
 from dashboardutils import http_utils
-from radish import given, world
+from radish import given, when, world
+
+
+def logon_into_tenant(step, user, password):
+    set_http_headers(step, {'Shield-Authz-Scope': world.my_context['tenant_info']['tenant_name']})
+    http_post_json(step, url=world.endpoints['login'], auth=(user, password))
+    expected_status_code(step, http_utils.HTTP_201_CREATED)
+
+
+def user_login(step, credentials_file):
+    file = os.path.join(world.env['data']['input_data'], credentials_file)
+    with open(file) as f:
+        login_data = json.load(f)
+
+    set_http_headers(step, {'Shield-Authz-Scope': login_data['tenant']})
+
+    http_post_json(step, url=world.endpoints['login'], auth=(login_data['username'], login_data['password']))
+    expected_status_code(step, http_utils.HTTP_201_CREATED)
 
 
 @given(u'The Platform Admin is logged in')
@@ -45,61 +62,52 @@ def platform_admin_login(step):
     world.my_context['platform_admin'] = step.context.api['response']['json']
 
 
-@given(u'The Tenant Admin is logged in')
+@when(u'The Tenant Admin is logged in')
 def tenant_admin_login(step):
-    set_http_headers(step, {'Shield-Authz-Scope': world.my_context['tenant_info']['tenant_name']})
-    http_post_json(step, url=world.endpoints['login'], auth=(
-        world.my_context['tenant_admin_info']['name'],
-        world.my_context['tenant_admin_info']['password']))
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
-
+    logon_into_tenant(step, world.my_context['tenant_admin_info']['name'],
+                      world.my_context['tenant_admin_info']['password'])
     world.my_context['tenant_admin'] = step.context.api['response']['json']
 
 
 @given(u'The Tenant User is logged in')
 def tenant_user_login(step):
-    set_http_headers(step, {'Shield-Authz-Scope': world.my_context['tenant_info']['tenant_name']})
-    http_post_json(step, url=world.endpoints['login'], auth=(
-        world.my_context['tenant_user_info']['name'],
-        world.my_context['tenant_user_info']['password']))
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
-
+    logon_into_tenant(step, world.my_context['tenant_user_info']['name'],
+                      world.my_context['tenant_user_info']['password'])
     world.my_context['tenant_user'] = step.context.api['response']['json']
 
 
-@given(u'The Developer is logged in')
+@when(u'The Developer is logged in')
 def developer_login(step):
-    set_http_headers(step, {'Shield-Authz-Scope': world.my_context['tenant_info']['tenant_name']})
-    http_post_json(step, url=world.endpoints['login'], auth=(
-        world.my_context['developer_info']['name'],
-        world.my_context['developer_info']['password']))
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
-
+    logon_into_tenant(step, world.my_context['developer_info']['name'], world.my_context['developer_info']['password'])
     world.my_context['developer'] = step.context.api['response']['json']
 
 
 @given(re.compile(u'The User logs in with (.*)'))
 def tenant_admin_login(step, credentials_file):
-    file = os.path.join(world.env['data']['input_data'], credentials_file)
-    with open(file) as f:
-        login_data = json.load(f)
-
-    set_http_headers(step, {'Shield-Authz-Scope': login_data['tenant']})
-
-    http_post_json(step, url=world.endpoints['login'], auth=(login_data['username'], login_data['password']))
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
-
+    user_login(step, credentials_file)
     world.my_context['user'] = step.context.api['response']['json']
 
     print('logged user:\n' + pformat(world.my_context['user']))
 
 
-@given(u'The Cyber-Agent is logged in')
-def cyber_agent_login(step):
-    set_http_headers(step, {'Shield-Authz-Scope': world.my_context['tenant_info']['tenant_name']})
-    http_post_json(step, url=world.endpoints['login'], auth=(
-        world.my_context['cyber_agent_info']['name'],
-        world.my_context['cyber_agent_info']['password']))
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
+@given(re.compile(u'The User logs in using (.*)'))
+def login(step, credentials_file):
+    user_login(step, credentials_file)
 
-    world.my_context['cyber_agent'] = step.context.api['response']['json']
+    world.my_context['user'] = step.context.api['response']['json']
+
+    print('logged user:\n' + pformat(world.my_context['user']))
+
+    # The tenant data is stored into the testing context for later usage.
+    url = world.endpoints['tenant_info'].format(world.my_context['user']['token']['user']['domain']['id'])
+    http_get(step, url=url, auth=(world.my_context['platform_admin']['token']['id'], ''))
+    expected_status_code(step, http_utils.HTTP_200_OK)
+
+    world.my_context['tenant_info'] = step.context.api['response']['json']
+
+
+@when(u'The New User logs in')
+def login(step):
+    logon_into_tenant(step, world.my_context['tenant_user_info']['name'],
+                      world.my_context['tenant_user_info']['password'])
+    world.my_context['tenant_user'] = step.context.api['response']['json']

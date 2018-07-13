@@ -1,0 +1,6 @@
+{
+  "name": "Cyber Agents Group",
+  "code": "shield_group_roles_cyberagent",
+  "group_code": "shield-cyberagents",
+  "roles": ["shield_cyberagent"]
+}

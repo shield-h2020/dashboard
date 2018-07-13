@@ -95,6 +95,7 @@ class VNSFSocket(PipeConsumer):
             self.clients[tenant] = [socket]
         else:
             # Discard the client since no tenant was provided
+            self.logger.debug('Socket not registered as no tenant was provided')
             return
 
     def unroll_socket(self, socket, **kwargs):
@@ -119,6 +120,7 @@ class VNSFSocket(PipeConsumer):
         """
         tenant = kwargs.get('tenant', None)
         if not tenant:
+            self.logger.debug('No tenant provided')
             return
         for socket in self.clients.get(tenant, []):
             self.logger.debug('Socket {} | tenant {} | message - {}'.format(socket, tenant, data))

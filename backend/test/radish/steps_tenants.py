@@ -32,10 +32,10 @@ import os
 import re
 from dashboardtestingutils.steps_utils import *
 from dashboardutils import http_utils
-from radish import given, world
+from radish import given, when, world
 
 
-@given(re.compile(u'The Platform Admin creates a Tenant from (.*)'))
+@when(re.compile(u'The Platform Admin creates a Tenant from (.*)'))
 def platform_admin_create_tenant(step, tenant_file):
     file = os.path.join(world.env['data']['input_data'], tenant_file)
     with open(file) as f:
@@ -59,17 +59,25 @@ def platform_admin_create_tenant(step, tenant_file):
     http_post_json(step, url=world.endpoints['tenants'], data=tenant_data,
                    auth=(world.my_context['platform_admin']['token']['id'], ''))
 
-    expected_status_code(step, http_utils.HTTP_201_CREATED)
+
+@given(re.compile(u'The Tenant in use is (.*)'))
+def tenant_in_use(step, tenant_file):
+    file = os.path.join(world.env['data']['input_data'], tenant_file)
+    with open(file) as f:
+        tenant_data = json.load(f)
 
     # The tenant data is stored into the testing context for later usage.
-    url = world.endpoints['tenant_info'].format(step.context.api['response']['json']['tenant_id'])
+    url = world.endpoints['tenant_info_by_name'].format(tenant_data['tenant_name'])
+    print('url: ' + url)
+
     http_get(step, url=url, auth=(world.my_context['platform_admin']['token']['id'], ''))
     expected_status_code(step, http_utils.HTTP_200_OK)
 
-    world.my_context['tenant_info'] = step.context.api['response']['json']
+    # The tenant information is in an array due to the query performed.
+    world.my_context['tenant_info'] = step.context.api['response']['json']['_items'][0]
 
 
-@given(re.compile(u'The Platform Admin creates a Tenant Admin from (.*)'))
+@when(re.compile(u'The Platform Admin creates a Tenant Admin from (.*)'))
 def platform_admin_create_tenant_admin(step, tenant_file):
     # In a proper API usage, the caller needs to supply the correct tenant administrator group ID, so the user to create
     # belongs to the appropriate group.

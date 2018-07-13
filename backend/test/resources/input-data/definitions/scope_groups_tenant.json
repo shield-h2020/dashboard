@@ -2,5 +2,9 @@
   "name": "Client Scope",
   "code": "shield_scope_group_tenant",
   "scope_code": "shield_scope_tenant",
-  "groups": ["shield-client-admins", "shield-client-users"]
+  "groups": [
+    "shield-client-admins",
+    "shield-client-users",
+    "shield-cyberagents"
+  ]
 }

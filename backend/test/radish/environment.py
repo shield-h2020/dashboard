@@ -123,6 +123,9 @@ world.endpoints = {
     'tenant_info':                '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
                                                       'catalogue/tenants'),
 
+    'tenant_info_by_name': '{}/{}?where={{{{"tenant_name": "{{}}"}}}}'.format(world.env['hosts']['backend_api']['host'],
+                                                                              'catalogue/tenants'),
+
     'tenant_users':               '{}/{}?where={{{{"tenant_id": "{{}}"}}}}'.format(
             world.env['hosts']['backend_api']['host'], 'catalogue/users'),
 
