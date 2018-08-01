@@ -201,6 +201,19 @@ tenant_ip_association = {
     'public_item_methods': ['GET', 'PATCH', 'DELETE']
     }
 
+tenant_vnsf_association = {
+    'item_title':          'tenant vnsf association',
+    'description':         "Allows the association between tenant and it's vNSFs",
+    'url':                 'tenant_vnsfs',
+    'item_lookup_field':   EndpointVar.__TENANT_ID__,
+    'item_url':            EndpointVar.__TENANT_ID_FMT__,
+    'schema':              api_model.tenant_vnsf_association,
+    'resource_methods':    ['POST', 'GET'],
+    'item_methods':        ['GET', 'PATCH', 'DELETE'],
+    'public_methods':      ['POST', 'GET'],
+    'public_item_methods': ['GET', 'PATCH', 'DELETE']
+    }
+
 tenant_scopes = {
     'item_title':         EndpointHelper.get_name(Endpoint.TENANT_SCOPES),
     'url':                EndpointHelper.get_url(Endpoint.TENANT_SCOPES),

@@ -406,3 +406,17 @@ tenant_ip_association = {
         "required": True
         }
     }
+
+tenant_vnsf_association = {
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+    },
+    'vnsf_instances': {
+        'type': 'list',
+        'schema': {'type': 'string'},
+        'empty': False,
+        'required': True
+    }
+}

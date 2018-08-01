@@ -44,6 +44,7 @@ class TornadoSocketServer:
         :param controllers: kwargs with pipe controller objects. Each controller is an instance of a pipe receiver.
                             policy: Policy pipe receiver
                             vnsf:   vNSF notifications pipe receiver
+                            tm:     Trust Monitor pipe receiver
         """
         self.logger = logging.getLogger(__name__)
 
@@ -55,6 +56,8 @@ class TornadoSocketServer:
             (r'/policy', SendOnlySocketHandler, {'controller': controllers.get('policy')}),
             (r'/vnsf/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,
              {'controller': controllers.get('vnsf')}),
+            (r'/tm/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,
+             {'controller': controllers.get('tm')}),
             ])
 
         self._settings = settings

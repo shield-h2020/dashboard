@@ -33,6 +33,8 @@ from dashboarddare.socket_policy import PolicySocket
 from dashboarddare.socket_server import TornadoSocketServer
 from dashboarddare.socket_vnsf import VNSFSocket
 from dashboarddare.vnsf_notification import VNSFNotification
+from dashboarddare.tm_notification import TMNotification
+from dashboarddare.socket_tm import TMSocket
 from dashboardutils import log
 from dashboardutils.pipe import PipeManager
 
@@ -59,6 +61,18 @@ vnsf_queue_settings = {
     'queue_ack':     cfg.MSGQ_VNSF_ACK,
     'topic':         cfg.MSGQ_VNSF_TOPIC
     }
+
+tm_queue_settings = {
+    'host':         cfg.MSGQ_HOST,
+    'port':          cfg.MSGQ_PORT,
+    'user':          'guest',
+    'pass':          'guest',
+    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
+    'queue':         cfg.MSGQ_TM,
+    'queue_ack':     cfg.MSGQ_TM_ACK,
+    'topic':         cfg.MSGQ_TM_TOPIC,
+}
 
 dashboard_socket_settings = {
     'port': cfg.SKT_PORT
@@ -95,4 +109,8 @@ if __name__ == '__main__':
     VNSFNotification(vnsf_queue_settings, manager_notifications)
     vnsf_socket = VNSFSocket(manager_notifications)
 
-    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket)
+    manager_tm_notifications = PipeManager()
+    TMNotification(tm_queue_settings, manager_tm_notifications)
+    tm_socket = TMSocket(manager_tm_notifications)
+
+    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket, tm=tm_socket)

@@ -54,6 +54,12 @@ MSGQ_VNSF = os.environ.get('MSGQ_VNSF', '__no_VNSF_queue_set__')
 MSGQ_VNSF_ACK = bool(os.environ.get('MSGQ_VNSF_ACK', False))
 MSGQ_VNSF_TOPIC = os.environ.get('MSGQ_VNSF_TOPIC', 'shield.notifications.vnsf')
 
+# Trust Monitor message queue settings
+MSGQ_TM = os.environ.get('MSGQ_TM', "__no_TM_queue_set__")
+MSGQ_TM_ACK = bool(os.environ.get('MSGQ_TM_ACT', False))
+MSGQ_TM_TOPIC = os.environ.get('MSGQ_TM_TOPIC', 'shield.notifications.tm')
+
+
 ###
 #   Websocket
 ###
@@ -112,6 +118,16 @@ __association_rest__ = {
 
 ASSOCIATION_API_URL = __association_rest__['association']['url']
 ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
+
+###
+#   Association vNSF Instance
+###
+__tm_association_rest__ = {
+    'tm_association': {
+        'url':  '{}/{}'.format(TENANT_IP_URL, 'tenant_ips'),
+    }
+}
+
 
 ###
 #   Schemas
