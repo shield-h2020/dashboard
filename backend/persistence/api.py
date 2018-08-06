@@ -55,6 +55,7 @@ app.on_insert_tenants_catalogue += TenantHooks.create_tenant
 app.on_delete_resource_tenants_catalogue_delete += TenantHooks.remove_tenant
 
 app.on_insert_tenant_users_catalogue += TenantHooks.create_tenant_user
+app.on_replace_tenant_user += TenantHooks.update_tenant_user
 
 app.on_insert_nss_inventory += NssInventoryHooks.provision_network_service
 

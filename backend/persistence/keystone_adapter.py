@@ -75,6 +75,10 @@ class KeystoneAuthzApi(AaaApi):
             'CREATION_ISSUE': {
                 IssueElement.ERROR:     ["User creation failed as domain doesn't match. Data: '{}'."],
                 IssueElement.EXCEPTION: InternalServerError("User creation failed.")
+                },
+            'UPDATE_ISSUE':   {
+                IssueElement.ERROR:     ["User update failed as domain doesn't match. Data: '{}'."],
+                IssueElement.EXCEPTION: InternalServerError("User update failed.")
                 }
             },
         'AAA':     {
@@ -336,7 +340,7 @@ class KeystoneAuthzApi(AaaApi):
         headers = {'X-Auth-Token': self.service_token['token']['id']}
 
         try:
-            r = http_utils.delete(url, headers=headers)
+            http_utils.delete(url, headers=headers)
 
         except requests.exceptions.ConnectionError:
             self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
@@ -391,6 +395,41 @@ class KeystoneAuthzApi(AaaApi):
         except requests.exceptions.ConnectionError:
             self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
 
+    def _update_user(self, tenant_id, user_data):
+        user = {
+            "user": {
+                "name":     user_data['name'],
+                "password": user_data['password'],
+                "enabled":  True
+                }
+            }
+
+        url = '{}/{}/{}'.format(self.api_basepath, KeystoneAuthzApi.users, user_data['user_id'])
+
+        headers = {'X-Auth-Token': self.service_token['token']['id']}
+
+        try:
+
+            self.logger.debug('update user\n' + pformat(user))
+
+            r = http_utils.patch_json(url, headers=headers, data=user)
+
+            user_data = r.json()
+
+            if not user_data['user']['domain_id'] == tenant_id:
+                # Something fishy here.
+                self.issue.raise_ex(IssueElement.ERROR, self.__errors['USERS']['UPDATE_ISSUE'], [[user_data]])
+
+            user_data['user']['tenant_id'] = tenant_id
+
+            del user_data['user']['domain_id']
+            del user_data['user']['links']
+
+            return user_data
+
+        except requests.exceptions.ConnectionError:
+            self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
+
     def create_tenant_user(self, tenant_id, user_data):
         created_user = self._create_user(tenant_id, user_data)
         self._add_user_to_group(created_user['user']['id'], user_data['group_id'])
@@ -414,3 +453,6 @@ class KeystoneAuthzApi(AaaApi):
 
         except requests.exceptions.ConnectionError:
             self.issue.raise_ex(IssueElement.ERROR, self.__errors['AAA']['UNREACHABLE'], [[url]])
+
+    def update_tenant_user(self, tenant_id, user_data):
+        return self._update_user(tenant_id, user_data)

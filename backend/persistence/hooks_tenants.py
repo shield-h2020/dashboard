@@ -180,6 +180,17 @@ class TenantHooks:
         user_data['user_id'] = created_user['user']['id']
 
     @staticmethod
+    def update_tenant_user(updates, original):
+        authz = TenantHooks.get_service_admin_authz()
+        user_data = updates
+
+        updated_user = authz.update_tenant_user(updates['tenant_id'], user_data)
+
+        # Set data which is only available once the tenant user is created in the external authorization system.
+        user_data['tenant_id'] = updated_user['user']['tenant_id']
+        user_data['user_id'] = updated_user['user']['id']
+
+    @staticmethod
     def create_role(items):
         authz = TenantHooks.get_service_admin_authz()
 
