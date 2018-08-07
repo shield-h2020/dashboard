@@ -1,0 +1,23 @@
+{
+  "ignore": [
+    "root['_links']",
+    "root['_meta']",
+    "root['self']",
+    "root['next']",
+    "root['parent']",
+    "root['_items'][0]['_links']",
+    "root['_items'][0]['_id']",
+    "root['_items'][0]['_etag']",
+    "root['_items'][0]['_created']",
+    "root['_items'][0]['_updated']"
+  ],
+  "expected": {
+    "_items": [
+      {
+        "tenant_id": "3da63",
+        "type": "TRUST_MONITOR",
+        "data": "{\"event\": {\"vnsf_instance_id\": \"cirros_vnf_inst_1\"}}"
+      }
+    ]
+  }
+}

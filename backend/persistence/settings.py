@@ -94,5 +94,6 @@ DOMAIN = {
     'validations':            api_endpoints.validations,
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,
-    'tenant_ips':             api_endpoints.tenant_ip_association
+    'tenant_ips':             api_endpoints.tenant_ip_association,
+    'tenant_vnsfs':           api_endpoints.tenant_vnsf_association
     }

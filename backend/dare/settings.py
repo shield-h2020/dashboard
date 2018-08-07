@@ -119,14 +119,24 @@ __association_rest__ = {
 ASSOCIATION_API_URL = __association_rest__['association']['url']
 ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
 
+
 ###
 #   Association vNSF Instance
 ###
+VNSF_INSTANCE_PROTOCOL = os.environ.get('TENANT_IP_PROTOCOL', None)
+VNSF_INSTANCE_HOST = os.environ.get('TENANT_IP_HOST', 'localhost')
+VNSF_INSTANCE_PORT = os.environ.get('TENANT_IP_PORT', -1)
+VNSF_INSTANCE_URL = '{}://{}:{}'.format(VNSF_INSTANCE_PROTOCOL, VNSF_INSTANCE_HOST, VNSF_INSTANCE_PORT)
+
 __tm_association_rest__ = {
     'tm_association': {
-        'url':  '{}/{}'.format(TENANT_IP_URL, 'tenant_ips'),
+        'url':     '{}/{}'.format(VNSF_INSTANCE_URL, 'tenant_vnsfs'),
+        'headers': {'Content-Type': 'application/json'}
+        }
     }
-}
+
+TM_ASSOCIATION_API_URL = __tm_association_rest__['tm_association']['url']
+TM_ASSOCIATION_API_HEADERS = __tm_association_rest__['tm_association']['headers']
 
 
 ###

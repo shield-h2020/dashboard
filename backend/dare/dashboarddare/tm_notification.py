@@ -36,14 +36,14 @@ from dashboardutils.pipe import PipeProducer
 from dashboardutils.rabbit_client import RabbitAsyncConsumer
 from schema.tm_notification import tm_notification
 
-from .vnsf_notification_persistence import TMNotificationPersistence
+from .tm_notification_persistence import TMNotificationPersistence
 
 config = {
     'persist_url': cfg.NOTIFICATION_API_PERSIST_URL,
     'persist_headers': cfg.NOTIFICATION_API_PERSIST_HEADERS,
 
-    'association_url': cfg.ASSOCIATION_API_URL,
-    'association_headers': cfg.ASSOCIATION_API_HEADERS,
+    'association_url': cfg.TM_ASSOCIATION_API_URL,
+    'association_headers': cfg.TM_ASSOCIATION_API_HEADERS,
 
     'notification_type': 'TRUST_MONITOR'
 }

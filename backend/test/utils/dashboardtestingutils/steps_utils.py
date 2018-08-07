@@ -167,13 +167,16 @@ def matches_json(actual_data, expected_info):
     # order it's expected). However the feature isn't available at the time of writing this code due to 'Comparing
     # similar objects when ignoring order' (https://github.com/seperman/deepdiff/issues/29).
     diffs = DeepDiff(actual_data, expected_data, exclude_paths=ignore)
+
+    print("--> ACTUAL DATA: \n", actual_data, "\n\n")
+    print("--> EXPECTED DATA: \n", expected_data, "\n\n")
+
     assert diffs == {}, diffs
 
 
 @given(re.compile(u'I am logged in as (.*)'))
 def set_role(step, role):
     """
-
     :param step:
     :param role:
     :return:
@@ -237,5 +240,26 @@ def set_association_mock_response(step, file):
         os.makedirs(dest_path, exist_ok=True)
 
     src_file = os.path.join(world.env['mock']['tenant_ip_data'], file)
+    assert os.path.isfile(src_file)
+    copyfile(src_file, dest_file)
+
+@given(re.compile(u'I mock the vNSF association response with (.*)'))
+def set_association_mock_response(step, file):
+    """
+    Defines the response to be sent by the mock Association IP tenant.
+
+    :param step: the test step context data
+    :param file: the file where the mock data lives. It is assumed that the file base path is the mock-vNSFO-data
+    folder defined in the testing environment settings.
+    """
+
+    # Set proper association response.
+    endpoint = os.path.dirname(file)
+    dest_file = os.path.join(world.env['mock']['tenant_vnsf_folder'], endpoint, 'index.get.json')
+    dest_path = os.path.dirname(dest_file)
+    if not os.path.exists(dest_path):
+        os.makedirs(dest_path, exist_ok=True)
+
+    src_file = os.path.join(world.env['mock']['tenant_vnsf_data'], file)
     assert os.path.isfile(src_file)
     copyfile(src_file, dest_file)

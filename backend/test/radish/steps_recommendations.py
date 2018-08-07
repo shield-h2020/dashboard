@@ -135,4 +135,4 @@ def recommendations_socket_ready(step):
     Connecting to a socket that isn't available yields the 'WebSocketBadStatusException: Handshake status 404'
     exception so no further checks are needed for the step purpose.
     """
-    set_socket_client(world.sockets_endpoints['policy'])
+    set_socket_client(world.sockets_endpoints['policy'], 'policy')

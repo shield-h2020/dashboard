@@ -34,28 +34,28 @@ from dashboardtestingutils.steps_utils import *
 from radish import given, when, then, world
 
 
-@given(re.compile(u'A vnsf notification socket is ready for (.*)'))
+@given(re.compile(u'A TM notification socket is ready for (.*)'))
 def set_vnsf_socket(step, tenant):
-    set_socket_client(world.sockets_endpoints['vnsf_notification'].format(tenant), tenant)
+    set_socket_client(world.sockets_endpoints['tm_notification'].format(tenant), tenant)
 
 
-@when(re.compile(u'I receive a VNSF notification with (.*)'))
-def vnsf_notification(step, notification):
+@when(re.compile(u'I receive a TM notification with (.*)'))
+def tm_notification(step, notification):
     send_notification(
             os.path.join(world.env['data']['input_data']),
-            world.my_context['msgq_channel'], world.env['hosts']['vnsf_msg_q']['exchange'],
-            world.env['hosts']['vnsf_msg_q']['topic'], notification)
+            world.my_context['msgq_channel'], world.env['hosts']['tm_msg_q']['exchange'],
+            world.env['hosts']['tm_msg_q']['topic'], notification)
 
 
-@then(re.compile(u'The vNSF notification must be persisted (.*)'))
-def is_vnsf_notification_persisted(step, notification):
+@then(re.compile(u'The TM notification must be persisted (.*)'))
+def is_tm_notification_persisted(step, notification):
     # Ensure that the system under test has time to persist the recommendation.
     sleep(3)
 
-    http_get(step, world.endpoints['vnsf_notifications_latest'])
+    http_get(step, world.endpoints['tm_notifications_latest'])
     matches_json_file(step, notification)
 
 
-@then(re.compile(u'The vNSF notification must be received (.*)'))
-def check_vnsf_notification(step, expected_notification):
+@then(re.compile(u'The TM notification must be received (.*)'))
+def check_tm_notification(step, expected_notification):
     check_socket_message(step, expected_notification)

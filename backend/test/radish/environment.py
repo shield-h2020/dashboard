@@ -27,6 +27,7 @@
 
 import os
 from radish import world
+from datetime import datetime
 
 world.env = {
     'hosts': {
@@ -34,10 +35,7 @@ world.env = {
             'host': '{}://{}:{}'.format(os.environ['BACKENDAPI_PROTOCOL'], os.environ['BACKENDAPI_HOST'],
                                         os.environ['BACKENDAPI_PORT'])
             },
-        'tenant_ip_api': {
-            'host': '{}://{}:{}'.format(os.environ['TENANT_IP_PROTOCOL'], os.environ['TENANT_IP_HOST'],
-                                        os.environ['TENANT_IP_PORT'])
-            },
+
         'msg_q':         {
             'host':          os.environ['MSGQ_HOST'],
             'port':          int(os.environ['MSGQ_PORT']),
@@ -51,6 +49,13 @@ world.env = {
             'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
             'topic':         os.environ['MSGQ_VNSF_TOPIC']
+            },
+        'tm_msg_q':    {
+            'host':          os.environ['MSGQ_HOST'],
+            'port':          int(os.environ['MSGQ_PORT']),
+            'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
+            'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
+            'topic':         os.environ['MSGQ_TM_TOPIC']
             },
         'socket_server': {
             'host': 'ws://{}:{}'.format(os.environ['SKT_HOST'],
@@ -78,7 +83,12 @@ world.env = {
 
         # Association Mocks
         'tenant_ip_data':   os.environ['FOLDER_TESTS_MOCK_TENANT_IP_DATA'],
-        'tenant_ip_folder': os.environ['CNTR_FOLDER_VNSFO']
+        'tenant_ip_folder': os.environ['CNTR_FOLDER_VNSFO'],
+
+        # Tenant vNSF Association Mocks
+        'tenant_vnsf_data': os.environ['FOLDER_TESTS_MOCK_TENANT_VNSF_DATA'],
+        'tenant_vnsf_folder': os.environ['CNTR_FOLDER_VNSFO']
+
         }
     }
 
@@ -147,8 +157,11 @@ world.endpoints = {
 
     'policies_apply':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies'),
 
-    'vnsf_notifications_latest':  '{}/{}?sort=[("_updated", -1)]&max_results=1'.format(
-            world.env['hosts']['backend_api']['host'], 'notifications'),
+    'vnsf_notifications_latest':  '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "VNSF"}}&xpto="{}"'.format(
+            world.env['hosts']['backend_api']['host'], 'notifications', datetime.now()),
+
+    'tm_notifications_latest':    '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "TRUST_MONITOR"}}&xpto="{}"'.format(
+            world.env['hosts']['backend_api']['host'], 'notifications', datetime.now()),
 
     'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations')
 
@@ -156,5 +169,6 @@ world.endpoints = {
 
 world.sockets_endpoints = {
     'policy':            '{}/policy'.format(world.env['hosts']['socket_server']['host']),
-    'vnsf_notification': '{}/vnsf/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}')
+    'vnsf_notification': '{}/vnsf/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}'),
+    'tm_notification':   '{}/tm/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}')
     }

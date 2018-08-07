@@ -45,6 +45,9 @@ def msg_handler(message, output_file):
     """
 
     # Any exception will cause a test failure which is the intended behaviour.
+    if os.path.exists(output_file):
+        os.remove(output_file)
+
     with open(output_file, 'w') as f:
         json.dump(json.loads(message), f)
 
@@ -67,13 +70,15 @@ def check_socket_message(step, expected_notification):
     matches_json(actual_data, expected_data)
 
 
-def set_socket_client(url, callback=msg_handler):
+def set_socket_client(url, handler, callback=msg_handler):
     """
     Creates a new socket client in the given URL
     :param url: The endpoint to connect the client
+    :param handler: The socket handler ID (e.g. the tenant ID)
     :param callback: Function to handle the received message
     """
-    if world.my_context['socket'] is not None:
+    if handler in world.my_context['socket'].keys():
         return
-    world.my_context['socket'] = SendOnlySocketClient(url=url, callback=callback,
-                                                      output=world.my_context['socket_output_file'])
+
+    world.my_context['socket'][handler] = SendOnlySocketClient(
+        url, callback, world.my_context['socket_output_file'])
