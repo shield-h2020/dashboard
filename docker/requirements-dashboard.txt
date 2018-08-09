@@ -47,3 +47,4 @@ simplejson==3.11.1
 urllib3==1.22
 Werkzeug==0.11.15
 xmlschema==0.9.13
+aiohttp==3.3.2
