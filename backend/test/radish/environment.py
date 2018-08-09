@@ -67,6 +67,14 @@ world.env = {
             'svc_admin_user':  os.environ['AAA_SCV_ADMIN_USER'],
             'svc_admin_pass':  os.environ['AAA_SCV_ADMIN_PASS']
             },
+        'influxdb':           {
+            'host':            f"{os.environ['INFLUXDB_PROTOCOL']}://{os.environ['INFLUXDB_HOST']}:{os.environ['INFLUXDB_PORT']}",
+            'admin_username':  os.environ.get('INFLUXDB_ADMIN_USER'),
+            'username':        os.environ.get('INFLUXDB_USER'),
+            'admin_password':  os.environ.get('INFLUXDB_ADMIN_PASSWORD'),
+            'password':        os.environ.get('INFLUXDB_USER_PASSWORD')
+            }
+
         },
     'data':  {
         'input_data':      os.environ['FOLDER_TESTS_INPUT_DATA'],
@@ -150,7 +158,10 @@ world.endpoints = {
     'vnsf_notifications_latest':  '{}/{}?sort=[("_updated", -1)]&max_results=1'.format(
             world.env['hosts']['backend_api']['host'], 'notifications'),
 
-    'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations')
+    'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations'),
+    'cyberattack_data':           f"{world.env['hosts']['backend_api']['host']}/data/cyberattack"
+                                  f"?sort=[('_updated',-1)]&max_results=1",
+    'influx_query':               f"{world.env['hosts']['influxdb']['host']}/query"
 
     }
 
