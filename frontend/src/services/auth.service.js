@@ -1,4 +1,4 @@
-import { APP_ADDRESSES } from '../strings/api-strings';
+import { AUTH_ADDRESS } from 'api/api-config';
 
 const AUTH_API = '/login';
 
@@ -14,7 +14,8 @@ export class AuthService {
   }
 
   login(username, password, scope) {
-    return this.http.post(APP_ADDRESSES.authAddress + AUTH_API, {}, {
+    console.log(AUTH_ADDRESS + AUTH_API);
+    return this.http.post(AUTH_ADDRESS + AUTH_API, {}, {
       headers: {
         Authorization: `Basic ${this.window.btoa(`${username}:${password}`)}`,
         'Shield-Authz-Scope': scope,

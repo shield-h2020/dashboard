@@ -78,13 +78,31 @@ export const UsersListComponent = {
         this.roles = this.newUser.groups;
         this.isCreate = false;
       } else {
-        this.isCreate = true;
-        this.newUser = {
-          name: '',
-          role: '',
-          tenant: this.tenant,
-          password: '',
-        };
+        /* When we add support for user addition by super admin, we
+        will have to edit this logic. We first have to check if i'm a 
+        super admin or not. If not, the following logic is up to date.
+        If i am a super admin, we have to unlock tenant dropdown with
+        a list of available tenants, and on change of this dropdown
+        we have to update available roles.
+        get tenant list:
+        http://{{ dashboard_api}}/catalogue/tenants
+        get tenant roles: 
+        http://{{ dashboard_api}}/catalogue/tenants/674568b4584c43d19f441b996f0ce3cc
+        */
+        this.usersService.getRoles()
+        .then((items) => {
+          this.roles = items;
+          this.isCreate = true;
+          this.newUser = {
+            name: '',
+            role: '',
+            tenant: this.tenant,
+            password: '',
+          };
+        })
+        .catch(() => {
+          console.log("Error getting users");
+        });
       }
     }
 
