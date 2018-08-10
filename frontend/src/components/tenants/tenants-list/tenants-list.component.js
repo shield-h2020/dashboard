@@ -2,8 +2,8 @@ import { ipValidator } from '@/validators';
 import template from './tenants-list.html';
 
 const VIEW_STRINGS = {
-  title: 'Secaas clients',
-  tableTitle: 'Secaas clients list',
+  title: 'SecaaS clients',
+  tableTitle: 'SecaaS clients list',
   create: 'Create',
   update: 'Update',
   modalCreateTitle: 'Create client',
@@ -48,6 +48,7 @@ export const TenantsListComponent = {
         ],
       };
       this.isCreate = true;
+      this.isCreateIps = false;
 
       if (this.authService.isUserPlatformAdmin()) {
         this.headers.actions.push({
@@ -92,12 +93,11 @@ export const TenantsListComponent = {
               this.currTenant.ip = [...data.ip];
               this.currTenant.ipEtag = data.etag;
             }
-          })
-          .catch((err) => {
-            if (err === 404) {
+            else {
+              this.currTenant.ip = [];
+              this.currTenant.ipEtag = null;
               this.currTenant.prevIps = false;
             }
-            this.currTenant.ip = [];
           });
       } else {
         this.currTenant = {
@@ -146,7 +146,12 @@ export const TenantsListComponent = {
       if (this.isCreate) {
         httpPromise = this.tenantsService.createTenantAndIps(this.currTenant);
       } else {
-        httpPromise = this.tenantsService.updateTenantAndIps(this.currTenant);
+        if(this.isCreateIps) {
+          httpPromise = this.tenantsService.updateTenantAndCreateIps(this.currTenant);
+        }
+        else {
+          httpPromise = this.tenantsService.updateTenantAndIps(this.currTenant);
+        }
       }
 
       httpPromise.then(() => {

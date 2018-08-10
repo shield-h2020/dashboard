@@ -1,7 +1,7 @@
 import template from './tenant-details.html';
 
 const VIEW_STRINGS = {
-  title: 'Secaas client',
+  title: 'SecaaS client',
   tenantEntries: {
     tenant_name: 'Client name',
     description: 'Client description',

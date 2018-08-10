@@ -15,9 +15,8 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   name: 'Name',
-  tenant_name: 'Secaas client',
-  roles: 'Roles',
-  // email: 'Email',
+  tenant_name: 'SecaaS client',
+  roles: 'Role',
 
   // secaaas_client,
   // roles
@@ -72,8 +71,12 @@ export const UsersListComponent = {
 
     toggleCreate(user) {
       this.createOpen = !this.createOpen;
+      if(!this.createOpen)
+        return;
+      
       if (user) {
         this.newUser = { ...user };
+        this.newUser.password = '';
         this.newUser.tenant = this.newUser.tenant_name;
         this.roles = this.newUser.groups;
         this.isCreate = false;
