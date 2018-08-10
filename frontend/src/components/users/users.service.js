@@ -85,9 +85,15 @@ export class UsersService {
       .catch(this.errorHandleService.handleHttpError);
   }
 
-  deleteUser({ user_id, _etag }) {
+  deleteUser({ user_id, _etag, tenant_id}) {
+    const params = {}; 
+    if (!this.authService.isUserPlatformAdmin()) {
+      params.where = JSON.stringify({
+        tenant_id: this.authService.getTenant(),
+      });
+    }
     return this.http.delete(`${API_USERS}/${user_id}`, {
-      headers: { 'if-match': _etag } })
+      params, headers: { 'if-match': _etag } })
       .then(this.errorHandleService.handleHttpSuccess)
       .catch(this.errorHandleService.handleHttpError);
   }
