@@ -22,29 +22,23 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+  # TODO: Invalid Username Scenario
+  # TODO: Invalid InfluxDB
 
-Cerberus==0.9.2
-certifi==2017.4.17
-chardet==3.0.4
-click==6.7
-DateTime==4.2
-Eve==0.7.4
-Eve-Swagger==0.0.8
-Events==0.2.2
-Flask==0.12
-Flask-Cors==3.0.6
-Flask-PyMongo==0.5.1
-idna==2.5
-itsdangerous==0.24
-Jinja2==2.9.6
-MarkupSafe==0.23
-oslo.policy==1.33.1
-pymongo==3.4.0
-python3-pika==0.9.14
-PyYAML==3.12
-requests==2.18.2
-simplejson==3.11.1
-urllib3==1.22
-Werkzeug==0.11.15
-xmlschema==0.9.13
-aiohttp==3.3.2
+@smoke
+Feature: CSV Attack
+  Ensures the CSV attack data is processed and correctly stored
+
+  @smoke
+  Scenario Outline: CSV Attack request
+    Given A clean influx <measurement>
+    Given I mock the association response with <mock_file>
+    When I receive a CSV attack request with <csv_attack_file>
+    Then I expect the response code <status>
+    Then The CSV attack must be registered <in_datastore>
+    Then The CSV data must be registered <in_influx>
+
+
+    Examples:
+      | measurement | mock_file                                         | csv_attack_file              | in_datastore                            | in_influx                            | status |
+      | attack      | tenant_ips/tenant-ip-association-csv-success.json | csv_attack/High-DoS-5083.csv | csv_attack/High-DoS-5083-persisted.json | csv_attack/High-DoS-5083-influx.json | 201    |

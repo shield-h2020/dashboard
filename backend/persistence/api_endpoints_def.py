@@ -25,9 +25,10 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+from enum import Enum
+
 import api_model
 from dashboardutils import http_utils
-from enum import Enum
 
 
 class EndpointVar(object):
@@ -622,6 +623,29 @@ class Endpoint(Enum):
                           }
                       }
                   }
+
+    CYBERATTACK = {__NAME__:       'cyberattack',
+                   __URL__:        'data/cyberattack',
+                   __SCHEMA__:     api_model.cyberattack,
+                   __RESOURCE__: {
+                       __HTTP_POST__: {
+                           # TODO: Add policies for the endpoint
+                           # __POLICY__: 'cyberattack:create',
+                           __DOCS__: {
+                               'summary': 'Defines new data for a cyberattack',
+                               'description': 'Sumbites new cyberattack data in form o a CSV file.',
+                               'responses': http_utils.responses_read
+                               }
+                           },
+                       __HTTP_GET__: {
+                           __DOCS__: {
+                               'summary': 'Collect cyberattack data',
+                               'description': 'Collect cyberattack information processed.',
+                               'responses': http_utils.responses_read
+                               }
+                           }
+                       }
+                   }
 
     # NOTIFICATIONS = {__NAME__:     'notifications',
     #                  __URL__:      'notifications',

@@ -31,6 +31,7 @@ import logging
 import requests
 from dashboardutils import http_utils
 from dashboardutils.error_utils import ExceptionMessage, IssueHandling, IssueElement
+from dashboardutils.tenant_ip_utils import get_tenant_by_ip, AssociationCodeError, MultipleAssociation
 
 
 class VNSFNotificationNotPersisted(ExceptionMessage):
@@ -70,34 +71,17 @@ class VNSFNotificationPersistence:
 
         self.logger.debug("Associating IP: {}".format(ip_address))
         url = self.settings.get('association_url')
-        headers = self.settings.get('association_headers')
-
-        # Create the query string to search for the IP
-        payload = dict(where='{{"ip":"{}"}}'.format(ip_address))
 
         try:
-
-            r = requests.get(url, headers=headers, params=payload)
-
-            if r.text:
-                self.logger.debug(r.text)
-
-            if not r.status_code == http_utils.HTTP_200_OK:
-                self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['NOT_PERSISTED'],
-                                    [[url, r.status_code]])
-
-            response_data = r.json()
-            if response_data['_meta']['total'] != 1:
-                self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['ERROR'],
-                                    [[response_data['_meta']['total']]])
-
-            tenant = response_data.get('_items')[0].get('tenant_id', None)
+            tenant = get_tenant_by_ip(url, ip_address)
             self.logger.debug("IP {} belongs to Tenant {}".format(ip_address, tenant))
             return tenant
-
-        except requests.exceptions.ConnectionError as e:
-            self.logger.error('Error associating the IP at {}.'.format(url), e)
-            raise Exception
+        except MultipleAssociation as e:
+            self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['ERROR'],
+                                [[e.total_associations]])
+        except AssociationCodeError as e:
+            self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['NOT_PERSISTED'],
+                                [[url, e.status_code]])
 
     def persist(self, notification):
         url = self.settings['persist_url']

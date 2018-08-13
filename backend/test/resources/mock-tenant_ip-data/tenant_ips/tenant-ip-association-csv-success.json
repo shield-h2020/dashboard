@@ -1,0 +1,36 @@
+//! statusCode: 200
+{
+  "_items": [
+    {
+      "_id": "5b1a9a66efca14002f80f924",
+      "ip": [
+        "10.101.20.230"
+      ],
+      "tenant_id": "af09",
+      "_updated": "Fri, 08 Jun 2018 15:01:57 GMT",
+      "_created": "Fri, 08 Jun 2018 15:01:57 GMT",
+      "_etag": "f1386c5f9766af9ef4aaf0a829f15e2a3b6886d3",
+      "_links": {
+        "self": {
+          "title": "tenant ip association",
+          "href": "af09/association/5b1a9a66efca14002f80f924"
+        }
+      }
+    }
+  ],
+  "_links": {
+    "parent": {
+      "title": "home",
+      "href": "/"
+    },
+    "self": {
+      "title": "<regex(\"[a-f0-9]*\"):tenant_id>/association",
+      "href": "af09/association"
+    }
+  },
+  "_meta": {
+    "page": 1,
+    "max_results": 25,
+    "total": 1
+  }
+}

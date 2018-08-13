@@ -34,6 +34,7 @@ from dashboardutils import log
 from eve import Eve
 from eve_swagger import swagger, add_documentation
 from flask_cors import CORS
+from hooks_cyber_attack import CyberAttackHooks
 from hooks_login import LoginHooks
 from hooks_nss_inventory import NssInventoryHooks
 from hooks_tenants import TenantHooks
@@ -59,6 +60,12 @@ app.on_replace_tenant_user += TenantHooks.update_tenant_user
 
 app.on_insert_nss_inventory += NssInventoryHooks.provision_network_service
 
+#
+# Cyberattack hooks
+#
+app.on_pre_POST_cyberattack += CyberAttackHooks.parse_csv_file
+app.on_post_GET_cyberattack += CyberAttackHooks.clean_response_data
+
 app.register_blueprint(swagger)
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info
@@ -71,4 +78,4 @@ if __name__ == '__main__':
 
     # use '0.0.0.0' to ensure your REST API is reachable from all your
     # network (and not only your computer).
-    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True)
+    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True, threaded=True)

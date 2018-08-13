@@ -1,0 +1,21 @@
+{
+  "ignore": [
+    "root['_links']",
+    "root['_meta']",
+    "root['self']",
+    "root['next']",
+    "root['parent']",
+    "root['_items'][0]['_links']",
+    "root['_items'][0]['_id']",
+    "root['_items'][0]['_etag']",
+    "root['_items'][0]['_created']",
+    "root['_items'][0]['_updated']"
+  ],
+  "expected": {
+    "_items": [
+      {
+        "filename": "High-DoS-5083.csv"
+      }
+    ]
+  }
+}
