@@ -1,8 +1,13 @@
 import { TENANT_ADMIN, SUPER_ADMIN, TENANT_USER, DEVELOPER } from '../../strings/role-strings';
 
 export const MENU_ENTRIES = [
-  {
+  /*{
     text: 'Client options',
+    roles: [TENANT_ADMIN, SUPER_ADMIN, TENANT_USER],
+  },*/
+  {
+    text: 'Dashboard',
+    route: 'dashboard',
     roles: [TENANT_ADMIN, SUPER_ADMIN, TENANT_USER],
   },
   {
@@ -20,9 +25,9 @@ export const MENU_ENTRIES = [
     route: 'vnsfnotificationslist',
     roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN],
   },
-  {
+  /*{
     text: 'Global options',
-  },
+  },*/
   {
     text: 'SecaaS Client Management',
     route: 'tenantslist',
