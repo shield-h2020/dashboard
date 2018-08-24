@@ -1,0 +1,50 @@
+{
+    "results": [
+        {
+            "statement_id": 0,
+            "series": [
+                {
+                    "name": "attack",
+                    "columns": [
+                        "time",
+                        "attack_type",
+                        "csv_id",
+                        "d_port",
+                        "dst_ip",
+                        "duration",
+                        "in_bytes",
+                        "in_pkt",
+                        "out_bytes",
+                        "out_pkts",
+                        "protocol",
+                        "s_port",
+                        "score",
+                        "severity",
+                        "src_ip",
+                        "tenant"
+                    ],
+                    "values": [
+                        [
+                            "2018-08-14T18:18:46Z",
+                            "Slowloris",
+                            "0001",
+                            "3412",
+                            "10.101.30.60",
+                            "0",
+                            "40",
+                            "1",
+                            "0",
+                            "0",
+                            "TCP",
+                            "443",
+                            "0.000300027351243",
+                            "High",
+                            "67.195.83.30",
+                            "af09"
+                        ]
+                    ]
+                }
+            ]
+        }
+    ]
+}

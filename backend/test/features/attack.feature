@@ -29,16 +29,16 @@
 Feature: CSV Attack
   Ensures the CSV attack data is processed and correctly stored
 
+  Background: Ensure the environment is up and running
+    Given The Recommendations Queue is ready
+
   @smoke
-  Scenario Outline: CSV Attack request
+  Scenario Outline: Attack message
     Given A clean influx <measurement>
     Given I mock the association response with <mock_file>
-    When I receive a CSV attack request with <csv_attack_file>
-    Then I expect the response code <status>
-    Then The CSV attack must be registered <in_datastore>
-    Then The CSV data must be registered <in_influx>
-
+    When I receive an attack message with <attack_message>
+    Then The attack message must be stored <in_influx>
 
     Examples:
-      | measurement | mock_file                                         | csv_attack_file              | in_datastore                            | in_influx                            | status |
-      | attack      | tenant_ips/tenant-ip-association-csv-success.json | csv_attack/High-DoS-5083.csv | csv_attack/High-DoS-5083-persisted.json | csv_attack/High-DoS-5083-influx.json | 201    |
+      | measurement | mock_file                                         | attack_message               | in_influx                     |
+      | attack      | tenant_ips/tenant-ip-association-csv-success.json | attack/Slowloris_message.txt | attack/Slowloris_message.json |

@@ -28,6 +28,7 @@
 import os
 import re
 
+from dashboardtestingutils.steps_rmsq import *
 from dashboardtestingutils.steps_utils import http_get, http_post_file, matches_json_file, http_post_json
 from radish import when, world, then, given
 from requests.auth import HTTPBasicAuth
@@ -45,26 +46,16 @@ def clean_influx_db(step, measurement):
     http_post_json(step, world.endpoints['influx_query'], auth=auth, params=params)
 
 
-@when(re.compile(u'I receive a CSV attack request with (.*)'))
-def csv_attack_request(step, csv_file):
-    """
-    Request to register a new attack CSV file
-    """
-    csv_path = os.path.join(os.path.join(world.env['data']['input_data']), csv_file)
-    with open(csv_path, 'rb') as _csv_file:
-        http_post_file(step, world.endpoints['cyberattack_data'], {'file': _csv_file})
+@when(re.compile(u'I receive an attack message with (.*)'))
+def csv_attack_request(step, attack_message):
+    send_notification(
+            os.path.join(world.env['data']['input_data']),
+            world.my_context['msgq_channel'], world.env['hosts']['attack_msg_q']['exchange'],
+            world.env['hosts']['attack_msg_q']['topic'], attack_message)
 
 
-@then(re.compile(u'The CSV attack must be registered (.*)'))
-def csv_attack_response(step, persisted_data):
-    """
-    Check the attack response
-    """
-    http_get(step, world.endpoints['cyberattack_data'])
-    matches_json_file(step, persisted_data)
 
-
-@then(re.compile(u'The CSV data must be registered (.*)'))
+@then(re.compile(u'The attack message must be stored (.*)'))
 def csv_attack_influx_data(step, persisted_data):
     """
     Check the data is stored on the database
@@ -72,8 +63,8 @@ def csv_attack_influx_data(step, persisted_data):
     auth = HTTPBasicAuth(world.env['hosts']['influxdb']['username'], world.env['hosts']['influxdb']['password'])
     params = {
         'db': 'cyberattack',
-        'q': 'SELECT * FROM "attack" WHERE time > \'2017-10-24T00:00:00.000Z\''
-             'AND time < \'2018-10-25T00:00:00.000Z\'',
+        'q': 'SELECT * FROM "attack" WHERE time > \'2018-01-01T00:00:00.000Z\''
+             'AND time < \'2018-12-31T00:00:00.000Z\'',
         'pretty': 'true'
     }
 

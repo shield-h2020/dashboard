@@ -95,6 +95,8 @@ services:
           - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
         ports:
           - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
+        labels:
+          - "project=${CNTR_PROJECT}"
 
     ${CNTR_CHRONOGRAF}:
         image: chronograf:1.5
@@ -103,15 +105,19 @@ services:
         command: --influxdb-url=${INFLUXDB_PROTOCOL}://${CNTR_INFLUX}:${INFLUXDB_PORT} --influxdb-username=${INFLUXDB_ADMIN_USER} --influxdb-password=${INFLUXDB_ADMIN_PASSWORD} --kapacitor-url=http://${CNTR_KAPACITOR}:9092 --kapacitor-username=${KAPACITOR_USER} --kapacitor-password=${KAPACITOR_USER_PASSWORD}
         ports:
           - "4000:8888"
+        labels:
+          - "project=${CNTR_PROJECT}"
 
     ${CNTR_KAPACITOR}:
-        image: kapacitor:1.4.1
+       image: kapacitor:1.4.1
         env_file:
           - ${ENV_FILE}
         volumes:
           - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
         ports:
           - "9092:9092"
+        labels:
+          - "project=${CNTR_PROJECT}"
 
     # Dashboard API.
     ${CNTR_DASHBOARD_API}:

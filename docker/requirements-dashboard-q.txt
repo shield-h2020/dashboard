@@ -43,3 +43,4 @@ urllib3==1.22
 xmlschema==0.9.12
 zope.interface==4.4.3
 cerberus==1.2
+influxdb==5.2.0

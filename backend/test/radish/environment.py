@@ -52,6 +52,13 @@ world.env = {
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
             'topic':         os.environ['MSGQ_VNSF_TOPIC']
             },
+        'attack_msg_q': {
+            'host': os.environ['MSGQ_HOST'],
+            'port': int(os.environ['MSGQ_PORT']),
+            'exchange': os.environ['MSGQ_EXCHANGE_DASHBOARD'],
+            'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
+            'topic': os.environ['MSGQ_CSV_TOPIC']
+        },
         'socket_server': {
             'host': 'ws://{}:{}'.format(os.environ['SKT_HOST'],
                                         os.environ['SKT_PORT'])

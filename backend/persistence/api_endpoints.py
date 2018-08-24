@@ -103,21 +103,6 @@ first resource, and the schema and datasource settings are defined to use the sa
 definition.  
 """
 
-
-cyberattack = {
-    'item_title':         EndpointHelper.get_name(Endpoint.CYBERATTACK),
-    'url':                EndpointHelper.get_url(Endpoint.CYBERATTACK),
-    #'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.CYBERATTACK),
-    'resource_methods':   ['GET', 'POST'],
-    'item_methods':       ['GET', 'DELETE', 'PUT'],
-
-    'schema':             EndpointHelper.get_schema(Endpoint.CYBERATTACK),
-
-    # TODO remove once inter-component authentication is in place.
-    'public_methods': ['POST', 'GET'],
-    'public_item_methods': ['GET', 'DELETE', 'PUT']
-    }
-
 login = {
     'item_title':            'login',
     'description':           'Authentication & Authorization',
