@@ -109,7 +109,7 @@ services:
           - "project=${CNTR_PROJECT}"
 
     ${CNTR_KAPACITOR}:
-       image: kapacitor:1.4.1
+        image: kapacitor:1.4.1
         env_file:
           - ${ENV_FILE}
         volumes:

@@ -57,7 +57,7 @@ world.env = {
             'port': int(os.environ['MSGQ_PORT']),
             'exchange': os.environ['MSGQ_EXCHANGE_DASHBOARD'],
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
-            'topic': os.environ['MSGQ_CSV_TOPIC']
+            'topic': os.environ['MSGQ_ATTACK_TOPIC']
         },
         'socket_server': {
             'host': 'ws://{}:{}'.format(os.environ['SKT_HOST'],
@@ -166,8 +166,6 @@ world.endpoints = {
             world.env['hosts']['backend_api']['host'], 'notifications'),
 
     'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations'),
-    'cyberattack_data':           f"{world.env['hosts']['backend_api']['host']}/data/cyberattack"
-                                  f"?sort=[('_updated',-1)]&max_results=1",
     'influx_query':               f"{world.env['hosts']['influxdb']['host']}/query"
 
     }
