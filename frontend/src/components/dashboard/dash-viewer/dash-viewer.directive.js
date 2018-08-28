@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { PIE_DATA_EVENT, LINE_CHART_DATA_EVENT} from './dash-event-strings';
 
 export const DashViewerDirective = () => {
 
@@ -28,21 +29,32 @@ export const DashViewerDirective = () => {
             .append('svg')
             .attr('width', svgWidth)
             .attr('height', svgHeight);
-
-            drawPieChart();
-            //drawLineChart()
-            drawBarChart();
+        
+        setWatchers(scope, svg);
+        //drawPieChart();
+        //drawLineChart()
+        drawBarChart();
     }
 
-    function drawPieChart() {
 
+    function setWatchers(scope, svg) {
+
+        scope.$on(PIE_DATA_EVENT.EMIT, (event, data) => {
+
+            drawPieChart(data);
+        });
+    }
+
+    function drawPieChart(data) {
+
+        var pieData = data.data.items;
         var g = svg.append("g").
             attr("transform", "translate(" + pieWidth / 2 + "," + pieHeight / 2 + ")");
 
         var radius = Math.min(pieWidth, pieHeight) / 2;
         var pie = d3.pie()
             .sort(null)
-            .value(function(simData) {return simData.population; });
+            .value(function(pieData) {return pieData.total; });
 
         var path = d3.arc()
             .outerRadius(radius - 10)
@@ -53,18 +65,18 @@ export const DashViewerDirective = () => {
             .innerRadius(radius - 40);
 
         var arc = g.selectAll(".arc")
-        .data(pie(simData))
+        .data(pie(pieData))
         .enter().append("g")
             .attr("class", "arc");
     
         arc.append("path")
             .attr("d", path)
-            .attr("fill", function(d) { return color(d.data.age); });
+            .attr("fill", function(d) { return color(d.data.type); });
     
         arc.append("text")
             .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
             .attr("dy", "0.35em")
-            .text(function(d) {return d.data.age; });
+            .text(function(d) {return d.data.type; });
     }
 
     function drawBarChart() {
@@ -106,33 +118,9 @@ export const DashViewerDirective = () => {
 
     function drawLineChart() {
 
-        tempImportDrawLineChart();
-    }
-
-    function tempImportDrawLineChart() {
-
-        d3.tsv("data.tsv", type, function(error, data) {
-            if (error) throw error;
-            
-            console.log(data);
-            /*var cities = data.columns.slice(1).map(function(id) {
-              return {
-                id: id,
-                values: data.map(function(d) {
-                  return {date: d.date, temperature: d[id]};
-                })
-              };
-            });*/
-        });
-    }
-
-    function type(d, _, columns) {
-        d.date = parseTime(d.date);
-        for (var i = 1, n = columns.length, c; i < n; ++i) d[c = columns[i]] = +d[c];
         
-        return d;
     }
-
+    
     return {
         restrict: 'A',
         link(scope, element) {
