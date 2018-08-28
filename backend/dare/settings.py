@@ -54,6 +54,12 @@ MSGQ_VNSF = os.environ.get('MSGQ_VNSF', '__no_VNSF_queue_set__')
 MSGQ_VNSF_ACK = bool(os.environ.get('MSGQ_VNSF_ACK', False))
 MSGQ_VNSF_TOPIC = os.environ.get('MSGQ_VNSF_TOPIC', 'shield.notifications.vnsf')
 
+
+# CSV attack message queue settings
+MSGQ_ATTACK = os.environ.get('MSGQ_ATTACK', '__no_CSV_queue_set__')
+MSGQ_ATTACK_ACK = bool(os.environ.get('MSGQ_ATTACK_ACK', True))
+MSGQ_ATTACK_TOPIC = os.environ.get('MSGQ_ATTACK_TOPIC', 'shield.notifications.csv')
+
 ###
 #   Websocket
 ###
@@ -113,8 +119,23 @@ __association_rest__ = {
 ASSOCIATION_API_URL = __association_rest__['association']['url']
 ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
 
+
 ###
 #   Schemas
 ###
 
 POLICYSCHEMA_FILE = 'schema/mspl.xsd'
+
+###
+# InfluxDB variables
+###
+
+INFLUXDB_PROTOCOL = os.environ.get('INFLUXDB_PROTOCOL', 'http')
+INFLUXDB_HOST = os.environ.get('INFLUXDB_HOST', 'influx-persistence')
+INFLUXDB_PORT = os.environ.get('INFLUXDB_PORT', 8086)
+INFLUXDB_USER = os.environ.get('INFLUXDB_USER', '')
+INFLUXDB_USER_PASSWORD = os.environ.get('INFLUXDB_USER_PASSWORD', '')
+INFLUXDB_DB = os.environ.get('INFLUXDB_DB', '')
+INFLUXDB_URL = f'{INFLUXDB_PROTOCOL}://{INFLUXDB_HOST}:{INFLUXDB_PORT}/write?db={INFLUXDB_DB}'
+INFLUXDB_BATCH_SIZE = 7500
+INFLUXDB_REQUEST_TIMEOUT = 10

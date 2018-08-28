@@ -406,12 +406,3 @@ tenant_ip_association = {
         "required": True
         }
     }
-
-cyberattack = {
-    "file": {
-        "type": "media"
-        },
-    "filename": {
-        "type": "string"
-        }
-    }

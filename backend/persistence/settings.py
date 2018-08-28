@@ -48,16 +48,6 @@ AAA_SVC_ADMIN_SCOPE = os.environ.get('AAA_SVC_ADMIN_SCOPE', '__missing_svc_scope
 AAA_SVC_ADMIN_USER = os.environ.get('AAA_SCV_ADMIN_USER', '__missing_svc_admin_user__')
 AAA_SVC_ADMIN_PASS = os.environ.get('AAA_SCV_ADMIN_PASS', '__missing_svc_admin_user__')
 
-INFLUXDB_PROTOCOL = os.environ.get('INFLUXDB_PROTOCOL', 'http')
-INFLUXDB_HOST = os.environ.get('INFLUXDB_HOST', 'influx-persistence')
-INFLUXDB_PORT = os.environ.get('INFLUXDB_PORT', 8086)
-INFLUXDB_USER = os.environ.get('INFLUXDB_USER', '')
-INFLUXDB_USER_PASSWORD = os.environ.get('INFLUXDB_USER_PASSWORD', '')
-INFLUXDB_DB = os.environ.get('INFLUXDB_DB', '')
-INFLUXDB_URL = f'{INFLUXDB_PROTOCOL}://{INFLUXDB_HOST}:{INFLUXDB_PORT}/write?db={INFLUXDB_DB}'
-INFLUXDB_BATCH_SIZE = 500
-INFLUXDB_REQUEST_TIMEOUT = 10
-
 
 # NOTE: this shall be removed once AAA is in place.
 VNSFO_TENANT_ID = os.environ.get('VNSFO_TENANT_ID', '__no_tenant_set__')
@@ -106,7 +96,6 @@ DOMAIN = {
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,
     'tenant_ips':             api_endpoints.tenant_ip_association,
-    'cyberattack':            api_endpoints.cyberattack
     }
 
 
