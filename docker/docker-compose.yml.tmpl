@@ -108,16 +108,16 @@ services:
         labels:
           - "project=${CNTR_PROJECT}"
 
-    ${CNTR_KAPACITOR}:
-        image: kapacitor:1.4.1
-        env_file:
-          - ${ENV_FILE}
-        volumes:
-          - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
-        ports:
-          - "9092:9092"
-        labels:
-          - "project=${CNTR_PROJECT}"
+    #${CNTR_KAPACITOR}:
+    #    image: kapacitor:1.4.1
+    #    env_file:
+    #      - ${ENV_FILE}
+    #    volumes:
+    #      - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
+    #    ports:
+    #      - "9092:9092"
+    #    labels:
+    #      - "project=${CNTR_PROJECT}"
 
     # Dashboard API.
     ${CNTR_DASHBOARD_API}:

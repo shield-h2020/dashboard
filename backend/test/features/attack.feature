@@ -38,6 +38,7 @@ Feature: CSV Attack
     Given I mock the association response with <mock_file>
     When I receive an attack message with <attack_message>
     Then The attack message must be stored <in_influx>
+    Then A clean influx <measurement>
 
     Examples:
       | measurement | mock_file                                         | attack_message               | in_influx                     |
