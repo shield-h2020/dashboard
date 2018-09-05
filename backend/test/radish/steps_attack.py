@@ -29,12 +29,21 @@ import os
 import re
 
 from dashboardtestingutils.steps_rmsq import *
-from dashboardtestingutils.steps_utils import http_get, http_post_file, matches_json_file, http_post_json
+from dashboardtestingutils.steps_utils import http_get, matches_json_file, http_post_json
 from radish import when, world, then, given
 from requests.auth import HTTPBasicAuth
 
 
 @given(re.compile(u'A clean influx (.*)'))
+def given_clean_db(step, measurement):
+    clean_influx_db(step, measurement)
+
+
+@then(re.compile(u'A clean influx (.*)'))
+def then_clean_db(step, measurement):
+    clean_influx_db(step, measurement)
+
+
 def clean_influx_db(step, measurement):
     auth = HTTPBasicAuth(world.env['hosts']['influxdb']['admin_username'],
                          world.env['hosts']['influxdb']['admin_password'])
@@ -49,10 +58,9 @@ def clean_influx_db(step, measurement):
 @when(re.compile(u'I receive an attack message with (.*)'))
 def csv_attack_request(step, attack_message):
     send_notification(
-            os.path.join(world.env['data']['input_data']),
-            world.my_context['msgq_channel'], world.env['hosts']['attack_msg_q']['exchange'],
-            world.env['hosts']['attack_msg_q']['topic'], attack_message)
-
+        os.path.join(world.env['data']['input_data']),
+        world.my_context['msgq_channel'], world.env['hosts']['attack_msg_q']['exchange'],
+        world.env['hosts']['attack_msg_q']['topic'], attack_message)
 
 
 @then(re.compile(u'The attack message must be stored (.*)'))
