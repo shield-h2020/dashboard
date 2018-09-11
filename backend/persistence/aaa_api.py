@@ -123,3 +123,7 @@ class AaaApi(metaclass=ABCMeta):
     @abstractmethod
     def create_tenant_user(self, tenant_id, user_data):
         raise NotImplementedError
+
+    @abstractmethod
+    def update_tenant_user(self, tenant_id, user_data):
+        raise NotImplementedError

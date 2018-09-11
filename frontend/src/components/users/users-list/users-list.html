@@ -59,7 +59,7 @@
       </div>
       <div ng-if="$ctrl.isSuperAdmin()" class="col-xs-12">
         <sn-select
-          label="'Secaas client'"
+          label="'SecaaS client'"
           options="$ctrl.tenantsOptions"
           on-change="$ctrl.setNewUser('tenant', $event.value)"
           selected="$ctrl.newUser.tenant"
@@ -67,7 +67,7 @@
       </div>
       <div class="col-xs-12">
         <sn-input
-          field-label="{{'Secaas client'}}"
+          field-label="{{'SecaaS client'}}"
           field-disabled="true"
           field-value="$ctrl.newUser.tenant"
           on-change="$ctrl.setNewUser('tenant', $event.value)"

@@ -22,25 +22,24 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+  # TODO: Invalid Username Scenario
+  # TODO: Invalid InfluxDB
 
-certifi==2017.7.27.1
-chardet==3.0.4
-click==6.7
-DateTime==4.2
-enum-compat==0.0.2
-idna==2.6
-itsdangerous==0.24
-Jinja2==2.9.6
-MarkupSafe==1.0
-python3-pika==0.9.14
-pytz==2017.2
-PyYAML==3.12
-requests==2.18.4
-six==1.10.0
-tornado==4.5.2
-Werkzeug==0.11.15
-urllib3==1.22
-xmlschema==0.9.12
-zope.interface==4.4.3
-cerberus==1.2
-influxdb==5.2.0
+@smoke
+Feature: CSV Attack
+  Ensures the CSV attack data is processed and correctly stored
+
+  Background: Ensure the environment is up and running
+    Given The Recommendations Queue is ready
+
+  @smoke
+  Scenario Outline: Attack message
+    Given A clean influx <measurement>
+    Given I mock the association response with <mock_file>
+    When I receive an attack message with <attack_message>
+    Then The attack message must be stored <in_influx>
+    Then A clean influx <measurement>
+
+    Examples:
+      | measurement | mock_file                                         | attack_message               | in_influx                     |
+      | attack      | tenant_ips/tenant-ip-association-csv-success.json | attack/Slowloris_message.txt | attack/Slowloris_message.json |

@@ -14,6 +14,8 @@ import { VNSFCatalogueModule } from './vnsfs-catalogue/vnsfs-catalogue.module';
 import { ModalModule } from './modal2/modal.module';
 import { FooterModule } from './footer/footer.module';
 import { UsersModule } from './users/users.module';
+import { DashViewerModule } from './dashboard/dash-viewer/dash-viewer.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
@@ -38,6 +40,8 @@ export const ComponentsModule = angular.module('root.components', [
   ModalModule,
   FooterModule,
   UsersModule,
+  DashViewerModule,
+  DashboardModule,
   TenantsModule,
   Table2Module,
   CatalogueModule,

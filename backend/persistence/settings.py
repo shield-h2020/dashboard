@@ -97,3 +97,21 @@ DOMAIN = {
     'tenant_ips':             api_endpoints.tenant_ip_association,
     'tenant_vnsfs':           api_endpoints.tenant_vnsf_association
     }
+
+
+###
+#   Association Tenant IP
+###
+
+TENANT_IP_PROTOCOL = os.environ.get('TENANT_IP_PROTOCOL', None)
+TENANT_IP_HOST = os.environ.get('TENANT_IP_HOST', 'localhost')
+TENANT_IP_PORT = os.environ.get('TENANT_IP_PORT', -1)
+TENANT_IP_URL = '{}://{}:{}'.format(TENANT_IP_PROTOCOL, TENANT_IP_HOST, TENANT_IP_PORT)
+
+__association_rest__ = {
+    'association': {
+        'url':     '{}/{}'.format(TENANT_IP_URL, 'tenant_ips')
+        }
+    }
+
+ASSOCIATION_API_URL = __association_rest__['association']['url']

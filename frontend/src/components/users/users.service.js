@@ -32,11 +32,12 @@ export class UsersService {
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
 
     if (!this.authService.isUserPlatformAdmin()) {
+      
       params.where = JSON.stringify({
         tenant_id: this.authService.getTenant(),
       });
     }
-
+    
     return this.http.get(API_USERS, { params })
       .then((response) => {
         const promises = [];
@@ -46,7 +47,7 @@ export class UsersService {
             .then(tInfo => ({
               ..._items[i],
               ...tInfo,
-              roles: tInfo.groups.map(g => g.text).join(', '),
+              roles: tInfo.groups.find(g => g.value == _items[i].group_id).text,
             })));
         }
         return this.q.all(promises).then(values => values);
@@ -84,9 +85,15 @@ export class UsersService {
       .catch(this.errorHandleService.handleHttpError);
   }
 
-  deleteUser({ user_id, _etag }) {
+  deleteUser({ user_id, _etag, tenant_id}) {
+    const params = {}; 
+    if (!this.authService.isUserPlatformAdmin()) {
+      params.where = JSON.stringify({
+        tenant_id: this.authService.getTenant(),
+      });
+    }
     return this.http.delete(`${API_USERS}/${user_id}`, {
-      headers: { 'if-match': _etag } })
+      params, headers: { 'if-match': _etag } })
       .then(this.errorHandleService.handleHttpSuccess)
       .catch(this.errorHandleService.handleHttpError);
   }

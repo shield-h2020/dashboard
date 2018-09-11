@@ -13,11 +13,11 @@ const STRINGS = {
 
 const TOAST_STRINGS = {
   UPDATE_SUCCESS_TENANT: {
-    TITLE: 'Secaas client updated',
+    TITLE: 'SecaaS client updated',
     MESSAGE: 'Client updated successfully',
   },
   CREATE_SUCCESS_TENANT: {
-    TITLE: 'Secaas client created',
+    TITLE: 'SecaaS client created',
     MESSAGE: 'Client created successfully',
   },
   CREATE_SUCCESS_IP: {
@@ -137,9 +137,14 @@ export class TenantsService {
   }
 
   getTenantIps(tenantId) {
-    return this.http.get(`${API_TENANT_IPS}/${tenantId}`)
+    const params = { nocache: (new Date()).getTime() };
+    return this.http.get(`${API_TENANT_IPS}/${tenantId}`,{params})
       .then(response => ({ ip: response.data.ip, etag: response.data._etag }))
-      .catch(this.errorHandleService.handleHttpError);
+      .catch(response => {
+        
+          if(response.status != 404)
+            this.errorHandleService.handleHttpError(response);
+        });
   }
 
   getScopeId(scopeCode) {

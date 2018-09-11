@@ -3,6 +3,8 @@
 * If a development build is made the HOST is given by variable replacement.
 * Else the HOST is read from the window's location.
 */
+
+//CURRENTLY ONLY USED BY VNSF-CATALOGUE SERVICE**********************
 const BACKEND_HOST = window.location.hostname;
 const ADDRESS = __API_URL__ || BACKEND_HOST;
 const SOCKET_URL = BACKEND_HOST;

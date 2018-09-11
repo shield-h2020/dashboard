@@ -25,9 +25,10 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+from enum import Enum
+
 import api_model
 from dashboardutils import http_utils
-from enum import Enum
 
 
 class EndpointVar(object):

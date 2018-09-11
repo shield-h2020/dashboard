@@ -35,7 +35,10 @@ world.env = {
             'host': '{}://{}:{}'.format(os.environ['BACKENDAPI_PROTOCOL'], os.environ['BACKENDAPI_HOST'],
                                         os.environ['BACKENDAPI_PORT'])
             },
-
+        'tenant_ip_api': {
+            'host': '{}://{}:{}'.format(os.environ['TENANT_IP_PROTOCOL'], os.environ['TENANT_IP_HOST'],
+                                        os.environ['TENANT_IP_PORT'])
+            },
         'msg_q':         {
             'host':          os.environ['MSGQ_HOST'],
             'port':          int(os.environ['MSGQ_PORT']),
@@ -57,6 +60,13 @@ world.env = {
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
             'topic':         os.environ['MSGQ_TM_TOPIC']
             },
+        'attack_msg_q': {
+            'host': os.environ['MSGQ_HOST'],
+            'port': int(os.environ['MSGQ_PORT']),
+            'exchange': os.environ['MSGQ_EXCHANGE_DASHBOARD'],
+            'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
+            'topic': os.environ['MSGQ_ATTACK_TOPIC']
+            },
         'socket_server': {
             'host': 'ws://{}:{}'.format(os.environ['SKT_HOST'],
                                         os.environ['SKT_PORT'])
@@ -72,6 +82,14 @@ world.env = {
             'svc_admin_user':  os.environ['AAA_SCV_ADMIN_USER'],
             'svc_admin_pass':  os.environ['AAA_SCV_ADMIN_PASS']
             },
+        'influxdb':           {
+            'host':            f"{os.environ['INFLUXDB_PROTOCOL']}://{os.environ['INFLUXDB_HOST']}:{os.environ['INFLUXDB_PORT']}",
+            'admin_username':  os.environ.get('INFLUXDB_ADMIN_USER'),
+            'username':        os.environ.get('INFLUXDB_USER'),
+            'admin_password':  os.environ.get('INFLUXDB_ADMIN_PASSWORD'),
+            'password':        os.environ.get('INFLUXDB_USER_PASSWORD')
+            }
+
         },
     'data':  {
         'input_data':      os.environ['FOLDER_TESTS_INPUT_DATA'],
@@ -163,8 +181,8 @@ world.endpoints = {
     'tm_notifications_latest':    '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "TRUST_MONITOR"}}&xpto="{}"'.format(
             world.env['hosts']['backend_api']['host'], 'notifications', datetime.now()),
 
-    'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations')
-
+    'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations'),
+    'influx_query':               f"{world.env['hosts']['influxdb']['host']}/query"
     }
 
 world.sockets_endpoints = {

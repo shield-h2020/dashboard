@@ -55,6 +55,7 @@ app.on_insert_tenants_catalogue += TenantHooks.create_tenant
 app.on_delete_resource_tenants_catalogue_delete += TenantHooks.remove_tenant
 
 app.on_insert_tenant_users_catalogue += TenantHooks.create_tenant_user
+app.on_replace_tenant_user += TenantHooks.update_tenant_user
 
 app.on_insert_nss_inventory += NssInventoryHooks.provision_network_service
 
@@ -70,4 +71,4 @@ if __name__ == '__main__':
 
     # use '0.0.0.0' to ensure your REST API is reachable from all your
     # network (and not only your computer).
-    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True)
+    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True, threaded=True)

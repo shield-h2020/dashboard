@@ -28,6 +28,7 @@
 import logging
 
 import settings as cfg
+from dashboarddare.attack_processor import AttackProcessor
 from dashboarddare.dare_policy_q import DarePolicyQ
 from dashboarddare.socket_policy import PolicySocket
 from dashboarddare.socket_server import TornadoSocketServer
@@ -74,6 +75,18 @@ tm_queue_settings = {
     'topic':         cfg.MSGQ_TM_TOPIC,
 }
 
+attack_queue_settings = {
+    'host':          cfg.MSGQ_HOST,
+    'port':          cfg.MSGQ_PORT,
+    'user':          'guest',
+    'pass':          'guest',
+    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
+    'queue':         cfg.MSGQ_ATTACK,
+    'queue_ack':     cfg.MSGQ_ATTACK_ACK,
+    'topic':         cfg.MSGQ_ATTACK_TOPIC
+    }
+
 dashboard_socket_settings = {
     'port': cfg.SKT_PORT
     }
@@ -112,5 +125,8 @@ if __name__ == '__main__':
     manager_tm_notifications = PipeManager()
     TMNotification(tm_queue_settings, manager_tm_notifications)
     tm_socket = TMSocket(manager_tm_notifications)
+
+    manager_csv = PipeManager()
+    AttackProcessor(attack_queue_settings, manager_csv)
 
     TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket, tm=tm_socket)

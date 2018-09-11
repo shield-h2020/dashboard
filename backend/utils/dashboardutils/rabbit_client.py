@@ -5,6 +5,8 @@ import time
 
 import pika
 
+logger = logging.getLogger(__name__)
+
 
 class RabbitAsyncConsumer:
     """
@@ -84,7 +86,9 @@ class RabbitAsyncConsumer:
 
     def reconnect(self):
         self.logger.info('reconnecting')
-        self._connection.ioloop.stop();
+
+        if self._connection:
+            self._connection.ioloop.stop()
 
         if not self._closing:
             self._connection = self.connect()
@@ -132,7 +136,7 @@ class RabbitAsyncConsumer:
 
     def setup_queue(self):
         self.logger.info('setting up queue')
-        self._channel.queue_declare(self.on_queue_declareok, self._queue)
+        self._channel.queue_declare(self.on_queue_declareok, self._queue, durable=True)
 
     def on_queue_declareok(self, frame):
         self.logger.info('binding queue')
