@@ -13,13 +13,13 @@
   __API_SOCKET_PORT__
 */
 const BACKEND_HOST = window.location.hostname;
-const API_PORT = __API_PORT__ || 13030;
+const API_PORT = __API_PORT__ || 3030;
 const SOCKET_PORT = __API_SOCKET_PORT__ || 9092;
 const STORE_PORT = __API_STORE_PORT__ || 6060;
 
-const API_URL = `http://${__API_URL__ || BACKEND_HOST}`;
-const SOCKET_URL = `ws://${BACKEND_HOST || 'localhost'}`;
-const STORE_URL = `http://${__API_STORE_HOST__ || 'localhost'}`;
+const API_URL = `http://${'192.168.1.3' || BACKEND_HOST}`;
+const SOCKET_URL = `ws://${BACKEND_HOST || '192.168.1.3'}`;
+const STORE_URL = `http://${__API_STORE_HOST__ || '192.168.1.3'}`;
 
 export const AUTH_ADDRESS = `${API_URL}:${API_PORT}`;
 export const API_ADDRESS = `${API_URL}:${API_PORT}`;
