@@ -1,5 +1,25 @@
 {
-  "event": {
-    "vnsf_instance_id": "cirros_vnf_inst_1"
-  }
+    "hosts": [
+        {
+            "node": "nfvi-node",
+            "status": 0,
+            "driver": "OAT",
+            "extra_info": {
+                "n_digests_valid": 336,
+                "n_packages_valid": 105,
+                "list_digests_fake_lib": [],
+                "n_packages_not_security": 0,
+                "n_packages_unknown": 0,
+                "n_packages_security": 0,
+                "list_digests_not_found": [],
+                "n_digests_not_found": 0,
+                "n_digests_fake_lib": 0
+            },
+            "trust": true,
+            "vnsfs": []
+        }
+    ],
+    "sdn": [],
+    "trust": true,
+    "vtime": 1536591227154
 }

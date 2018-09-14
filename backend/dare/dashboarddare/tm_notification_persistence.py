@@ -74,7 +74,6 @@ class TMNotificationPersistence:
 
         # Create the query string to search for the vNSF instance
         payload = dict(where='{{"vnsf_instances":"{}"}}'.format(instance_id))
-
         try:
             r = requests.get(url, headers=headers, params=payload)
 
@@ -104,7 +103,10 @@ class TMNotificationPersistence:
 
         try:
             # Associate IP with tenants
-            tenant = self.__associate_vnsf_instance__(notification.get('event').get('vnsf_instance_id'))
+
+            print("############### ", notification.get('hosts'))
+
+            tenant = self.__associate_vnsf_instance__(notification.get('hosts')[0].get('node'))
 
             notification_to_persist = dict()
             notification_to_persist['tenant_id'] = tenant

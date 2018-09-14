@@ -101,11 +101,11 @@ class TMNotification(PipeProducer):
         notification_persistence = TMNotificationPersistence(config)
 
         notifications = json.loads(body)
-        v = Validator(tm_notification)
+        #v = Validator(tm_notification)  ## TODO skip validation for now, TM notification schema not well defined
 
         for notification in notifications:
-            if not v.validate(notification):
-                self.logger.error('Error validating notification {}'.format(pprint(v.errors)))
+            #if not v.validate(notification):
+            #    self.logger.error('Error validating notification {}'.format(pprint(v.errors)))
             tenant = notification_persistence.persist(notification)
             if tenant:
                 self.logger.debug('Sending Notification: {}'.format(pprint(notification)))
