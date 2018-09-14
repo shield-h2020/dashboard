@@ -27,6 +27,7 @@
 
 import os
 import re
+import time
 
 from dashboardtestingutils.steps_rmsq import *
 from dashboardtestingutils.steps_utils import http_get, matches_json_file, http_post_json
@@ -57,10 +58,14 @@ def clean_influx_db(step, measurement):
 
 @when(re.compile(u'I receive an attack message with (.*)'))
 def csv_attack_request(step, attack_message):
-    send_notification(
-        os.path.join(world.env['data']['input_data']),
-        world.my_context['msgq_channel'], world.env['hosts']['attack_msg_q']['exchange'],
-        world.env['hosts']['attack_msg_q']['topic'], attack_message)
+    # This function uses hardcoded rmq sender because it uses tests with multiple lines
+    # and within the steps_rmsq.py the lines are not being read correctly.
+    with open(os.path.join(os.path.join(world.env['data']['input_data']), attack_message), 'r') as file:
+        for msg in file:
+            world.my_context['msgq_channel'].basic_publish(exchange=world.env['hosts']['attack_msg_q']['exchange'],
+                                                           routing_key=world.env['hosts']['attack_msg_q']['topic'],
+                                                           body=msg)
+            time.sleep(3)
 
 
 @then(re.compile(u'The attack message must be stored (.*)'))
@@ -71,7 +76,7 @@ def csv_attack_influx_data(step, persisted_data):
     auth = HTTPBasicAuth(world.env['hosts']['influxdb']['username'], world.env['hosts']['influxdb']['password'])
     params = {
         'db': 'cyberattack',
-        'q': 'SELECT * FROM "attack" WHERE time > \'2018-01-01T00:00:00.000Z\''
+        'q': 'SELECT Count("duration") FROM "attack" WHERE time > \'2018-01-01T00:00:00.000Z\''
              'AND time < \'2018-12-31T00:00:00.000Z\'',
         'pretty': 'true'
     }

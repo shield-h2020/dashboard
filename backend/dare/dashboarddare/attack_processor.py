@@ -25,6 +25,7 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 import logging
+from random import randint
 from datetime import datetime, timezone
 from threading import Thread
 
@@ -53,8 +54,8 @@ class AttackProcessor(PipeProducer):
             "seconds", "duration", "src_ip", "dst_ip", "s_port", "d_port", "protocol", "in_pkt", "in_bytes",
             "out_pkts", "out_bytes", "score"
         ],
-        "tag_indexes": [2, 12],
-        "field_indexes": [0, 1, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20],
+        "tag_indexes": [1, 2, 12, 15],
+        "field_indexes": [0, 10, 11, 13, 14, 16, 17, 18, 19, 20],
         "time_index": 3,
         "tenant_index": 12
     }
@@ -151,4 +152,6 @@ class AttackProcessor(PipeProducer):
     def __build_timestamp__(self, datestring):
         new_date = datetime.strptime(datestring, self.DATE_FORMAT)
         timestamp = int(new_date.replace(tzinfo=timezone.utc).timestamp())  # Return POSIX UTC timestamp
-        return timestamp * 1000 * 1000 * 1000  # ms us ns
+        random_ns = randint(1000000, 1999999)  # us ns
+        ts = timestamp * 1000 * 1000 * 1000    # ms us ns
+        return ts + random_ns
