@@ -6,7 +6,7 @@
 
 //CURRENTLY ONLY USED BY VNSF-CATALOGUE SERVICE**********************
 const BACKEND_HOST = window.location.hostname;
-const ADDRESS = '192.168.1.3' || BACKEND_HOST;
+const ADDRESS = __API_URL__ || BACKEND_HOST;
 const SOCKET_URL = BACKEND_HOST;
 const STORE_URL = __API_STORE_HOST__;
 
