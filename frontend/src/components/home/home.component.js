@@ -66,11 +66,13 @@ export const HomeComponent = {
       var vnsfSocket = this.vnsfNotificationService.connectNotificationsSocket(this.userdata.user.domain.id);
       vnsfSocket.onopen = (e) => {this.vnsfSocketAtmp = 0;};
       vnsfSocket.onmessage = (message) => {
+        //console.log("Broadcasting");
         const data = JSON.parse(message.data);
         this.toast.error(templateNotification(data), data.event.classification, {
           onTap: () => this.openNotificationDetails(data),
           closeButton: true,
         });
+        this.scope.$broadcast('VNSF_UPDATE_BROADCAST');
       };
       vnsfSocket.onclose = (e) => {
         if(this.vnsfSocketAtmp < 3) {
@@ -86,11 +88,13 @@ export const HomeComponent = {
       tmSocket.onopen = (e) => {this.tmSocketAtmp = 0;};
       tmSocket.onmessage = (message) => {
         const data = JSON.parse(message.data);
-        console.log(data);
+        //console.log(data);
         this.toast.error(templateTMNotification(data), 'TM Notification', {
           onTap: () => this.openTMNotificationDetails(data),
           closeButton: true,
         });
+        
+        this.scope.$broadcast('TM_UPDATE_BROADCAST');
       };
       tmSocket.onclose = (e) => {
         if(this.tmSocketAtmp < 3) {

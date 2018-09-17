@@ -49,6 +49,16 @@ export const VnsfNotificationsComponent = {
     }
 
     $onInit() {
+
+      this.scope.$on('TM_UPDATE_BROADCAST', () => {
+        
+        this.getNotifications();
+      });
+      this.scope.$on('VNSF_UPDATE_BROADCAST', () => {
+        
+        this.getNotifications();
+      });
+
       this.getNotifications();
     }
 
@@ -66,7 +76,6 @@ export const VnsfNotificationsComponent = {
     }
 
     toggleNotificationsModal(notif) {
-      console.log(notif);
       if(notif.type === 'TRUST_MONITOR')
         this.scope.$emit('TM_NOTIF_EMIT', JSON.parse(notif.data));
       else

@@ -16,7 +16,7 @@ export class VnsfNotificationService {
   }
 
   getNotifications({ page = 1, limit = 25 }, filters = {}) {
-    const params = { max_results: limit, page };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
