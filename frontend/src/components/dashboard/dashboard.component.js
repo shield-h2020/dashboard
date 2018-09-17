@@ -1,9 +1,9 @@
 import moment from 'moment';
 import template from './dashboard.html';
-
+import * as d3 from 'd3';
 
 const VIEW_STRING = {
-  title: 'Incidents DashBoard',
+  title: 'Threats Dashboard',
 };
 
 export const DashboardComponent = {
@@ -22,19 +22,40 @@ export const DashboardComponent = {
       this.scope = $scope;
     }
 
+    
+
     $onInit() {
-      this.scope.selected_period = '2';
+      this.scope.selected_period = '0';
       this.scope.isAdmin = this.authService.isUserPlatformAdmin();
       this.scope.user_tenant = this.authService.getTenant();
-
+      this.attackType = null;
+      this.attackIndex = -1;
+      this.dayTimeAgr = false;
+      this.AvColors = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+      this.GrayPieColor = "#D0D0D0";
+      //var _this = this;
+      this.scope.$on('TM_NOTIF_BROADCAST', (event, data) => {
+        this.scope.selected_tenant = data;
+        this.refreshPage();
+      });
+      this.scope.onTenantChange = function(e) {
+        //console.log(e);
+        this.$emit('TM_NOTIF_BROADCAST', e.selected_tenant);
+      };
       if (this.scope.isAdmin) {
         this.tenantsService.getTenants()
           .then((data) => {
-            this.scope.tenants_list = data;
+            console.log(data);
+            this.scope.tenants_list = [{'tenant_name': 'All tenants', 'tenant_id': -1}, ...data];
+            //this.scope.tenants_list = data;
+            this.scope.selected_tenant = this.scope.tenants_list[0].tenant_id;
           });
       }
-
-      this.scope.$watch('start_date', () => {
+      
+      /* When uncommenting this, watch out with the refreshPage routine
+      that was running multiple times because in the function set period
+      we're setting the first and last date (that will trigger this wathers)*/
+      /*this.scope.$watch('start_date', () => {
         this.scope.end_min_date = moment(this.scope.start_date)
           .format('YYYY-MM-DDTHH:mm:ss');
         this.scope.sdate = this.scope.end_min_date;
@@ -46,11 +67,12 @@ export const DashboardComponent = {
           .format('YYYY-MM-DDTHH:mm:ss');
         this.scope.edate = this.scope.start_max_date;
         this.refreshPage();
-      });
+      });*/
 
       this.setPeriod();
     }
 
+    
     //* *********************************************************
     //* *************************REQUESTS************************
     //* *********************************************************
@@ -79,14 +101,26 @@ export const DashboardComponent = {
     }
 
     getTotalAttackByDay() {
+      var duration = moment.duration(moment(this.scope.end).diff(this.scope.start));
+      var inDays = duration.asDays();
+      //console.log(inDays);
+      var timeAgr;
+      if(inDays > 1) {
+        timeAgr = 'time(1d)';
+        this.dayTimeAgr = true;
+      }
+      else {
+        timeAgr = 'time(1h)';
+        this.dayTimeAgr = false;
+      }
       // TODO Verificar periodo selecionado
-      this.dashboardService.getTotalAttacksByDay(this.scope.start, this.scope.end, 'time(1d)', this.scope.tenant)
+      this.dashboardService.getTotalAttacksByDay(this.scope.start, this.scope.end, timeAgr, this.scope.tenant, this.attackType)
         .success((data) => {
           if (data.results[0].series) {
-            this.drawBar(data.results[0].series[0].values);
-          } else {
-            this.drawBar(null);
+            this.drawBar(data.results[0].series);
           }
+          else
+            this.drawBar();
         })
         .catch((response) => {
           // TODO Tratar erro
@@ -96,7 +130,7 @@ export const DashboardComponent = {
 
     getAttacks() {
       // TODO Verificar attack_type selecionado
-      this.dashboardService.getAttack(this.scope.start, this.scope.end, this.scope.tenant, '', this.scope.table_page * 10)
+      this.dashboardService.getAttack(this.scope.start, this.scope.end, this.scope.tenant, this.attackType, this.scope.table_page * 10)
         .success((data) => {
           this.scope.attacks = data;
         })
@@ -126,6 +160,7 @@ export const DashboardComponent = {
             .startOf('day')
             .format('YYYY-MM-DDTHH:mm:ss');
           this.scope.edate = moment()
+            .subtract(1, 'd')
             .endOf('day')
             .format('YYYY-MM-DDTHH:mm:ss');
           break;
@@ -173,20 +208,25 @@ export const DashboardComponent = {
     refreshPage() {
       this.scope.table_page = 0;
       if (!this.scope.isAdmin) {
-        this.scope.tenant = this.scope.user_tenant;
+        
+        this.scope.tenant = this.scope.user_tenant;        
       }
-
+      else {
+        if (this.scope.selected_tenant !== -1) {
+          this.scope.tenant = this.scope.selected_tenant;
+        }
+        else
+        this.scope.tenant = null;
+      }
       this.scope.start = `${this.scope.sdate}.000Z`;
       this.scope.end = `${this.scope.edate}.000Z`;
-
-      if (this.scope.selected_tenant) {
-        this.scope.tenant = this.scope.selected_tenant;
-      }
 
       this.getTotalAttacks();
       this.getTotalAttackByDay();
       this.getAttacks();
     }
+
+    
 
     //* *********************************************************
     //* ************************GRAPHS***************************
@@ -194,6 +234,10 @@ export const DashboardComponent = {
 
     drawDonut(data) {
       document.getElementById('chart_attacks').innerHTML = '';
+      
+      if(!data)
+        return;
+      
       const dataset = [];
       if (data) {
         for (let i = 0; i < data.length; i += 1) {
@@ -213,9 +257,23 @@ export const DashboardComponent = {
 
       const outerRadius = 120;
       const innerRadius = 100;
-
-      const color = d3.scale.category10();
-
+      var color;
+      var nrSeries = data.length;
+      //console.log("Number of series");
+      //console.log(nrSeries);
+      if(this.attackIndex === -1)
+        color = d3.scale.ordinal().range(this.AvColors);
+      else {
+        var grayedColors = [];
+        for (let j = 0; j < nrSeries; j += 1) {
+          if(j !== this.attackIndex)
+            grayedColors[j] = this.GrayPieColor;
+          else
+            grayedColors[j] = this.AvColors[j];
+        }
+        color = d3.scale.ordinal().range(grayedColors);
+      }
+      //console.log(color[0]);
       const arc = d3.svg.arc()
         .outerRadius(outerRadius)
         .innerRadius(innerRadius);
@@ -251,7 +309,7 @@ export const DashboardComponent = {
         });
 
 
-      const restOfTheData = function () {
+      const restOfTheData = function (me) {
         const legendRectSize = 20;
         const legendHeight = 100;
 
@@ -263,7 +321,7 @@ export const DashboardComponent = {
             class: 'legend',
             transform(d, i) {
               // Just a calculation for x & y position
-              return `translate(${(i * legendHeight) - 190},150)`;
+              return `translate(${(i * legendHeight) - (43*nrSeries)},150)`;
             },
           });
         legend.append('rect')
@@ -286,30 +344,49 @@ export const DashboardComponent = {
           .text(d => d)
           .style({
             fill: '#929DAF',
-            'font-size': '14px',
+            'font-size': '10px'
+          })
+          .on("click", (d, i) => {
+            
+            if(me.attackIndex === i) {
+
+              //console.log("Resetting value");
+              me.attackIndex = -1;
+              me.attackType = null;
+
+              me.getTotalAttacks();
+              me.getAttacks();
+              me.getTotalAttackByDay();
+            }
+            else {
+
+              //console.log("New value found" + i);
+              var selectedAttack = d.substring(0, d.indexOf("-") - 1);
+              me.attackIndex = i;
+              me.attackType = selectedAttack;
+              
+              me.getTotalAttacks();
+              me.getAttacks();
+              me.getTotalAttackByDay();
+            }
+          })
+          .on("mouseover", function(d) {
+            d3.select(this).style("cursor", "pointer"); 
+          })
+          .on("mouseout", function(d) {
+            d3.select(this).style("cursor", "default"); 
           });
       };
-      setTimeout(restOfTheData, 1000);
+      setTimeout(restOfTheData(this), 1000);
     }
 
-    drawBar(values) {
-      document.getElementById('chart_ocurrences').innerHTML = '';
-
-      const dataset = [];
-      if (values) {
-        for (let i = 0; i < values.length; i += 1) {
-          dataset.push([
-            values[i][0].substring(0, 10),
-            values[i][1],
-          ]);
-        }
-      }
-
+    drawBar(data2) {
+      ////////////////////////////////////////////////////////
       // Configs
       const Chart = {
-        margin: { left: 20, top: 20, right: 20, bottom: 20 },
+        margin: { left: 30, top: 20, right: 20, bottom: 20 },
         width: 450,
-        height: 400,
+        height: 450,
         sideWidth: 10,
         bottomHeight: 60,
       };
@@ -317,215 +394,124 @@ export const DashboardComponent = {
         width: Chart.width - Chart.margin.left - Chart.margin.right - Chart.sideWidth,
         height: Chart.height - Chart.margin.top - Chart.margin.bottom - Chart.bottomHeight,
       };
-      const Bar = {
-        padding: 0.01,
-        outerPadding: 0.02,
-        color: '#85AACD',
-        startColor: '#85AACD',
-      };
+      ////////////////////////////////////////////////////////
+      document.getElementById('chart_ocurrences').innerHTML = '';
+      if(!data2)
+        return;
+      var n = data2[0].values.length, // number of samples
+      m = data2.length; // number of series
 
-      let dataTrigger = false;
+      //console.log("Real values");
+      //console.log(data2);
 
-      // Setup
-      let data;
-      const svg = d3.select('#chart_ocurrences')
-        .attr({
-          width: Chart.width,
-          height: Chart.height,
-        });
-      let bars;
-
-      svg.append('clippath')
-        .attr('id', 'chart-area')
-        .append('rect')
-        .attr({
-          x: Chart.margin.left + Chart.sideWidth,
-          y: Chart.margin.top,
-          width: BarArea.width,
-          height: BarArea.height,
-        });
-
-      const barGroup = svg.append('g')
-        .attr('id', 'bars')
-        .attr('clip-path', 'url(#chart-area)')
-        .attr('transform',
-          `translate(${Chart.margin.left + Chart.sideWidth}, ${Chart.margin.top})`)
-        .attr('clip-path', 'url(#chart-area)');
-
-      svg.append('g')
-        .attr('transform', `translate(${
-        Chart.margin.left + Chart.sideWidth}, ${
-        Chart.margin.top + BarArea.height})`)
-        .classed('axis', true)
-        .classed('x', true)
-        .classed('nostroke', true);
-
-      svg.append('g')
-        .attr('transform',
-          `translate(${Chart.margin.left + Chart.sideWidth}, ${Chart.margin.top})`)
-        .classed('axis', true)
-        .classed('y', true);
-
-      svg.append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', (0 - Chart.margin.left))
-        .attr('x', 0 - (Chart.height / 2))
-        .attr('dy', '1em')
-        .attr('class', 'dashboard_datepicker_text')
-        .style('text-anchor', 'middle')
-        .text('Number of ocurrences');
-
-      // Manipulators
-      window.changeData = () => {
-        dataTrigger = !dataTrigger;
-        // const dataset = dataTrigger ? dataset;
-        data = JSON.parse(JSON.stringify(dataset));
-        renderChart();
-      };
-
-      let newIndex = 0;
-      window.appendData = () => {
-        const len = 10;
-        for (let i = 0; i < len; i += 1) {
-          const record = [`new${++newIndex}`, Math.ceil(Math.random() * 100)];
-          data.push(record);
+      var data = [];
+      var maxValue = 0;
+      for (let i = 0; i < data2.length; i += 1) {
+        
+        //console.log("First level");
+        //console.log(data2[i].values);
+        var innerData = [];
+        for (let j = 0; j < data2[i].values.length; j += 1) {
+          //console.log("Snd level");
+          //console.log(data2[i].values[j]);
+          //innerData[j][0] = data2[i].values[j][0];  
+          //innerData[j][1] = data2[i].values[j][1];
+          innerData[j] = data2[i].values[j][1];
+          if(innerData[j] > maxValue)
+            maxValue = innerData[j];
         }
-        renderChart();
-      };
-
-      window.removeData = (d) => {
-        const idx = data.indexOf(d);
-        if (idx > -1) {
-          data.splice(idx, 1);
-        }
-        renderChart();
-      };
-
-      window.sortData = () => {
-        data.sort((a, b) => d3.ascending(a[1], b[1]));
-        renderChart();
-      };
-
-      // Rendering
-      data = JSON.parse(JSON.stringify(dataset));
-      renderChart();
-      setTimeout(window.changeData, 1200);
-
-
-      function renderChart() {
-        const xScale = d3.scale
-          .ordinal()
-          .rangeRoundBands([0, BarArea.width], Bar.padding, Bar.outerPadding)
-          .domain(data.map((v, i) => v[0]));
-
-        const yScale = d3.scale.linear()
-          .range([BarArea.height, 0])
-          .domain([0, d3.max(data, d => d[1])]);
-
-        const xAxis = d3.svg.axis()
-          .scale(xScale)
-          .orient('bottom');
-
-        const yAxis = d3.svg.axis()
-          .ticks(5)
-          .scale(yScale)
-          .orient('left');
-
-        const totalDelay = 500;
-        const oneByOne = (d, i) => totalDelay * i / data.length;
-
-        bars = barGroup.selectAll('rect')
-          .data(data, d => d[0]);
-
-        bars.enter()
-          .append('rect')
-          .attr({
-            x: d => xScale(d[0]),
-            y: BarArea.height,
-            width: xScale.rangeBand(),
-            height: 0,
-            fill: Bar.startColor,
-          });
-
-        bars.transition()
-          .duration(1500)
-          .delay(oneByOne)
-          .ease('elastic')
-          .attr({
-            x: d => xScale(d[0]),
-            y: d => yScale(d[1]),
-            width: xScale.rangeBand(),
-            height: d => BarArea.height - yScale(d[1]),
-            fill: Bar.color,
-          });
-
-        bars.exit()
-          .transition()
-          .duration(500)
-          .attr({
-            y: BarArea.height,
-            height: 0,
-            color: Bar.startColor,
-          })
-          .remove();
-
-        let labels = barGroup.selectAll('text');
-        if (xScale.rangeBand() > 25) {
-          labels = labels.data(data, d => d[0]);
-        } else {
-          labels = labels.data([]);
-        }
-
-        labels.enter()
-          .append('text')
-          .classed('label', true)
-          .classed('noselect', true)
-          .classed('unclickable', true)
-          .attr('fill', 'white');
-
-        const belowOrAbove = (d) => {
-          const y = yScale(d[1]);
-          if (y + 30 < BarArea.height) {
-            return [y + 20, 'white'];
-          }
-          return [y - 10, 'black'];
-        };
-
-        labels.transition()
-          .duration(1500)
-          .delay(oneByOne)
-          .ease('elastic')
-          .attr({
-            x: d => xScale(d[0]) + xScale.rangeBand() / 2,
-            y: d => belowOrAbove(d)[0],
-            fill: d => belowOrAbove(d)[1],
-          })
-          .text(d => d[1]);
-
-        labels.exit()
-          .remove();
-
-        // TODO: how to calculate this 20
-        if (xScale.rangeBand() > 20) {
-          d3.select('.x.axis')
-            .transition()
-            .duration(1500)
-            .ease('elastic')
-            .call(xAxis)
-            .selectAll('text')
-            .style('text-anchor', 'end')
-            .attr('transform', 'rotate(-20)');
-        } else {
-          d3.select('.x.axis')
-            .selectAll('.tick')
-            .remove();
-        }
-
-        d3.select('.y.axis')
-          .transition()
-          .duration(1000)
-          .call(yAxis);
+        data[i] = innerData;
       }
+      //console.log("Proccessed value");
+      //console.log(data);
+
+      var xAxisData = [];
+      for (let i = 0; i < data2[0].values.length; i += 1) {
+        
+        if(this.dayTimeAgr) {
+          xAxisData[i] = data2[0].values[i][0].substring(5,10);
+          //console.log(data2[0].values[i][0]);
+        }
+        else {
+          xAxisData[i] = data2[0].values[i][0].substring(11, 13);
+          //console.log(xAxisData[i]);
+        }
+      }
+      //console.log("xAxisData");
+      //console.log(xAxisData);
+      
+      /*var margin = {top: 20, right: 30, bottom: 30, left: 40},
+          width = 960 - margin.left - margin.right,
+          height = Chart.height - margin.top - margin.bottom;*/
+
+      var y = d3.scale.linear()
+          .domain([0, maxValue], 1)
+          .range([0, BarArea.height]);
+      
+      var x0 = d3.scale.ordinal()
+          .domain(d3.range(n))
+          .rangeBands([0, BarArea.width], 0.1);
+      
+      var x1 = d3.scale.ordinal()
+          .domain(d3.range(m))
+          .rangeBands([0, x0.rangeBand()], 0.1);
+      
+      var color;
+      if(this.attackIndex === -1)
+        color = d3.scale.ordinal().range(this.AvColors);
+      else
+        color = d3.scale.ordinal().range([this.AvColors[this.attackIndex]]);
+
+      var xScale = d3.scale.ordinal()
+          .domain(xAxisData)
+          .rangeBands([0, BarArea.width]);
+      
+      var xAxis = d3.svg.axis()
+          .scale(xScale)
+          .orient("bottom");
+      
+      var yScale = d3.scale.linear()
+          .domain([0, maxValue])
+          .range([BarArea.height, 0]);
+
+      var yAxis = d3.svg.axis()
+          .scale(yScale)
+          .orient("left")
+          .ticks( Math.min(10, maxValue ));
+      var svg = d3.select('#chart_ocurrences').attr({
+        width: Chart.width,
+        height: Chart.height,
+      });
+      
+      svg.append("svg")
+        //.attr("width", width + margin.left + margin.right)
+        //.attr("height", height + margin.top + margin.bottom)
+        .append("svg:g")
+        .attr("transform", "translate(" + Chart.margin.left + "," + Chart.margin.top + ")");
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + BarArea.height + ")")
+          .call(xAxis);
+
+      svg.append("g").selectAll("g")
+          .data(data)
+        .enter().append("g")
+          .style("fill", function(d, i) { return color(i); })
+          .attr("transform", function(d, i) { return "translate(" + x1(i) + ",0)"; })
+        .selectAll("rect")
+          .data(function(d) { return d; })
+        .enter().append("rect")
+          .attr("width", x1.rangeBand())
+          .attr("height", y)
+          .attr("x", function(d, i) { return x0(i); })
+          .attr("y", function(d) { return BarArea.height - 1 - y(d); })
+          .attr("stroke", "black")
+          .attr("stroke-opacity", "0.2");
     }
 
     //* *********************************************************

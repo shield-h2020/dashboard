@@ -30,6 +30,7 @@ COPY requirements-keystone_lock.txt /root/.
 RUN curl -fSL https://github.com/openstack/keystone/archive/${VERSION}.tar.gz -o keystone-${VERSION}.tar.gz \
     && tar xvf keystone-${VERSION}.tar.gz \
     && cd keystone-${VERSION} \
+    && apt-get -y update \
     && pip install pika==0.10.0 \
     && pip install -r /root/requirements-keystone_lock.txt \
     && PBR_VERSION=${VERSION}  pip install . \

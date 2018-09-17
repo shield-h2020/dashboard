@@ -19,12 +19,11 @@ export class DashboardService {
   getTotalAttacks(startTime, endTime, tenant) {
     //let url = `http://192.168.1.3:8086/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' GROUP BY attack_type`;
     //let url = API_ADDRESS+'/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '+ startTime +' AND time < ' + endTime + ' GROUP BY attack_type`;
-    let url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' GROUP BY attack_type`;
+    let url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time >= '${startTime}' AND time <= '${endTime}' GROUP BY attack_type`;
     if (tenant) {
       //url = `http://192.168.1.3:8086/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' AND tenant = '${tenant}' GROUP BY attack_type`;
-      url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' AND tenant = '${tenant}' GROUP BY attack_type`;
+      url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time >= '${startTime}' AND time <= '${endTime}' AND tenant = '${tenant}' GROUP BY attack_type`;
     }
-    console.log(url);
     return this.http.get(
       url, {
         headers: {
@@ -34,14 +33,18 @@ export class DashboardService {
       });
   }
 
-  getTotalAttacksByDay(startTime, endTime, period, tenant) {
+  getTotalAttacksByDay(startTime, endTime, period, tenant, attack) {
     //let url = `http://192.168.1.3:8086/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' GROUP BY ${period},attack_type`;
-    let url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' GROUP BY ${period},attack_type`;
+    let url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time >= '${startTime}' AND time <= '${endTime}'`;
     if (tenant) {
       //url = `http://192.168.1.3:8086/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' AND tenant = '${tenant}' GROUP BY ${period},attack_type`;
-      url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT COUNT("duration") FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}' AND tenant = '${tenant}' GROUP BY ${period},attack_type`;
+      url += ` AND tenant = '${tenant}'`;
+    }
+    if (attack) {
+      url += ` AND attack_type = '${attack}'`;
     }
 
+    url += `GROUP BY ${period},attack_type`;
     return this.http.get(
       url, {
         headers: {
@@ -53,7 +56,7 @@ export class DashboardService {
 
   getAttack(startTime, endTime, tenant, attack, page) {
     //let url = `http://192.168.1.3:8086/query?db=cyberattack&q=SELECT * FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}'`;
-    let url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT * FROM "attack" WHERE time > '${startTime}' AND time < '${endTime}'`;
+    let url = `${INFLUX_ADDRESS}/query?db=cyberattack&q=SELECT * FROM "attack" WHERE time >= '${startTime}' AND time <= '${endTime}'`;
     if (tenant) {
       url += ` AND tenant = '${tenant}'`;
     }

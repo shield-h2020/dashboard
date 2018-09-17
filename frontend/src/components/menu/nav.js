@@ -6,7 +6,7 @@ export const MENU_ENTRIES = [
     roles: [TENANT_ADMIN, SUPER_ADMIN, TENANT_USER],
   },*/
   {
-    text: 'Dashboard',
+    text: 'Threats',
     route: 'dashboard',
     roles: [TENANT_ADMIN, SUPER_ADMIN, TENANT_USER],
   },

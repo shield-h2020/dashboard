@@ -10,3 +10,21 @@
     vertical-align: bottom;
   }
 }
+
+.xmlviewer {
+  border: 1px solid #D8D8D8;
+  background-color: #F1F0F0;
+  padding: 9px;
+  color: #22293B;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 19px;
+  margin: 12px 0;
+  white-space: pre-line;
+  word-break: break-all;
+}
+
+.sn-card {
+
+  overflow-y: scroll;
+}

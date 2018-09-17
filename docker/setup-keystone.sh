@@ -70,8 +70,7 @@ keystone-manage bootstrap --bootstrap-password ${AAA_SCV_ADMIN_PASS} \
   --bootstrap-public-url ${KEYSTONE_PUBLIC_URL} \
   --bootstrap-region-id RegionOne
 
-sleep 25
-#openstack role add --domain ${OS_PROJECT_DOMAIN_ID} --user ${OS_USERNAME} admin
+sleep 5
 python3 /root/keystone-setup-role.py
 
 sleep 5

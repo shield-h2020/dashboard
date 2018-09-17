@@ -167,10 +167,6 @@ def matches_json(actual_data, expected_info):
     # order it's expected). However the feature isn't available at the time of writing this code due to 'Comparing
     # similar objects when ignoring order' (https://github.com/seperman/deepdiff/issues/29).
     diffs = DeepDiff(actual_data, expected_data, exclude_paths=ignore)
-
-    print("--> ACTUAL DATA: \n", actual_data, "\n\n")
-    print("--> EXPECTED DATA: \n", expected_data, "\n\n")
-
     assert diffs == {}, diffs
 
 

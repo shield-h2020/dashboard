@@ -20,7 +20,7 @@
     "angular-ui-bootstrap-datetimepicker": "^2.5.0",
     "angular-websocket": "2.0.1",
     "bootstrap-sass": "3.3.7",
-    "d3": "4.4.1",
+    "d3": "3.5.5",
     "dat.gui": "0.6.1",
     "date-fns": "1.28.5",
     "moment": "^2.22.2",

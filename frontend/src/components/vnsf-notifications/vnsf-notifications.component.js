@@ -66,7 +66,11 @@ export const VnsfNotificationsComponent = {
     }
 
     toggleNotificationsModal(notif) {
-      this.scope.$emit('NSVF_NOTIF_EMIT', JSON.parse(notif.data));
+      console.log(notif);
+      if(notif.type === 'TRUST_MONITOR')
+        this.scope.$emit('TM_NOTIF_EMIT', JSON.parse(notif.data));
+      else
+        this.scope.$emit('NSVF_NOTIF_EMIT', JSON.parse(notif.data));
     }
 
     static addExtraClasses(items) {

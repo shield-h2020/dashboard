@@ -6,6 +6,8 @@ features/system-settings.feature \
 features/users.feature \
 features/network-services.feature \
 features/validations.feature \
-features/security-policies.feature"
+features/security-policies.feature \
+features/attack.feature \
+features/tm-notifications.feature \
+features/vnsf-notifications.feature"
 
-#!features/vnsf-notifications.feature \

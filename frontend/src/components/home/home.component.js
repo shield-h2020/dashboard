@@ -8,6 +8,13 @@ function templateNotification(data) {
   `;
 }
 
+function templateTMNotification(data) {
+  return `
+    node: ${data.hosts[0]['node']}
+    trust: ${data.hosts[0]['trust']}
+  `;
+}
+
 export const HomeComponent = {
 
   template,
@@ -22,18 +29,15 @@ export const HomeComponent = {
       this.toast = toastr;
       this.vnsfNotificationService = VnsfNotificationService;
       this.incidentsService = IncidentsService;
+      this.tmSocketAtmp = 0;
+      this.vnsfSocketAtmp = 0;
     }
 
     $onInit() {
       if (this.userdata.roles.find(r => r.name === TENANT_ADMIN || r.name === TENANT_USER)) {
-        this.vnsfNotificationService.connectNotificationsSocket(this.userdata.user.domain.id)
-        .onmessage = (message) => {
-          const data = JSON.parse(message.data);
-          this.toast.error(templateNotification(data), data.event.classification, {
-            onTap: () => this.openNotificationDetails(data),
-            closeButton: true,
-          });
-        };
+        
+        this.initVNSFSocket();
+        this.initTMSocket();
       }
 
       this.incidentsService.connectIncidentSocket()
@@ -53,6 +57,48 @@ export const HomeComponent = {
       this.scope.$on('INCIDENT_NOTIF_EMIT', (event, data) => {
         this.openRecommendation(data);
       });
+      
+      this.scope.$on('TM_NOTIF_EMIT', (event, data) => {
+        this.openTMNotificationDetails(data);
+      });
+    }
+    initVNSFSocket() {
+      var vnsfSocket = this.vnsfNotificationService.connectNotificationsSocket(this.userdata.user.domain.id);
+      vnsfSocket.onopen = (e) => {this.vnsfSocketAtmp = 0;};
+      vnsfSocket.onmessage = (message) => {
+        const data = JSON.parse(message.data);
+        this.toast.error(templateNotification(data), data.event.classification, {
+          onTap: () => this.openNotificationDetails(data),
+          closeButton: true,
+        });
+      };
+      vnsfSocket.onclose = (e) => {
+        if(this.vnsfSocketAtmp < 3) {
+          //window.alert("Ai vai");
+          this.vnsfSocketAtmp++;
+          setTimeout(this.initVNSFSocket(), 1000);
+        }
+      };
+    }
+    initTMSocket() {
+
+      var tmSocket = this.vnsfNotificationService.connectTMNotificationsSocket(this.userdata.user.domain.id);
+      tmSocket.onopen = (e) => {this.tmSocketAtmp = 0;};
+      tmSocket.onmessage = (message) => {
+        const data = JSON.parse(message.data);
+        console.log(data);
+        this.toast.error(templateTMNotification(data), 'TM Notification', {
+          onTap: () => this.openTMNotificationDetails(data),
+          closeButton: true,
+        });
+      };
+      tmSocket.onclose = (e) => {
+        if(this.tmSocketAtmp < 3) {
+          //window.alert("Ai vai");
+          this.tmSocketAtmp++;
+          setTimeout(this.initTMSocket(), 1000);
+        }
+      };
     }
 
     openNotificationDetails(data) {
@@ -62,6 +108,10 @@ export const HomeComponent = {
     openRecommendation(data) {
       this.scope.$broadcast('INCIDENT_NOTIF_BROADCAST', data);
     }
+
+    openTMNotificationDetails(data) {
+      this.scope.$broadcast('TM_NOTIF_BROADCAST', data);
+    } 
   },
 };
 

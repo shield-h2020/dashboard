@@ -81,9 +81,10 @@ export class TenantsService {
     ip,
     prevIps,
     ipEtag,
+    groups,
   }) {
     return this.http.put(API_TENANT.replace(ACC_ID, tenant_id),
-      { tenant_name, description, scope_id }, { headers: { 'if-match': _etag } })
+      { tenant_name, description, scope_id, groups }, { headers: { 'if-match': _etag } })
       .then(() => {
         this.toast.info(TOAST_STRINGS.UPDATE_SUCCESS_TENANT.MESSAGE,
           TOAST_STRINGS.UPDATE_SUCCESS_TENANT.TITLE);
