@@ -6,6 +6,14 @@ const VIEW_STRING = {
   title: 'Threats Dashboard',
 };
 
+const DAY_TIME_AGR = {
+
+  hour: '0',
+  day: '1',
+  week: '2',
+  month: '3'
+};
+
 export const DashboardComponent = {
   template,
   bindings: {
@@ -31,6 +39,9 @@ export const DashboardComponent = {
       this.attackType = null;
       this.attackIndex = -1;
       this.dayTimeAgr = false;
+      this.customPeriodIndex = '3';
+      this.customStart;
+      this.customEnd;
       this.AvColors = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
       this.GrayPieColor = "#D0D0D0";
       //var _this = this;
@@ -45,7 +56,7 @@ export const DashboardComponent = {
       if (this.scope.isAdmin) {
         this.tenantsService.getTenants()
           .then((data) => {
-            console.log(data);
+            //console.log(data);
             this.scope.tenants_list = [{'tenant_name': 'All tenants', 'tenant_id': -1}, ...data];
             //this.scope.tenants_list = data;
             this.scope.selected_tenant = this.scope.tenants_list[0].tenant_id;
@@ -55,24 +66,33 @@ export const DashboardComponent = {
       /* When uncommenting this, watch out with the refreshPage routine
       that was running multiple times because in the function set period
       we're setting the first and last date (that will trigger this wathers)*/
-      /*this.scope.$watch('start_date', () => {
-        this.scope.end_min_date = moment(this.scope.start_date)
-          .format('YYYY-MM-DDTHH:mm:ss');
-        this.scope.sdate = this.scope.end_min_date;
-        this.refreshPage();
-      });
-
-      this.scope.$watch('end_date', () => {
-        this.scope.start_max_date = moment(this.scope.end_date)
-          .format('YYYY-MM-DDTHH:mm:ss');
-        this.scope.edate = this.scope.start_max_date;
-        this.refreshPage();
-      });*/
+    
 
       this.setPeriod();
+
+      this.setFilter = function(eData) {
+
+        if(eData.key === 'sDate')
+          this.customStart = eData.value;
+
+        if(eData.key === 'eDate')
+          this.customEnd = eData.value;
+        
+        //console.log(this.scope.selected_period);
+        //console.log(this.customPeriodIndex);
+        if(this.scope.selected_period !== this.customPeriodIndex)
+          return;
+
+        this.scope.sdate = moment(this.customStart).format('YYYY-MM-DDTHH:mm:ss');
+        this.scope.edate = moment(this.customEnd).format('YYYY-MM-DDTHH:mm:ss');
+        
+        //console.log(this.scope.sdate);
+        //console.log(this.scope.edate);
+
+        this.refreshPage();
+      }
     }
 
-    
     //* *********************************************************
     //* *************************REQUESTS************************
     //* *********************************************************
@@ -105,13 +125,36 @@ export const DashboardComponent = {
       var inDays = duration.asDays();
       //console.log(inDays);
       var timeAgr;
-      if(inDays > 1) {
-        timeAgr = 'time(1d)';
-        this.dayTimeAgr = true;
+      if(inDays <= 1) {
+        
+        timeAgr = 'time(1h)';
+        this.dayTimeAgr = DAY_TIME_AGR.hour;
+        console.log("dia");
       }
       else {
-        timeAgr = 'time(1h)';
-        this.dayTimeAgr = false;
+        console.log(inDays);
+        if(inDays <= 12) {
+
+          timeAgr = 'time(1d)';
+          this.dayTimeAgr = DAY_TIME_AGR.day;
+        }
+        else {
+
+          if(inDays < 30) {
+
+            timeAgr = 'time(1w)';
+            this.dayTimeAgr = DAY_TIME_AGR.week;
+          }
+          else {
+            this.scope.end = moment(this.scope.edate).endOf('month').format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
+            //console.log(this.scope.end);
+            timeAgr = 'time(4w)';
+            this.dayTimeAgr = DAY_TIME_AGR.month;
+          }
+
+        }
+        
+        //this.dayTimeAgr = true;
       }
       // TODO Verificar periodo selecionado
       this.dashboardService.getTotalAttacksByDay(this.scope.start, this.scope.end, timeAgr, this.scope.tenant, this.attackType)
@@ -174,6 +217,9 @@ export const DashboardComponent = {
             .format('YYYY-MM-DDTHH:mm:ss');
           break;
         case '3':
+          this.setFilter({key: '', value: ''});
+          return;
+        /*case '3':
           this.scope.sdate = moment()
             .startOf('month')
             .format('YYYY-MM-DDTHH:mm:ss');
@@ -197,11 +243,11 @@ export const DashboardComponent = {
           this.scope.edate = moment()
             .endOf('day')
             .format('YYYY-MM-DDTHH:mm:ss');
-          break;
+          break;*/
         default:
           break;
       }
-
+      console.log("Refreshing page");
       this.refreshPage();
     }
 
@@ -220,6 +266,8 @@ export const DashboardComponent = {
       }
       this.scope.start = `${this.scope.sdate}.000Z`;
       this.scope.end = `${this.scope.edate}.000Z`;
+
+      console.log(this.scope.start);
 
       this.getTotalAttacks();
       this.getTotalAttackByDay();
@@ -428,12 +476,20 @@ export const DashboardComponent = {
       var xAxisData = [];
       for (let i = 0; i < data2[0].values.length; i += 1) {
         
-        if(this.dayTimeAgr) {
-          xAxisData[i] = data2[0].values[i][0].substring(5,10);
+        if(this.dayTimeAgr === DAY_TIME_AGR.hour) {
+          xAxisData[i] = moment(data2[0].values[i][0]).format('HH');
           //console.log(data2[0].values[i][0]);
         }
-        else {
-          xAxisData[i] = data2[0].values[i][0].substring(11, 13);
+        if(this.dayTimeAgr === DAY_TIME_AGR.day) {
+          xAxisData[i] = moment(data2[0].values[i][0]).format('DD-MM');
+          //console.log(xAxisData[i]);
+        }
+        if(this.dayTimeAgr === DAY_TIME_AGR.week) {
+          xAxisData[i] = moment(data2[0].values[i][0]).format('DD-MM');
+          //console.log(xAxisData[i]);
+        }
+        if(this.dayTimeAgr === DAY_TIME_AGR.month) {
+          xAxisData[i] = moment(data2[0].values[i][0]).format('MMMM').substring(0,3);
           //console.log(xAxisData[i]);
         }
       }

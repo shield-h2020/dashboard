@@ -48,17 +48,26 @@
                                         <option ng-selected="true" value="0">Today</option>
                                         <option value="1">Yesterday</option>
                                         <option value="2">Last Week</option>
+                                        <option value="3">Custom</option>
                                         <!--<option value="3">Last Month</option>
                                         <option value="4">Last Semester</option>
                                         <option value="5">Last Year</option>-->
                                     </select>
                                 </div>
-                            </article>
+                            
 
-                            <!-- DATEPICKERS
+                            <!-- DATEPICKERS -->
                             <div class="col-xs-8 pr0">
-
-                                <div class="col-xs-6 pl0" style="display:inline-flex">
+                                <sn-date-picker
+                                    label="Start"
+                                    on-change="$ctrl.setFilter({ key: 'sDate', value: $event.value})">
+                                    <!--current-date="$ctrl.setStartDate()">-->
+                                </sn-date-picker>
+                                <sn-date-picker
+                                    label="End"
+                                    on-change="$ctrl.setFilter({ key: 'eDate', value: $event.value})">
+                                </sn-date-picker>
+                                <!--<div class="col-xs-6 pl0" style="display:inline-flex">
                                     <label class="dashboard_datepicker_text">From:</label>
                                     <div class="input-group" style="height:40px">
                                         <input id="start" class="form-control input-group-header" type="datetime-local"
@@ -82,9 +91,9 @@
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                            </div>-->
-
+                                </div>-->
+                            </div>
+                        </article>
                             <!-- NUMBER OF ATTACKS-->
                             <div class="col-xs-12 col-lg-6 pl0 mt30">
                                 <div class="chart_holder">

@@ -1,9 +1,8 @@
 import angular from 'angular';
 import { DashboardComponent, DashboardState } from './dashboard.component';
 import { DashboardService } from './dashboard.service';
-import { DashViewerModule } from './dash-viewer/dash-viewer.module';
 
-export const DashboardModule = angular.module('dashboard', ['ui.router', DashViewerModule])
+export const DashboardModule = angular.module('dashboard', ['ui.router'])
   .component('dashboardView', DashboardComponent)
   .service('DashboardService', DashboardService)
   .config(($stateProvider) => {
