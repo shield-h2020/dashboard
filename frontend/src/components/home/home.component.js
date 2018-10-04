@@ -31,24 +31,15 @@ export const HomeComponent = {
       this.incidentsService = IncidentsService;
       this.tmSocketAtmp = 0;
       this.vnsfSocketAtmp = 0;
+      this.incidentsSocketAtmp = 0;
     }
 
     $onInit() {
       if (this.userdata.roles.find(r => r.name === TENANT_ADMIN || r.name === TENANT_USER)) {
-        
         this.initVNSFSocket();
         this.initTMSocket();
+        this.initIncidentSocket();
       }
-
-      this.incidentsService.connectIncidentSocket()
-        .onmessage = (message) => {
-          const data = JSON.parse(message.data);
-          const { attack } = data;
-          this.toast.error(`Type of attack: ${attack}`, 'A new security incident was detected', {
-            onTap: () => this.openRecommendation(data),
-            closeButton: true,
-          });
-        };
 
       this.scope.$on('NSVF_NOTIF_EMIT', (event, data) => {
         this.openNotificationDetails(data);
@@ -62,6 +53,26 @@ export const HomeComponent = {
         this.openTMNotificationDetails(data);
       });
     }
+
+    initIncidentSocket(){
+      var incidentsfSocket = this.incidentsService.connectIncidentSocket(this.userdata.user.domain.id);
+      incidentsfSocket.onopen = (e) => {this.incidentsSocketAtmp = 0;};
+      incidentsfSocket.onmessage = (message) => {
+        const data = JSON.parse(message.data);
+        const { attack } = data;
+        this.toast.error(`Type of attack: ${attack}`, 'A new security incident was detected', {
+          onTap: () => this.openRecommendation(data),
+          closeButton: true,
+        });
+      };
+      incidentsfSocket.onclose = (e) => {
+        if(this.incidentsSocketAtmp < 3) {
+          this.incidentsSocketAtmp++;
+          setTimeout(this.initIncidentSocket(), 1000);
+        }
+      };
+    }
+
     initVNSFSocket() {
       var vnsfSocket = this.vnsfNotificationService.connectNotificationsSocket(this.userdata.user.domain.id);
       vnsfSocket.onopen = (e) => {this.vnsfSocketAtmp = 0;};

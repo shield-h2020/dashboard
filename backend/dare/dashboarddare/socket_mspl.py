@@ -31,7 +31,7 @@ from dashboardutils.pipe import PipeConsumer
 from tornado.websocket import WebSocketClosedError
 
 
-class PolicySocket(PipeConsumer):
+class MsplSocket(PipeConsumer):
     """
     Handles the web socket server to notify the Dashboard of new DARE policies acting as a consumer for such policies.
 
@@ -53,12 +53,12 @@ class PolicySocket(PipeConsumer):
     """
 
     # Clients connected to the socket.
-    clients = set([])
+    # the dictionary will store the tenant as the key
+    clients = dict()
 
     def __init__(self, pipe):
         """
         :param pipe: The pipe manager where this instance is to be identified as an events consumer.
-        :param logger: Logger object.
         """
 
         super().__init__()
@@ -80,33 +80,51 @@ class PolicySocket(PipeConsumer):
         """
         pass
 
-    def register_socket(self, socket):
+    def register_socket(self, socket, **kwargs):
         """
         Register a socket handler instance as the underlying socket for communicating the policy.
 
-        :param socket: The socket handler instance where to convey the policies.
+        :param socket: The socket handler instance where to convey the notifications.
+        :param kwargs: A tenant is given as keyword argument to be associated with the client
         """
-        self.logger.debug('Registered socket %r', socket)
-        self.clients.add(socket)
+        tenant = kwargs.get('tenant', None)
+        self.logger.debug('Registered socket {} for tenant {}'.format(socket, tenant))
+        if tenant and tenant in self.clients:
+            self.clients[tenant].append(socket)
+        elif tenant:
+            self.clients[tenant] = [socket]
+        else:
+            # Discard the client since no tenant was provided
+            self.logger.debug('Socket not registered as no tenant was provided')
+            return
 
-    def unroll_socket(self, socket):
+    def unroll_socket(self, socket, **kwargs):
         """
         Register a socket handler instance as the underlying socket for communicating the policy.
 
-        :param socket: The socket handler instance where to convey the policies.
+        :param socket: The socket handler instance where to convey the notifications.
+        :param kwargs: A tenant is given as keyword argument to ease the search for the client
         """
-        self.logger.debug('Unrolled socket %r', socket)
-        self.clients.discard(socket)
+        tenant = kwargs.get('tenant', None)
+        self.logger.debug('Unrolled socket {} for tenant {}'.format(socket, tenant))
+        if tenant and self.clients.get(tenant):
+            self.clients.get(tenant).remove(socket)
 
     def update(self, data, **kwargs):
         """
         Called when a new policy is received in the input pipe.
 
         :param data: The policy data provided.
-        """
+        :param kwargs: A tenant is given as keyword argument so the notification is sent only to the clients connected
+        to the same tenant
 
-        for socket in self.clients:
-            self.logger.debug('Socket %r | message - %r', socket, data)
+        """
+        tenant = kwargs.get('tenant', None)
+        if not tenant:
+            self.logger.debug('No tenant provided')
+            return
+        for socket in self.clients.get(tenant, []):
+            self.logger.debug('Socket {} | tenant {} | message - {}'.format(socket, tenant, data))
 
             try:
                 socket.write_message(data)

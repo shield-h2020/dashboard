@@ -14,6 +14,7 @@
   ],
   "expected": {
     "_items": [{
+      "vnsf_id": "vNSF-filtering",
       "detection": "Tue, 17 Oct 2017 13:32:00 GMT",
       "attack": "DoS",
       "recommendation": "<mspl-set xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://security.polito.it/shield/mspl\">\n  <context>\n    <severity>3</severity>\n    <type>DoS</type>\n    <timestamp>2017-10-17T13:32:00</timestamp>\n  </context>\n  <it-resource id=\"vNSF-filtering\">\n    <configuration xsi:type=\"filtering-configuration\">\n      <default-action>accept</default-action>\n      <resolution-strategy>FMR</resolution-strategy>\n      <rule>\n        <priority>1</priority>\n        <action>drop</action>\n        <condition>\n          <packet-filter-condition>\n            <direction>inbound</direction>\n            <source-address>100.114.244.222</source-address>\n            <source-port>*</source-port>\n            <destination-address>10.101.20.230</destination-address>\n            <destination-port>80</destination-port>\n            <protocol>TCP</protocol>\n          </packet-filter-condition>\n        </condition>\n      </rule>\n    </configuration>\n  </it-resource>\n</mspl-set>\n",

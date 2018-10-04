@@ -25,9 +25,10 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
+from datetime import datetime
+
 import os
 from radish import world
-from datetime import datetime
 
 world.env = {
     'hosts': {
@@ -39,7 +40,7 @@ world.env = {
             'host': '{}://{}:{}'.format(os.environ['TENANT_IP_PROTOCOL'], os.environ['TENANT_IP_HOST'],
                                         os.environ['TENANT_IP_PORT'])
             },
-        'msg_q':         {
+        'mspl_msg_q':    {
             'host':          os.environ['MSGQ_HOST'],
             'port':          int(os.environ['MSGQ_PORT']),
             'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
@@ -53,19 +54,19 @@ world.env = {
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
             'topic':         os.environ['MSGQ_VNSF_TOPIC']
             },
-        'tm_msg_q':    {
+        'tm_msg_q':      {
             'host':          os.environ['MSGQ_HOST'],
             'port':          int(os.environ['MSGQ_PORT']),
             'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
             'topic':         os.environ['MSGQ_TM_TOPIC']
             },
-        'attack_msg_q': {
-            'host': os.environ['MSGQ_HOST'],
-            'port': int(os.environ['MSGQ_PORT']),
-            'exchange': os.environ['MSGQ_EXCHANGE_DASHBOARD'],
+        'attack_msg_q':  {
+            'host':          os.environ['MSGQ_HOST'],
+            'port':          int(os.environ['MSGQ_PORT']),
+            'exchange':      os.environ['MSGQ_EXCHANGE_DASHBOARD'],
             'exchange_type': os.environ['MSGQ_EXCHANGE_TYPE'],
-            'topic': os.environ['MSGQ_ATTACK_TOPIC']
+            'topic':         os.environ['MSGQ_ATTACK_TOPIC']
             },
         'socket_server': {
             'host': 'ws://{}:{}'.format(os.environ['SKT_HOST'],
@@ -82,12 +83,13 @@ world.env = {
             'svc_admin_user':  os.environ['AAA_SCV_ADMIN_USER'],
             'svc_admin_pass':  os.environ['AAA_SCV_ADMIN_PASS']
             },
-        'influxdb':           {
-            'host':            f"{os.environ['INFLUXDB_PROTOCOL']}://{os.environ['INFLUXDB_HOST']}:{os.environ['INFLUXDB_PORT']}",
-            'admin_username':  os.environ.get('INFLUXDB_ADMIN_USER'),
-            'username':        os.environ.get('INFLUXDB_USER'),
-            'admin_password':  os.environ.get('INFLUXDB_ADMIN_PASSWORD'),
-            'password':        os.environ.get('INFLUXDB_USER_PASSWORD')
+        'influxdb':      {
+            'host':           f"{os.environ['INFLUXDB_PROTOCOL']}://{os.environ['INFLUXDB_HOST']}:"
+                              f"{os.environ['INFLUXDB_PORT']}",
+            'admin_username': os.environ.get('INFLUXDB_ADMIN_USER'),
+            'username':       os.environ.get('INFLUXDB_USER'),
+            'admin_password': os.environ.get('INFLUXDB_ADMIN_PASSWORD'),
+            'password':       os.environ.get('INFLUXDB_USER_PASSWORD')
             }
 
         },
@@ -96,15 +98,15 @@ world.env = {
         'expected_output': os.environ['FOLDER_TESTS_EXPECTED_OUTPUT'],
         },
     'mock':  {
-        'vnsfo_data':       os.environ['FOLDER_TESTS_MOCK_VNSFO_DATA'],
-        'vnsfo_folder':     os.path.join(os.environ['CNTR_FOLDER_VNSFO'], os.environ['VNSFO_API']),
+        'vnsfo_data':         os.environ['FOLDER_TESTS_MOCK_VNSFO_DATA'],
+        'vnsfo_folder':       os.path.join(os.environ['CNTR_FOLDER_VNSFO'], os.environ['VNSFO_API']),
 
         # Association Mocks
-        'tenant_ip_data':   os.environ['FOLDER_TESTS_MOCK_TENANT_IP_DATA'],
-        'tenant_ip_folder': os.environ['CNTR_FOLDER_VNSFO'],
+        'tenant_ip_data':     os.environ['FOLDER_TESTS_MOCK_TENANT_IP_DATA'],
+        'tenant_ip_folder':   os.environ['CNTR_FOLDER_VNSFO'],
 
         # Tenant vNSF Association Mocks
-        'tenant_vnsf_data': os.environ['FOLDER_TESTS_MOCK_TENANT_VNSF_DATA'],
+        'tenant_vnsf_data':   os.environ['FOLDER_TESTS_MOCK_TENANT_VNSF_DATA'],
         'tenant_vnsf_folder': os.environ['CNTR_FOLDER_VNSFO']
 
         }
@@ -151,8 +153,9 @@ world.endpoints = {
     'tenant_info':                '{}/{}/{{}}'.format(world.env['hosts']['backend_api']['host'],
                                                       'catalogue/tenants'),
 
-    'tenant_info_by_name': '{}/{}?where={{{{"tenant_name": "{{}}"}}}}'.format(world.env['hosts']['backend_api']['host'],
-                                                                              'catalogue/tenants'),
+    'tenant_info_by_name':        '{}/{}?where={{{{"tenant_name": "{{}}"}}}}'.format(
+            world.env['hosts']['backend_api']['host'],
+            'catalogue/tenants'),
 
     'tenant_users':               '{}/{}?where={{{{"tenant_id": "{{}}"}}}}'.format(
             world.env['hosts']['backend_api']['host'], 'catalogue/users'),
@@ -167,18 +170,20 @@ world.endpoints = {
     'nss_inventory':              '{}/{}?where={{{{"tenant_id": "{{}}"}}}}'.format(
             world.env['hosts']['backend_api']['host'], 'inventory/nss'),
 
-    'policies_latest':            '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", '
+    'mspl_latest':                '{}/{}?where={{"status": "Not applied"}}&sort=[("_updated", '
                                   '-1)]&max_results=1'.format(
             world.env['hosts']['backend_api']['host'], 'policies'),
 
     'policies_admin':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'admin/policies'),
 
-    'policies_apply':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies'),
+    'mspl_apply':             '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'policies'),
 
-    'vnsf_notifications_latest':  '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "VNSF"}}&xpto="{}"'.format(
+    'vnsf_notifications_latest':  '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "VNSF"}}&xpto="{'
+                                  '}"'.format(
             world.env['hosts']['backend_api']['host'], 'notifications', datetime.now()),
 
-    'tm_notifications_latest':    '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "TRUST_MONITOR"}}&xpto="{}"'.format(
+    'tm_notifications_latest':    '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": '
+                                  '"TRUST_MONITOR"}}&xpto="{}"'.format(
             world.env['hosts']['backend_api']['host'], 'notifications', datetime.now()),
 
     'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations'),
@@ -186,7 +191,7 @@ world.endpoints = {
     }
 
 world.sockets_endpoints = {
-    'policy':            '{}/policy'.format(world.env['hosts']['socket_server']['host']),
+    'mspl_notification': '{}/policy/{}'.format(world.env['hosts']['socket_server']['host'], '{}'),
     'vnsf_notification': '{}/vnsf/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}'),
     'tm_notification':   '{}/tm/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}')
     }

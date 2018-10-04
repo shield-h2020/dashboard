@@ -27,19 +27,20 @@ Feature: Security Policies
 
   Background: Ensure the environment is up and running
     Given The Recommendations Queue is ready
-    Given The Recommendations Socket is ready
 
   @smoke
   Scenario Outline: Recommendations successful notification
+    Given An MSPL notification socket is ready for <tenant>
+    Given I mock the vNSF association response with <mock_file>
     When I receive a security recommendation <MSPL>
     Then The security recommendation must be persisted <in_datastore>
     Then The security recommendation notification must be received <from_socket>
 
     Examples:
-      | MSPL                             | in_datastore                                | from_socket                                    |
+      | tenant   | mock_file                                                | MSPL                             | in_datastore                                | from_socket                                    |
       # Basic MSPL.
-      | mspl/ddos-mspl-small.xml         | mspl/ddos-mspl-persisted-small.json         | mspl/ddos-mspl-notification-small.json         |
+      | 1q2e3e4r | tenant_vnsfs/tenant-vnsf-association-policy-success.json | mspl/ddos-mspl-small.xml         | mspl/ddos-mspl-persisted-small.json         | mspl/ddos-mspl-notification-small.json         |
       # Several vNSFs in one recommendation.
-      | mspl/ddos-mspl-multiple-vnsf.xml | mspl/ddos-mspl-persisted-multiple-vnsf.json | mspl/ddos-mspl-notification-multiple-vnsf.json |
+      | 1q2e3e4r | tenant_vnsfs/tenant-vnsf-association-policy-success.json | mspl/ddos-mspl-multiple-vnsf.xml | mspl/ddos-mspl-persisted-multiple-vnsf.json | mspl/ddos-mspl-notification-multiple-vnsf.json |
       # Rules for 1000 IPs.
-      | mspl/ddos-mspl-large.xml         | mspl/ddos-mspl-persisted-large.json         | mspl/ddos-mspl-notification-large.json         |
+      | 1q2e3e4r | tenant_vnsfs/tenant-vnsf-association-policy-success.json | mspl/ddos-mspl-large.xml         | mspl/ddos-mspl-persisted-large.json         | mspl/ddos-mspl-notification-large.json         |

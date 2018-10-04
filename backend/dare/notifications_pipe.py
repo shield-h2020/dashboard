@@ -29,8 +29,8 @@ import logging
 
 import settings as cfg
 from dashboarddare.attack_processor import AttackProcessor
-from dashboarddare.dare_policy_q import DarePolicyQ
-from dashboarddare.socket_policy import PolicySocket
+from dashboarddare.mspl_notification import MsplNotification
+from dashboarddare.socket_mspl import MsplSocket
 from dashboarddare.socket_server import TornadoSocketServer
 from dashboarddare.socket_vnsf import VNSFSocket
 from dashboarddare.vnsf_notification import VNSFNotification
@@ -39,7 +39,7 @@ from dashboarddare.socket_tm import TMSocket
 from dashboardutils import log
 from dashboardutils.pipe import PipeManager
 
-dare_queue_settings = {
+mspl_queue_settings = {
     'host':          cfg.MSGQ_HOST,
     'port':          cfg.MSGQ_PORT,
     'user':          'guest',
@@ -114,19 +114,19 @@ if __name__ == '__main__':
     #   4. The pipe plumbing is done and the policies are auto-magically received in the DARE queue and conveyed to
     #      the socket.
 
-    manager = PipeManager()
-    DarePolicyQ(dare_queue_settings, manager)
-    dashboard_socket = PolicySocket(manager)
+    manager_mspl = PipeManager()
+    MsplNotification(mspl_queue_settings, manager_mspl)
+    mspl_socket = MsplSocket(manager_mspl)
 
-    manager_notifications = PipeManager()
-    VNSFNotification(vnsf_queue_settings, manager_notifications)
-    vnsf_socket = VNSFSocket(manager_notifications)
+    manager_vnsf = PipeManager()
+    VNSFNotification(vnsf_queue_settings, manager_vnsf)
+    vnsf_socket = VNSFSocket(manager_vnsf)
 
-    manager_tm_notifications = PipeManager()
-    TMNotification(tm_queue_settings, manager_tm_notifications)
-    tm_socket = TMSocket(manager_tm_notifications)
+    manager_tm = PipeManager()
+    TMNotification(tm_queue_settings, manager_tm)
+    tm_socket = TMSocket(manager_tm)
 
     manager_csv = PipeManager()
     AttackProcessor(attack_queue_settings, manager_csv)
 
-    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket, tm=tm_socket)
+    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, mspl=mspl_socket, tm=tm_socket)

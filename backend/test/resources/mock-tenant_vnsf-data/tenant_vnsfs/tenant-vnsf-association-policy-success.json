@@ -1,0 +1,37 @@
+{
+  "_items": [
+    {
+      "_id": "5b6303a2a5ab9400c0d15270",
+      "tenant_id": "1q2e3e4r",
+      "vnsf_instances": [
+        "vNSF-filtering",
+        "cirros_vnf_inst_2",
+        "cirros_vnf_inst_3"
+      ],
+      "_updated": "Thu, 02 Aug 2018 13:14:10 GMT",
+      "_created": "Thu, 02 Aug 2018 13:14:10 GMT",
+      "_etag": "81a3ceba1d3450c7ddb18be8650a014471da19d1",
+      "_links": {
+        "self": {
+          "title": "tenant vnsf association",
+          "href": "tenant_vnsfs/5b6303a2a5ab9400c0d15270"
+        }
+      }
+    }
+  ],
+  "_links": {
+    "parent": {
+      "title": "home",
+      "href": "/"
+    },
+    "self": {
+      "title": "tenant_vnsfs",
+      "href": "tenant_vnsfs"
+    }
+  },
+  "_meta": {
+    "page": 1,
+    "max_results": 25,
+    "total": 1
+  }
+}

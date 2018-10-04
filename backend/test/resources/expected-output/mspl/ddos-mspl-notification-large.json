@@ -7,6 +7,7 @@
     "root['tenant_id']"
   ],
   "expected": {
+     "vnsf_id": "vNSF-filtering",
     "detection": "2017-10-17T13:32:00",
     "severity": 3,
     "status": "Not applied",

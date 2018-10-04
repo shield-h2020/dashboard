@@ -44,15 +44,16 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         self.logger = logger or logging.getLogger(__name__)
         self.issue = IssueHandling(self.logger)
 
-    def apply_policy(self, tenant_id, policy):
+    def apply_policy(self, target_id, policy):
         """
         Sends a security policy through the Orchestrator REST interface.
 
-        :param tenant_id: The tenant to apply the policy to.
+        :param target_id: The target to apply the policy to.
         :param policy: The security policy data.
         """
 
         sec_policy = dict()
+        sec_policy['vnsf_id'] = target_id
         sec_policy['action'] = 'set-policies'
         sec_policy['params'] = dict()
         sec_policy['params']['policy'] = policy['recommendation']

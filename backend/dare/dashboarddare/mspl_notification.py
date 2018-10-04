@@ -26,22 +26,27 @@
 
 
 import logging
+from pprint import pprint
 from threading import Thread
 
 import settings as cfg
 from dashboardutils.pipe import PipeProducer
 from dashboardutils.rabbit_client import RabbitAsyncConsumer
-from .secpolicy_persistence import SecurityPolicyPersistence
+
+from .mspl_notification_persistence import MsplPersistence
 
 config = {
-    'tenant_id': cfg.VNSFO_TENANT_ID,
-    'policy_schema': cfg.POLICYSCHEMA_FILE,
-    'persist_url': cfg.POLICYAPI_PERSIST_URL,
-    'persist_headers': cfg.POLICYAPI_PERSIST_HEADERS
-}
+    'policy_schema':       cfg.POLICYSCHEMA_FILE,
+
+    'persist_url':         cfg.POLICYAPI_PERSIST_URL,
+    'persist_headers':     cfg.POLICYAPI_PERSIST_HEADERS,
+
+    'association_url':     cfg.MSPL_ASSOCIATION_API_URL,
+    'association_headers': cfg.MSPL_ASSOCIATION_API_HEADERS,
+    }
 
 
-class DarePolicyQ(PipeProducer):
+class MsplNotification(PipeProducer):
     """
     Handles the AMQP server to receive the DARE policies and acts as an events producer for such policies.
 
@@ -91,7 +96,9 @@ class DarePolicyQ(PipeProducer):
 
         self.logger.info('Policy: %r', body)
 
-        policy_persistence = SecurityPolicyPersistence(config)
-        policy = policy_persistence.persist(body)
+        policy_persistence = MsplPersistence(config)
 
-        self.notify_all(policy)
+        tenant, policy = policy_persistence.persist(body)
+        if tenant:
+            self.logger.debug('Sending Notification: {}'.format(pprint(policy)))
+            self.notify_by_tenant(policy, tenant)

@@ -1,12 +1,13 @@
 <section>
-  <label class="{{::$ctrl.styles.label}}"> 
-  <div class="{{::$ctrl.styles.label__text}}">{{::$ctrl.label}}</div>
-  <input  readonly="readonly" class="{{::$ctrl.styles.input}}" ng-click="$ctrl.openDatetimePicker()" ng-model="$ctrl.selectedDate">
-</label>
+  <label class="{{::$ctrl.styles.label}}">
+    <div class="{{::$ctrl.styles.label__text}}">{{::$ctrl.label}}</div>
+    <input readonly="readonly" class="{{::$ctrl.styles.input}}" ng-click="$ctrl.openDatetimePicker()" ng-model="$ctrl.showDate">
+  </label>
   <div class="angularjs-datetime-picker" ng-show="$ctrl.openPicker">
     <header class="adp-month">
       <button class="adp-prev" ng-click="$ctrl.addMonth(-1)">&laquo;</button>
-      <span title="{{$ctrl.calendar.months[mv.month].fullName}}">{{$ctrl.calendar.months[$ctrl.mv.month].shortName}}</span>      {{$ctrl.mv.year}}
+      <span title="{{$ctrl.calendar.months[mv.month].fullName}}">{{$ctrl.calendar.months[$ctrl.mv.month].shortName}}</span>
+      {{$ctrl.mv.year}}
       <button type="button" class="adp-next" ng-click="$ctrl.addMonth(1)">&raquo;</button>
     </header>
     <div class="adp-days">
@@ -22,9 +23,10 @@
       <div class="adp-day" ng-show="$ctrl.mv.trailingDays.length < 7" ng-repeat="day in $ctrl.mv.trailingDays">{{::day}}</div>
     </div>
     <div class="adp-days" id="adp-time">
-      <span class="timeLabel">Time:</span> <span class="timeValue">{{("0"+$ctrl.inputHour).slice(-2)}} : {{("0"+$ctrl.inputMinute).slice(-2)}}</span><br/>
-      <span class="hourLabel">Hour:</span> <input class="hourInput" type="range" min="0" max="23" ng-model="$ctrl.inputHour" ng-change="$ctrl.setDate($ctrl.selectedDay)"
-      />
+      <span class="timeLabel">Time:</span> <span class="timeValue">{{("0"+$ctrl.inputHour).slice(-2)}} :
+        {{("0"+$ctrl.inputMinute).slice(-2)}}</span><br />
+      <span class="hourLabel">Hour:</span> <input class="hourInput" type="range" min="0" max="23" ng-model="$ctrl.inputHour"
+        ng-change="$ctrl.setDate($ctrl.selectedDay)" />
       <span class="minutesLabel">Min:</span> <input class="minutesInput" type="range" min="0" max="59" ng-model="$ctrl.inputMinute"
         ng-change="$ctrl.setDate($ctrl.selectedDay)" />
     </div>

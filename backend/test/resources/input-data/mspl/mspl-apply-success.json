@@ -1,5 +1,6 @@
 {
   "tenant_id": "1234",
+  "vnsf_id": "some_id",
 	"detection": "2020-01-01T11:22:33",
   "severity": 3,
 	"status": "Not applied",

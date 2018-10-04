@@ -64,7 +64,6 @@ MSGQ_ATTACK = os.environ.get('MSGQ_ATTACK', '__no_CSV_queue_set__')
 MSGQ_ATTACK_ACK = bool(os.environ.get('MSGQ_ATTACK_ACK', True))
 MSGQ_ATTACK_TOPIC = os.environ.get('MSGQ_ATTACK_TOPIC', 'shield.notifications.csv')
 
-
 ###
 #   Websocket
 ###
@@ -124,7 +123,6 @@ __association_rest__ = {
 ASSOCIATION_API_URL = __association_rest__['association']['url']
 ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
 
-
 ###
 #   Association vNSF Instance
 ###
@@ -132,6 +130,16 @@ VNSF_INSTANCE_PROTOCOL = os.environ.get('TENANT_IP_PROTOCOL', None)
 VNSF_INSTANCE_HOST = os.environ.get('TENANT_IP_HOST', 'localhost')
 VNSF_INSTANCE_PORT = os.environ.get('TENANT_IP_PORT', -1)
 VNSF_INSTANCE_URL = '{}://{}:{}'.format(VNSF_INSTANCE_PROTOCOL, VNSF_INSTANCE_HOST, VNSF_INSTANCE_PORT)
+
+__mspl_association_rest__ = {
+    'mspl_association': {
+        'url':     '{}/{}'.format(VNSF_INSTANCE_URL, 'tenant_vnsfs'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+MSPL_ASSOCIATION_API_URL = __mspl_association_rest__['mspl_association']['url']
+MSPL_ASSOCIATION_API_HEADERS = __mspl_association_rest__['mspl_association']['headers']
 
 __tm_association_rest__ = {
     'tm_association': {
@@ -142,7 +150,6 @@ __tm_association_rest__ = {
 
 TM_ASSOCIATION_API_URL = __tm_association_rest__['tm_association']['url']
 TM_ASSOCIATION_API_HEADERS = __tm_association_rest__['tm_association']['headers']
-
 
 ###
 #   Schemas

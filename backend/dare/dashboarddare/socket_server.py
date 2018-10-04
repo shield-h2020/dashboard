@@ -53,7 +53,7 @@ class TornadoSocketServer:
         self.application = Application([
 
             # Frontend Interface.
-            (r'/policy', SendOnlySocketHandler, {'controller': controllers.get('policy')}),
+            (r'/policy/(?P<tenant>\w+)$', SendOnlySocketHandler, {'controller': controllers.get('mspl')}),
             (r'/vnsf/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,
              {'controller': controllers.get('vnsf')}),
             (r'/tm/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,

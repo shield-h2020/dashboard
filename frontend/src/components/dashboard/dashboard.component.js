@@ -7,7 +7,6 @@ const VIEW_STRING = {
 };
 
 const DAY_TIME_AGR = {
-
   hour: '0',
   day: '1',
   week: '2',
@@ -30,8 +29,6 @@ export const DashboardComponent = {
       this.scope = $scope;
     }
 
-    
-
     $onInit() {
       this.scope.selected_period = '0';
       this.scope.isAdmin = this.authService.isUserPlatformAdmin();
@@ -40,6 +37,7 @@ export const DashboardComponent = {
       this.attackIndex = -1;
       this.dayTimeAgr = false;
       this.customPeriodIndex = '3';
+      this.showDatePicker = false;
       this.customStart;
       this.customEnd;
       this.AvColors = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
@@ -72,6 +70,8 @@ export const DashboardComponent = {
 
       this.setFilter = function(eData) {
 
+        //console.log(eData.key)
+
         if(eData.key === 'sDate')
           this.customStart = eData.value;
 
@@ -80,6 +80,7 @@ export const DashboardComponent = {
         
         //console.log(this.scope.selected_period);
         //console.log(this.customPeriodIndex);
+
         if(this.scope.selected_period !== this.customPeriodIndex)
           return;
 
@@ -89,6 +90,7 @@ export const DashboardComponent = {
         //console.log(this.scope.sdate);
         //console.log(this.scope.edate);
 
+        this.showDatePicker = true;
         this.refreshPage();
       }
     }
@@ -129,10 +131,10 @@ export const DashboardComponent = {
         
         timeAgr = 'time(1h)';
         this.dayTimeAgr = DAY_TIME_AGR.hour;
-        console.log("dia");
+        //console.log("dia");
       }
       else {
-        console.log(inDays);
+        //console.log(inDays);
         if(inDays <= 12) {
 
           timeAgr = 'time(1d)';
@@ -196,6 +198,11 @@ export const DashboardComponent = {
           this.scope.edate = moment()
             .endOf('day')
             .format('YYYY-MM-DDTHH:mm:ss');
+
+          this.LastStartDate = this.scope.sdate;
+          this.LastEndDate = this.scope.edate;
+          this.showDatePicker =  false;
+
           break;
         case '1':
           this.scope.sdate = moment()
@@ -206,6 +213,11 @@ export const DashboardComponent = {
             .subtract(1, 'd')
             .endOf('day')
             .format('YYYY-MM-DDTHH:mm:ss');
+
+          this.LastStartDate = this.scope.sdate;
+          this.LastEndDate = this.scope.edate;
+          this.showDatePicker =  false;      
+
           break;
         case '2':
           this.scope.sdate = moment()
@@ -215,6 +227,12 @@ export const DashboardComponent = {
           this.scope.edate = moment()
             .endOf('day')
             .format('YYYY-MM-DDTHH:mm:ss');
+
+          
+          this.LastStartDate = this.scope.sdate;
+          this.LastEndDate = this.scope.edate;
+          this.showDatePicker =  false;
+          
           break;
         case '3':
           this.setFilter({key: '', value: ''});
@@ -267,7 +285,7 @@ export const DashboardComponent = {
       this.scope.start = `${this.scope.sdate}.000Z`;
       this.scope.end = `${this.scope.edate}.000Z`;
 
-      console.log(this.scope.start);
+      //console.log(this.scope.start);
 
       this.getTotalAttacks();
       this.getTotalAttackByDay();

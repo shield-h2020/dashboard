@@ -44,3 +44,12 @@ Feature: CSV Attack
       | measurement | mock_file                                         | attack_message                        | in_influx                              |
       | attack      | tenant_ips/tenant-ip-association-csv-success.json | attack/Slowloris_message.txt          | attack/Slowloris_message.json          |
       | attack      | tenant_ips/tenant-ip-association-csv-success.json | attack/Slowloris_multiple_message.txt | attack/Slowloris_multiple_message.json |
+
+
+   @xpto
+   Scenario Outline: Attack message cleanup
+     Given A clean influx <measurement>
+
+     Examples:
+     | measurement |
+     | attack      |

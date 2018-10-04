@@ -27,12 +27,17 @@
 
 import json
 import logging
+from pprint import pformat
 
 import requests
 import xmlschema
 from dashboardutils import http_utils
 from dashboardutils.error_utils import ExceptionMessage, IssueHandling, IssueElement
 from xmlschema import XMLSchemaValidationError
+
+
+class TenantAssociationError(ExceptionMessage):
+    """Error associating tenant and vNSF Instance ID"""
 
 
 class SecurityPolicyNotComplaint(ExceptionMessage):
@@ -43,11 +48,17 @@ class SecurityPolicyNotPersisted(ExceptionMessage):
     """Error persisting the security policy."""
 
 
-class SecurityPolicyPersistence:
+class MsplPersistence:
     errors = {
-        'POLICY': {
+        'NOTIFICATION': {
+            'ERROR': {
+                IssueElement.EXCEPTION.name: TenantAssociationError('Invalid association with total results of: {}')
+                }
+            },
+        'POLICY':       {
             'NOT_COMPLIANT': {
-                IssueElement.EXCEPTION.name: SecurityPolicyNotComplaint('Policy not compliant with the schema defined.')
+                IssueElement.EXCEPTION.name: SecurityPolicyNotComplaint(
+                        'Policy not compliant with the schema defined.')
                 },
             'NOT_PERSISTED': {
                 IssueElement.ERROR.name:     ['Persistence error for {}. Status: {}'],
@@ -62,15 +73,59 @@ class SecurityPolicyPersistence:
 
         self.settings = settings
 
+    def __associate_vnsf_instance__(self, instance_id):
+        """
+        Associates a given vNSF Instance to a tenant interacting with the association service.
+        :param instance_id: the vNSF instance ID to be associated with a tenant
+        :return String with the tenant name associated with the vNSF instance ID
+        :raise TenantAssociationError when the instance ID is associated with more then one tenant or none
+        association was found
+        """
+
+        self.logger.debug("Associating vNSF Instance ID: {}".format(instance_id))
+        url = self.settings.get('association_url')
+        headers = self.settings.get('association_headers')
+
+        # Create the query string to search for the vNSF instance
+        payload = dict(where='{{"vnsf_instances":"{}"}}'.format(instance_id))
+        try:
+            r = requests.get(url, headers=headers, params=payload)
+
+            if r.text:
+                self.logger.debug(r.text)
+
+            if not r.status_code == http_utils.HTTP_200_OK:
+                self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['NOT_PERSISTED'],
+                                    [[url, r.status_code]])
+
+            response_data = r.json()
+            if response_data['_meta']['total'] != 1:
+                self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['ERROR'],
+                                    [[response_data['_meta']['total']]])
+
+            tenant = response_data.get('_items')[0].get('tenant_id', None)
+            self.logger.debug("vNSF Instance ID {} belongs to Tenant {}".format(instance_id, tenant))
+            return tenant
+
+        except requests.exceptions.ConnectionError as e:
+            self.logger.error('Error associating the vNSF Instance at {}.'.format(url), e)
+            raise Exception
+
     def persist(self, policy):
         try:
             # Check MSPL schema compliance.
             policy_schema = xmlschema.XMLSchema(self.settings['policy_schema'])
-            policy_context = policy_schema.to_dict(policy, './tns:mspl-set/tns:context')
+
+            # Associate vNSF with tenant
+            it_resource = policy_schema.to_dict(policy, './tns:mspl-set/tns:it-resource')
+            print("it-resource:\n" + pformat(it_resource))
+            tenant = self.__associate_vnsf_instance__(it_resource['@id'])
 
             # Extract metadata.
+            policy_context = policy_schema.to_dict(policy, './tns:mspl-set/tns:context')
             policy_info = dict()
-            policy_info['tenant_id'] = self.settings['tenant_id']
+            policy_info['tenant_id'] = tenant
+            policy_info['vnsf_id'] = it_resource['@id']
             policy_info['detection'] = policy_context['tns:timestamp']
             policy_info['severity'] = policy_context['tns:severity']
             policy_info['status'] = 'Not applied'
@@ -89,7 +144,7 @@ class SecurityPolicyPersistence:
 
             r = requests.post(url, headers=headers, data=policy_json)
 
-            if len(r.text) > 0:
+            if r.text:
                 self.logger.debug(r.text)
 
             if not r.status_code == http_utils.HTTP_201_CREATED:
@@ -101,7 +156,7 @@ class SecurityPolicyPersistence:
             policy_info['_id'] = response_data['_id']
             policy_info['_etag'] = response_data['_etag']
 
-            return policy_info
+            return tenant, policy_info
 
         except XMLSchemaValidationError:
             self.issue.raise_ex_no_log(IssueElement.ERROR, self.errors['POLICY']['NOT_COMPLIANT'])
