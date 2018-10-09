@@ -57,12 +57,12 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
 
     errors = {
         'POLICY': {
-            'POLICY_ISSUE': {
-                IssueElement.ERROR.name: ['vNFSO policy at {}. Status: {}'],
+            'POLICY_ISSUE':      {
+                IssueElement.ERROR.name:     ['vNFSO policy at {}. Status: {}'],
                 IssueElement.EXCEPTION.name: VnsfOrchestratorPolicyIssue('Can not convey policy to the vNFSO')
                 },
             'VNSFO_UNREACHABLE': {
-                IssueElement.ERROR.name: ['Error conveying policy at {}'],
+                IssueElement.ERROR.name:     ['Error conveying policy at {}'],
                 IssueElement.EXCEPTION.name: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
                 }
             }
@@ -77,11 +77,11 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
         self.logger.debug('vNSF Orchestrator API at: %s', self.basepath)
 
     @abstractmethod
-    def apply_policy(self, tenant_id, policy):
+    def apply_policy(self, target_id, policy):
         """
         Sends a security policy to the Orchestrator.
 
-        :param tenant_id: The tenant to apply the policy to.
+        :param target_id: The target to apply the policy to.
         :param policy: The security policy data.
         """
 

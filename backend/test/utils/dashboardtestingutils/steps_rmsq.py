@@ -24,9 +24,9 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
-import os
 from time import sleep
 
+import os
 import pika
 from radish import given, world
 
@@ -37,13 +37,13 @@ def recommendations_queue_ready(step):
         return
 
     world.my_context['msgq_connection'] = pika.BlockingConnection(
-        pika.ConnectionParameters(host=world.env['hosts']['msg_q']['host'],
-                                  port=world.env['hosts']['msg_q']['port']))
+            pika.ConnectionParameters(host=world.env['hosts']['mspl_msg_q']['host'],
+                                      port=world.env['hosts']['mspl_msg_q']['port']))
 
     world.my_context['msgq_channel'] = world.my_context['msgq_connection'].channel()
 
-    world.my_context['msgq_channel'].exchange_declare(exchange=world.env['hosts']['msg_q']['exchange'],
-                                                      exchange_type=world.env['hosts']['msg_q']['exchange_type'])
+    world.my_context['msgq_channel'].exchange_declare(exchange=world.env['hosts']['mspl_msg_q']['exchange'],
+                                                      exchange_type=world.env['hosts']['mspl_msg_q']['exchange_type'])
 
 
 def send_notification(input_data, channel, exchange, topic, data):

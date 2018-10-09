@@ -33,15 +33,9 @@ from dashboardtestingutils.steps_sockets import *
 from dashboardtestingutils.steps_utils import *
 from radish import given, when, then, world
 
-
-@given(re.compile(u'A TM notification socket is ready'))
-def set_host_socket(step):
-    pass
-
-
 @given(re.compile(u'A TM VNSF notification socket is ready for (.*)'))
 def set_vnsf_socket(step, tenant):
-    set_socket_client(world.sockets_endpoints['tm_vnsf_notification'].format(tenant), tenant)
+    set_socket_client(world.sockets_endpoints['tm_notification'].format(tenant), tenant)
 
 
 @when(re.compile(u'I receive a TM notification with (.*)'))

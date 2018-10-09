@@ -14,7 +14,7 @@
 */
 const BACKEND_HOST = window.location.hostname;
 const API_PORT = __API_PORT__ || 13030;
-const SOCKET_PORT = __API_SOCKET_PORT__ || 9092;
+const SOCKET_PORT = __API_SOCKET_PORT__ || 18888;
 const STORE_PORT = __API_STORE_PORT__ || 6060;
 const INFLUXPORT = __INFLUXPORT__ || 8086;
 

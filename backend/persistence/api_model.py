@@ -34,6 +34,14 @@ policy_model = {
         'required':    True
         },
 
+    # The vNSF instance ID where the policy should be applied.
+    'vnsf_id':        {
+        'description': 'Description of the user resource',
+        'type':        'string',
+        'empty':       False,
+        'required':    True
+        },
+
     # Time and date when the thread was detected. Format: ISO 8601.
     'detection':      {
         # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
@@ -474,15 +482,15 @@ tenant_ip_association = {
     }
 
 tenant_vnsf_association = {
-    'tenant_id': {
-        'type': 'string',
-        'empty': False,
+    'tenant_id':      {
+        'type':     'string',
+        'empty':    False,
         'required': True,
-    },
+        },
     'vnsf_instances': {
-        'type': 'list',
-        'schema': {'type': 'string'},
-        'empty': False,
+        'type':     'list',
+        'schema':   {'type': 'string'},
+        'empty':    False,
         'required': True
         }
     }

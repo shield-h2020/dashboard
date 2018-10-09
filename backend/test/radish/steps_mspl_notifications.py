@@ -37,15 +37,19 @@ from dashboardtestingutils.steps_utils import *
 from dashboardutils import http_utils
 from radish import given, when, then, world
 from radish.stepmodel import Step
-from shutil import copyfile
+
+
+@given(re.compile(u'An MSPL notification socket is ready for (.*)'))
+def set_vnsf_socket(step, tenant):
+    set_socket_client(world.sockets_endpoints['mspl_notification'].format(tenant), tenant)
 
 
 @when(re.compile(u'I receive a security recommendation (.*)'))
-def security_policy(step, policy):
+def mspl_notification(step, policy):
     send_notification(
             os.path.join(world.env['data']['input_data']),
-            world.my_context['msgq_channel'], world.env['hosts']['msg_q']['exchange'],
-            world.env['hosts']['msg_q']['topic'], policy)
+            world.my_context['msgq_channel'], world.env['hosts']['mspl_msg_q']['exchange'],
+            world.env['hosts']['mspl_msg_q']['topic'], policy)
 
 
 @then(re.compile(u'The security recommendation must be persisted (.*)'))
@@ -53,7 +57,7 @@ def is_policy_persisted(step, policy):
     # Ensure that the system under test has time to persist the recommendation.
     sleep(3)
 
-    http_get(step, world.endpoints['policies_latest'])
+    http_get(step, world.endpoints['mspl_latest'])
     matches_json_file(step, policy)
 
 
@@ -78,26 +82,27 @@ def apply_latest_policy(step):
     #
     #  Set the proper vNSFO response.
     #
-    dest_file = os.path.join(world.env['mock']['vnsfo_folder'], world.mock_vnsfo_endpoints['apply_policy'],
-                             'index.post.json')
-    dest_path = os.path.dirname(dest_file)
-    if not os.path.exists(dest_path):
-        os.makedirs(dest_path, exist_ok=True)
 
-    src_file = os.path.join(world.env['mock']['vnsfo_data'], step.context.mock_vnsfo['response_file'])
-    assert os.path.isfile(src_file)
-    copyfile(src_file, dest_file)
+    # dest_file = os.path.join(world.env['mock']['vnsfo_folder'], world.mock_vnsfo_endpoints['apply_policy'],
+    #                          'index.post.json')
+    # dest_path = os.path.dirname(dest_file)
+    # if not os.path.exists(dest_path):
+    #     os.makedirs(dest_path, exist_ok=True)
+    #
+    # src_file = os.path.join(world.env['mock']['vnsfo_data'], step.context.mock_vnsfo['response_file'])
+    # assert os.path.isfile(src_file)
+    # copyfile(src_file, dest_file)
 
     #
     #  Get latest policy data.
     #
-    http_get(step, world.endpoints['policies_latest'])
+    http_get(step, world.endpoints['mspl_latest'])
     expected_status_code(step, http_utils.HTTP_200_OK)
 
     #
     # Apply the latest policy.
     #
-    url = '{}/{}'.format(world.endpoints['policies_apply'], step.context.api['response']['json']['_items'][0]['_id'])
+    url = '{}/{}'.format(world.endpoints['mspl_apply'], step.context.api['response']['json']['_items'][0]['_id'])
     set_http_headers(step, {'If-Match': step.context.api['response']['json']['_items'][0]['_etag']})
     http_patch_json(step, url, {'status': 'Applied'})
 

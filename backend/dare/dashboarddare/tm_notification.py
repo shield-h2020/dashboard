@@ -127,7 +127,9 @@ class TMNotification(PipeProducer):
                     tenant_vnsf_association[tenant]['tenant_id'] = tenant
 
                 tenant_vnsf_association[tenant]['vnsfs'].append(vnsf)
-            notification_persistence.persist_host(host, 'hosts')
+
+        notification_persistence.persist_host(notifications['sdn'], 'sdn')
+        notification_persistence.persist_host(notifications['hosts'], 'hosts')
 
         for _tenant, _vnsf in tenant_vnsf_association.items():
             notification_persistence.persist_vnsf(_vnsf)
@@ -135,9 +137,6 @@ class TMNotification(PipeProducer):
             self.notify_by_tenant(config['attestation_message'], _tenant)
 
         self.logger.debug(f'Sending Notification for tenant {tenant}: {vnsf}')
-
-        for sdn in notifications['sdn']:
-            notification_persistence.persist_host(sdn, 'sdn')
 
         self.logger.debug('Sending Notification to host: {}'.format(pprint(notifications)))
         self.notify_all(config['attestation_message'])

@@ -2,9 +2,9 @@
   "_items": [
     {
       "_id": "5b6303a2a5ab9400c0d15270",
-      "tenant_id": "3da63",
+      "tenant_id": "1q2e3e4r",
       "vnsf_instances": [
-        "nfvi-node",
+        "vNSF-filtering",
         "cirros_vnf_inst_2",
         "cirros_vnf_inst_3"
       ],

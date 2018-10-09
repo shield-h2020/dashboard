@@ -41,9 +41,9 @@ body {
 }
 
 .dashboard_datepicker_text {
-  margin-right: 20px;
+  /*margin-right: 20px;*/
   display: inline-block;
-  font-size: 14px;
+  font-size: 12px;
   color: #818181;
   font-family: "Open Sans", sans-serif;
   line-height: 40px;
@@ -1136,12 +1136,18 @@ body.page-container-boxed .page-container {
 .chart_holder {
   border: 1px solid #F1F0F0;
   height: 450px;
+  text-align: center;
 }
 
 .filter_selects {
-  width: 100%;
   height: 40px;
-  background: #fff
+  background: #fff;
+  border: 1px solid #818181;
+  border-radius: 4px;
+  color: #818181;
+  font-size: 12px;
+  font-family: 'OpenSans';
+  font-weight: bold;
 }
 
 .bg_partial{
@@ -1198,3 +1204,38 @@ rect {
   transition: fill 0.3s;
 }
 
+
+//Joana//
+//space_divs
+
+.smalldiv{
+  min-height: 20px;
+  max-height: 20px;
+  clear: both;
+}
+
+.medium_div{
+  min-height: 50px;
+  max-height: 50px;
+  clear: both;
+}
+
+.large_div{
+  min-height: 70px;
+  max-height: 70px;
+  clear: both;
+}
+
+.datepickerClass label{
+  align-items: center;
+}
+
+//Sticky footer
+ui-view{
+  min-height: 100%;
+  margin-bottom: -90px;
+}
+
+.footer {
+  height: 90px;
+}

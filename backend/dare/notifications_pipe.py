@@ -29,67 +29,68 @@ import logging
 
 import settings as cfg
 from dashboarddare.attack_processor import AttackProcessor
-from dashboarddare.dare_policy_q import DarePolicyQ
-from dashboarddare.socket_policy import PolicySocket
+from dashboarddare.mspl_notification import MsplNotification
+from dashboarddare.socket_mspl import MsplSocket
 from dashboarddare.socket_server import TornadoSocketServer
-from dashboarddare.socket_tm import TMSocket, TMHostSocket
 from dashboarddare.socket_vnsf import VNSFSocket
-from dashboarddare.tm_notification import TMNotification
 from dashboarddare.vnsf_notification import VNSFNotification
+from dashboarddare.socket_tm import TMSocket, TMHostSocket
+from dashboarddare.tm_notification import TMNotification
 from dashboardutils import log
 from dashboardutils.pipe import PipeManager
 
-dare_queue_settings = {
-    'host': cfg.MSGQ_HOST,
-    'port': cfg.MSGQ_PORT,
-    'user': 'guest',
-    'pass': 'guest',
-    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
+mspl_queue_settings = {
+    'host':          cfg.MSGQ_HOST,
+    'port':          cfg.MSGQ_PORT,
+    'user':          'guest',
+    'pass':          'guest',
+    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue': cfg.MSGQ_DARE,
-    'queue_ack': cfg.MSGQ_DARE_ACK,
-    'topic': cfg.MSGQ_DARE_TOPIC
-}
+    'queue':         cfg.MSGQ_DARE,
+    'queue_ack':     cfg.MSGQ_DARE_ACK,
+    'topic':         cfg.MSGQ_DARE_TOPIC
+    }
+
 
 vnsf_queue_settings = {
-    'host': cfg.MSGQ_HOST,
-    'port': cfg.MSGQ_PORT,
-    'user': 'guest',
-    'pass': 'guest',
-    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'host':          cfg.MSGQ_HOST,
+    'port':          cfg.MSGQ_PORT,
+    'user':          'guest',
+    'pass':          'guest',
+    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue': cfg.MSGQ_VNSF,
-    'queue_ack': cfg.MSGQ_VNSF_ACK,
-    'topic': cfg.MSGQ_VNSF_TOPIC
-}
+    'queue':         cfg.MSGQ_VNSF,
+    'queue_ack':     cfg.MSGQ_VNSF_ACK,
+    'topic':         cfg.MSGQ_VNSF_TOPIC
+    }
 
 tm_queue_settings = {
-    'host': cfg.MSGQ_HOST,
-    'port': cfg.MSGQ_PORT,
-    'user': 'guest',
-    'pass': 'guest',
-    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'host':         cfg.MSGQ_HOST,
+    'port':          cfg.MSGQ_PORT,
+    'user':          'guest',
+    'pass':          'guest',
+    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue': cfg.MSGQ_TM,
-    'queue_ack': cfg.MSGQ_TM_ACK,
-    'topic': cfg.MSGQ_TM_TOPIC,
+    'queue':         cfg.MSGQ_TM,
+    'queue_ack':     cfg.MSGQ_TM_ACK,
+    'topic':         cfg.MSGQ_TM_TOPIC,
 }
 
 attack_queue_settings = {
-    'host': cfg.MSGQ_HOST,
-    'port': cfg.MSGQ_PORT,
-    'user': 'guest',
-    'pass': 'guest',
-    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'host':          cfg.MSGQ_HOST,
+    'port':          cfg.MSGQ_PORT,
+    'user':          'guest',
+    'pass':          'guest',
+    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue': cfg.MSGQ_ATTACK,
-    'queue_ack': cfg.MSGQ_ATTACK_ACK,
-    'topic': cfg.MSGQ_ATTACK_TOPIC
-}
+    'queue':         cfg.MSGQ_ATTACK,
+    'queue_ack':     cfg.MSGQ_ATTACK_ACK,
+    'topic':         cfg.MSGQ_ATTACK_TOPIC
+    }
 
 dashboard_socket_settings = {
     'port': cfg.SKT_PORT
-}
+    }
 
 if __name__ == '__main__':
     log.setup_logging()
@@ -114,13 +115,13 @@ if __name__ == '__main__':
     #   4. The pipe plumbing is done and the policies are auto-magically received in the DARE queue and conveyed to
     #      the socket.
 
-    manager = PipeManager()
-    DarePolicyQ(dare_queue_settings, manager)
-    dashboard_socket = PolicySocket(manager)
+    manager_mspl = PipeManager()
+    MsplNotification(mspl_queue_settings, manager_mspl)
+    mspl_socket = MsplSocket(manager_mspl)
 
-    manager_notifications = PipeManager()
-    VNSFNotification(vnsf_queue_settings, manager_notifications)
-    vnsf_socket = VNSFSocket(manager_notifications)
+    manager_vnsf = PipeManager()
+    VNSFNotification(vnsf_queue_settings, manager_vnsf)
+    vnsf_socket = VNSFSocket(manager_vnsf)
 
     manager_tm_notifications = PipeManager()
     TMNotification(tm_queue_settings, manager_tm_notifications)
@@ -130,5 +131,5 @@ if __name__ == '__main__':
     manager_csv = PipeManager()
     AttackProcessor(attack_queue_settings, manager_csv)
 
-    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket, tm=tm_socket,
+    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, mspl=mspl_socket, tm=tm_socket,
                         tm_host=tm_host_socket)

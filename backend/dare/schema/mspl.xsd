@@ -50,9 +50,6 @@ limitations under the License.
                 </annotation>
                 <simpleType>
                     <restriction base="string">
-                        <enumeration value="TCP flood"/>
-                        <enumeration value="UDP flood"/>
-                        <enumeration value="DoS"/>
                     </restriction>
                 </simpleType>
             </element>

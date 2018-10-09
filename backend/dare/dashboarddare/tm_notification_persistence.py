@@ -128,8 +128,12 @@ class TMNotificationPersistence:
 
         try:
             # Persist notification.
-            notification['type'] = notification_type
-            r = requests.post(url, headers=headers, data=json.dumps(notification))
+            notification_to_persist = {
+                "type": notification_type,
+                notification_type: notification
+            }
+
+            r = requests.post(url, headers=headers, data=json.dumps(notification_to_persist))
 
             if r.text:
                 self.logger.debug(r.text)
