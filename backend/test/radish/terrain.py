@@ -37,6 +37,8 @@ def setup(features, marker):
     world.my_context['msgq_channel'] = None
     world.my_context['socket'] = dict()
     world.my_context['socket_output_file'] = tempfile.NamedTemporaryFile(delete=False).name
+    #world.my_context['socket_output_file_2'] = tempfile.NamedTemporaryFile(delete=False).name
+
 
 
 @before.each_scenario

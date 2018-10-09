@@ -26,13 +26,48 @@
 
 
 tm_notification = {
-    "event": {
-        'type': 'dict',
-        'allow_unknown': True,
-        'schema': {
-            'vnsf_instance_id': {
-                'type': 'string'
+    'type': 'dict',
+    'allow_unknown': True,
+    'schema': {
+        'hosts': {
+            'type': 'list',
+            'allow_unknown': True,
+            'schema': {
+                'node': 'string',
+                'status': 'integer',
+                'remediation': {
+                    'type': 'dict',
+                    'schema': {
+                        'isolate': 'boolean',
+                        'update': 'boolean',
+                        'reboot': 'boolean'
+                    }
+                },
+                'vnsfs': {
+                    'type': 'list',
+                    'allow_unknown': True,
+                    'schema': {
+                        'vnsf_id': 'string',
+                        'vnsfd_name': 'string',
+                        'remediation': {
+                            'type': 'dict',
+                            'schema': {
+                                'isolate': 'boolean',
+                                'update': 'boolean',
+                                'reboot': 'boolean'
+                            }
+                        }
+                    }
+                },
+                'trust': 'boolean'
             }
-        }
+        },
+        'sdn': {
+            'type': 'list',
+            'allow_unknown': True,
+            'schema': {
+            }
+        },
+        'trust': 'boolean'
     }
 }

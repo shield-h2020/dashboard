@@ -1,0 +1,52 @@
+{
+  "ignore": [
+    "root['_links']",
+    "root['_meta']",
+    "root['self']",
+    "root['next']",
+    "root['parent']",
+    "root['_items'][0]['_links']",
+    "root['_items'][0]['_id']",
+    "root['_items'][0]['_etag']",
+    "root['_items'][0]['_created']",
+    "root['_items'][0]['_updated']"
+  ],
+  "expected": {
+    "_items": [
+      {
+        "node": "switch-1",
+        "trust": false,
+        "driver": "HPESwitch",
+        "extra_info": {
+          "VerificationFailed": false,
+          "CertSigned": true,
+          "ConfigurationMatch": true,
+          "Certificate": {
+            "ValidityStart": "2016-11-16 02:00:05 +0000 UTC",
+            "SwitchSerial": "SG6AG0V0F0, BaseMAC 00fd45-214040",
+            "ValidityEnd": "2031-01-26 01:55:09 +0000 UTC",
+            "Version": "3",
+            "SwitchModel": "J9575A",
+            "Serial": "80B47652102C4874A14C91923E396B37",
+            "Issuer": "HP Device Intermediate CA 101|Hewlett-Packard Development Company"
+          },
+          "SDNRulesMatch": false,
+          "OSLevel": 0,
+          "CertSigningCA": "Device Intermediate CA 01 | Hewlett-Packard Development Company",
+          "FirmwareLevel": 0,
+          "Time": "2018-09-25 17:02:23.565863569 +0000 UTC",
+          "Remediation": {
+            "CheckFlows": true,
+            "CheckConfig": false,
+            "Isolate": false,
+            "Reboot": false,
+            "Update": false
+          },
+          "OSVersion": "KA.15.17.0000x Fixed Stack build",
+          "FirmwareVersion": "KA.15.09 build 9457"
+        },
+        "type": "sdn"
+      }
+    ]
+  }
+}

@@ -31,21 +31,23 @@ from pprint import pprint
 from threading import Thread
 
 import settings as cfg
-from cerberus import Validator
 from dashboardutils.pipe import PipeProducer
 from dashboardutils.rabbit_client import RabbitAsyncConsumer
-from schema.tm_notification import tm_notification
 
 from .tm_notification_persistence import TMNotificationPersistence
 
 config = {
-    'persist_url': cfg.NOTIFICATION_API_PERSIST_URL,
-    'persist_headers': cfg.NOTIFICATION_API_PERSIST_HEADERS,
+    'persist_url_hosts': cfg.TM_NOTIFICATION_API_PERSIST_HOST_URL,
+    'persist_headers_hosts': cfg.TM_NOTIFICATION_API_PERSIST_HOST_HEADERS,
+
+    'persist_url_vnsf': cfg.TM_NOTIFICATION_API_PERSIST_VNSF_URL,
+    'persist_headers_vnsf': cfg.TM_NOTIFICATION_API_PERSIST_VNSF_HEADERS,
 
     'association_url': cfg.TM_ASSOCIATION_API_URL,
     'association_headers': cfg.TM_ASSOCIATION_API_HEADERS,
 
-    'notification_type': 'TRUST_MONITOR'
+    'attestation_message': cfg.TM_ATTESTATION_MESSAGE
+
 }
 
 
@@ -58,7 +60,7 @@ class TMNotification(PipeProducer):
     producer.
     """
 
-    def __init__(self, settings, pipe):
+    def __init__(self, settings, pipe, boot=True):
         """
         :param settings: The AMQP queue settings.
         :param pipe: The pipe manager where this instance is to be identified as an events producer.
@@ -71,8 +73,9 @@ class TMNotification(PipeProducer):
         self.pipe = pipe
         self._consumer = RabbitAsyncConsumer(config=settings, msg_callback=self.persist_notification)
 
-        # Setup the instance as the events producer for the managed pipe.
-        self.pipe.boot_in_sink(self)
+        if boot:
+            # Setup the instance as the events producer for the managed pipe.
+            self.pipe.boot_in_sink(self)
 
     def setup(self):
         """
@@ -98,15 +101,43 @@ class TMNotification(PipeProducer):
 
         self.logger.info('TM Notification: %r', body)
 
+        notifications = json.loads(body)
+        # v = Validator(tm_notification)
+
+        # Validate the received notification
+        # TODO: Validate the schema by file
+        '''
+        if not v.validate(notifications):
+            self.logger.error('Error validating notification {}'.format(pprint(v.errors)))
+        '''
+        # Persist the notification
         notification_persistence = TMNotificationPersistence(config)
 
-        notifications = json.loads(body)
-        v = Validator(tm_notification)
+        # Based on the message provide two operations
+        tenant_vnsf_association = {}
+        for host in notifications['hosts']:
+            vnsfs = host.pop('vnsfs', [])
 
-        for notification in notifications:
-            if not v.validate(notification):
-                self.logger.error('Error validating notification {}'.format(pprint(v.errors)))
-            tenant = notification_persistence.persist(notification)
-            if tenant:
-                self.logger.debug('Sending Notification: {}'.format(pprint(notification)))
-                self.notify_by_tenant(notification, tenant)
+            for vnsf in vnsfs:
+                tenant = notification_persistence.__associate_vnsf_instance__(vnsf.get('vnsfd_name'))
+                if tenant not in tenant_vnsf_association:
+                    tenant_vnsf_association[tenant] = {}
+                    tenant_vnsf_association[tenant]['vnsfs'] = []
+                    tenant_vnsf_association[tenant]['time'] = host.get('time')
+                    tenant_vnsf_association[tenant]['tenant_id'] = tenant
+
+                tenant_vnsf_association[tenant]['vnsfs'].append(vnsf)
+            notification_persistence.persist_host(host, 'hosts')
+
+        for _tenant, _vnsf in tenant_vnsf_association.items():
+            notification_persistence.persist_vnsf(_vnsf)
+            _vnsf.pop('tenant_id', None)
+            self.notify_by_tenant(config['attestation_message'], _tenant)
+
+        self.logger.debug(f'Sending Notification for tenant {tenant}: {vnsf}')
+
+        for sdn in notifications['sdn']:
+            notification_persistence.persist_host(sdn, 'sdn')
+
+        self.logger.debug('Sending Notification to host: {}'.format(pprint(notifications)))
+        self.notify_all(config['attestation_message'])

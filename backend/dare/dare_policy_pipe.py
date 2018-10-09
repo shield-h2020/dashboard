@@ -32,64 +32,64 @@ from dashboarddare.attack_processor import AttackProcessor
 from dashboarddare.dare_policy_q import DarePolicyQ
 from dashboarddare.socket_policy import PolicySocket
 from dashboarddare.socket_server import TornadoSocketServer
+from dashboarddare.socket_tm import TMSocket, TMHostSocket
 from dashboarddare.socket_vnsf import VNSFSocket
-from dashboarddare.vnsf_notification import VNSFNotification
 from dashboarddare.tm_notification import TMNotification
-from dashboarddare.socket_tm import TMSocket
+from dashboarddare.vnsf_notification import VNSFNotification
 from dashboardutils import log
 from dashboardutils.pipe import PipeManager
 
 dare_queue_settings = {
-    'host':          cfg.MSGQ_HOST,
-    'port':          cfg.MSGQ_PORT,
-    'user':          'guest',
-    'pass':          'guest',
-    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'host': cfg.MSGQ_HOST,
+    'port': cfg.MSGQ_PORT,
+    'user': 'guest',
+    'pass': 'guest',
+    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue':         cfg.MSGQ_DARE,
-    'queue_ack':     cfg.MSGQ_DARE_ACK,
-    'topic':         cfg.MSGQ_DARE_TOPIC
-    }
+    'queue': cfg.MSGQ_DARE,
+    'queue_ack': cfg.MSGQ_DARE_ACK,
+    'topic': cfg.MSGQ_DARE_TOPIC
+}
 
 vnsf_queue_settings = {
-    'host':          cfg.MSGQ_HOST,
-    'port':          cfg.MSGQ_PORT,
-    'user':          'guest',
-    'pass':          'guest',
-    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'host': cfg.MSGQ_HOST,
+    'port': cfg.MSGQ_PORT,
+    'user': 'guest',
+    'pass': 'guest',
+    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue':         cfg.MSGQ_VNSF,
-    'queue_ack':     cfg.MSGQ_VNSF_ACK,
-    'topic':         cfg.MSGQ_VNSF_TOPIC
-    }
+    'queue': cfg.MSGQ_VNSF,
+    'queue_ack': cfg.MSGQ_VNSF_ACK,
+    'topic': cfg.MSGQ_VNSF_TOPIC
+}
 
 tm_queue_settings = {
-    'host':         cfg.MSGQ_HOST,
-    'port':          cfg.MSGQ_PORT,
-    'user':          'guest',
-    'pass':          'guest',
-    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'host': cfg.MSGQ_HOST,
+    'port': cfg.MSGQ_PORT,
+    'user': 'guest',
+    'pass': 'guest',
+    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue':         cfg.MSGQ_TM,
-    'queue_ack':     cfg.MSGQ_TM_ACK,
-    'topic':         cfg.MSGQ_TM_TOPIC,
+    'queue': cfg.MSGQ_TM,
+    'queue_ack': cfg.MSGQ_TM_ACK,
+    'topic': cfg.MSGQ_TM_TOPIC,
 }
 
 attack_queue_settings = {
-    'host':          cfg.MSGQ_HOST,
-    'port':          cfg.MSGQ_PORT,
-    'user':          'guest',
-    'pass':          'guest',
-    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'host': cfg.MSGQ_HOST,
+    'port': cfg.MSGQ_PORT,
+    'user': 'guest',
+    'pass': 'guest',
+    'exchange': cfg.MSGQ_EXCHANGE_DASHBOARD,
     'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
-    'queue':         cfg.MSGQ_ATTACK,
-    'queue_ack':     cfg.MSGQ_ATTACK_ACK,
-    'topic':         cfg.MSGQ_ATTACK_TOPIC
-    }
+    'queue': cfg.MSGQ_ATTACK,
+    'queue_ack': cfg.MSGQ_ATTACK_ACK,
+    'topic': cfg.MSGQ_ATTACK_TOPIC
+}
 
 dashboard_socket_settings = {
     'port': cfg.SKT_PORT
-    }
+}
 
 if __name__ == '__main__':
     log.setup_logging()
@@ -125,8 +125,10 @@ if __name__ == '__main__':
     manager_tm_notifications = PipeManager()
     TMNotification(tm_queue_settings, manager_tm_notifications)
     tm_socket = TMSocket(manager_tm_notifications)
+    tm_host_socket = TMHostSocket(manager_tm_notifications)
 
     manager_csv = PipeManager()
     AttackProcessor(attack_queue_settings, manager_csv)
 
-    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket, tm=tm_socket)
+    TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, policy=dashboard_socket, tm=tm_socket,
+                        tm_host=tm_host_socket)

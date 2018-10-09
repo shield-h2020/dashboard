@@ -178,8 +178,13 @@ world.endpoints = {
     'vnsf_notifications_latest':  '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "VNSF"}}&xpto="{}"'.format(
             world.env['hosts']['backend_api']['host'], 'notifications', datetime.now()),
 
-    'tm_notifications_latest':    '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "TRUST_MONITOR"}}&xpto="{}"'.format(
-            world.env['hosts']['backend_api']['host'], 'notifications', datetime.now()),
+    'tm_host_notifications_latest':    '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "hosts"}}'.format(
+            world.env['hosts']['backend_api']['host'], 'tm/notifications'),
+    'tm_sdn_notifications_latest':    '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"type": "sdn"}}'.format(
+            world.env['hosts']['backend_api']['host'], 'tm/notifications'),
+    'tm_vnsf_notifications_latest': '{}/{}?sort=[("_updated", -1)]&max_results=1&where={{"tenant_id": "3da63"}}'.format(
+            world.env['hosts']['backend_api']['host'], 'tm/vnsf/notifications'),
+
 
     'validations':                '{}/{}'.format(world.env['hosts']['backend_api']['host'], 'validations'),
     'influx_query':               f"{world.env['hosts']['influxdb']['host']}/query"
@@ -188,5 +193,5 @@ world.endpoints = {
 world.sockets_endpoints = {
     'policy':            '{}/policy'.format(world.env['hosts']['socket_server']['host']),
     'vnsf_notification': '{}/vnsf/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}'),
-    'tm_notification':   '{}/tm/notifications/{}'.format(world.env['hosts']['socket_server']['host'], '{}')
+    'tm_vnsf_notification':   '{}/tm/notifications/vnsf/{}'.format(world.env['hosts']['socket_server']['host'], '{}')
     }

@@ -393,6 +393,72 @@ notification_model = {
         }
     }
 
+notification_tm_host_model = {
+    # The type must be enhanced with allow unknown on its definition
+    "type":      {
+        "type":     "string",
+        "empty":    False,
+        "required": True
+        }
+    }
+
+notification_tm_vnsf_model = {
+    # The type must be enhanced with allow unknown on its definition
+    "tenant_id": {
+        "type":     "string",
+        "empty":    False,
+        "required": True
+        },
+    "time": {
+        "type":     "string",
+        "empty":    False,
+        "required": True
+        },
+    "vnsfs": {
+        "type":     "list",
+        "empty":    False,
+        "required": True,
+        "schema": {
+            "vnsf_id":      {
+                "type":     "string",
+                "empty":    False,
+                "required": True
+                },
+            "vnsfd_name": {
+                "type": "string",
+                "empty": False,
+                "required": True
+                },
+            "trust": {
+                "type": "boolean",
+                "empty": False,
+                "required": True,
+                },
+            "ns_id": {
+                "type": "string",
+                "empty": False,
+                "required": True
+                },
+            "container": {
+                "type": "string",
+                "empty": False,
+                "required": True
+                },
+            "remediation": {
+                "type": "dict",
+                "empty": False,
+                "required": True,
+                "schema": {
+                    "isolate": {'type': 'boolean'},
+                    "update": {'type': 'boolean'},
+                    "reboot": {'type': 'boolean'}
+                    }
+                }
+            }
+        }
+    }
+
+
 tenant_ip_association = {
     "tenant_id": {
         'type':     'string',
@@ -418,5 +484,5 @@ tenant_vnsf_association = {
         'schema': {'type': 'string'},
         'empty': False,
         'required': True
+        }
     }
-}

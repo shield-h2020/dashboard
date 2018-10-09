@@ -44,15 +44,15 @@ class TenantAssociationError(ExceptionMessage):
 class TMNotificationPersistence:
     errors = {
         'NOTIFICATION': {
-            'ERROR':         {
+            'ERROR': {
                 IssueElement.EXCEPTION.name: TenantAssociationError('Invalid association with total results of: {}')
-                },
+            },
             'NOT_PERSISTED': {
-                IssueElement.ERROR.name:     ['TM notification not persisted. Association error for {}. Status: {}'],
+                IssueElement.ERROR.name: ['TM notification not persisted. Association error for {}. Status: {}'],
                 IssueElement.EXCEPTION.name: TMNotificationNotPersisted('Error persisting the TM notification.')
-                }
             }
         }
+    }
 
     def __init__(self, settings):
         self.logger = logging.getLogger(__name__)
@@ -98,29 +98,20 @@ class TMNotificationPersistence:
             self.logger.error('Error associating the vNSF Instance at {}.'.format(url), e)
             raise Exception
 
-    def persist(self, notification):
-        url = self.settings['persist_url']
-        headers = self.settings['persist_headers']
+    def persist_vnsf(self, notification):
+        url = self.settings['persist_url_vnsf']
+        headers = self.settings['persist_headers_vnsf']
 
         try:
-            # Associate IP with tenants
-            tenant = self.__associate_vnsf_instance__(notification.get('event').get('vnsf_instance_id'))
-
-            notification_to_persist = dict()
-            notification_to_persist['tenant_id'] = tenant
-            notification_to_persist['type'] = self.settings['notification_type']
-            notification_to_persist['data'] = json.dumps(notification)
 
             # Persist notification.
-            r = requests.post(url, headers=headers, data=json.dumps(notification_to_persist))
+            r = requests.post(url, headers=headers, data=json.dumps(notification))
             if r.text:
                 self.logger.debug(r.text)
 
             if not r.status_code == http_utils.HTTP_201_CREATED:
                 self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['NOT_PERSISTED'],
                                     [[url, r.status_code]])
-
-            return tenant
 
         except requests.exceptions.ConnectionError as e:
             self.logger.error('Error persisting the policy at {}.'.format(url), e)
@@ -130,3 +121,23 @@ class TMNotificationPersistence:
             # The exception only logs the error
             # There's no one to handle this
             self.logger.exception(e)
+
+    def persist_host(self, notification, notification_type):
+        url = self.settings['persist_url_hosts']
+        headers = self.settings['persist_headers_hosts']
+
+        try:
+            # Persist notification.
+            notification['type'] = notification_type
+            r = requests.post(url, headers=headers, data=json.dumps(notification))
+
+            if r.text:
+                self.logger.debug(r.text)
+
+            if not r.status_code == http_utils.HTTP_201_CREATED:
+                self.issue.raise_ex(IssueElement.ERROR, self.errors['NOTIFICATION']['NOT_PERSISTED'],
+                                    [[url, r.status_code]])
+
+        except requests.exceptions.ConnectionError as e:
+            self.logger.error('Error persisting the policy at {}.'.format(url), e)
+            raise Exception

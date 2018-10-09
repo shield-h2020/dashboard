@@ -160,6 +160,10 @@ policies_admin = {
     'public_methods':   ['POST']
     }
 
+###
+#  Notification persistence
+###
+
 notifications = {
     'item_title':          'notifications',
     'description':         'Notifications',
@@ -178,6 +182,67 @@ notifications_admin = {
     'schema':           api_model.notification_model,
     'datasource':       {
         'source': 'notifications'
+        },
+    'resource_methods': ['POST'],
+    'item_methods':     [],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['POST']
+    }
+
+
+notifications_tm_host = {
+    'item_title':       'tm host notifications',
+    'url':              'tm/notifications',
+    'schema':              api_model.notification_tm_host_model,
+    'resource_methods':    ['POST', 'GET'],
+    'item_methods':        ['GET', 'PATCH'],
+    'allow_unknown':    True,
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':      ['GET'],
+    'public_item_methods': ['GET', 'PATCH']
+    }
+
+
+notifications_tm_host_admin = {
+    'item_title':       'admin tm host notifications',
+    'url':              'admin/tm/notifications',
+    'schema':           api_model.notification_tm_host_model,
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'notifications_tm_host'
+        },
+    'resource_methods': ['POST'],
+    'item_methods':     [],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['POST']
+    }
+
+notifications_tm_vnsf = {
+    # ?where={'tenant_id': 'value'}
+    'item_title':           'tm vnsf notifications',
+    'url':                  'tm/vnsf/notifications',
+    'schema':               api_model.notification_tm_vnsf_model,
+    'item_lookup_field':    EndpointVar.__TENANT_ID__,
+    'item_url':             EndpointVar.__TENANT_ID_FMT__,
+    'resource_methods':    ['GET'],
+    'item_methods':        ['GET', 'PATCH'],
+    'allow_unknown':    True,
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':      ['GET'],
+    'public_item_methods': ['GET', 'PATCH']
+    }
+
+notifications_tm_vnsf_admin = {
+    'item_title':       'admin tm vnsf notifications',
+    'url':              'admin/tm/vnsf/notifications',
+    'schema':           api_model.notification_tm_vnsf_model,
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'notifications_tm_vnsf'
         },
     'resource_methods': ['POST'],
     'item_methods':     [],

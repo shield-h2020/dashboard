@@ -1,7 +1,87 @@
-[
-  {
-    "event": {
-      "vnsf_instance_id": "cirros_vnf_inst_1"
-    }
-  }
-]
+{
+    "hosts": [
+        {
+            "node": "nfvi-node",
+            "status": 0,
+            "time": "2018-09-25 17:02:23.324130",
+            "remediation": {
+                "isolate": true,
+                "reboot": true,
+                "update": false
+            },
+            "vnsfs": [
+                {
+                    "vnsf_id": "39308b17-8f1f-43b0-921a-16f02eb7d6fe",
+                    "container": "1b20296ef479",
+                    "vnsfd_name": "cirros_vnf_inst_1",
+                    "remediation": {
+                        "isolate": true,
+                        "update": false,
+                        "reboot": false
+                    },
+                    "trust": false,
+                    "ns_id": "f30992ba-5ccb-4549-ae72-6a8fd39d2d48" 
+                }
+            ],
+            "trust": false,
+            "driver": "OAT",
+            "extra_info": {
+                "n_digests_valid": 394,
+                "n_packages_valid": 114,
+                "list_digests_fake_lib": [],
+                "n_packages_not_security": 0,
+                "n_packages_unknown": 0,
+                "n_packages_security": 0,
+                "list_digests_not_found": [
+                    {
+                        "instance": "host",
+                        "/home/torsec/badScript.sh": "6158b619238055c863a52d12f33466519ba77a86" 
+                    },
+                    {
+                        "instance": "1b20296ef479",
+                        "/test.sh": "f84a818a760457255bbf65f268f2911f6e6d0d66" 
+                    }
+                ],
+                "n_digests_not_found": 2,
+                "n_digests_fake_lib": 0
+            }
+        }
+    ],
+    "sdn": [
+        {
+            "node": "switch-1",
+            "trust": false,
+            "driver": "HPESwitch",
+            "extra_info": {
+                "VerificationFailed": false,
+                "CertSigned": true,
+                "ConfigurationMatch": true,
+                "Certificate": {
+                    "ValidityStart": "2016-11-16 02:00:05 +0000 UTC",
+                    "SwitchSerial": "SG6AG0V0F0, BaseMAC 00fd45-214040",
+                    "ValidityEnd": "2031-01-26 01:55:09 +0000 UTC",
+                    "Version": "3",
+                    "SwitchModel": "J9575A",
+                    "Serial": "80B47652102C4874A14C91923E396B37",
+                    "Issuer": "HP Device Intermediate CA 101|Hewlett-Packard Development Company" 
+                },
+                "SDNRulesMatch": false,
+                "OSLevel": 0,
+                "CertSigningCA": "Device Intermediate CA 01 | Hewlett-Packard Development Company",
+                "FirmwareLevel": 0,
+                "Time": "2018-09-25 17:02:23.565863569 +0000 UTC",
+                "Remediation": {
+                    "CheckFlows": true,
+                    "CheckConfig": false,
+                    "Isolate": false,
+                    "Reboot": false,
+                    "Update": false
+                },
+                "OSVersion": "KA.15.17.0000x Fixed Stack build",
+                "FirmwareVersion": "KA.15.09 build 9457" 
+            }
+        }
+    ],
+    "trust": false,
+    "vtime": "2018-09-25 17:02:31.172354" 
+}

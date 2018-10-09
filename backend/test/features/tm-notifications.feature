@@ -31,12 +31,14 @@ Feature: Trust Monitor notifications
 
   @smoke
   Scenario Outline: TM notifications
-    Given A TM notification socket is ready for <tenant>
+    Given A TM VNSF notification socket is ready for <tenant>
     Given I mock the vNSF association response with <mock_file>
     When I receive a TM notification with <tm_notifications>
-    Then The TM notification must be persisted <in_datastore>
-    Then The TM notification must be received <from_socket>
+    Then The TM host notification must be persisted <in_datastore_host>
+    Then The TM sdn notification must be persisted <in_datastore_sdn>
+    Then The TM VNSF notification must be persisted <in_datastore>
+    Then The TM VNSF notification must be received <from_socket>
 
     Examples:
-      | tenant | mock_file                                     | tm_notifications                       | in_datastore                                       | from_socket                              |
-      | 3da63  | tenant_vnsfs/tenant-vnsf-association-success.json | tm_notification/tm-notification.json | tm_notification/tm-notification-persisted.json | tm_notification/tm-notification.json |
+      | tenant | mock_file                                         | tm_notifications                     | in_datastore_host                                   | in_datastore_sdn                                   | in_datastore                                   | from_socket                         |
+      | 3da63  | tenant_vnsfs/tenant-vnsf-association-success.json | tm_notification/tm-notification.json | tm_notification/tm-notification-host-persisted.json | tm_notification/tm-notification-sdn-persisted.json | tm_notification/tm-notification-persisted.json | tm_notification/tm-notification.txt |

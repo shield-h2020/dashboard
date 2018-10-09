@@ -106,6 +106,26 @@ NOTIFICATION_API_PERSIST_URL = __vnsf_notification_rest__['persist_notification'
 NOTIFICATION_API_PERSIST_HEADERS = __vnsf_notification_rest__['persist_notification']['headers']
 
 ###
+#  Trusted Monitor Notification persistence
+###
+
+__tm_notification_rest__ = {
+    'persist_host_notification': {
+        'url':     f'{BACKENDAPI_URL}/admin/tm/notifications',
+        'headers': {'Content-Type': 'application/json'}
+        },
+    'persist_vnsf_notification': {
+        'url': f'{BACKENDAPI_URL}/admin/tm/vnsf/notifications',
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+TM_NOTIFICATION_API_PERSIST_HOST_URL = __tm_notification_rest__['persist_host_notification']['url']
+TM_NOTIFICATION_API_PERSIST_HOST_HEADERS = __tm_notification_rest__['persist_host_notification']['headers']
+TM_NOTIFICATION_API_PERSIST_VNSF_URL = __tm_notification_rest__['persist_vnsf_notification']['url']
+TM_NOTIFICATION_API_PERSIST_VNSF_HEADERS = __tm_notification_rest__['persist_vnsf_notification']['headers']
+
+###
 #   Association Tenant IP
 ###
 
@@ -143,6 +163,7 @@ __tm_association_rest__ = {
 TM_ASSOCIATION_API_URL = __tm_association_rest__['tm_association']['url']
 TM_ASSOCIATION_API_HEADERS = __tm_association_rest__['tm_association']['headers']
 
+TM_ATTESTATION_MESSAGE = 'New attestation data available'
 
 ###
 #   Schemas
@@ -163,3 +184,5 @@ INFLUXDB_DB = os.environ.get('INFLUXDB_DB', '')
 INFLUXDB_URL = f'{INFLUXDB_PROTOCOL}://{INFLUXDB_HOST}:{INFLUXDB_PORT}/write?db={INFLUXDB_DB}'
 INFLUXDB_BATCH_SIZE = 7500
 INFLUXDB_REQUEST_TIMEOUT = 10
+
+

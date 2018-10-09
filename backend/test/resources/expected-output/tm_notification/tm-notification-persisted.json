@@ -14,9 +14,22 @@
   "expected": {
     "_items": [
       {
-        "tenant_id": "3da63",
-        "type": "TRUST_MONITOR",
-        "data": "{\"event\": {\"vnsf_instance_id\": \"cirros_vnf_inst_1\"}}"
+        "vnsfs": [
+          {
+            "vnsf_id": "39308b17-8f1f-43b0-921a-16f02eb7d6fe",
+            "container": "1b20296ef479",
+            "vnsfd_name": "cirros_vnf_inst_1",
+            "remediation": {
+              "isolate": true,
+              "update": false,
+              "reboot": false
+            },
+            "trust": false,
+            "ns_id": "f30992ba-5ccb-4549-ae72-6a8fd39d2d48"
+          }
+        ],
+        "time": "2018-09-25 17:02:23.324130",
+        "tenant_id": "3da63"
       }
     ]
   }

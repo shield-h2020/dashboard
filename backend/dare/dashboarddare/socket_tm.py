@@ -121,8 +121,74 @@ class TMSocket(PipeConsumer):
         if not tenant:
             self.logger.debug('No tenant provided')
             return
+
         for socket in self.clients.get(tenant, []):
             self.logger.debug('Socket {} | tenant {} | message - {}'.format(socket, tenant, data))
+
+            try:
+                socket.write_message(data)
+            except WebSocketClosedError:
+                self.logger.debug('Socket not available %r', socket)
+
+
+class TMHostSocket(PipeConsumer):
+    # Clients connected to the socket.
+    # the dictionary will store the tenant as the key
+    clients = set([])
+
+    def __init__(self, pipe):
+        """
+        :param pipe: The pipe manager where this instance is to be identified as an events consumer.
+        """
+        super().__init__()
+        self.logger = logging.getLogger(__name__)
+        # Get the socket up and running.
+        self.pipe = pipe
+        self.pipe.boot_out_sink(self)
+
+    def setup(self):
+        """
+        The method currently is doing nothing since the setup is the server socket responsibility
+        """
+        pass
+
+    def bootup(self):
+        """
+        The method currently is doing nothing since the bootup is the server socket responsibility
+        """
+        pass
+
+    def register_socket(self, socket):
+        """
+        Register a socket handler instance as the underlying socket for communicating the policy.
+
+        :param socket: The socket handler instance where to convey the policies.
+        """
+        self.logger.debug('Registered socket %r', socket)
+        self.clients.add(socket)
+
+    def unroll_socket(self, socket):
+        """
+        Register a socket handler instance as the underlying socket for communicating the policy.
+
+        :param socket: The socket handler instance where to convey the policies.
+        """
+        self.logger.debug('Unrolled socket %r', socket)
+        self.clients.discard(socket)
+
+    def update(self, data, **kwargs):
+        """
+        Called when a new policy is received in the input pipe.
+
+        :param data: The policy data provided.
+        """
+
+        if 'tenant' in kwargs and kwargs.get('tenant') is not None:
+            self.logger.debug('Not sending tenant information to all subscribers')
+            return
+
+        for socket in self.clients:
+            self.logger.debug('Socket %r | message - %r', socket, data)
 
             try:
                 socket.write_message(data)

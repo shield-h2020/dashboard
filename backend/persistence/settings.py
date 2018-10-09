@@ -25,8 +25,9 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-import api_endpoints
 import os
+
+import api_endpoints
 
 BACKENDAPI_PORT = int(os.environ.get('BACKENDAPI_PORT', 4000))
 
@@ -94,6 +95,10 @@ DOMAIN = {
     'validations':            api_endpoints.validations,
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,
+    'notifications_tm_vnsf_admin': api_endpoints.notifications_tm_vnsf_admin,
+    'notifications_tm_vnsf': api_endpoints.notifications_tm_vnsf,
+    'notifications_tm_host_admin': api_endpoints.notifications_tm_host_admin,
+    'notifications_tm_host': api_endpoints.notifications_tm_host,
     'tenant_ips':             api_endpoints.tenant_ip_association,
     'tenant_vnsfs':           api_endpoints.tenant_vnsf_association
     }

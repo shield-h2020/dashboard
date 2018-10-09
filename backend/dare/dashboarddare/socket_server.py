@@ -56,8 +56,9 @@ class TornadoSocketServer:
             (r'/policy', SendOnlySocketHandler, {'controller': controllers.get('policy')}),
             (r'/vnsf/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,
              {'controller': controllers.get('vnsf')}),
-            (r'/tm/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,
+            (r'/tm/notifications/vnsf/(?P<tenant>\w+)$', SendOnlySocketHandler,
              {'controller': controllers.get('tm')}),
+            (r'/tm/notifications/platform', SendOnlySocketHandler, {'controller': controllers.get('tm_host')}),
             ])
 
         self._settings = settings

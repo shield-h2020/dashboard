@@ -98,9 +98,7 @@ class PipeProducer(metaclass=ABCMeta):
         self.logger.debug('Subscriber removed: {}'.format(type(subscriber).__name__))
 
     def notify_all(self, data):
-        for subscriber in self.subscribers:
-            self.logger.debug('Notify {}'.format(type(subscriber).__name__))
-            subscriber.update(data)
+        self.notify_by_tenant(data, None)
 
     def notify_by_tenant(self, data, tenant):
         for subscriber in self.subscribers:
