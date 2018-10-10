@@ -10,17 +10,15 @@
                             <div class="separator mt30 mb30"></div>
                             <!-- SELECTS-->
                             <div class="row">
-                                <div class="col-lg-4" ng-if="isAdmin">
-                                    <div class="row">
-                                        <label class="col-lg-2 dashboard_datepicker_text">Tenants</label>
-                                        <select id="tenants" ng-model="selected_tenant" ng-change="onTenantChange(this)"
-                                            class="col-lg-10 filter_selects" ng-options="tenant.tenant_id as tenant.tenant_name for tenant in tenants_list">>
-                                        </select>
-                                    </div>
+                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12" ng-if="isAdmin">
+                                    <label class="col-xl-2 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Tenants</label>
+                                    <select id="tenants" ng-model="selected_tenant" ng-change="onTenantChange(this)"
+                                        class="col-xl-10 col-lg-8 col-md-9 col-sm-9 filter_selects" ng-options="tenant.tenant_id as tenant.tenant_name for tenant in tenants_list">>
+                                    </select>
                                 </div>
-                                <div class="col-lg-2">
-                                    <label class="col-lg-4 dashboard_datepicker_text">Period</label>
-                                    <select id="period" ng-model="selected_period" class="col-lg-8 filter_selects"
+                                <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+                                    <label class="col-xl-4 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Period</label>
+                                    <select id="period" ng-model="selected_period" class="col-xl-8 col-lg-8 col-md-9 col-sm-9 filter_selects"
                                         ng-change="$ctrl.setPeriod()">
                                         <option ng-selected="true" value="0">Today</option>
                                         <option value="1">Yesterday</option>
@@ -29,33 +27,37 @@
                                     </select>
                                 </div>
                                 <!-- DATEPICKERS -->
-                                <div class="col-lg-6" ng-if="$ctrl.showDatePicker==true">
-                                    <sn-date-picker class="datepickerClass col-lg-6" label="Start" current-date="$ctrl.LastStartDate" on-change="$ctrl.setFilter({ key: 'sDate', value: $event.value})">
+
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" ng-if="$ctrl.showDatePicker==true">
+                                    <sn-date-picker class="datepickerClass pl0 pr0 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                        label="Start" current-date="$ctrl.LastStartDate" on-change="$ctrl.setFilter({ key: 'sDate', value: $event.value})">
                                     </sn-date-picker>
-                                    <sn-date-picker class="datepickerClass col-lg-6" label="End" current-date="$ctrl.LastEndDate" on-change="$ctrl.setFilter({ key: 'eDate', value: $event.value})">
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" ng-if="$ctrl.showDatePicker==true">
+                                    <sn-date-picker class="datepickerClass pl0 pr0 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                        label="End" current-date="$ctrl.LastEndDate" on-change="$ctrl.setFilter({ key: 'eDate', value: $event.value})">
                                     </sn-date-picker>
                                 </div>
                             </div>
                             <div class="smalldiv"></div>
                             <!-- NUMBER OF ATTACKS-->
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                     <div class="chart_holder">
-                                        <div class="bg_partial" style="height:36px">
-                                            <label class="m5" style="height:26px">Number of attacks</label>
+                                        <div class="bg_partial">
+                                            <label class="m5">Number of attacks</label>
                                         </div>
-                                        <div id="chart_attacks" class="text-center p20"></div>
+                                        <div donut-labels-chart id="chart_attacks" class="text-center"></div>
                                     </div>
                                 </div>
-
                                 <!-- ATTACKS OCURRENCE-->
-                                <div class="col-lg-6">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                     <div class="chart_holder">
-                                        <div class="bg_partial" style="height:36px">
-                                            <label class="m5" style="height:26px">Attacks ocurrence</label>
+                                        <div class="bg_partial">
+                                            <label class="m5">Attacks ocurrence</label>
                                         </div>
-
-                                        <svg id="chart_ocurrences" class="text-center p20"></svg>
+                                        <div bar-chart ng-if="$ctrl.attackIndex==-1" id="chart_ocurrences"></div>
+                                        <div lines-chart ng-if="$ctrl.attackIndex!=-1" id="chart_ocurrences_line"></div>
                                     </div>
                                 </div>
                             </div>

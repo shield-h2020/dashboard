@@ -32,6 +32,8 @@
 
 .content {
   padding: 16px;
+  overflow-y: scroll;
+  max-height: 60vh;
 }
 
 .footer > footer {

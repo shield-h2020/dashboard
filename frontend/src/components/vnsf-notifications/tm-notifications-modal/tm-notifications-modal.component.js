@@ -22,10 +22,7 @@ export const TmNotificationsModalComponent = {
     }
 
     $onInit() {
-      this.scope.$on('TM_NOTIF_BROADCAST', (event, data) => {
-        console.log("something was received");
-        //console.log(data);
-        
+      this.scope.$on('TM_NOTIF_BROADCAST', (event, data) => {        
         var firstLevelData = {};
         firstLevelData.node = data.hosts[0].node;
         firstLevelData.driver = data.hosts[0].driver;

@@ -21,6 +21,11 @@ export const MENU_ENTRIES = [
     roles: [TENANT_ADMIN, SUPER_ADMIN, TENANT_USER],
   },
   {
+    text: 'Attestation',
+    route: 'attestation',
+    roles: [TENANT_ADMIN, SUPER_ADMIN],
+  },
+  {
     text: 'vNSF notifications',
     route: 'vnsfnotificationslist',
     roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN],

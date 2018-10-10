@@ -20,13 +20,14 @@ export class IncidentsService {
   }
 
   getIncidents({ page = 1, limit = 25 }, filters) {
-    const params = { max_results: limit, page };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length !== 0) params.where = JSON.stringify(filters);
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
         tenant_id: this.authService.getTenant(),
       });
     }
+    
     return this.http.get(API_INCIDENTS, { params })
       .then((response) => {
         const items = response.data._items.map(item =>

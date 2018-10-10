@@ -22,14 +22,16 @@ export const HomeComponent = {
     userdata: '<',
   },
   controller: class HomeComponent {
-    constructor($scope, toastr, VnsfNotificationService, IncidentsService) {
+    constructor($scope, $state, toastr, VnsfNotificationService, IncidentsService) {
       'ngInject';
 
       this.scope = $scope;
       this.toast = toastr;
+      this.state = $state;
       this.vnsfNotificationService = VnsfNotificationService;
       this.incidentsService = IncidentsService;
       this.tmSocketAtmp = 0;
+      this.tmAdminSocketAtmp = 0;
       this.vnsfSocketAtmp = 0;
       this.incidentsSocketAtmp = 0;
     }
@@ -39,6 +41,9 @@ export const HomeComponent = {
         this.initVNSFSocket();
         this.initTMSocket();
         this.initIncidentSocket();
+      }
+      else{
+        this.initTMAdminSocket();
       }
 
       this.scope.$on('NSVF_NOTIF_EMIT', (event, data) => {
@@ -52,6 +57,10 @@ export const HomeComponent = {
       this.scope.$on('TM_NOTIF_EMIT', (event, data) => {
         this.openTMNotificationDetails(data);
       });
+
+      this.scope.$on('ATTESTATION_NOTIF_EMIT', (event, data) => {
+        this.openAttestationNotificationDetails(data);
+      });
     }
 
     initIncidentSocket(){
@@ -62,6 +71,7 @@ export const HomeComponent = {
         const { attack } = data;
         this.toast.error(`Type of attack: ${attack}`, 'A new security incident was detected', {
           onTap: () => this.openRecommendation(data),
+          onShown: () => {this.scope.$broadcast('INCIDENT_UPDATE_DATA');},
           closeButton: true,
         });
       };
@@ -87,21 +97,40 @@ export const HomeComponent = {
       };
       vnsfSocket.onclose = (e) => {
         if(this.vnsfSocketAtmp < 3) {
-          //window.alert("Ai vai");
           this.vnsfSocketAtmp++;
           setTimeout(this.initVNSFSocket(), 1000);
         }
       };
     }
+
+    initTMAdminSocket(){
+      var tmAdminSocket = this.vnsfNotificationService.connectTMAdminNotificationsSocket();
+      tmAdminSocket.onopen = (e) => {this.tmAdminSocketAtmp = 0;};
+      tmAdminSocket.onmessage = (message) => {
+        this.toast.error(message.data, 'TM Notification', {
+          onTap: () => {this.state.go('attestation', { prevRoute: this.state.current.name })},
+          onShown: () => {this.scope.$broadcast('ATTESTATION_UPDATE_DATA');},
+          closeButton: true,
+        });
+        
+        this.scope.$broadcast('TM_UPDATE_BROADCAST');
+      };
+      tmAdminSocket.onclose = (e) => {
+        if(this.tmAdminSocketAtmp < 3) {
+          this.tmAdminSocketAtmp++;
+          setTimeout(this.initTMAdminSocket(), 1000);
+        }
+      };
+    }
+
     initTMSocket() {
 
       var tmSocket = this.vnsfNotificationService.connectTMNotificationsSocket(this.userdata.user.domain.id);
       tmSocket.onopen = (e) => {this.tmSocketAtmp = 0;};
       tmSocket.onmessage = (message) => {
-        const data = JSON.parse(message.data);
-        //console.log(data);
-        this.toast.error(templateTMNotification(data), 'TM Notification', {
-          onTap: () => this.openTMNotificationDetails(data),
+        this.toast.error(message.data, 'TM Notification', {
+          onTap: () => {this.state.go('attestation', { prevRoute: this.state.current.name })},
+          onShown: () => {this.scope.$broadcast('ATTESTATION_UPDATE_DATA');},
           closeButton: true,
         });
         
@@ -109,7 +138,6 @@ export const HomeComponent = {
       };
       tmSocket.onclose = (e) => {
         if(this.tmSocketAtmp < 3) {
-          //window.alert("Ai vai");
           this.tmSocketAtmp++;
           setTimeout(this.initTMSocket(), 1000);
         }
@@ -126,6 +154,10 @@ export const HomeComponent = {
 
     openTMNotificationDetails(data) {
       this.scope.$broadcast('TM_NOTIF_BROADCAST', data);
+    } 
+
+    openAttestationNotificationDetails(data) {
+      this.scope.$broadcast('ATTESTATION_NOTIF_BROADCAST', data);
     } 
   },
 };

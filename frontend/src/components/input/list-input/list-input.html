@@ -1,7 +1,7 @@
 <label for="{{::$ctrl.id}}" class="{{::$ctrl.styles.container}}">
   <span class="{{::$ctrl.styles.label}}">{{ $ctrl.label }}</span>
-  <div class="{{::$ctrl.styles['input-container']}}">
-    <span class="{{::$ctrl.styles['item-entry-wrapper']}}" ng-repeat="item in $ctrl.innerItems">
+  <div class="limitHeight {{::$ctrl.styles['input-container']}}">
+    <span class="{{::$ctrl.styles['item-entry-wrapper']}}" ng-repeat="item in $ctrl.innerItems track by $index">
       <span class="{{::$ctrl.styles['item-entry']}} inset-xs inline-ss" ng-click="$ctrl.removeFromList(item)">{{ item }}</span> 
     </span>
     <input name="{{::$ctrl.id}}" type="text" ng-model="$ctrl.currInput" ng-keypress="$ctrl.onKeypress($event)" placeholder="{{::$ctrl.viewStrings.placeholder}}">

@@ -15,6 +15,7 @@ import { ModalModule } from './modal2/modal.module';
 import { FooterModule } from './footer/footer.module';
 import { UsersModule } from './users/users.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AttestationModule } from './attestation/attestation.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
@@ -40,6 +41,7 @@ export const ComponentsModule = angular.module('root.components', [
   FooterModule,
   UsersModule,
   DashboardModule,
+  AttestationModule,
   TenantsModule,
   Table2Module,
   CatalogueModule,

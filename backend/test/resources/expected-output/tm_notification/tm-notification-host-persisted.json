@@ -1,55 +1,53 @@
 {
-  "ignore": [
-    "root['_links']",
-    "root['_meta']",
-    "root['self']",
-    "root['next']",
-    "root['parent']",
-    "root['_items'][0]['_links']",
-    "root['_items'][0]['_id']",
-    "root['_items'][0]['_etag']",
-    "root['_items'][0]['_created']",
-    "root['_items'][0]['_updated']"
-  ],
-  "expected": {
-    "_items": [
-      {
-        "node": "nfvi-node",
-        "status": 0,
-        "time": "2018-09-25 17:02:23.324130",
-        "remediation": {
-          "isolate": true,
-          "reboot": true,
-          "update": false
-        },
-        "trust": false,
-        "driver": "OAT",
-        "extra_info": {
-          "n_digests_valid": 394,
-          "n_packages_valid": 114,
-          "list_digests_fake_lib": [],
-          "n_packages_not_security": 0,
-          "n_packages_unknown": 0,
-          "n_packages_security": 0,
-          "list_digests_not_found": [
-            {
-              "instance": "host",
-              "/home/torsec/badScript": {
-                "sh": "6158b619238055c863a52d12f33466519ba77a86"
-              }
+   "ignore": [
+      "root['_links']",
+      "root['_meta']",
+      "root['self']",
+      "root['next']",
+      "root['parent']",
+      "root['_items'][0]['_links']",
+      "root['_items'][0]['_id']",
+      "root['_items'][0]['_etag']",
+      "root['_items'][0]['_created']",
+      "root['_items'][0]['_updated']"
+   ],
+   "expected": {
+      "_items": [{
+         "type": "hosts",
+         "hosts": [{
+            "node": "nfvi-node",
+            "status": 0,
+            "time": "2018-09-25 17:02:23.324130",
+            "remediation": {
+               "isolate": true,
+               "reboot": true,
+               "update": false
             },
-            {
-              "instance": "1b20296ef479",
-              "/test": {
-                "sh": "f84a818a760457255bbf65f268f2911f6e6d0d66"
-              }
+            "trust": false,
+            "driver": "OAT",
+            "extra_info": {
+               "n_digests_valid": 394,
+               "n_packages_valid": 114,
+               "list_digests_fake_lib": [],
+               "n_packages_not_security": 0,
+               "n_packages_unknown": 0,
+               "n_packages_security": 0,
+               "list_digests_not_found": [{
+                     "instance": "host",
+                     "/home/torsec/badScript": {
+                        "sh": "6158b619238055c863a52d12f33466519ba77a86"
+                     }
+                  },
+                  {
+                     "instance": "1b20296ef479",
+                     "/test": {
+                        "sh": "f84a818a760457255bbf65f268f2911f6e6d0d66"
+                     }
+                  }
+               ],
+               "n_digests_not_found": 2,
+               "n_digests_fake_lib": 0
             }
-          ],
-          "n_digests_not_found": 2,
-          "n_digests_fake_lib": 0
-        },
-        "type": "hosts"
-      }
-    ]
-  }
-}
+         }]
+      }]
+   }
