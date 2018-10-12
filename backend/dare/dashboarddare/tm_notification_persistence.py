@@ -42,6 +42,8 @@ class TenantAssociationError(ExceptionMessage):
 
 
 class TMNotificationPersistence:
+    NOT_APPLIED_STATUS = 'Not Applied'
+
     errors = {
         'NOTIFICATION': {
             'ERROR': {
@@ -105,6 +107,7 @@ class TMNotificationPersistence:
         try:
 
             # Persist notification.
+            notification['status'] = self.NOT_APPLIED_STATUS
             r = requests.post(url, headers=headers, data=json.dumps(notification))
             if r.text:
                 self.logger.debug(r.text)
@@ -127,9 +130,13 @@ class TMNotificationPersistence:
         headers = self.settings['persist_headers_hosts']
 
         try:
+
             # Persist notification.
             notification_to_persist = {
                 "type": notification_type,
+                "time": notification[0]['extra_info']['Time'] if notification_type == 'sdn' else notification[0][
+                    'time'],
+                "status": self.NOT_APPLIED_STATUS,
                 notification_type: notification
             }
 
