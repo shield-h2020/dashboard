@@ -27,9 +27,14 @@
 
 import json
 from pprint import pformat
-
+import logging
+from vnsfo.vnsfo import VnsfoFactory, VnsfoNotSupported
+from vnsfo.vnsfo_adapter import VnsfOrchestratorPolicyIssue
+import settings as cfg
 import flask
-
+from flask import abort, make_response, jsonify
+import requests
+from dashboardutils import http_utils
 
 class NssInventoryHooks:
     """
@@ -47,3 +52,104 @@ class NssInventoryHooks:
 
         # The tenant ID must be set according to the one provided in the URL (which has been properly authorized).
         user_data['tenant_id'] = lookup['tenant_id']
+
+    @staticmethod
+    def instantiate_network_service(updates, original):
+
+        logger = logging.getLogger(__name__)
+
+        # request instantiation only if current status is 'available'
+        if not original['status'] == 'available':
+            logger.error("Cannot instantiate network service '{}'. "
+                         "Current status is '{}'".format(original['ns_id'], original['status']))
+            abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                        {"code": 418, "message":
+                                            "Instantiation failed. Improper status of network service"}}), 418))
+            return
+
+        # get network service data from Store
+        url = "http://{}:{}/nss/{}".format(cfg.STORE_HOST, cfg.STORE_PORT, original['ns_id'])
+        logger.debug("Connecting to store: {}".format(url))
+
+        try:
+            r = requests.get(url)
+
+            if not r.status_code == http_utils.HTTP_200_OK:
+                # TODO: raise exception
+                logger.error("Couldn't retrieve data of Network Service '%s'", original['ns_id'])
+                abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                    {"code": r.status_code, "message":
+                                        "Instantiation failed. Store replied: {}".format(r.text())}}), r.status_code))
+
+        except requests.exceptions.ConnectionError as e:
+            #  TODO: raise exception
+            logger.error("Couldn't connect to Store: {}".format(e))
+            abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                {"code": 404, "message":
+                                    "Instantiation failed. Store is unavailable"}}), 404))
+            return
+
+        # Retrieve relevant network service parameters
+        r = r.json()
+        ns_id = r['ns_id']
+        target = r['manifest']['manifest:ns']['target']
+        print("\n\n\nRetrieved ns_id: {}, target: {}\n\n".format(ns_id, target))
+
+        try:
+            vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
+                                                  cfg.VNSFO_API)
+            r = vnsfo.instantiate_ns(ns_id, target)
+            if not r:
+                logger.error("FAILED instantiation of network service '{}'".format(ns_id))
+                abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                    {"code": r.status_code, "message":
+                                        "Instantiation failed. vNSFO replied: {}".format(r.text())}}), r.status_code))
+                return
+
+            r = r.json()
+            updates['status'] = "running"
+            updates['instance_id'] = r['instance_id']
+
+        except VnsfOrchestratorPolicyIssue or VnsfoNotSupported:
+            logger.error('VnsfOrchestratorPolicyIssue')
+            abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                {"code": 400, "message":
+                                    "Instantiation failed. vNSFO Policy Issue not supported".format(r.text())}}), 400))
+
+    @staticmethod
+    def terminate_network_service(updates, original):
+
+        logger = logging.getLogger(__name__)
+
+        # request termination only if current status is 'running'
+        if not original['status'] == 'running':
+            logger.error("Cannot terminate network service '{}'. "
+                         "Current status is '{}'".format(original['ns_id'], original['status']))
+            abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                {"code": 418, "message":
+                                    "Termination failed. Improper status of network service"}}), 418))
+            return
+
+        instance_id = original['instance_id']
+
+        logger.debug("Terminating network service '{}'".format(original['ns_id']))
+
+        try:
+            vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
+                                                  cfg.VNSFO_API)
+            r = vnsfo.terminate_ns(instance_id)
+            if not r:
+                logger.error("FAILED termination of network service instance id '{}'".format(instance_id))
+                abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                    {"code": r.status_code, "message":
+                                        "Instantiation failed. vNSFO replied: {}".format(r.text())}}), r.status_code))
+                return
+            r = r.json()
+            updates['status'] = "available"
+            updates['instance_id'] = ''
+
+        except VnsfOrchestratorPolicyIssue or VnsfoNotSupported:
+            logger.error('VnsfOrchestratorPolicyIssue')
+            abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                {"code": 400, "message":
+                                    "Instantiation failed. vNSFO Policy Issue not supported".format(r.text())}}), 400))

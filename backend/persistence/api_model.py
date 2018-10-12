@@ -346,9 +346,17 @@ nss_inventory_model = {
     'status':    {
         'type':     'string',
         'empty':    False,
-        'allowed':  ["available", "started", "running"],
+        'allowed':  ["available", "configuring", "running"],
         'required': True
+        },
+
+    'instance_id': {
+        'description': 'The instance id of NS when running/instantiated',
+        'type':     'string',
+        'empty':    True,
+        'required': False
         }
+
     }
 
 validations_model = {

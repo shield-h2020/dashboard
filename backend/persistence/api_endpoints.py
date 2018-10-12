@@ -455,6 +455,30 @@ ns_instance = {
         }
     }
 
+ns_instantiate = {
+    'item_title':         EndpointHelper.get_name(Endpoint.NSS_INSTANTIATE),
+    'url':                EndpointHelper.get_url(Endpoint.NSS_INSTANTIATE),
+    'resource_methods':   [],
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.NSS_INSTANTIATE),
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.NSS_INSTANTIATE)],
+    'schema':             nss_inventory['schema'],
+    'datasource':         {
+        'source': 'nss_inventory'
+        }
+    }
+
+ns_terminate = {
+    'item_title':         EndpointHelper.get_name(Endpoint.NSS_TERMINATE),
+    'url':                EndpointHelper.get_url(Endpoint.NSS_TERMINATE),
+    'resource_methods':   [],
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.NSS_TERMINATE),
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.NSS_TERMINATE)],
+    'schema':             nss_inventory['schema'],
+    'datasource':         {
+        'source': 'nss_inventory'
+        }
+    }
+
 validations = {
     'item_title':         EndpointHelper.get_name(Endpoint.VALIDATION),
     'url':                EndpointHelper.get_url(Endpoint.VALIDATION),

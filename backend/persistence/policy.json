@@ -78,6 +78,9 @@
   "nss_inventory:update_ns": "rule:the.tenant.admin",
   "nss_inventory:delete_ns": "rule:the.tenant.admin",
 
+  "nss_instantiate:update_ns": "rule:the.tenant.admin",
+  "nss_terminate:update_ns": "rule:the.tenant.admin",
+
   "vnsfs:create": "rule:any.developer",
   "vnsfs:read": "rule:developer.owned",
   "vnsfs:read_vnsf": "rule:developer.owned",

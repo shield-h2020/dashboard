@@ -489,9 +489,9 @@ class Endpoint(Enum):
                          __HTTP_POST__: {
                              __POLICY__: 'nss_catalogue:create',
                              __DOCS__:   {
-                                 'summary':     'Registers a new vNSF',
-                                 'description': 'Performs the vNSF onboarding process. Upon successful completion, '
-                                                'a new vNSF '
+                                 'summary':     'Registers a new NS',
+                                 'description': 'Performs the NS onboarding process. Upon successful completion, '
+                                                'a new NS '
                                                 'is added to the catalogue and associated with the Developer doing the '
                                                 'onboarding operation.',
                                  'responses':   http_utils.responses_read
@@ -500,8 +500,8 @@ class Endpoint(Enum):
                          __HTTP_GET__:  {
                              __POLICY__: 'nss_catalogue:read',
                              __DOCS__:   {
-                                 'summary':     'Lists vNSFs associated with a Developer',
-                                 'description': 'Shows all the registered vNSFs and their properties for a given '
+                                 'summary':     'Lists NSs associated with a Developer',
+                                 'description': 'Shows all the registered NSs and their properties for a given '
                                                 'Developer.',
                                  'responses':   http_utils.responses_read
                                  }
@@ -511,16 +511,16 @@ class Endpoint(Enum):
                          __HTTP_GET__:    {
                              __POLICY__: 'nss_catalogue:read_ns',
                              __DOCS__:   {
-                                 'summary':     'Shows a vNSF details',
-                                 'description': 'Provides detailed information on a vNSF.',
+                                 'summary':     'Shows a NS details',
+                                 'description': 'Provides detailed information on a NS.',
                                  'responses':   http_utils.responses_read
                                  }
                              },
                          __HTTP_DELETE__: {
                              __POLICY__: 'nss_catalogue:delete_ns',
                              __DOCS__:   {
-                                 'summary':     'Decommissions a vNSF',
-                                 'description': 'Marks the vNSF as not available for usage.',
+                                 'summary':     'Decommissions a NS',
+                                 'description': 'Marks the NS as not available for usage.',
                                  'responses':   http_utils.responses_read
                                  }
                              }
@@ -535,20 +535,16 @@ class Endpoint(Enum):
                          __HTTP_POST__: {
                              __POLICY__: 'nss_inventory:create',
                              __DOCS__:   {
-                                 'summary':     'Registers a new vNSF',
-                                 'description': 'Performs the vNSF onboarding process. Upon successful completion, '
-                                                'a new vNSF '
-                                                'is added to the catalogue and associated with the Developer doing the '
-                                                'onboarding operation.',
+                                 'summary':     'Enrolls a NS in the inventory',
+                                 'description': 'Performs the enrollment of a NS to the inventory',
                                  'responses':   http_utils.responses_read
                                  }
                              },
                          __HTTP_GET__:  {
                              __POLICY__: 'nss_inventory:read',
                              __DOCS__:   {
-                                 'summary':     'Lists vNSFs associated with a Developer',
-                                 'description': 'Shows all the registered vNSFs and their properties for a given '
-                                                'Developer.',
+                                 'summary':     'Lists all NSs in the inventory',
+                                 'description': 'Shows all the NSs registered in the inventory',
                                  'responses':   http_utils.responses_read
                                  }
                              }
@@ -557,17 +553,60 @@ class Endpoint(Enum):
                          __HTTP_GET__:    {
                              __POLICY__: 'nss_inventory:read_ns',
                              __DOCS__:   {
-                                 'summary':     'Shows a vNSF details',
-                                 'description': 'Provides detailed information on a vNSF.',
+                                 'summary':     'Obtains a NS from inventory',
+                                 'description': 'Provides detailed information of a NS in inventory',
                                  'responses':   http_utils.responses_read
                                  }
                              },
                          __HTTP_DELETE__: {
                              __POLICY__: 'nss_inventory:delete_ns',
                              __DOCS__:   {
-                                 'summary':     'Decommissions a vNSF',
-                                 'description': 'Marks the vNSF as not available for usage.',
+                                 'summary':     'Withdraws a NS from inventory',
+                                 'description': 'Removes a NS from the inventory',
                                  'responses':   http_utils.responses_read
+                                 }
+                             },
+                         __HTTP_PATCH__: {
+                             __POLICY__: 'nss_inventory:update_ns',
+                             __DOCS__: {
+                                 'summary': 'Updated a NS in the inventory',
+                                 'description': 'Changes information of a NS in inventory, namely its status',
+                                 'responses': http_utils.responses_read
+                                 }
+                             }
+                         }
+
+                     }
+
+    NSS_INSTANTIATE = {__NAME__:  'nss_instantiate',
+                       __URL__:        'nss/instantiate',
+                       __DOC_ID_VAR__: 'nssId',
+                       __SCHEMA__:     api_model.nss_inventory_model,
+                       __RESOURCE__:   {},
+                       __ITEM__:       {
+                           __HTTP_PATCH__:    {
+                               __POLICY__: 'nss_instantiate:update_ns',
+                               __DOCS__:   {
+                                   'summary':     'Instantiate a Network Service',
+                                   'description': 'Instantiate a Network Service in the Orchestrator',
+                                   'responses':   http_utils.responses_read
+                                   }
+                               }
+                           }
+                       }
+
+    NSS_TERMINATE = {__NAME__: 'nss_terminate',
+                     __URL__: 'nss/terminate',
+                     __DOC_ID_VAR__: 'nssId',
+                     __SCHEMA__: api_model.nss_inventory_model,
+                     __RESOURCE__: {},
+                     __ITEM__: {
+                         __HTTP_PATCH__: {
+                             __POLICY__: 'nss_terminate:update_ns',
+                             __DOCS__: {
+                                 'summary': 'Terminate a Network Service',
+                                 'description': 'Terminate a Network Service in the Orchestrator',
+                                 'responses': http_utils.responses_read
                                  }
                              }
                          }

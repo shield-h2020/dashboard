@@ -59,6 +59,10 @@ app.on_replace_tenant_user += TenantHooks.update_tenant_user
 
 app.on_insert_nss_inventory += NssInventoryHooks.provision_network_service
 
+app.on_update_ns_instantiate += NssInventoryHooks.instantiate_network_service
+app.on_update_ns_terminate += NssInventoryHooks.terminate_network_service
+
+
 app.register_blueprint(swagger)
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info

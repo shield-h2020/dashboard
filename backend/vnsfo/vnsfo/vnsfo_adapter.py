@@ -86,3 +86,20 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
         """
 
         pass
+
+    @abstractmethod
+    def instantiate_ns(self, ns_id, target):
+        """
+        :param ns_id:
+        :param target:
+        :return: Response from vNSFO
+        """
+        pass
+
+    @abstractmethod
+    def terminate_ns(self, instance_id):
+        """
+        :param instance_id: Instance ID of Network Service
+        :return: Response from vNSFO
+        """
+        pass

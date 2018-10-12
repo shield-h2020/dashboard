@@ -79,3 +79,54 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         except requests.exceptions.ConnectionError:
             self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
                                 [[url]])
+
+    def instantiate_ns(self, ns_id, target):
+        """
+        Instantiates a Network Service using the Orchestrator REST interface (vNSFO API).
+        :param ns_id: Network Service ID
+        :return:
+        """
+
+        inst_body = {
+            "instance_name": ns_id,
+            "ns_name": ns_id,
+            "virt_type": target
+        }
+
+        url = '{}/{}'.format(self.basepath, 'ns/instantiate')
+        headers = {'Content-Type': 'application/json'}
+        self.logger.debug("Instantiating Network Service '%s'", ns_id)
+
+        try:
+            self.logger.debug("Connecting to vNSFO: {}".format(url))
+
+            r = requests.post(url, headers=headers, json=inst_body, verify=False)
+
+            if not r.status_code == http_utils.HTTP_200_OK:
+                self.logger.error("Couldn't instantiate network service '%s'", ns_id)
+                return
+
+            self.logger.debug("Network service '{}' instantiated successfully."
+                              "\nGot response:\n{}".format(ns_id, r.json()))
+            return r
+
+        except requests.exceptions.ConnectionError:
+            self.logger.error("Couldn't connect to vNSFO")
+
+    def terminate_ns(self, instance_id):
+
+        url = '{}/{}/{}'.format(self.basepath, 'ns/running', instance_id)
+        headers = {'Content-Type': 'application/json'}
+
+        try:
+            self.logger.debug("Connecting to vNSFO: {}".format(url))
+            r = requests.delete(url, headers=headers)
+
+            if not r.status_code == http_utils.HTTP_200_OK:
+                self.logger.error("Couldn't terminate network service with instance id '%s'", instance_id)
+
+            self.logger.debug("Network service instance id '{}' terminated successfully.".format(instance_id))
+            return r
+
+        except requests.exceptions.ConnectionError:
+            self.logger.error("Couldn't connect to vNSFO")

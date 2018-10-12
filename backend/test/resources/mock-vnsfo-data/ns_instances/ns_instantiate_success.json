@@ -1,0 +1,8 @@
+//! statusCode: 200
+{
+  "instance_id": "59c17893-f41b-46a7-9646-de0a94db75d8",
+  "instance_name": "testing ns instance",
+  "ns_name": "ns_test",
+  "result": "success",
+  "vim_id": "f9acd550-9d48-11e7-ae4d-01163e3afbe5"
+}

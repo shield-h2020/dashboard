@@ -37,6 +37,9 @@ MONGO_USERNAME = os.environ.get('DATASTORE_USERNAME', 'user')
 MONGO_PASSWORD = os.environ.get('DATASTORE_PASSWORD', 'user')
 MONGO_DBNAME = os.environ.get('DATASTORE_DBNAME', 'shield-dashboard')
 
+STORE_HOST = os.environ.get('VNSF_STORE_HOST')
+STORE_PORT = os.environ.get('VNSF_STORE_PORT')
+
 VNSFO_PROTOCOL = os.environ.get('VNSFO_PROTOCOL', 'http')
 VNSFO_HOST = os.environ.get('VNSFO_HOST', '__missing_vnsfo_host__')
 VNSFO_PORT = os.environ.get('VNSFO_PORT', '')
@@ -90,6 +93,8 @@ DOMAIN = {
     'nss_catalogue':          api_endpoints.nss_catalogue,
     'nss_inventory':          api_endpoints.nss_inventory,
     'ns_instance':            api_endpoints.ns_instance,
+    'ns_instantiate':         api_endpoints.ns_instantiate,
+    'ns_terminate':           api_endpoints.ns_terminate,
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin,
     'validations':            api_endpoints.validations,
