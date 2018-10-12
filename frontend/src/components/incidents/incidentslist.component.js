@@ -34,13 +34,14 @@ const UI_STRINGS = {
 export const IncidentsListComponent = {
   template,
   controller: class IncidentsListComponent {
-    constructor($state, $scope, toastr, IncidentsService) {
+    constructor($state, $scope, toastr, AuthService, IncidentsService) {
       'ngInject';
 
       this.strings = UI_STRINGS;
       this.state = $state;
       this.scope = $scope;
       this.toast = toastr;
+      this.authService = AuthService;
       this.incidentsService = IncidentsService;
       this.isLoading = true;
       this.incidents = [];
@@ -66,7 +67,11 @@ export const IncidentsListComponent = {
     }
 
     $onInit() {
-      this.socket = this.incidentsService.connectIncidentSocket();
+      let tenant_id;
+      if (!this.authService.isUserPlatformAdmin()) {
+        tenant_id = this.authService.getTenant()
+      }
+      this.socket = this.incidentsService.connectIncidentSocket(tenant_id);
       this.socket.onmessage = (message) => {
         const data = JSON.parse(message.data);
         const attackType = data.attack;

@@ -1,7 +1,7 @@
 <div sn-modal title="$ctrl.viewStrings.title" open="$ctrl.open">
   <article>
     <div class="stack-ss {{::$ctrl.styles['event-entry']}}" ng-repeat="(key, val) in $ctrl.data">
-      <span class="{{::$ctrl.styles['event-entry__title']}}" >{{ $ctrl.viewStrings[key] }}</span>
+      <span class="{{::$ctrl.styles['event-entry__title']}}">{{ $ctrl.viewStrings[key] }}</span>
       <span>{{ val }}</span>
     </div>
   </article>
@@ -10,7 +10,7 @@
     <div class="{{::$ctrl.styles.xmlviewer}}">
       {{$ctrl.prettyJSON($ctrl.extrainfo)}}
     </div>
-</article>
+  </article>
   <footer style="text-align: end;">
     <button ng-click="$ctrl.toggleModal()" class="sn-button sn-button--primary">{{$ctrl.viewStrings.close}}</button>
   </footer>

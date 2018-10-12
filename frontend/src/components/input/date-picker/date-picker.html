@@ -1,8 +1,8 @@
-<section>
-  <label class="{{::$ctrl.styles.label}}">
-    <div class="{{::$ctrl.styles.label__text}}">{{::$ctrl.label}}</div>
-    <input readonly="readonly" class="{{::$ctrl.styles.input}}" ng-click="$ctrl.openDatetimePicker()" ng-model="$ctrl.showDate">
-  </label>
+<section class="col-lg-12 pl0 pr0">
+  <div class="col-lg-12 pl0 pr0 mb5 {{::$ctrl.styles.label}}">
+    <label class="col-xl-3 col-lg-3 col-md-3 col-sm-3 {{::$ctrl.styles.label__text}}">{{::$ctrl.label}}</label>
+    <input readonly="readonly" class="col-xl-9 col-lg-9 col-md-9 col-sm-9 {{::$ctrl.styles.input}}" ng-click="$ctrl.openDatetimePicker()" ng-model="$ctrl.showDate">
+  </div>
   <div class="angularjs-datetime-picker" ng-show="$ctrl.openPicker">
     <header class="adp-month">
       <button class="adp-prev" ng-click="$ctrl.addMonth(-1)">&laquo;</button>

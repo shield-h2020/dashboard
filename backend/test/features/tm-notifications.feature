@@ -40,5 +40,5 @@ Feature: Trust Monitor notifications
     Then The TM VNSF notification must be received <from_socket>
 
     Examples:
-      | tenant | mock_file                                         | tm_notifications                     | in_datastore_host                                   | in_datastore_sdn                                   | in_datastore                                   | from_socket                         |
-      | 3da63  | tenant_vnsfs/tenant-vnsf-association-success.json | tm_notification/tm-notification.json | tm_notification/tm-notification-host-persisted.json | tm_notification/tm-notification-sdn-persisted.json | tm_notification/tm-notification-persisted.json | tm_notification/tm-notification.txt |
+      | tenant | mock_file                                         | tm_notifications                     | in_datastore_host                                   | in_datastore_sdn                                   | in_datastore                                        | from_socket                         |
+      | 3da63  | tenant_vnsfs/tenant-vnsf-association-success.json | tm_notification/tm-notification.json | tm_notification/tm-notification-host-persisted.json | tm_notification/tm-notification-sdn-persisted.json | tm_notification/tm-notification-vnsf-persisted.json | tm_notification/tm-notification.txt |

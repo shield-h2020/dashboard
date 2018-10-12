@@ -38,9 +38,12 @@ export const DashboardComponent = {
       this.dayTimeAgr = false;
       this.customPeriodIndex = '3';
       this.showDatePicker = false;
+      this.donutChartData;
+      this.lineChartData;
+      this.barChartData;
       this.customStart;
       this.customEnd;
-      this.AvColors = ["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"];
+      this.AvColors = ["#85AACD", "#7AC8A0", "#C4C26F", "#D39596", "#8FB996", "#D0EFB1", "#D2AB99", "#413C58"];
       this.GrayPieColor = "#D0D0D0";
       //var _this = this;
       this.scope.$on('TM_NOTIF_BROADCAST', (event, data) => {
@@ -59,12 +62,7 @@ export const DashboardComponent = {
             //this.scope.tenants_list = data;
             this.scope.selected_tenant = this.scope.tenants_list[0].tenant_id;
           });
-      }
-      
-      /* When uncommenting this, watch out with the refreshPage routine
-      that was running multiple times because in the function set period
-      we're setting the first and last date (that will trigger this wathers)*/
-    
+      }  
 
       this.setPeriod();
 
@@ -109,7 +107,7 @@ export const DashboardComponent = {
             }
           }
 
-          this.drawDonut(data.results[0].series);
+          this.donutChartData = data.results[0].series;
 
           this.scope.table_total_pages = parseInt(this.scope.total_attacks / 10);
           if (this.scope.total_attacks % 10 > 0) {
@@ -161,11 +159,19 @@ export const DashboardComponent = {
       // TODO Verificar periodo selecionado
       this.dashboardService.getTotalAttacksByDay(this.scope.start, this.scope.end, timeAgr, this.scope.tenant, this.attackType)
         .success((data) => {
-          if (data.results[0].series) {
-            this.drawBar(data.results[0].series);
+          
+          if(this.attackIndex == -1){
+            //Draw bar chart
+            if (data.results[0].series) {
+              this.lineChartData = data.results[0].series;
+              this.barChartData = data.results[0].series; 
+            }
           }
-          else
-            this.drawBar();
+          else{
+            //Draw line chart
+            this.lineChartData = data.results[0].series;
+          }
+          
         })
         .catch((response) => {
           // TODO Tratar erro
@@ -290,302 +296,6 @@ export const DashboardComponent = {
       this.getTotalAttacks();
       this.getTotalAttackByDay();
       this.getAttacks();
-    }
-
-    
-
-    //* *********************************************************
-    //* ************************GRAPHS***************************
-    //* *********************************************************
-
-    drawDonut(data) {
-      document.getElementById('chart_attacks').innerHTML = '';
-      
-      if(!data)
-        return;
-      
-      const dataset = [];
-      if (data) {
-        for (let i = 0; i < data.length; i += 1) {
-          dataset.push({
-            name: data[i].tags.attack_type,
-            value: data[i].values[0][1],
-          });
-        }
-      }
-      const pie = d3.layout.pie()
-        .value(d => d.value)
-        .sort(null)
-        .padAngle(0.03);
-
-      const w = 400;
-      const h = 350;
-
-      const outerRadius = 120;
-      const innerRadius = 100;
-      var color;
-      var nrSeries = data.length;
-      //console.log("Number of series");
-      //console.log(nrSeries);
-      if(this.attackIndex === -1)
-        color = d3.scale.ordinal().range(this.AvColors);
-      else {
-        var grayedColors = [];
-        for (let j = 0; j < nrSeries; j += 1) {
-          if(j !== this.attackIndex)
-            grayedColors[j] = this.GrayPieColor;
-          else
-            grayedColors[j] = this.AvColors[j];
-        }
-        color = d3.scale.ordinal().range(grayedColors);
-      }
-      //console.log(color[0]);
-      const arc = d3.svg.arc()
-        .outerRadius(outerRadius)
-        .innerRadius(innerRadius);
-
-      const svg = d3.select('#chart_attacks')
-        .append('svg')
-        .attr({
-          width: w,
-          height: h,
-        })
-        .append('g')
-        .attr({
-          transform: `translate(${w / 2},${h / 2})`,
-        });
-      const path = svg.selectAll('path')
-        .data(pie(dataset))
-        .enter()
-        .append('path')
-        .attr({
-          d: arc,
-          fill(d, i) {
-            return color(`${d.data.name} - ${d.data.value}`);
-          },
-        });
-
-      path.transition()
-        .duration(1000)
-        .attrTween('d', (d) => {
-          const interpolate = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-          return function (t) {
-            return arc(interpolate(t));
-          };
-        });
-
-
-      const restOfTheData = function (me) {
-        const legendRectSize = 20;
-        const legendHeight = 100;
-
-        const legend = svg.selectAll('.legend')
-          .data(color.domain())
-          .enter()
-          .append('g')
-          .attr({
-            class: 'legend',
-            transform(d, i) {
-              // Just a calculation for x & y position
-              return `translate(${(i * legendHeight) - (43*nrSeries)},150)`;
-            },
-          });
-        legend.append('rect')
-          .attr({
-            width: legendRectSize,
-            height: legendRectSize,
-            rx: 20,
-            ry: 20,
-          })
-          .style({
-            fill: color,
-            stroke: color,
-          });
-
-        legend.append('text')
-          .attr({
-            x: 30,
-            y: 15,
-          })
-          .text(d => d)
-          .style({
-            fill: '#929DAF',
-            'font-size': '10px'
-          })
-          .on("click", (d, i) => {
-            
-            if(me.attackIndex === i) {
-
-              //console.log("Resetting value");
-              me.attackIndex = -1;
-              me.attackType = null;
-
-              me.getTotalAttacks();
-              me.getAttacks();
-              me.getTotalAttackByDay();
-            }
-            else {
-
-              //console.log("New value found" + i);
-              var selectedAttack = d.substring(0, d.indexOf("-") - 1);
-              me.attackIndex = i;
-              me.attackType = selectedAttack;
-              
-              me.getTotalAttacks();
-              me.getAttacks();
-              me.getTotalAttackByDay();
-            }
-          })
-          .on("mouseover", function(d) {
-            d3.select(this).style("cursor", "pointer"); 
-          })
-          .on("mouseout", function(d) {
-            d3.select(this).style("cursor", "default"); 
-          });
-      };
-      setTimeout(restOfTheData(this), 1000);
-    }
-
-    drawBar(data2) {
-      ////////////////////////////////////////////////////////
-      // Configs
-      const Chart = {
-        margin: { left: 30, top: 20, right: 20, bottom: 20 },
-        width: 450,
-        height: 450,
-        sideWidth: 10,
-        bottomHeight: 60,
-      };
-      const BarArea = {
-        width: Chart.width - Chart.margin.left - Chart.margin.right - Chart.sideWidth,
-        height: Chart.height - Chart.margin.top - Chart.margin.bottom - Chart.bottomHeight,
-      };
-      ////////////////////////////////////////////////////////
-      document.getElementById('chart_ocurrences').innerHTML = '';
-      if(!data2)
-        return;
-      var n = data2[0].values.length, // number of samples
-      m = data2.length; // number of series
-
-      //console.log("Real values");
-      //console.log(data2);
-
-      var data = [];
-      var maxValue = 0;
-      for (let i = 0; i < data2.length; i += 1) {
-        
-        //console.log("First level");
-        //console.log(data2[i].values);
-        var innerData = [];
-        for (let j = 0; j < data2[i].values.length; j += 1) {
-          //console.log("Snd level");
-          //console.log(data2[i].values[j]);
-          //innerData[j][0] = data2[i].values[j][0];  
-          //innerData[j][1] = data2[i].values[j][1];
-          innerData[j] = data2[i].values[j][1];
-          if(innerData[j] > maxValue)
-            maxValue = innerData[j];
-        }
-        data[i] = innerData;
-      }
-      //console.log("Proccessed value");
-      //console.log(data);
-
-      var xAxisData = [];
-      for (let i = 0; i < data2[0].values.length; i += 1) {
-        
-        if(this.dayTimeAgr === DAY_TIME_AGR.hour) {
-          xAxisData[i] = moment(data2[0].values[i][0]).format('HH');
-          //console.log(data2[0].values[i][0]);
-        }
-        if(this.dayTimeAgr === DAY_TIME_AGR.day) {
-          xAxisData[i] = moment(data2[0].values[i][0]).format('DD-MM');
-          //console.log(xAxisData[i]);
-        }
-        if(this.dayTimeAgr === DAY_TIME_AGR.week) {
-          xAxisData[i] = moment(data2[0].values[i][0]).format('DD-MM');
-          //console.log(xAxisData[i]);
-        }
-        if(this.dayTimeAgr === DAY_TIME_AGR.month) {
-          xAxisData[i] = moment(data2[0].values[i][0]).format('MMMM').substring(0,3);
-          //console.log(xAxisData[i]);
-        }
-      }
-      //console.log("xAxisData");
-      //console.log(xAxisData);
-      
-      /*var margin = {top: 20, right: 30, bottom: 30, left: 40},
-          width = 960 - margin.left - margin.right,
-          height = Chart.height - margin.top - margin.bottom;*/
-
-      var y = d3.scale.linear()
-          .domain([0, maxValue], 1)
-          .range([0, BarArea.height]);
-      
-      var x0 = d3.scale.ordinal()
-          .domain(d3.range(n))
-          .rangeBands([0, BarArea.width], 0.1);
-      
-      var x1 = d3.scale.ordinal()
-          .domain(d3.range(m))
-          .rangeBands([0, x0.rangeBand()], 0.1);
-      
-      var color;
-      if(this.attackIndex === -1)
-        color = d3.scale.ordinal().range(this.AvColors);
-      else
-        color = d3.scale.ordinal().range([this.AvColors[this.attackIndex]]);
-
-      var xScale = d3.scale.ordinal()
-          .domain(xAxisData)
-          .rangeBands([0, BarArea.width]);
-      
-      var xAxis = d3.svg.axis()
-          .scale(xScale)
-          .orient("bottom");
-      
-      var yScale = d3.scale.linear()
-          .domain([0, maxValue])
-          .range([BarArea.height, 0]);
-
-      var yAxis = d3.svg.axis()
-          .scale(yScale)
-          .orient("left")
-          .ticks( Math.min(10, maxValue ));
-      var svg = d3.select('#chart_ocurrences').attr({
-        width: Chart.width,
-        height: Chart.height,
-      });
-      
-      svg.append("svg")
-        //.attr("width", width + margin.left + margin.right)
-        //.attr("height", height + margin.top + margin.bottom)
-        .append("svg:g")
-        .attr("transform", "translate(" + Chart.margin.left + "," + Chart.margin.top + ")");
-
-      svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
-
-      svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + BarArea.height + ")")
-          .call(xAxis);
-
-      svg.append("g").selectAll("g")
-          .data(data)
-        .enter().append("g")
-          .style("fill", function(d, i) { return color(i); })
-          .attr("transform", function(d, i) { return "translate(" + x1(i) + ",0)"; })
-        .selectAll("rect")
-          .data(function(d) { return d; })
-        .enter().append("rect")
-          .attr("width", x1.rangeBand())
-          .attr("height", y)
-          .attr("x", function(d, i) { return x0(i); })
-          .attr("y", function(d) { return BarArea.height - 1 - y(d); })
-          .attr("stroke", "black")
-          .attr("stroke-opacity", "0.2");
     }
 
     //* *********************************************************

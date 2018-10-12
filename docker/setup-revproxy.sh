@@ -25,7 +25,9 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-/docker-entrypoint.sh
+# Ensure the servers are up and running. Exit if timeout waiting for it.
+${CNTR_FOLDER_DEV}/docker/wait-for-it.sh ${MSGQ_HOST}:${MSGQ_PORT} --timeout=10 --strict
+${CNTR_FOLDER_DEV}/docker/wait-for-it.sh ${BACKENDAPI_HOST}:${BACKENDAPI_PORT} --timeout=10 --strict/docker-entrypoint.sh
 
 mkdir -p /run/haproxy/
 mkdir -p /var/log

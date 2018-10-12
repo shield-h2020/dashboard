@@ -2,7 +2,8 @@ import { API_ADDRESS, SOCKET_ADDRESS, ACC_ID } from 'api/api-config';
 
 const API_VNSF_NOTIFICATIONS = `${API_ADDRESS}/notifications`;
 const API_VNSF_NOTIFICATIONS_SOCKET = `${SOCKET_ADDRESS}/vnsf/notifications/${ACC_ID}`;
-const API_TM_NOTIFICATIONS_SOCKET = `${SOCKET_ADDRESS}/tm/notifications/${ACC_ID}`;
+const API_TM_NOTIFICATIONS_SOCKET = `${SOCKET_ADDRESS}/tm/notifications/vnsf/${ACC_ID}`;
+const API_TM_ADMIN_NOTIFICATIONS_SOCKET = `${SOCKET_ADDRESS}/tm/notifications/platform`;
 
 export class VnsfNotificationService {
   constructor($http, $q, toastr, AuthService, TenantsService) {
@@ -53,6 +54,11 @@ export class VnsfNotificationService {
 
   connectTMNotificationsSocket(tenantId) {
     this.datastreamTM = new WebSocket(API_TM_NOTIFICATIONS_SOCKET.replace(ACC_ID, tenantId));
+    return this.datastreamTM;
+  }
+
+  connectTMAdminNotificationsSocket() {
+    this.datastreamTM = new WebSocket(API_TM_ADMIN_NOTIFICATIONS_SOCKET);
     return this.datastreamTM;
   }
 }

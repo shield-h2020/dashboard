@@ -43,12 +43,13 @@ const MODAL_ENTRIES = {
 export const IncidentsListComponent = {
   template,
   controller: class IncidentsListComponent {
-    constructor(IncidentsService) {
+    constructor($scope, IncidentsService) {
       'ngInject';
 
       this.incidentsService = IncidentsService;
       this.viewStrings = VIEW_STRINGS;
       this.styles = styles;
+      this.scope = $scope;
       this.pagination = {
         page: 1,
         limit: 10,
@@ -71,6 +72,10 @@ export const IncidentsListComponent = {
 
     $onInit() {
       this.getData();
+
+      this.scope.$on('INCIDENT_UPDATE_DATA', (event, data) => {
+        this.getData();
+      });
     }
 
     getData() {
@@ -132,12 +137,12 @@ export const IncidentsListComponent = {
 
     applyRecommendation() {
       this.incidentsService.recommendAction(this.incident._id, this.incident._etag)
-      .then(() => {
-        this.toast.success('', 'Your recommendation was sent to the Orchestrator', {
-          onHidden: () => this.closeHandler && this.closeHandler(),
+        .then(() => {
+          this.toast.success('', 'Your recommendation was sent to the Orchestrator', {
+            onHidden: () => this.closeHandler && this.closeHandler(),
+          });
+          this.toggleIncidentModal();
         });
-        this.toggleIncidentModal();
-      });
     }
 
     setStartDate() {

@@ -1135,7 +1135,8 @@ body.page-container-boxed .page-container {
 
 .chart_holder {
   border: 1px solid #F1F0F0;
-  height: 450px;
+  border-radius: 4px;
+  height: 58vh;
   text-align: center;
 }
 
@@ -1152,6 +1153,12 @@ body.page-container-boxed .page-container {
 
 .bg_partial{
   background: #F1F0F0;
+  height: 4vh
+}
+
+.bg_partial label{
+  width: 100%;
+  text-align: left;
 }
 
 .axis path,
@@ -1214,13 +1221,13 @@ rect {
   clear: both;
 }
 
-.medium_div{
+.mediumdiv{
   min-height: 50px;
   max-height: 50px;
   clear: both;
 }
 
-.large_div{
+.largediv{
   min-height: 70px;
   max-height: 70px;
   clear: both;
@@ -1238,4 +1245,60 @@ ui-view{
 
 .footer {
   height: 90px;
+}
+
+#chart_attacks{
+  height: 54vh;
+}
+
+.labels text{
+  fill: #818181;
+  font-size: 14px;
+  font-family: "Open Sans", sans-serif;
+}
+
+.limitHeight{
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  // width: 60px;                  
+  // height: 28px;                 
+  padding: 10px;             
+  font: 12px sans-serif;        
+  background: #F1F0F0;   
+  border: 0px;      
+  border-radius: 8px;           
+  pointer-events: none;         
+}
+
+.axis .tick text{
+  fill: #54657E;
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+}
+
+.row-eq-height{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row-eq-height > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+
+.verticalAlignEqualHeightColumn{
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.floatRight{
+  float: right;
 }
