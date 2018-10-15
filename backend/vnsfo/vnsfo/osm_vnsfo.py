@@ -130,3 +130,83 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         except requests.exceptions.ConnectionError:
             self.logger.error("Couldn't connect to vNSFO")
+
+    def apply_remediation(self, target_type, target_id, action):
+
+        target_action = {
+            'sdn': self.__sdn_remediation__,
+            'hosts': self.__host_remediation__,
+            'vnsf': self.__vnsf_remediation__
+        }
+
+        self.logger.debug(
+            f'Received remediation request with type {target_type} for id {target_id} and action {action}')
+        if target_type not in target_action.keys():
+            self.issue.raise_ex(IssueElement.ERROR, self.errors['REMEDIATION']['INVALID_ACTION'],
+                                [[action]])
+
+        target_action[target_type](target_id, action)
+
+    def __host_remediation__(self, target_id, action):
+
+        if action == 'update':
+            return
+
+        action_map = {
+            'isolate': 'isolated',
+            'reboot': 'reboot'
+        }
+
+        headers = {'Content-Type': 'application/json'}
+        url = f'{self.basepath}/nfvi/node/{target_id}'
+        remediation = {
+            action_map[action]: True
+        }
+
+        self.logger.debug(f"Send remediation data {remediation} to {url}")
+
+        try:
+            r = requests.put(url, headers=headers, json=remediation)
+
+            if r.text:
+                self.logger.debug(r.text)
+
+            if r.status_code > 299:
+                self.issue.raise_ex(IssueElement.ERROR, self.errors['REMEDIATION']['INVALID_RESPONSE'])
+
+        except requests.exceptions.ConnectionError:
+            self.issue.raise_ex(IssueElement.ERROR, self.errors['REMEDIATION']['VNSFO_UNREACHABLE'],
+                                [[url]])
+
+    def __sdn_remediation__(self, target_id, action):
+        pass
+
+    def __vnsf_remediation__(self, target_id, action):
+        if action == 'update':
+            return
+
+        action_map = {
+            'isolate': 'isolated',
+            'reboot': 'reboot'
+        }
+
+        headers = {'Content-Type': 'application/json'}
+        url = f'{self.basepath}/vnsf/action'
+        remediation = {
+            'action': action_map[action],
+            'vnsf_id': target_id
+        }
+
+        self.logger.debug(f"Send remediation data {remediation} to {url}")
+
+        try:
+            r = requests.post(url, headers=headers, json=remediation)
+            if r.text:
+                self.logger.debug(r.text)
+
+            if r.status_code > 299:
+                self.issue.raise_ex(IssueElement.ERROR, self.errors['REMEDIATION']['INVALID_RESPONSE'])
+
+        except requests.exceptions.ConnectionError:
+            self.issue.raise_ex(IssueElement.ERROR, self.errors['REMEDIATION']['VNSFO_UNREACHABLE'],
+                                [[url]])

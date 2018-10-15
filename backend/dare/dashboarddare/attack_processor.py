@@ -25,16 +25,18 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 import logging
-from random import randint
 from datetime import datetime, timezone
+from random import randint
 from threading import Thread
 
+import requests
+from dashboardutils import http_utils
 from dashboardutils.pipe import PipeProducer
 from dashboardutils.rabbit_client import RabbitAsyncConsumer
 from dashboardutils.tenant_ip_utils import get_tenant_by_ip, AssociationCodeError, MultipleAssociation
 from influxdb import InfluxDBClient
 from settings import ASSOCIATION_API_URL, INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_USER_PASSWORD, \
-    INFLUXDB_DB
+    INFLUXDB_DB, TENANT_API_URL, TENANT_API_HEADERS
 
 
 class AttackProcessor(PipeProducer):
@@ -103,13 +105,14 @@ class AttackProcessor(PipeProducer):
             return
 
         # Get tenant
-        tenant = self.parse_tenant(message[self.__csv__['tenant_index']])
-        if not tenant:
+        tenant_id, tenant_name = self.parse_tenant(message[self.__csv__['tenant_index']])
+        if not tenant_id or not tenant_name:
             return
 
         # Build tag str
         tag_dict = {self.__csv__['header'][index]: message[index] for index in self.__csv__['tag_indexes']}
-        tag_dict["tenant"] = tenant
+        tag_dict["tenant"] = tenant_id
+        tag_dict["tenant_name"] = tenant_name
 
         # Build field dict
         field_dict = {self.__csv__['header'][index]: message[index] for index in self.__csv__['field_indexes']}
@@ -131,7 +134,7 @@ class AttackProcessor(PipeProducer):
 
         # search the IP on the Internal Cache
         if ip in self.__INTERNAL_IP_CACHE__:
-            return self.__INTERNAL_IP_CACHE__[ip]
+            return self.__INTERNAL_IP_CACHE__[ip]['id'], self.__INTERNAL_IP_CACHE__[ip]['name']
 
         try:
             _tenant = get_tenant_by_ip(ASSOCIATION_API_URL, ip)
@@ -140,18 +143,38 @@ class AttackProcessor(PipeProducer):
             if len(self.__INTERNAL_IP_CACHE__) > self.INTERNAL_CACHE_SIZE:
                 self.__INTERNAL_IP_CACHE__ = {}
 
-            self.__INTERNAL_IP_CACHE__[ip] = _tenant  # Store the association on the dictionary
+            _tenant_name = self.get_tenant_name(_tenant)
+            self.__INTERNAL_IP_CACHE__[ip] = {}
+            self.__INTERNAL_IP_CACHE__[ip]['id'] = _tenant  # Store the association on the dictionary
+            self.__INTERNAL_IP_CACHE__[ip]['name'] = _tenant_name  # Store the association on the dictionary
 
-            return _tenant
+            return _tenant, _tenant_name
         except MultipleAssociation:
             self.logger.error(f"The given IP: {ip} has none or multiple associations")
         except AssociationCodeError as e:
             self.logger.error(f"There was an error making the IP association {e.status_code}")
         return None
 
+    def get_tenant_name(self, tenant_id):
+        url = TENANT_API_URL.format(tenant_id)
+        headers = TENANT_API_HEADERS
+        self.logger.debug(f"Requiring tenant information for tenant id {tenant_id}")
+        try:
+            r = requests.get(url, headers=headers)
+            if r.text:
+                self.logger.debug(r.text)
+            if r.status_code != http_utils.HTTP_200_OK:
+                self.logger.error(f'Invalid response error ({r.status_code}) while collecting tenant name')
+                return None
+
+            return r.json()['tenant_name']
+
+        except requests.exceptions.ConnectionError as e:
+            self.logger.error(f'Error collecting tenant name for tenant {tenant_id} at {url}.', e)
+
     def __build_timestamp__(self, datestring):
         new_date = datetime.strptime(datestring, self.DATE_FORMAT)
         timestamp = int(new_date.replace(tzinfo=timezone.utc).timestamp())  # Return POSIX UTC timestamp
         random_ns = randint(1000000, 1999999)  # us ns
-        ts = timestamp * 1000 * 1000 * 1000    # ms us ns
+        ts = timestamp * 1000 * 1000 * 1000  # ms us ns
         return ts + random_ns

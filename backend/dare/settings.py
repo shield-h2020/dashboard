@@ -144,6 +144,17 @@ __association_rest__ = {
 ASSOCIATION_API_URL = __association_rest__['association']['url']
 ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
 
+###
+#   Tenant Endpoint
+###
+__tenant_rest__ = {
+    'tenant': {
+        'url':     '{}/{}/{}'.format(TENANT_IP_URL, 'catalogue/tenants', {}),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+TENANT_API_URL = __tenant_rest__['tenant']['url']
+TENANT_API_HEADERS = __tenant_rest__['tenant']['headers']
 
 ###
 #   Association vNSF Instance

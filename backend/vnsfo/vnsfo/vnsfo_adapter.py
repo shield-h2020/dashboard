@@ -39,6 +39,10 @@ class VnsfOrchestratorOnboardingIssue(ExceptionMessage):
     """vNSFO onboarding operation failed."""
 
 
+class VnsfOrchestratorRemediationIssue(ExceptionMessage):
+    """vNSFO remediation operation failed"""
+
+
 class VnsfOrchestratorAdapter(metaclass=ABCMeta):
     """
     Interface with the vNSF Orchestrator through it's Service Orquestrator REST API.
@@ -64,6 +68,20 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
             'VNSFO_UNREACHABLE': {
                 IssueElement.ERROR.name:     ['Error conveying policy at {}'],
                 IssueElement.EXCEPTION.name: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
+                }
+            },
+        'REMEDIATION':          {
+            'VNSFO_UNREACHABLE': {
+                IssueElement.ERROR.name:    ['Error conveying policy at {}'],
+                IssueElement.EXCEPTION.name: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
+                },
+            'INVALID_ACTION': {
+                IssueElement.ERROR.name:    ['Error validating action {}'],
+                IssueElement.EXCEPTION.name: VnsfOrchestratorRemediationIssue("Provided action is invalid")
+                },
+            'INVALID_RESPONSE': {
+                IssueElement.ERROR.name:    ['Error applying action'],
+                IssueElement.EXCEPTION.name: VnsfOrchestratorRemediationIssue("Can't apply the provided action")
                 }
             }
         }

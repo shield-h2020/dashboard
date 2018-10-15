@@ -37,6 +37,7 @@ from flask_cors import CORS
 from hooks_login import LoginHooks
 from hooks_nss_inventory import NssInventoryHooks
 from hooks_tenants import TenantHooks
+from hooks_tm_notifications import TMNotifications
 from security import TokenAuthzOslo
 from validators import NetworkValidator
 
@@ -64,6 +65,10 @@ app.on_update_ns_terminate += NssInventoryHooks.terminate_network_service
 
 
 app.register_blueprint(swagger)
+
+app.on_update_notifications_tm_vnsf += TMNotifications.apply_vnsf_remediation
+app.on_update_notifications_tm_host += TMNotifications.apply_host_remediation
+
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info
 
