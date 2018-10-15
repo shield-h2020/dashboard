@@ -1,3 +1,5 @@
+@import '~styleglobals/colors';
+
 .event-entry {
   display: flex;
   font-size: 15px;
@@ -25,6 +27,30 @@
 }
 
 .sn-card {
-
   overflow-y: scroll;
+}
+
+
+.page-button {
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  display: inline-block;
+  padding: 0;
+}
+
+.prev-button {
+  @extend .page-button;
+  border-left: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(45deg);
+}
+
+.next-button {
+  @extend .page-button;
+  border-right: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(-45deg);
 }

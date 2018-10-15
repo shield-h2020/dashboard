@@ -2,6 +2,7 @@ import { API_ADDRESS, STORE_ADDRESS, ACC_ID } from 'api/api-config';
 
 const API_INVENTORY = `${API_ADDRESS}/inventory/nss`;
 const API_CATALOGUE = `${STORE_ADDRESS}/nss/${ACC_ID}`;
+const API_NS = `${API_ADDRESS}/nss`;
 
 export class InventoryService {
   constructor($http, $q, toastr, AuthService, ErrorHandleService) {
@@ -15,7 +16,7 @@ export class InventoryService {
   }
 
   getInventoryServices({ page = 0, limit = 25 }, filters = {}) {
-    const params = { max_results: limit, page, nocache: (new Date()).getTime()  };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
@@ -55,8 +56,40 @@ export class InventoryService {
       .catch(this.errorHandlerService.handleHttpError);
   }
 
-  async getCatalogueService(id) {
+  instantiateService(id, etag) {
+    const params = { nocache: (new Date()).getTime() };
+
+    if (!this.authService.isUserPlatformAdmin()) {
+      params.where = JSON.stringify({
+        tenant_id: this.authService.getTenant(),
+      });
+    }
+    console.log(etag)
+
+    return this.http.patch(`${API_NS}/instantiate/${id}`, {}, { params, headers: { 'if-match': etag } })
+      .then(() => {
+        this.toast.success('Service was instantiated');
+      }
+      ).catch(this.errorHandlerService.handleHttpError);
+  }
+
+  terminateService(id, etag) {
     const params = {};
+    params.where = JSON.stringify({
+      tenant_id: this.authService.getTenant(),
+    });
+
+    return this.http.patch(`${API_NS}/terminate/${id}`, {},
+      { params, headers: { 'if-match': etag } })
+      .then(() => {
+        this.toast.success('Instance was terminated');
+      }
+      ).catch(this.errorHandlerService.handleHttpError);
+  }
+
+  async getCatalogueService(id) {
+    const params = { nocache: (new Date()).getTime() };
+
     return this.http.get(API_CATALOGUE.replace(ACC_ID, id), {
       params,
       headers: { Authorization: undefined },

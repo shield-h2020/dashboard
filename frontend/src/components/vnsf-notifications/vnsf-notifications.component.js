@@ -1,4 +1,5 @@
 import template from './vnsf-notifications.html';
+import styles from './vnsf-notifications.scss';
 
 const VIEW_STRINGS = {
   title: 'vNSF Notifications',
@@ -7,9 +8,9 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
-  _id: 'Id',
-  tenant_name: 'Client',
   type: 'Type',
+  tenant_name: 'Client',
+  "_created": 'Created'
 };
 
 export const VnsfNotificationsComponent = {
@@ -26,6 +27,8 @@ export const VnsfNotificationsComponent = {
       this.viewStrings = VIEW_STRINGS;
       this.selectedNotif = null;
       this.isCreate = true;
+      this.styles = styles;
+
       this.tableHeaders = {
         ...TABLE_HEADERS,
         actions: [
@@ -41,8 +44,9 @@ export const VnsfNotificationsComponent = {
       };
       // Table control
       this.pagination = {
+        page: 1,
         offset: 0,
-        limit: 20,
+        limit: 10,
       };
       this.filters = {};
       this.deleteModalOpen = false;
@@ -51,11 +55,11 @@ export const VnsfNotificationsComponent = {
     $onInit() {
 
       this.scope.$on('TM_UPDATE_BROADCAST', () => {
-        
+
         this.getNotifications();
       });
       this.scope.$on('VNSF_UPDATE_BROADCAST', () => {
-        
+
         this.getNotifications();
       });
 
@@ -76,14 +80,14 @@ export const VnsfNotificationsComponent = {
     }
 
     toggleNotificationsModal(notif) {
-      if(notif.type === 'TRUST_MONITOR')
+      if (notif.type === 'TRUST_MONITOR')
         this.scope.$emit('TM_NOTIF_EMIT', JSON.parse(notif.data));
       else
         this.scope.$emit('NSVF_NOTIF_EMIT', JSON.parse(notif.data));
     }
 
     static addExtraClasses(items) {
-      return items.map(item => ({
+      return items.values.map(item => ({
         ...item,
         cellClasses: {
           tenant_name: item.tenant_name === 'not found' ? 'cell--unimportant' : '',
@@ -97,11 +101,32 @@ export const VnsfNotificationsComponent = {
       this.vnsfNotificationService.getNotifications(this.pagination, this.filters)
         .then((items) => {
           this.items = UsersListComponent.addExtraClasses(items);
+          this.pagination.total = (items && items.meta.total) || 0;
+          this.paging = this.calcPageItems();
           this.loading = false;
         })
         .catch(() => {
           this.loading = false;
         });
+    }
+
+    changePage(amount) {
+      const condition = amount > 0 ?
+        this.items.length >= this.pagination.limit : this.pagination.page > 1;
+      if (condition) {
+        this.pagination.page += amount;
+        this.getNotifications();
+      }
+    }
+
+    calcPageItems() {
+      const { page, limit } = this.pagination;
+      const length = this.items.length || 10;
+
+      const res = ((page * limit) - (length < limit ? limit : length)) + 1;
+      const res2 = (page * limit) + (length < limit ? -(limit - length) : 0);
+
+      return { min: res, max: res2 };
     }
   },
 };

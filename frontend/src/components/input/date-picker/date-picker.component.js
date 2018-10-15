@@ -31,7 +31,6 @@ export const DatePickerComponent = {
     }
 
     $onInit() {
-      console.log(this.currentDate)
       if (this.currentDate) {
         this.selectedDate = new Date(this.currentDate);
         this.showDate = format(this.selectedDate, this.dateFormat || 'YYYY-MM-DD HH:mm');

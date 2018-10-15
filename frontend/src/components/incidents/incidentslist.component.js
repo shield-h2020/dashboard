@@ -24,7 +24,7 @@ const UI_STRINGS = {
       { label: 'Detection Date', key: 'detection' },
       { label: 'Severity', key: 'severity' },
       { label: 'Status', key: 'status' },
-      { label: 'Type of attack', key: 'attack' }],
+      { label: 'Type of incident', key: 'attack' }],
     actions: {
       update: 'recommendation',
     },

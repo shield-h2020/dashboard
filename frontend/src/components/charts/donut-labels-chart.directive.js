@@ -75,7 +75,7 @@ export const DonutLabelsChartDirective = ($compile, $timeout) => ({
             if (data) {
                 for (let i = 0; i < data.length; i += 1) {
                     dataset.push({
-                        label: data[i].values[0][1] + " attacks",
+                        label: data[i].values[0][1],
                         name: data[i].tags.attack_type,
                         value: data[i].values[0][1],
                     });

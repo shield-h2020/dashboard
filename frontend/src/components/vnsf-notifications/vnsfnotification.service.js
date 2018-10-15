@@ -17,7 +17,7 @@ export class VnsfNotificationService {
   }
 
   getNotifications({ page = 1, limit = 25 }, filters = {}) {
-    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime(), sort: '[("_created",-1)]' };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
@@ -31,19 +31,19 @@ export class VnsfNotificationService {
         const notifs = response.data._items;
         for (let i = 0, len = notifs.length; i < len; i += 1) {
           vnsfPromises.push(this.tenantsService.getTenant(notifs[i].tenant_id)
-          .catch(() =>
-            ({
+            .catch(() =>
+              ({
+                ...notifs[i],
+                tenant_name: 'not found',
+              }))
+            .then(tenant => ({
               ...notifs[i],
-              tenant_name: 'not found',
-            }))
-          .then(tenant => ({
-            ...notifs[i],
-            tenant_name: tenant.tenant_name,
-          })));
+              tenant_name: tenant.tenant_name,
+            })));
         }
 
         return this.q.all(vnsfPromises)
-          .then(values => values);
+          .then(values => ({ values, meta: response.data._meta }));
       });
   }
 

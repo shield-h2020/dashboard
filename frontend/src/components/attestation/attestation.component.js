@@ -1,4 +1,5 @@
 import template from './attestation.html';
+import styles from './attestation.scss';
 
 const VIEW_STRING = {
   title: 'Attestation',
@@ -29,8 +30,14 @@ export const AttestationComponent = {
       'ngInject';
       this.viewStrings = VIEW_STRING;
       this.scope = $scope;
+      this.styles = styles;
       this.attestationService = AttestationService;
       this.authService = AuthService;
+      this.pagination = {
+        page: 1,
+        limit: 1,
+        pageLimit: 10
+      };
     }
 
     $onInit() {
@@ -127,11 +134,12 @@ export const AttestationComponent = {
     }
 
     getNotifications() {
+      console.log("getNotifications")
       var typeNotification;
-      this.attestationService.getNotifications({ page: 1, limit: 1 }, this.filters)
+      this.attestationService.getNotifications(this.pagination, this.filters)
         .then(result => {
           if (this.authService.isUserTenantAdmin()) {
-            result.map(item => {
+            result.notifs.map(item => {
               this.items = item.vnsfs.map(vnsfsitem => {
                 return {
                   "_id": item._id,
@@ -147,7 +155,7 @@ export const AttestationComponent = {
             });
           }
           else {
-            result.map(item => {
+            result.notifs.map(item => {
               typeNotification = item.type;
               if (this.selected_type == 0) {
                 let itemsResult = item[typeNotification].map(typeitem => {
@@ -197,7 +205,29 @@ export const AttestationComponent = {
 
             });
           }
+
+          this.pagination.total = (result && result.meta.total) || 0;
+          this.paging = this.calcPageItems();
         });
+    }
+
+    changePage(amount) {
+      const condition = amount > 0 ?
+        this.items.length >= this.pagination.pageLimit : this.pagination.page > 1;
+      if (condition) {
+        this.pagination.page += amount;
+        this.getNotifications();
+      }
+    }
+
+    calcPageItems() {
+      const { page, pageLimit } = this.pagination;
+      const length = this.items.length || 10;
+
+      const res = ((page * pageLimit) - (length < pageLimit ? pageLimit : length)) + 1;
+      const res2 = (page * pageLimit) + (length < pageLimit ? -(pageLimit - length) : 0);
+
+      return { min: res, max: res2 };
     }
   }
 };
