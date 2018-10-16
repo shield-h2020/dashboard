@@ -29,9 +29,11 @@ export class AttestationService {
       .then((response) => {
         const notifs = response.data._items;
 
-        return this.q.all(notifs)
-          .then(values => values);
-      });
+        return {
+          notifs,
+          meta: response.data._meta,
+        };
+      })
   }
 
 }

@@ -28,7 +28,9 @@ export class OnboardValidationService {
   }
 
   getValidationById(id) {
-    return this.http.get(`${API_VALIDATIONS}/${id}`, { headers: { Authorization: undefined } })
+    const params = { nocache: (new Date()).getTime() };
+
+    return this.http.get(`${API_VALIDATIONS}/${id}`, { params, headers: { Authorization: undefined } })
       .then((response) => {
         const { topology: { graph }, result } = response.data;
 

@@ -3,320 +3,287 @@ import template from './dashboard.html';
 import * as d3 from 'd3';
 
 const VIEW_STRING = {
-  title: 'Threats Dashboard',
+	title: 'Threats Dashboard',
 };
 
 const DAY_TIME_AGR = {
-  hour: '0',
-  day: '1',
-  week: '2',
-  month: '3'
+	hour: '0',
+	day: '1',
+	week: '2',
+	month: '3'
 };
 
 export const DashboardComponent = {
-  template,
-  bindings: {
-    tenant: '<',
-  },
-  controller: class DashboardComponent {
-    constructor($stateParams, $state, $scope, DashboardService, AuthService, TenantsService) {
-      'ngInject';
+	template,
+	bindings: {
+		tenant: '<',
+	},
+	controller: class DashboardComponent {
+		constructor($stateParams, $state, $scope, DashboardService, AuthService, TenantsService) {
+			'ngInject';
 
-      this.viewStrings = VIEW_STRING;
-      this.dashboardService = DashboardService;
-      this.authService = AuthService;
-      this.tenantsService = TenantsService;
-      this.scope = $scope;
-    }
+			this.viewStrings = VIEW_STRING;
+			this.dashboardService = DashboardService;
+			this.authService = AuthService;
+			this.tenantsService = TenantsService;
+			this.scope = $scope;
+		}
 
-    $onInit() {
-      this.scope.selected_period = '0';
-      this.scope.isAdmin = this.authService.isUserPlatformAdmin();
-      this.scope.user_tenant = this.authService.getTenant();
-      this.attackType = null;
-      this.attackIndex = -1;
-      this.dayTimeAgr = false;
-      this.customPeriodIndex = '3';
-      this.showDatePicker = false;
-      this.donutChartData;
-      this.lineChartData;
-      this.barChartData;
-      this.customStart;
-      this.customEnd;
-      this.AvColors = ["#85AACD", "#7AC8A0", "#C4C26F", "#D39596", "#8FB996", "#D0EFB1", "#D2AB99", "#413C58"];
-      this.GrayPieColor = "#D0D0D0";
-      //var _this = this;
-      this.scope.$on('TM_NOTIF_BROADCAST', (event, data) => {
-        this.scope.selected_tenant = data;
-        this.refreshPage();
-      });
-      this.scope.onTenantChange = function(e) {
-        //console.log(e);
-        this.$emit('TM_NOTIF_BROADCAST', e.selected_tenant);
-      };
-      if (this.scope.isAdmin) {
-        this.tenantsService.getTenants()
-          .then((data) => {
-            //console.log(data);
-            this.scope.tenants_list = [{'tenant_name': 'All tenants', 'tenant_id': -1}, ...data];
-            //this.scope.tenants_list = data;
-            this.scope.selected_tenant = this.scope.tenants_list[0].tenant_id;
-          });
-      }  
+		$onInit() {
+			this.scope.selected_period = '0';
+			this.scope.isAdmin = this.authService.isUserPlatformAdmin();
+			this.scope.user_tenant = this.authService.getTenant();
+			this.attackType = null;
+			this.attackIndex = -1;
+			this.dayTimeAgr = false;
+			this.customPeriodIndex = '3';
+			this.showDatePicker = false;
+			this.donutChartData;
+			this.lineChartData;
+			this.barChartData;
+			this.customStart;
+			this.customEnd;
+			this.AvColors = ["#85AACD", "#7AC8A0", "#C4C26F", "#D39596", "#8FB996", "#D0EFB1", "#D2AB99", "#413C58"];
+			this.GrayPieColor = "#D0D0D0";
 
-      this.setPeriod();
+			this.scope.$on('TM_NOTIF_BROADCAST', (event, data) => {
+				this.scope.selected_tenant = data;
+				this.refreshPage();
+			});
 
-      this.setFilter = function(eData) {
+			this.scope.onTenantChange = function (e) {
+				this.$emit('TM_NOTIF_BROADCAST', e.selected_tenant);
+			};
 
-        //console.log(eData.key)
+			if (this.scope.isAdmin) {
+				this.tenantsService.getTenants()
+					.then((data) => {
+						//console.log(data);
+						this.scope.tenants_list = [{ 'tenant_name': 'All tenants', 'tenant_id': -1 }, ...data];
+						//this.scope.tenants_list = data;
+						this.scope.selected_tenant = this.scope.tenants_list[0].tenant_id;
+					});
+			}
 
-        if(eData.key === 'sDate')
-          this.customStart = eData.value;
+			this.setPeriod();
 
-        if(eData.key === 'eDate')
-          this.customEnd = eData.value;
-        
-        //console.log(this.scope.selected_period);
-        //console.log(this.customPeriodIndex);
+			this.setFilter = function (eData) {
 
-        if(this.scope.selected_period !== this.customPeriodIndex)
-          return;
+				if (eData.key === 'sDate')
+					this.customStart = eData.value;
 
-        this.scope.sdate = moment(this.customStart).format('YYYY-MM-DDTHH:mm:ss');
-        this.scope.edate = moment(this.customEnd).format('YYYY-MM-DDTHH:mm:ss');
-        
-        //console.log(this.scope.sdate);
-        //console.log(this.scope.edate);
+				if (eData.key === 'eDate')
+					this.customEnd = eData.value;
 
-        this.showDatePicker = true;
-        this.refreshPage();
-      }
-    }
+				if (this.scope.selected_period !== this.customPeriodIndex)
+					return;
 
-    //* *********************************************************
-    //* *************************REQUESTS************************
-    //* *********************************************************
+				this.scope.sdate = moment(this.customStart).format('YYYY-MM-DDTHH:mm:ss');
+				this.scope.edate = moment(this.customEnd).format('YYYY-MM-DDTHH:mm:ss');
 
-    getTotalAttacks() {
-      this.dashboardService.getTotalAttacks(this.scope.start, this.scope.end, this.scope.tenant)
-        .success((data) => {
-          this.scope.total_attacks = 0;
-          if (data.results[0].series) {
-            for (let i = 0; i < data.results[0].series.length; i += 1) {
-              this.scope.total_attacks += data.results[0].series[i].values[0][1];
-            }
-          }
+				this.showDatePicker = true;
+				this.refreshPage();
+			}
+		}
 
-          this.donutChartData = data.results[0].series;
+		//* *********************************************************
+		//* *************************REQUESTS************************
+		//* *********************************************************
 
-          this.scope.table_total_pages = parseInt(this.scope.total_attacks / 10);
-          if (this.scope.total_attacks % 10 > 0) {
-            this.scope.table_total_pages += 1;
-          }
-        })
-        .catch((response) => {
-          // TODO Tratar erro
-          console.log(response.status);
-        });
-    }
+		getTotalAttacks() {
+			this.dashboardService.getTotalAttacks(this.scope.start, this.scope.end, this.scope.tenant)
+				.success((data) => {
+					this.scope.total_attacks = 0;
+					if (data.results[0].series) {
+						for (let i = 0; i < data.results[0].series.length; i += 1) {
+							this.scope.total_attacks += data.results[0].series[i].values[0][1];
+						}
+					}
 
-    getTotalAttackByDay() {
-      var duration = moment.duration(moment(this.scope.end).diff(this.scope.start));
-      var inDays = duration.asDays();
-      //console.log(inDays);
-      var timeAgr;
-      if(inDays <= 1) {
-        
-        timeAgr = 'time(1h)';
-        this.dayTimeAgr = DAY_TIME_AGR.hour;
-        //console.log("dia");
-      }
-      else {
-        //console.log(inDays);
-        if(inDays <= 12) {
+					this.donutChartData = data.results[0].series;
+					this.barChartData = data.results[0].series;
 
-          timeAgr = 'time(1d)';
-          this.dayTimeAgr = DAY_TIME_AGR.day;
-        }
-        else {
+					this.scope.table_total_pages = parseInt(this.scope.total_attacks / 10);
+					if (this.scope.total_attacks % 10 > 0) {
+						this.scope.table_total_pages += 1;
+					}
+				})
+				.catch((response) => {
+					// TODO Tratar erro
+					console.log(response.status);
+				});
+		}
 
-          if(inDays < 30) {
+		getTotalAttackByDay() {
+			var duration = moment.duration(moment(this.scope.end).diff(this.scope.start));
+			var inDays = duration.asDays();
+			//console.log(inDays);
+			var timeAgr;
+			if (inDays <= 1) {
 
-            timeAgr = 'time(1w)';
-            this.dayTimeAgr = DAY_TIME_AGR.week;
-          }
-          else {
-            this.scope.end = moment(this.scope.edate).endOf('month').format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
-            //console.log(this.scope.end);
-            timeAgr = 'time(4w)';
-            this.dayTimeAgr = DAY_TIME_AGR.month;
-          }
+				timeAgr = 'time(1h)';
+				this.dayTimeAgr = DAY_TIME_AGR.hour;
+				//console.log("dia");
+			}
+			else {
+				//console.log(inDays);
+				if (inDays <= 12) {
 
-        }
-        
-        //this.dayTimeAgr = true;
-      }
-      // TODO Verificar periodo selecionado
-      this.dashboardService.getTotalAttacksByDay(this.scope.start, this.scope.end, timeAgr, this.scope.tenant, this.attackType)
-        .success((data) => {
-          
-          if(this.attackIndex == -1){
-            //Draw bar chart
-            if (data.results[0].series) {
-              this.lineChartData = data.results[0].series;
-              this.barChartData = data.results[0].series; 
-            }
-          }
-          else{
-            //Draw line chart
-            this.lineChartData = data.results[0].series;
-          }
-          
-        })
-        .catch((response) => {
-          // TODO Tratar erro
-          console.log(response.status);
-        });
-    }
+					timeAgr = 'time(1d)';
+					this.dayTimeAgr = DAY_TIME_AGR.day;
+				}
+				else {
 
-    getAttacks() {
-      // TODO Verificar attack_type selecionado
-      this.dashboardService.getAttack(this.scope.start, this.scope.end, this.scope.tenant, this.attackType, this.scope.table_page * 10)
-        .success((data) => {
-          this.scope.attacks = data;
-        })
-        .catch((response) => {
-          // TODO Tratar erro
-          console.log(response.status);
-        });
-    }
+					if (inDays < 30) {
 
-    //* *********************************************************
-    //* *************************FILTERS*************************
-    //* *********************************************************
+						timeAgr = 'time(1w)';
+						this.dayTimeAgr = DAY_TIME_AGR.week;
+					}
+					else {
+						this.scope.end = moment(this.scope.edate).endOf('month').format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
+						//console.log(this.scope.end);
+						timeAgr = 'time(4w)';
+						this.dayTimeAgr = DAY_TIME_AGR.month;
+					}
 
-    setPeriod() {
-      switch (this.scope.selected_period) {
-        case '0':
-          this.scope.sdate = moment()
-            .startOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          this.scope.edate = moment()
-            .endOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
+				}
 
-          this.LastStartDate = this.scope.sdate;
-          this.LastEndDate = this.scope.edate;
-          this.showDatePicker =  false;
+				//this.dayTimeAgr = true;
+			}
+			// TODO Verificar periodo selecionado
+			this.dashboardService.getTotalAttacksByDay(this.scope.start, this.scope.end, timeAgr, this.scope.tenant, this.attackType)
+				.success((data) => {
 
-          break;
-        case '1':
-          this.scope.sdate = moment()
-            .subtract(1, 'd')
-            .startOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          this.scope.edate = moment()
-            .subtract(1, 'd')
-            .endOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
+					// this.donutChartData = data.results[0].series;
+					if (this.attackIndex == -1) {
+						//Draw bar chart
+						if (data.results[0].series) {
+							this.lineChartData = data.results[0].series;
+							this.barChartData = data.results[0].series;
+						}
+					}
+					else {
+						//Draw line chart
+						this.lineChartData = data.results[0].series;
+					}
 
-          this.LastStartDate = this.scope.sdate;
-          this.LastEndDate = this.scope.edate;
-          this.showDatePicker =  false;      
+				})
+				.catch((response) => {
+					// TODO Tratar erro
+					console.log(response.status);
+				});
+		}
 
-          break;
-        case '2':
-          this.scope.sdate = moment()
-            .subtract(7, 'd')
-            .startOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          this.scope.edate = moment()
-            .endOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
+		getAttacks() {
+			// TODO Verificar attack_type selecionado
+			this.dashboardService.getAttack(this.scope.start, this.scope.end, this.scope.tenant, this.attackType, this.scope.table_page * 10)
+				.success((data) => {
+					this.scope.attacks = data;
+				})
+				.catch((response) => {
+					// TODO Tratar erro
+					console.log(response.status);
+				});
+		}
 
-          
-          this.LastStartDate = this.scope.sdate;
-          this.LastEndDate = this.scope.edate;
-          this.showDatePicker =  false;
-          
-          break;
-        case '3':
-          this.setFilter({key: '', value: ''});
-          return;
-        /*case '3':
-          this.scope.sdate = moment()
-            .startOf('month')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          this.scope.edate = moment()
-            .endOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          break;
-        case '4':
-          this.scope.sdate = moment()
-            .subtract(170, 'd')
-            .startOf('month')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          this.scope.edate = moment()
-            .endOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          break;
-        case '5':
-          this.scope.sdate = moment()
-            .startOf('year')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          this.scope.edate = moment()
-            .endOf('day')
-            .format('YYYY-MM-DDTHH:mm:ss');
-          break;*/
-        default:
-          break;
-      }
-      console.log("Refreshing page");
-      this.refreshPage();
-    }
+		//* *********************************************************
+		//* *************************FILTERS*************************
+		//* *********************************************************
 
-    refreshPage() {
-      this.scope.table_page = 0;
-      if (!this.scope.isAdmin) {
-        
-        this.scope.tenant = this.scope.user_tenant;        
-      }
-      else {
-        if (this.scope.selected_tenant !== -1) {
-          this.scope.tenant = this.scope.selected_tenant;
-        }
-        else
-        this.scope.tenant = null;
-      }
-      this.scope.start = `${this.scope.sdate}.000Z`;
-      this.scope.end = `${this.scope.edate}.000Z`;
+		setPeriod() {
+			switch (this.scope.selected_period) {
+				case '0':
+					this.scope.sdate = moment()
+						.startOf('day')
+						.format('YYYY-MM-DDTHH:mm:ss');
+					this.scope.edate = moment()
+						.endOf('day')
+						.format('YYYY-MM-DDTHH:mm:ss');
 
-      //console.log(this.scope.start);
+					this.LastStartDate = this.scope.sdate;
+					this.LastEndDate = this.scope.edate;
+					this.showDatePicker = false;
 
-      this.getTotalAttacks();
-      this.getTotalAttackByDay();
-      this.getAttacks();
-    }
+					break;
+				case '1':
+					this.scope.sdate = moment()
+						.subtract(1, 'd')
+						.startOf('day')
+						.format('YYYY-MM-DDTHH:mm:ss');
+					this.scope.edate = moment()
+						.subtract(1, 'd')
+						.endOf('day')
+						.format('YYYY-MM-DDTHH:mm:ss');
 
-    //* *********************************************************
-    //* *************************TABLE***************************
-    //* *********************************************************
+					this.LastStartDate = this.scope.sdate;
+					this.LastEndDate = this.scope.edate;
+					this.showDatePicker = false;
 
-    setPage(next) {
-      if (next) {
-        this.scope.table_page += 1;
-      } else {
-        this.scope.table_page -= 1;
-      }
-      this.getAttacks();
-    }
+					break;
+				case '2':
+					this.scope.sdate = moment()
+						.subtract(7, 'd')
+						.startOf('day')
+						.format('YYYY-MM-DDTHH:mm:ss');
+					this.scope.edate = moment()
+						.endOf('day')
+						.format('YYYY-MM-DDTHH:mm:ss');
 
-  },
+
+					this.LastStartDate = this.scope.sdate;
+					this.LastEndDate = this.scope.edate;
+					this.showDatePicker = false;
+
+					break;
+				case '3':
+					this.setFilter({ key: '', value: '' });
+					return;
+				default:
+					break;
+			}
+			
+			this.refreshPage();
+		}
+
+		refreshPage() {
+			this.scope.table_page = 0;
+			if (!this.scope.isAdmin) {
+				this.scope.tenant = this.scope.user_tenant;
+			}
+			else {
+				if (this.scope.selected_tenant !== -1) {
+					this.scope.tenant = this.scope.selected_tenant;
+				}
+				else
+					this.scope.tenant = null;
+			}
+			this.scope.start = `${this.scope.sdate}.000Z`;
+			this.scope.end = `${this.scope.edate}.000Z`;
+
+			this.getTotalAttacks();
+			this.getTotalAttackByDay();
+			this.getAttacks();
+		}
+
+		//* *********************************************************
+		//* *************************TABLE***************************
+		//* *********************************************************
+
+		setPage(next) {
+			if (next) {
+				this.scope.table_page += 1;
+			} else {
+				this.scope.table_page -= 1;
+			}
+			this.getAttacks();
+		}
+
+	},
 };
 
 export const DashboardState = {
-  parent: 'home',
-  name: 'dashboard',
-  url: '/dashboard',
-  component: 'dashboardView',
+	parent: 'home',
+	name: 'dashboard',
+	url: '/dashboard',
+	component: 'dashboardView',
 };

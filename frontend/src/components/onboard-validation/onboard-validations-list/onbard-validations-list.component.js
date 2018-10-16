@@ -122,7 +122,7 @@ export const OnboardValidationsListComponent = {
 
     changePage(amount) {
       const condition = amount > 0 ?
-        this.items.length >= this.pagination.limit : this.pagination.page > 0;
+        this.items.length >= this.pagination.limit : this.pagination.page > 1;
       if (condition) {
         this.pagination.page += amount;
         this.getData();

@@ -24,23 +24,28 @@ export class VNSFService {
       params,
       headers: {
         Authorization: undefined,
-      } })
-        .then((response) => {
-          const { _items, _meta } = response.data;
-          return {
-            items: _items.map(item => ({
-              ...item,
-              vendor: item.manifest['manifest:vnsf'].properties.vendor,
-              security: item.manifest[Object.keys(item.manifest)[0]].security_info,
-            })),
-            meta: _meta,
-          };
-        })
-        .catch(this.errorHandleService.handleHttpError);
+      }
+    })
+      .then((response) => {
+        const { _items, _meta } = response.data;
+        return {
+          items: _items.map(item => ({
+            ...item,
+            vendor: item.manifest['manifest:vnsf'].properties.vendor,
+            security: item.manifest[Object.keys(item.manifest)[0]].security_info,
+          })),
+          meta: _meta,
+        };
+      })
+      .catch(this.errorHandleService.handleHttpError);
   }
 
   getVNSF(id) {
-    return this.http.get(VNSF_API.ONE.replace(ACCESSORS.id, id))
+    const params = { nocache: (new Date()).getTime() };
+
+    return this.http.get(VNSF_API.ONE.replace(ACCESSORS.id, id), {
+      params
+    })
       .then(response => response.data)
       .catch(this.errorHandleService.handleHttpError);
   }

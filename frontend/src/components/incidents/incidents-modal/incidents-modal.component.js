@@ -10,7 +10,7 @@ const VIEW_STRINGS = {
 
 const MODAL_ENTRIES = {
   _id: 'Id',
-  attack: 'Type of attack',
+  attack: 'Type of incident',
   detection: 'Detection Date',
   severity: 'Severity',
   status: 'Status',

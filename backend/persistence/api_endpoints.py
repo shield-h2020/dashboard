@@ -221,13 +221,12 @@ notifications_tm_host_admin = {
     }
 
 notifications_tm_vnsf = {
-    # ?where={'tenant_id': 'value'}
     'item_title':           'tm vnsf notifications',
     'url':                  'tm/vnsf/notifications',
     'schema':               api_model.notification_tm_vnsf_model,
     'item_lookup_field':    EndpointVar.__TENANT_ID__,
     'item_url':             EndpointVar.__TENANT_ID_FMT__,
-    'resource_methods':    ['GET'],
+    'resource_methods':    ['POST', 'GET'],
     'item_methods':        ['GET', 'PATCH'],
     'allow_unknown':    True,
 
@@ -387,7 +386,9 @@ tenant = {
     'schema':                tenants_catalogue['schema'],
     'datasource':            {
         'source': 'tenants_catalogue'
-        }
+        },
+    # TODO remove once inter-component authentication is in place.
+    'public_item_methods': ['GET']
     }
 
 tenant_users_catalogue = {

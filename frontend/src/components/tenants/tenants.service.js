@@ -55,6 +55,7 @@ export class TenantsService {
 
   getTenants({ page, limit } = { page: 0, limit: 25 }, filters = {}) {
     const params = { max_results: limit, page, nocache: (new Date()).getTime() };
+
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
 
     return this.http.get(API_TENANTS, { params })
@@ -62,14 +63,17 @@ export class TenantsService {
   }
 
   getTenant(id) {
-    return this.http.get(API_TENANT.replace(ACC_ID, id))
+    const params = { nocache: (new Date()).getTime() };
+
+    return this.http.get(API_TENANT.replace(ACC_ID, id), { params })
       .then(response => response.data)
       .catch(this.errorHandleService.handleHttpError);
   }
 
   deleteTenant({ tenant_id, _etag }) {
     return this.http.delete(API_TENANT.replace(ACC_ID, tenant_id), {
-      headers: { 'if-match': _etag } });
+      headers: { 'if-match': _etag }
+    });
   }
 
   updateTenantAndIps({
@@ -121,40 +125,45 @@ export class TenantsService {
       ip,
       tenant_id: tenantId,
     })
-    .catch(() => {
-      this.toast.error(TOAST_STRINGS.CREATE_ERROR_IP.MESSAGE,
-        TOAST_STRINGS.CREATE_ERROR_IP.TITLE);
-    });
+      .catch(() => {
+        this.toast.error(TOAST_STRINGS.CREATE_ERROR_IP.MESSAGE,
+          TOAST_STRINGS.CREATE_ERROR_IP.TITLE);
+      });
   }
 
   updateTenantIps(tenantId, ip, etag) {
     return this.http.patch(`${API_TENANT_IPS}/${tenantId}`, {
       ip,
     }, { headers: { 'if-match': etag } })
-    .catch(() => {
-      this.toast.error(TOAST_STRINGS.UPDATE_ERROR_IP.MESSAGE,
-        TOAST_STRINGS.UPDATE_ERROR_IP.TITLE);
-    });
+      .catch(() => {
+        this.toast.error(TOAST_STRINGS.UPDATE_ERROR_IP.MESSAGE,
+          TOAST_STRINGS.UPDATE_ERROR_IP.TITLE);
+      });
   }
 
   getTenantIps(tenantId) {
     const params = { nocache: (new Date()).getTime() };
-    return this.http.get(`${API_TENANT_IPS}/${tenantId}`,{params})
+
+    return this.http.get(`${API_TENANT_IPS}/${tenantId}`, { params })
       .then(response => ({ ip: response.data.ip, etag: response.data._etag }))
       .catch(response => {
-        
-          if(response.status != 404)
-            this.errorHandleService.handleHttpError(response);
-        });
+
+        if (response.status != 404)
+          this.errorHandleService.handleHttpError(response);
+      });
   }
 
   getScopeId(scopeCode) {
-    return this.http.get(`${API_TENANT_SCOPES}/${scopeCode}`)
+    const params = { nocache: (new Date()).getTime() };
+
+    return this.http.get(`${API_TENANT_SCOPES}/${scopeCode}`, { params })
       .then(response => response.data._id);
   }
 
   getTenantGroups() {
-    return this.http.get(`${API_TENANT_GROUPS}`)
+    const params = { nocache: (new Date()).getTime() };
+
+    return this.http.get(`${API_TENANT_GROUPS}`, { params })
       .then(response => response.data._items)
       .catch(this.errorHandleService.handleHttpError);
   }

@@ -23,6 +23,7 @@ import { NsInventoryModule } from './ns-inventory/ns-inventory.module';
 import { VnsfNotificationsModule } from './vnsf-notifications/vnsf-notifications.module';
 
 import Table2Module from './table2/table.module';
+import TableCustomActionsModule from './table-custom-actions/table-custom-actions.module';
 
 export const ComponentsModule = angular.module('root.components', [
   MenuModule,
@@ -44,6 +45,7 @@ export const ComponentsModule = angular.module('root.components', [
   AttestationModule,
   TenantsModule,
   Table2Module,
+  TableCustomActionsModule,
   CatalogueModule,
   OnboardValidationModule,
   NsInventoryModule,

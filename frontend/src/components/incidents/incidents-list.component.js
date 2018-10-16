@@ -8,8 +8,8 @@ const VIEW_STRINGS = {
   modalSubtitle: 'Recommendation action',
   apply: 'Apply',
   close: 'Close',
-  startDate: 'Start date:',
-  endDate: 'End date:',
+  startDate: 'Start:',
+  endDate: 'End:',
   status: [
     {
       value: 'any',
@@ -26,18 +26,18 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
-  attack: 'Type of attack',
+  attack: 'Incident',
   detection: 'Detection Date',
   severity: 'Severity',
-  status: 'Status',
+  status: 'Recommendation',
 };
 
 const MODAL_ENTRIES = {
   _id: 'Id',
-  attack: 'Type of attack',
+  attack: 'Incident',
   detection: 'Detection Date',
   severity: 'Severity',
-  status: 'Status',
+  status: 'Recommendation',
 };
 
 export const IncidentsListComponent = {
@@ -97,6 +97,7 @@ export const IncidentsListComponent = {
         if (filter.key === 'endDate') {
           date.setSeconds(59);
         }
+        
         this.filters.detection[query] = date.toUTCString();
       } else if (filter.key === 'status') {
         if (filter.value === 'any') {
@@ -107,13 +108,13 @@ export const IncidentsListComponent = {
       } else {
         this.filters[filter.key] = filter.value;
       }
-
+      
       this.getData();
     }
 
     changePage(amount) {
       const condition = amount > 0 ?
-        this.items.length >= this.pagination.limit : this.pagination.page > 0;
+        this.items.length >= this.pagination.limit : this.pagination.page > 1;
       if (condition) {
         this.pagination.page += amount;
         this.getData();

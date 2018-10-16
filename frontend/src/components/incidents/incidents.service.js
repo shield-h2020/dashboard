@@ -20,7 +20,7 @@ export class IncidentsService {
   }
 
   getIncidents({ page = 1, limit = 25 }, filters) {
-    const params = { max_results: limit, page, nocache: (new Date()).getTime() };
+    const params = { max_results: limit, page, nocache: (new Date()).getTime(), sort: '[("detection",-1)]' };
     if (Object.keys(filters).length !== 0) params.where = JSON.stringify(filters);
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({

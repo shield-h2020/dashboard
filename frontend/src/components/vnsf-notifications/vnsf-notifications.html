@@ -4,12 +4,14 @@
     <header class="sn-card__header">
       <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
     </header>
-    <s-table
-      items="$ctrl.items"
-      headers="$ctrl.tableHeaders"
-      loading="$ctrl.loading"
-    ></s-table>
-
+    <s-table items="$ctrl.items" headers="$ctrl.tableHeaders" loading="$ctrl.loading"></s-table>
+    <div style="text-align: right; margin-top: 16px;" ng-if="$ctrl.items.length">
+      <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+      <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+      <span class="sn-table__footer">
+        Showing {{$ctrl.paging.min}} to {{$ctrl.paging.max}} of {{$ctrl.pagination.total}}
+      </span>
+    </div>
     <div sn-modal title="$ctrl.viewStrings.modalDeleteTitle" open="$ctrl.deleteOpen">
       <article class="row">
         <div class="col-xs-12">

@@ -39,6 +39,10 @@ def get_tenant_by_ip(url, ip):
         raise Exception
 
 
+def get_tenant_name_by_id(tenant_id):
+    pass
+
+
 class AssociationCodeError(BaseException):
     def __init__(self, ip, status_code):
         super().__init__(f"Association error for {ip}. Status: {status_code}")
