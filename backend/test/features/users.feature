@@ -44,6 +44,7 @@ Feature: Users CRUD
     Given The Platform Admin is logged in
     Given The Tenant in use is <tenant_data>
     When The Platform Admin creates a Tenant Admin from <tenant_admin>
+#    Then Associate add Tenant Admin.... TODO!
     When The Tenant Admin is logged in
     Then I expect the response code <status>
 

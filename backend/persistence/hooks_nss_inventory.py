@@ -107,7 +107,7 @@ class NssInventoryHooks:
                 return
 
             r = r.json()
-            updates['status'] = "running"
+            updates['status'] = "configuring"
             updates['instance_id'] = r['instance_id']
 
         except VnsfOrchestratorPolicyIssue or VnsfoNotSupported:

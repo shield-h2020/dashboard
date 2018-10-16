@@ -56,6 +56,8 @@ class TornadoSocketServer:
             (r'/policy/(?P<tenant>\w+)$', SendOnlySocketHandler, {'controller': controllers.get('mspl')}),
             (r'/vnsf/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,
              {'controller': controllers.get('vnsf')}),
+            (r'/vnsfo/notifications/(?P<tenant>\w+)$', SendOnlySocketHandler,
+             {'controller': controllers.get('vnsfo')}),
             (r'/tm/notifications/vnsf/(?P<tenant>\w+)$', SendOnlySocketHandler,
              {'controller': controllers.get('tm')}),
             (r'/tm/notifications/platform', SendOnlySocketHandler, {'controller': controllers.get('tm_host')}),

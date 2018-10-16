@@ -251,6 +251,22 @@ notifications_tm_vnsf_admin = {
     'public_methods':   ['POST']
     }
 
+notifications_vnsfo_admin = {
+    'item_title':       'admin vnsfo notifications',
+    'url':              'admin/vnsfo/notifications',
+    'schema':           api_model.notification_vnsfo_model,
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'notifications_vnsfo'
+        },
+    'resource_methods': ['POST'],
+    'item_methods':     [],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['POST']
+    }
+
+
 tenant_ip_association = {
     'item_title':          'tenant ip association',
     'description':         "Allows the association between tenant and it's assigned IPs",
@@ -440,7 +456,10 @@ nss_inventory = {
     'resource_methods': EndpointHelper.get_resource_methods(Endpoint.NSS_INVENTORY),
     'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.NSS_INVENTORY)],
     'item_methods':     [],
-    'schema':           EndpointHelper.get_schema(Endpoint.NSS_INVENTORY)
+    'schema':           EndpointHelper.get_schema(Endpoint.NSS_INVENTORY),
+
+     # TODO remove once inter-component authentication is in place.
+    'public_methods':      ['GET'],
     }
 
 ns_instance = {
@@ -452,7 +471,8 @@ ns_instance = {
     'schema':             nss_inventory['schema'],
     'datasource':         {
         'source': 'nss_inventory'
-        }
+        },
+    'public_item_methods': ['PATCH']
     }
 
 ns_instantiate = {

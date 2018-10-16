@@ -49,6 +49,11 @@ MSGQ_DARE = os.environ.get('MSGQ_DARE', '__no_DARE_queue_set__')
 MSGQ_DARE_ACK = bool(os.environ.get('MSGQ_DARE_ACK', False))
 MSGQ_DARE_TOPIC = os.environ.get('MSGQ_DARE_TOPIC', 'shield.dare.policy')
 
+# vNSFO message queue settings
+MSGQ_VNSFO = os.environ.get('MSGQ_VNSFO', '__no_VNSFO_queue_set__')
+MSGQ_VNSFO_ACK = bool(os.environ.get('MSGQ_VNSFO_ACK', False))
+MSGQ_VNSFO_TOPIC = os.environ.get('MSGQ_VNSFO_TOPIC', 'shield.notifications.vnsfo')
+
 # VNSF message queue settings
 MSGQ_VNSF = os.environ.get('MSGQ_VNSF', '__no_VNSF_queue_set__')
 MSGQ_VNSF_ACK = bool(os.environ.get('MSGQ_VNSF_ACK', False))
@@ -81,6 +86,15 @@ BACKENDAPI_HOST = os.environ.get('BACKENDAPI_HOST', 'localhost')
 BACKENDAPI_PORT = os.environ.get('BACKENDAPI_PORT', 3030)
 BACKENDAPI_URL = '{}://{}:{}'.format(BACKENDAPI_PROTOCOL, BACKENDAPI_HOST, BACKENDAPI_PORT)
 
+
+###
+#   vNSFO API
+#
+VNSFOAPI_PROTOCOL = os.environ.get('VNSFO_PROTOCOL', 'None')
+VNSFOAPI_HOST = os.environ.get('VNSFO_HOST', None)
+VNSFOAPI_PORT = os.environ.get('VNSFO_PORT', None)
+
+
 __policy_rest__ = {
     'persist_policy': {
         'url':     '{}/{}'.format(BACKENDAPI_URL, 'admin/policies'),
@@ -104,6 +118,26 @@ __vnsf_notification_rest__ = {
 
 NOTIFICATION_API_PERSIST_URL = __vnsf_notification_rest__['persist_notification']['url']
 NOTIFICATION_API_PERSIST_HEADERS = __vnsf_notification_rest__['persist_notification']['headers']
+
+###
+#  vNSFO Notification persistence
+###
+
+__vnsfo_notification_rest__ = {
+    'persist_vnsfo_notification': {
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'admin/vnsfo/notifications'),
+        'headers': {'Content-Type': 'application/json'}
+        },
+    'inventory_nss': {
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'inventory/nss'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+VNSFO_NOTIFICATION_API_PERSIST_HOST_URL = __vnsfo_notification_rest__['persist_vnsfo_notification']['url']
+VNSFO_NOTIFICATION_API_PERSIST_HOST_HEADERS = __vnsfo_notification_rest__['persist_vnsfo_notification']['headers']
+VNSFO_NOTIFICATION_API_INVENTORY_NSS_URL = __vnsfo_notification_rest__['inventory_nss']['url']
+VNSFO_NOTIFICATION_API_INVENTORY_NSS_HEADERS = __vnsfo_notification_rest__['inventory_nss']['headers']
 
 ###
 #  Trusted Monitor Notification persistence
@@ -145,6 +179,7 @@ ASSOCIATION_API_URL = __association_rest__['association']['url']
 ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
 
 
+
 ###
 #   Association vNSF Instance
 ###
@@ -174,6 +209,22 @@ TM_ASSOCIATION_API_URL = __tm_association_rest__['tm_association']['url']
 TM_ASSOCIATION_API_HEADERS = __tm_association_rest__['tm_association']['headers']
 
 TM_ATTESTATION_MESSAGE = 'New attestation data available'
+
+
+###
+#   Tenant <-> vNSF Instances Association
+###
+__tenant_vnsf_instance_association_rest__ = {
+    'tenant_vnsf_instance_association': {
+        'url':      '{}/{}'.format(BACKENDAPI_URL, 'tenant_vnsfs'),
+        'headers': {'Content-Type': 'application/json'}
+    }
+}
+
+TENANT_VNSF_INSTANCE_ASSOCIATION_URL = __tenant_vnsf_instance_association_rest__['tenant_vnsf_instance_association']['url']
+TENANT_VNSF_INSTANCE_ASSOCIATION_HEADERS = __tenant_vnsf_instance_association_rest__['tenant_vnsf_instance_association']['headers']
+
+
 
 ###
 #   Schemas

@@ -127,7 +127,7 @@ def platform_admin_create_tenant_admin(step, tenant_file):
     http_get(step, url=url, auth=(world.my_context['platform_admin']['token']['id'], ''))
     expected_status_code(step, http_utils.HTTP_200_OK)
 
-    world.my_context['tenant_admin_info'] = step.context.api['response']['json']
+    world.my_context['tenant_admin_info'] = step.context.api['response']['json'] ## TODO: ASSOCIATE in other step
     print('tenant_admin_info\n' + pformat(world.my_context['tenant_admin_info']))
 
 

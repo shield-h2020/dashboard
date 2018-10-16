@@ -100,6 +100,7 @@ DOMAIN = {
     'validations':            api_endpoints.validations,
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,
+    'notifications_vnsfo_admin': api_endpoints.notifications_vnsfo_admin,
     'notifications_tm_vnsf_admin': api_endpoints.notifications_tm_vnsf_admin,
     'notifications_tm_vnsf': api_endpoints.notifications_tm_vnsf,
     'notifications_tm_host_admin': api_endpoints.notifications_tm_host_admin,

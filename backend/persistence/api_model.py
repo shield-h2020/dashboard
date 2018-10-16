@@ -474,6 +474,21 @@ notification_tm_vnsf_model = {
         }
     }
 
+notification_vnsfo_model = {
+    "type":      {
+        "type":     "string",
+        "empty":    False,
+        "required": True,
+        "allowed": ["ns_instance"]
+        },
+
+    "data":      {
+        "type":     "dict",
+        "empty":    False,
+        "required": True
+    }
+}
+
 
 tenant_ip_association = {
     "tenant_id": {
@@ -502,3 +517,4 @@ tenant_vnsf_association = {
         'required': True
         }
     }
+

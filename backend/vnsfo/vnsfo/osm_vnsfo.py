@@ -72,7 +72,8 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             if len(r.text) > 0:
                 self.logger.debug(r.text)
 
-            if not r.status_code == http_utils.HTTP_200_OK:
+            if not r.status_code == http_utils.HTTP_200_OK or r.status_code == http_utils.HTTP_201_CREATED or \
+                    r.status_code == http_utils.HTTP_202_ACCEPTED:
                 self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
                                     [[url, r.status_code]])
 

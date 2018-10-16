@@ -32,8 +32,10 @@ from dashboarddare.attack_processor import AttackProcessor
 from dashboarddare.mspl_notification import MsplNotification
 from dashboarddare.socket_mspl import MsplSocket
 from dashboarddare.socket_server import TornadoSocketServer
+from dashboarddare.socket_vnsfo import VNSFOSocket
 from dashboarddare.socket_vnsf import VNSFSocket
 from dashboarddare.vnsf_notification import VNSFNotification
+from dashboarddare.vnsfo_notification import VNSFONotification
 from dashboarddare.socket_tm import TMSocket, TMHostSocket
 from dashboarddare.tm_notification import TMNotification
 from dashboardutils import log
@@ -51,6 +53,17 @@ mspl_queue_settings = {
     'topic':         cfg.MSGQ_DARE_TOPIC
     }
 
+vnsfo_queue_settings = {
+    'host':          cfg.MSGQ_HOST,
+    'port':          cfg.MSGQ_PORT,
+    'user':          'guest',
+    'pass':          'guest',
+    'exchange':      cfg.MSGQ_EXCHANGE_DASHBOARD,
+    'exchange_type': cfg.MSGQ_EXCHANGE_TYPE,
+    'queue':         cfg.MSGQ_VNSFO,
+    'queue_ack':     cfg.MSGQ_VNSFO_ACK,
+    'topic':         cfg.MSGQ_VNSFO_TOPIC
+    }
 
 vnsf_queue_settings = {
     'host':          cfg.MSGQ_HOST,
@@ -119,6 +132,10 @@ if __name__ == '__main__':
     MsplNotification(mspl_queue_settings, manager_mspl)
     mspl_socket = MsplSocket(manager_mspl)
 
+    manager_vnsfo = PipeManager()
+    VNSFONotification(vnsfo_queue_settings, manager_vnsfo)
+    vnsfo_socket = VNSFOSocket(manager_vnsfo)
+
     manager_vnsf = PipeManager()
     VNSFNotification(vnsf_queue_settings, manager_vnsf)
     vnsf_socket = VNSFSocket(manager_vnsf)
@@ -132,4 +149,4 @@ if __name__ == '__main__':
     AttackProcessor(attack_queue_settings, manager_csv)
 
     TornadoSocketServer(dashboard_socket_settings, vnsf=vnsf_socket, mspl=mspl_socket, tm=tm_socket,
-                        tm_host=tm_host_socket)
+                        tm_host=tm_host_socket, vnsfo=vnsfo_socket)
