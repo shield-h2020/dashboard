@@ -141,7 +141,5 @@ class TMNotification(PipeProducer):
             self.logger.debug(f'Sending Notification for tenant {_tenant}: {_vnsf}')
             self.notify_by_tenant(config['attestation_message'], _tenant)
 
-        self.logger.debug(f'Sending Notification for tenant {tenant}: {vnsf}')
-
         self.logger.debug('Sending Notification to host: {}'.format(pprint(notifications)))
         self.notify_all(config['attestation_message'])
