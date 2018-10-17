@@ -115,25 +115,30 @@ class TMNotification(PipeProducer):
 
         # Based on the message provide two operations
         tenant_vnsf_association = {}
-        for host in notifications['hosts']:
-            vnsfs = host.pop('vnsfs', [])
 
-            for vnsf in vnsfs:
-                tenant = notification_persistence.__associate_vnsf_instance__(vnsf.get('vnsfd_name'))
-                if tenant not in tenant_vnsf_association:
-                    tenant_vnsf_association[tenant] = {}
-                    tenant_vnsf_association[tenant]['vnsfs'] = []
-                    tenant_vnsf_association[tenant]['time'] = host.get('time')
-                    tenant_vnsf_association[tenant]['tenant_id'] = tenant
+        if 'hosts' in notifications:
+            for host in notifications['hosts']:
+                vnsfs = host.pop('vnsfs', [])
 
-                tenant_vnsf_association[tenant]['vnsfs'].append(vnsf)
+                for vnsf in vnsfs:
+                    tenant = notification_persistence.__associate_vnsf_instance__(vnsf.get('vnsfd_name'))
+                    if tenant not in tenant_vnsf_association:
+                        tenant_vnsf_association[tenant] = {}
+                        tenant_vnsf_association[tenant]['vnsfs'] = []
+                        tenant_vnsf_association[tenant]['time'] = host.get('time')
+                        tenant_vnsf_association[tenant]['tenant_id'] = tenant
 
-        notification_persistence.persist_host(notifications['sdn'], 'sdn')
-        notification_persistence.persist_host(notifications['hosts'], 'hosts')
+                    tenant_vnsf_association[tenant]['vnsfs'].append(vnsf)
+
+            notification_persistence.persist_host(notifications['hosts'], 'hosts')
+
+        if 'sdn' in notifications:
+            notification_persistence.persist_host(notifications['sdn'], 'sdn')
 
         for _tenant, _vnsf in tenant_vnsf_association.items():
             notification_persistence.persist_vnsf(_vnsf)
             _vnsf.pop('tenant_id', None)
+            self.logger.debug(f'Sending Notification for tenant {_tenant}: {_vnsf}')
             self.notify_by_tenant(config['attestation_message'], _tenant)
 
         self.logger.debug(f'Sending Notification for tenant {tenant}: {vnsf}')

@@ -126,6 +126,10 @@ class TMNotificationPersistence:
             self.logger.exception(e)
 
     def persist_host(self, notification, notification_type):
+        if len(notification) == 0:
+            self.logger.debug(f'No data provided for attestation on {notification_type.upper()}')
+            return
+
         url = self.settings['persist_url_hosts']
         headers = self.settings['persist_headers_hosts']
 
