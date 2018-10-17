@@ -48,26 +48,24 @@ class VNSFONSInstanceProcessor(Processor):
     def processor(self, item, *args, **kwargs):
         instance_id = item['instance_id']
 
-        url = f"{self.basepath}/ns/running/{instance_id }"
+        running_status = ''
+        data = {}
+        while running_status != 'running':
+            time.sleep(3)
+            url = f"{self.basepath}/ns/running/{instance_id }"
 
-        self.logger.debug(f"Retrieving vNSF instances for NS instance_id '{instance_id }'")
+            self.logger.debug(f"Polling NS instance '{instance_id }'")
 
-        response = requests.get(url)
-        if not response.status_code == http_utils.HTTP_200_OK:
-            # TODO: raise exception
-            self.logger.error(f"Couldn't retrieve running NS instance_id '{instance_id }' from vNSFO")
-            return False
+            response = requests.get(url)
+            if not response.status_code == http_utils.HTTP_200_OK:
+                # TODO: raise exception
+                self.logger.error(f"Couldn't retrieve running NS instance_id '{instance_id }' from vNSFO")
+                return False
 
-        data = response.json()
+            data = response.json()
+            running_status = data['ns'][0]['operational_status']
 
-        if data['ns'][0]['operational_status'] != 'running':
-            self.logger.debug(
-                f"Operational status for instance {instance_id} not ready: {data['ns'][0]['operational_status']}")
-            sleep = 1 if 'sleep' not in kwargs else kwargs['sleep']
-            time.sleep(sleep)
-            kwargs['sleep'] = sleep + 0.5
-            return self.processor(item, *args, **kwargs)
-
+        self.logger.debug(f"NS instance '{instance_id }' ready")
         vnsf_instances = list([vnf['vnf_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
 
         if not vnsf_instances:

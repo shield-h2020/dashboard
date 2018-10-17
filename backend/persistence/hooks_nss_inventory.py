@@ -116,6 +116,23 @@ class NssInventoryHooks:
                                 {"code": 400, "message":
                                     "Instantiation failed. vNSFO Policy Issue not supported".format(r.text())}}), 400))
 
+        # Trigger NS Instance polling
+        url = "{}/ns_instance_update".format(cfg.BACKENDAPI)
+        json_instance_update = {
+            "ns_instance_id": updates['instance_id']
+        }
+        headers = {'Content-Type': 'application/json'}
+        r = requests.post(url, json=json_instance_update, headers=headers, verify=False)
+        if not r.status_code == http_utils.HTTP_201_CREATED:
+            updates['status'] = "available"
+            logger.error("Failed to trigger polling for NS instance_id '{}'".format(updates['instance_id']))
+            abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                                {"code": 500, "message":
+                                    "Instantiation failed. Failed to trigger polling for NS instance_id '{}'"
+                                        .format(updates['instance_id'])}}), 500))
+
+        logger.debug("NS instance_id '{}' instantiation cess was successful".format(updates['instance_id']))
+
     @staticmethod
     def terminate_network_service(updates, original):
 

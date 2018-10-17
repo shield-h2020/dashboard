@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import json
 import logging
 import time
 
@@ -195,16 +195,24 @@ class RabbitProducer:
 
     def __init__(self, host, port, exchange):
         # TODO: Add remaining connection parameters
-        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=host, port=int(port)))
+        self._host = host
+        self._port = int(port)
+
+        self._channel = None
+        self._connection = None
 
         self._exchange = exchange
 
-        self._channel = self._connection.channel()
-        self._channel.exchange_declare(exchange=exchange,
-                                       exchange_type='topic')
-
     def submit_message(self, message, routing_key):
-        self.logger.debug(f"Submitting message to topic {routing_key} with body, {message}")
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=self._host, port=self._port))
+
+        self._channel = self._connection.channel()
+        self._channel.exchange_declare(exchange=self._exchange,
+                                       exchange_type='topic')
+        self.logger.debug(f"Submitting message to topic {routing_key} with body, {message}, with exchange {self._exchange}")
         self._channel.basic_publish(exchange=self._exchange,
                                     routing_key=routing_key,
-                                    body=message)
+                                    body=json.dumps(message))
+
+        self._connection.close()
+        self.logger.debug(f"Message submitted")

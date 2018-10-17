@@ -29,7 +29,11 @@ import os
 
 import api_endpoints
 
+BACKENDAPI_PROTOCOL = os.environ.get('BACKENDAPI_PROTOCOL', '13030')
+BACKENDAPI_HOST = os.environ.get('BACKENDAPI_HOST', 'localhost')
 BACKENDAPI_PORT = int(os.environ.get('BACKENDAPI_PORT', 4000))
+
+BACKENDAPI = "{}://{}:{}".format(BACKENDAPI_PROTOCOL, BACKENDAPI_HOST, BACKENDAPI_PORT)
 
 MONGO_HOST = os.environ.get('DATASTORE_HOST', 'dashboard-persistence')
 MONGO_PORT = os.environ.get('DATASTORE_PORT', 27017)
@@ -135,6 +139,7 @@ MSGQ_HOST = os.environ.get('MSGQ_HOST', 'localhost')
 MSGQ_PORT = os.environ.get('MSGQ_PORT', '5672')
 
 # NS Instance Update Rabbit
+MSGQ_EXCHANGE_DASHBOARD = os.environ.get('MSGQ_EXCHANGE_DASHBOARD', '__MSGQ_EXCHANGE_SHIELD_DASHBOARD__')
 MSGQ_VNSFO = os.environ.get('MSGQ_VNSFO', '__no_NS_IUPDATE_queue_set__')
 MSGQ_VNSFO_TOPIC_ACK = bool(os.environ.get('MSGQ_VNSFO_TOPIC_ACK', True))
 MSGQ_VNSFO_TOPIC = os.environ.get('MSGQ_VNSFO_TOPIC', 'shield.notification.vnsfo')

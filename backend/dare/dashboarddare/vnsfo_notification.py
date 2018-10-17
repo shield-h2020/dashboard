@@ -105,6 +105,7 @@ class VNSFONotification(PipeProducer):
         ns_instance_id = data['instance_id']
         op_status = data['operational_status']
         vnsf_instances = data['vnsf_instances']
+        ns_name = data['ns_name']
 
         if not op_status == "running":
             self.logger.error("Notification for NS instance_id '{}' has an invalid running status '{}'"
@@ -186,7 +187,8 @@ class VNSFONotification(PipeProducer):
         notification_json = {
             "type": "ns_instance",
             "instance_id": ns_instance_id,
-            "ns_id": ns_id
+            "ns_id": ns_id,
+            "ns_name": ns_name
         }
         self.logger.debug('Sending Notification: {}'.format(notification_json))
         self.notify_by_tenant(notification_json, tenant_id)

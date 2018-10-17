@@ -30,7 +30,7 @@ import logging
 import settings as cfg
 from dashboard_polling.polling import CheckableQueue, Worker
 from dashboard_polling.processor import VNSFONSInstanceProcessor
-from dashboardutils.rabbit_client import RabbitProducer
+
 
 
 class NSInstanceHooks:
@@ -38,23 +38,20 @@ class NSInstanceHooks:
 
     def __init__(self):
         self.queue = CheckableQueue()
-        self.producer = None
         self.worker = Worker(self.queue, VNSFONSInstanceProcessor(cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                                                   cfg.VNSFO_API).processor, workers=4)
         self.worker.start()
 
     def post_ns_instance(self, request, payload):
-        if not self.producer:
-            self.producer = RabbitProducer(cfg.MSGQ_HOST, cfg.MSGQ_PORT, cfg.MSGQ_VNSFO)
 
         data = json.loads(request.data)
         item = {
-            "instance_id": data["ns_instance_id"],
-            "producer": self.producer,
-            "routing_key": cfg.MSGQ_VNSFO_TOPIC
+            "instance_id": data["ns_instance_id"]
         }
 
         if self.queue.put(item):
             self.logger.debug(f"Add new item to the processing queue {data['ns_instance_id']}")
         else:
             self.logger.debug(f"Item, {data['ns_instance_id']} already on the processing queue")
+
+

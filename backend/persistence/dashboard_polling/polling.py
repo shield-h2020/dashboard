@@ -27,6 +27,8 @@ import logging
 import threading
 from queue import Queue
 
+import settings as cfg
+from dashboardutils.rabbit_client import RabbitProducer
 
 class CheckableQueue(Queue):
 
@@ -77,10 +79,15 @@ class Worker:
         self.logger.info(f"Worker {self._id} stopped")
 
     def work(self):
+
+        producer =  RabbitProducer(cfg.MSGQ_HOST, cfg.MSGQ_PORT, cfg.MSGQ_EXCHANGE_DASHBOARD)
+
         while True:
             item = self.queue.get()
             if item is None:
                 self.logger.debug(f"Exiting worker on worker {self._id}")
                 break
+            item["producer"] = producer
+            item["routing_key"] = cfg.MSGQ_VNSFO_TOPIC
             self.processor(item)
             self.queue.task_done()
