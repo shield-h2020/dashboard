@@ -60,9 +60,9 @@ class IssueHandling(object):
     errors = {
         '<type>': {
             'sub-type': {
-                ErrorElement.DEBUG.name: [<list of whatever messages to produce for debugging purposes>, <this list
+                ErrorElement.DEBUG: [<list of whatever messages to produce for debugging purposes>, <this list
                 must use {} for data substitution>],
-                ErrorElement.EXCEPTION.name: <ExceptionMessage instance with associated message to provide for the
+                ErrorElement.EXCEPTION: <ExceptionMessage instance with associated message to provide for the
                 exception>
                 }
 
@@ -80,12 +80,12 @@ class IssueHandling(object):
             for idx, msg in enumerate(error_data[level]):
                 self.logger.log(level.value, msg.format(*params[idx]))
         else:
-            self.logger.log(level.value, error_data[level.name][0])
+            self.logger.log(level.value, error_data[level][0])
 
     def raise_ex(self, level, error_data, params=None):
         self.log(level, error_data, params)
 
-        raise error_data[IssueElement.EXCEPTION.name]
+        raise error_data[IssueElement.EXCEPTION]
 
     def raise_ex_no_log(self, error_data):
-        raise error_data[IssueElement.EXCEPTION.name]
+        raise error_data[IssueElement.EXCEPTION]

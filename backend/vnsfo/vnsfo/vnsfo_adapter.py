@@ -62,26 +62,26 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
     errors = {
         'POLICY': {
             'POLICY_ISSUE':      {
-                IssueElement.ERROR.name:     ['vNFSO policy at {}. Status: {}'],
-                IssueElement.EXCEPTION.name: VnsfOrchestratorPolicyIssue('Can not convey policy to the vNFSO')
+                IssueElement.ERROR:     ['vNFSO policy at {}. Status: {}'],
+                IssueElement.EXCEPTION: VnsfOrchestratorPolicyIssue('Can not convey policy to the vNFSO')
                 },
             'VNSFO_UNREACHABLE': {
-                IssueElement.ERROR.name:     ['Error conveying policy at {}'],
-                IssueElement.EXCEPTION.name: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
+                IssueElement.ERROR:     ['Error conveying policy at {}'],
+                IssueElement.EXCEPTION: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
                 }
             },
         'REMEDIATION':          {
             'VNSFO_UNREACHABLE': {
-                IssueElement.ERROR.name:    ['Error conveying policy at {}'],
-                IssueElement.EXCEPTION.name: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
+                IssueElement.ERROR:    ['Error conveying policy at {}'],
+                IssueElement.EXCEPTION: VnsfOrchestratorOnboardingIssue('Can not reach the Orchestrator')
                 },
             'INVALID_ACTION': {
-                IssueElement.ERROR.name:    ['Error validating action {}'],
-                IssueElement.EXCEPTION.name: VnsfOrchestratorRemediationIssue("Provided action is invalid")
+                IssueElement.ERROR:    ['Error validating action {}'],
+                IssueElement.EXCEPTION: VnsfOrchestratorRemediationIssue("Provided action is invalid")
                 },
             'INVALID_RESPONSE': {
-                IssueElement.ERROR.name:    ['Error applying action'],
-                IssueElement.EXCEPTION.name: VnsfOrchestratorRemediationIssue("Can't apply the provided action")
+                IssueElement.ERROR:    ['Error applying action'],
+                IssueElement.EXCEPTION: VnsfOrchestratorRemediationIssue("Can't apply the provided action")
                 }
             }
         }

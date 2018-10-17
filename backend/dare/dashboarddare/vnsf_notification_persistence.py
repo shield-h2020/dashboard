@@ -46,11 +46,11 @@ class VNSFNotificationPersistence:
     errors = {
         'NOTIFICATION': {
             'ERROR':         {
-                IssueElement.EXCEPTION.name: TenantAssociationError('Invalid association with total results of: {}')
+                IssueElement.EXCEPTION: TenantAssociationError('Invalid association with total results of: {}')
                 },
             'NOT_PERSISTED': {
-                IssueElement.ERROR.name:     ['vNSF notification not persisted. Association error for {}. Status: {}'],
-                IssueElement.EXCEPTION.name: VNSFNotificationNotPersisted('Error persisting the vNSF notification.')
+                IssueElement.ERROR:     ['vNSF notification not persisted. Association error for {}. Status: {}'],
+                IssueElement.EXCEPTION: VNSFNotificationNotPersisted('Error persisting the vNSF notification.')
                 }
             }
         }

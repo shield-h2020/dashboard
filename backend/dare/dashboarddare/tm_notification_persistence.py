@@ -47,11 +47,11 @@ class TMNotificationPersistence:
     errors = {
         'NOTIFICATION': {
             'ERROR': {
-                IssueElement.EXCEPTION.name: TenantAssociationError('Invalid association with total results of: {}')
+                IssueElement.EXCEPTION: TenantAssociationError('Invalid association with total results of: {}')
             },
             'NOT_PERSISTED': {
-                IssueElement.ERROR.name: ['TM notification not persisted. Association error for {}. Status: {}'],
-                IssueElement.EXCEPTION.name: TMNotificationNotPersisted('Error persisting the TM notification.')
+                IssueElement.ERROR: ['TM notification not persisted. Association error for {}. Status: {}'],
+                IssueElement.EXCEPTION: TMNotificationNotPersisted('Error persisting the TM notification.')
             }
         }
     }

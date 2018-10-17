@@ -52,17 +52,17 @@ class MsplPersistence:
     errors = {
         'NOTIFICATION': {
             'ERROR': {
-                IssueElement.EXCEPTION.name: TenantAssociationError('Invalid association with total results of: {}')
+                IssueElement.EXCEPTION: TenantAssociationError('Invalid association with total results of: {}')
                 }
             },
         'POLICY':       {
             'NOT_COMPLIANT': {
-                IssueElement.EXCEPTION.name: SecurityPolicyNotComplaint(
+                IssueElement.EXCEPTION: SecurityPolicyNotComplaint(
                         'Policy not compliant with the schema defined.')
                 },
             'NOT_PERSISTED': {
-                IssueElement.ERROR.name:     ['Persistence error for {}. Status: {}'],
-                IssueElement.EXCEPTION.name: SecurityPolicyNotPersisted('Error persisting the security policy.')
+                IssueElement.ERROR:     ['Persistence error for {}. Status: {}'],
+                IssueElement.EXCEPTION: SecurityPolicyNotPersisted('Error persisting the security policy.')
                 }
             }
         }

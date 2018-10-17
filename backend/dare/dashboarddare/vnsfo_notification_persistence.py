@@ -47,8 +47,8 @@ class VnsfoNotificationPersistence:
     errors = {
         'NOTIFICATION': {
             'NOT_PERSISTED': {
-                IssueElement.ERROR.name: ['vNSFO notification not persisted. Association error for {}. Status: {}'],
-                IssueElement.EXCEPTION.name: VnsfoNotificationNotPersisted('Error persisting the vNSFO notification.')
+                IssueElement.ERROR: ['vNSFO notification not persisted. Association error for {}. Status: {}'],
+                IssueElement.EXCEPTION: VnsfoNotificationNotPersisted('Error persisting the vNSFO notification.')
             }
         }
     }
