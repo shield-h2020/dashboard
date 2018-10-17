@@ -35,6 +35,7 @@ from eve import Eve
 from eve_swagger import swagger, add_documentation
 from flask_cors import CORS
 from hooks_login import LoginHooks
+from hooks_ns_instance_update import NSInstanceHooks
 from hooks_nss_inventory import NssInventoryHooks
 from hooks_tenants import TenantHooks
 from hooks_tm_notifications import TMNotifications
@@ -43,6 +44,8 @@ from validators import NetworkValidator
 
 app = Eve(auth=TokenAuthzOslo, validator=NetworkValidator)
 CORS(app)
+
+app.on_post_POST_ns_instance_update += NSInstanceHooks().post_ns_instance
 
 app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
@@ -63,12 +66,10 @@ app.on_insert_nss_inventory += NssInventoryHooks.provision_network_service
 app.on_update_ns_instantiate += NssInventoryHooks.instantiate_network_service
 app.on_update_ns_terminate += NssInventoryHooks.terminate_network_service
 
-
 app.register_blueprint(swagger)
 
 app.on_update_notifications_tm_vnsf += TMNotifications.apply_vnsf_remediation
 app.on_update_notifications_tm_host += TMNotifications.apply_host_remediation
-
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info
 

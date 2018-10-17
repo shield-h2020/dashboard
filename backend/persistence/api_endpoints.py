@@ -160,7 +160,26 @@ policies_admin = {
     'public_methods':   ['POST']
     }
 
+
+
 ###
+#  NS Instances
+###
+
+ns_instance_update = {
+    'item_title': 'ns_instance_update',
+    'description': 'Ns Instance Update',
+    'schema': api_model.ns_instance_update,
+    'resource_methods': ['POST', 'GET'],
+    'item_methods': ['GET'],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods': ['GET', 'POST'],
+    'public_item_methods': ['GET']
+     }
+
+
+# ###
 #  Notification persistence
 ###
 

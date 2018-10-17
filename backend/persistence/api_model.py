@@ -518,3 +518,10 @@ tenant_vnsf_association = {
         }
     }
 
+ns_instance_update = {
+    'ns_instance_id': {
+        'type':     'string',
+        'empty':    False,
+        'required': True
+        }
+    }

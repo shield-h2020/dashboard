@@ -106,7 +106,8 @@ DOMAIN = {
     'notifications_tm_host_admin': api_endpoints.notifications_tm_host_admin,
     'notifications_tm_host': api_endpoints.notifications_tm_host,
     'tenant_ips':             api_endpoints.tenant_ip_association,
-    'tenant_vnsfs':           api_endpoints.tenant_vnsf_association
+    'tenant_vnsfs':           api_endpoints.tenant_vnsf_association,
+    'ns_instance_update':     api_endpoints.ns_instance_update
     }
 
 
@@ -126,3 +127,14 @@ __association_rest__ = {
     }
 
 ASSOCIATION_API_URL = __association_rest__['association']['url']
+
+# Server hostname or IP.
+MSGQ_HOST = os.environ.get('MSGQ_HOST', 'localhost')
+
+# Server port
+MSGQ_PORT = os.environ.get('MSGQ_PORT', '5672')
+
+# NS Instance Update Rabbit
+MSGQ_VNSFO = os.environ.get('MSGQ_VNSFO', '__no_NS_IUPDATE_queue_set__')
+MSGQ_VNSFO_TOPIC_ACK = bool(os.environ.get('MSGQ_VNSFO_TOPIC_ACK', True))
+MSGQ_VNSFO_TOPIC = os.environ.get('MSGQ_VNSFO_TOPIC', 'shield.notification.vnsfo')

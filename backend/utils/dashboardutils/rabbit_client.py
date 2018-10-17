@@ -187,3 +187,24 @@ class RabbitAsyncConsumer:
         self._closing = True
         self.stop_consuming()
         self._connection.ioloop.stop()
+
+
+class RabbitProducer:
+
+    logger = logging.getLogger(__name__)
+
+    def __init__(self, host, port, exchange):
+        # TODO: Add remaining connection parameters
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=host, port=int(port)))
+
+        self._exchange = exchange
+
+        self._channel = self._connection.channel()
+        self._channel.exchange_declare(exchange=exchange,
+                                       exchange_type='topic')
+
+    def submit_message(self, message, routing_key):
+        self.logger.debug(f"Submitting message to topic {routing_key} with body, {message}")
+        self._channel.basic_publish(exchange=self._exchange,
+                                    routing_key=routing_key,
+                                    body=message)
