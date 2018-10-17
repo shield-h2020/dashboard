@@ -1,8 +1,9 @@
-import { API_ADDRESS, STORE_ADDRESS, ACC_ID } from 'api/api-config';
+import { API_ADDRESS, STORE_ADDRESS, ACC_ID, SOCKET_ADDRESS } from 'api/api-config';
 
 const API_INVENTORY = `${API_ADDRESS}/inventory/nss`;
 const API_CATALOGUE = `${STORE_ADDRESS}/nss/${ACC_ID}`;
 const API_NS = `${API_ADDRESS}/nss`;
+const API_NSINVENTORY_SOCKET = `${SOCKET_ADDRESS}/vnsfo/notifications/${ACC_ID}`;
 
 export class InventoryService {
   constructor($http, $q, toastr, AuthService, ErrorHandleService) {
@@ -64,7 +65,6 @@ export class InventoryService {
         tenant_id: this.authService.getTenant(),
       });
     }
-    console.log(etag)
 
     return this.http.patch(`${API_NS}/instantiate/${id}`, {}, { params, headers: { 'if-match': etag } })
       .then(() => {
@@ -95,6 +95,10 @@ export class InventoryService {
       headers: { Authorization: undefined },
     })
       .then(response => response.data);
+  }
+
+  connecNSInventorySocket(tenantId) {
+    return new WebSocket(API_NSINVENTORY_SOCKET.replace(ACC_ID, tenantId));
   }
 }
 

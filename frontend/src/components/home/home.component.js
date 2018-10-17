@@ -69,7 +69,7 @@ export const HomeComponent = {
       incidentsfSocket.onmessage = (message) => {
         const data = JSON.parse(message.data);
         const { attack } = data;
-        this.toast.error(`Type of attack: ${attack}`, 'A new security incident was detected', {
+        this.toast.info(`Type of attack: ${attack}`, 'A new security incident was detected', {
           onTap: () => this.openRecommendation(data),
           onShown: () => {this.scope.$broadcast('INCIDENT_UPDATE_DATA');},
           closeButton: true,
@@ -89,7 +89,7 @@ export const HomeComponent = {
       vnsfSocket.onmessage = (message) => {
         //console.log("Broadcasting");
         const data = JSON.parse(message.data);
-        this.toast.error(templateNotification(data), data.event.classification, {
+        this.toast.info(templateNotification(data), data.event.classification, {
           onTap: () => this.openNotificationDetails(data),
           closeButton: true,
         });
@@ -107,7 +107,7 @@ export const HomeComponent = {
       var tmAdminSocket = this.vnsfNotificationService.connectTMAdminNotificationsSocket();
       tmAdminSocket.onopen = (e) => {this.tmAdminSocketAtmp = 0;};
       tmAdminSocket.onmessage = (message) => {
-        this.toast.error(message.data, 'TM Notification', {
+        this.toast.info(message.data, 'TM Notification', {
           onTap: () => {this.state.go('attestation', { prevRoute: this.state.current.name })},
           onShown: () => {this.scope.$broadcast('ATTESTATION_UPDATE_DATA');},
           closeButton: true,
@@ -128,7 +128,7 @@ export const HomeComponent = {
       var tmSocket = this.vnsfNotificationService.connectTMNotificationsSocket(this.userdata.user.domain.id);
       tmSocket.onopen = (e) => {this.tmSocketAtmp = 0;};
       tmSocket.onmessage = (message) => {
-        this.toast.error(message.data, 'TM Notification', {
+        this.toast.info(message.data, 'TM Notification', {
           onTap: () => {this.state.go('attestation', { prevRoute: this.state.current.name })},
           onShown: () => {this.scope.$broadcast('ATTESTATION_UPDATE_DATA');},
           closeButton: true,

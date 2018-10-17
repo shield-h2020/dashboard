@@ -19,18 +19,23 @@ const MODAL_ENTRIES = {
 	_id: 'Id',
 	capabilities: 'Capabilities',
 	_created: 'Created',
+	type: 'Type',
+	target: 'Target'
 };
 
 export const InventoryComponent = {
 	template,
 	controller: class InventoryComponent {
-		constructor(InventoryService) {
+		constructor($scope, InventoryService, AuthService, toastr) {
 			'ngInject';
 
 			this.viewStrings = VIEW_STRINGS;
 			this.modalEntries = MODAL_ENTRIES;
 			this.styles = styles;
 			this.inventoryService = InventoryService;
+			this.authService = AuthService;
+			this.toast = toastr;
+			this.scope = $scope;
 			this.createOpen = false;
 			this.deleteOpen = false;
 			this.actionsItemAvailable = [
@@ -53,7 +58,7 @@ export const InventoryComponent = {
 					action: this.toggleNSDetails.bind(this)
 				},
 				{
-					label: 'stop',
+					label: 'terminate',
 					action: this.stopInstance.bind(this)
 				}
 			]
@@ -69,7 +74,23 @@ export const InventoryComponent = {
 		}
 
 		$onInit() {
+			this.initNsinventorySocket();
+
+			this.scope.$on('NSINVENTORY_UPDATE_DATA', (event, data) => {
+				this.getData();
+			});
+
 			this.getData();
+		}
+
+		initNsinventorySocket() {
+			var nsinventorySocket = this.inventoryService.connecNSInventorySocket(this.authService.getTenant());
+			nsinventorySocket.onmessage = (message) => {
+				this.toast.info(message.data.ns_name + " is up and running", {
+					onShown: () => { this.scope.$broadcast('NSINVENTORY_UPDATE_DATA'); },
+					closeButton: true,
+				});
+			};
 		}
 
 		getData() {
@@ -100,7 +121,13 @@ export const InventoryComponent = {
 		}
 
 		toggleNSDetails(ns) {
-			this.ns = ns;
+			if (ns) {
+				this.ns = {
+					...ns,
+					type: ns.manifest["manifest:ns"].type,
+					target: ns.manifest["manifest:ns"].target
+				};
+			}
 			this.modalOpen = !this.modalOpen;
 		}
 
@@ -117,6 +144,10 @@ export const InventoryComponent = {
 		stopInstance({ _id, _etag }) {
 			this.inventoryService.terminateService(_id, _etag);
 			this.getData();
+		}
+
+		prettyJSON(obj) {
+			return JSON.stringify(obj, null, 2);
 		}
 	},
 };

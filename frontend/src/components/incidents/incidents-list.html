@@ -5,17 +5,28 @@
       <h5 class="header__title">{{ ::$ctrl.viewStrings.tableTitle }}</h5>
     </header>
     <div class="row stack-m">
-      <div class="col-xs-3" style="padding-top: 16px;">
+      <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
+        <label class="col-xl-2 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Status</label>
+        <select id="statusSelect" ng-model="$ctrl.selectedStatus" ng-change="$ctrl.setFilter({ key: 'status', value: $ctrl.selectedStatus })"
+          class="col-xl-10 col-lg-8 col-md-9 col-sm-9 filter_selects" ng-options="selectedItem.value as selectedItem.text for selectedItem in $ctrl.viewStrings.status">
+        </select>
+      </div>
+      <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+        <label class="col-xl-4 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Period</label>
+        <select id="period" ng-model="$ctrl.selected_period" class="col-xl-8 col-lg-8 col-md-9 col-sm-9 filter_selects"
+          ng-change="$ctrl.setPeriod()">
+          <option ng-selected="true" value="0">Any</option>
+          <option value="1">Custom</option>
+        </select>
+      </div>
+      <div class="col-xs-3" ng-if="$ctrl.showDatePicker==true">
         <sn-date-picker label="{{::$ctrl.viewStrings.startDate}}" on-change="$ctrl.setFilter({ key: 'startDate', value: $event.value})"
           current-date="$ctrl.setStartDate()"></sn-date-picker>
       </div>
-      <div class="col-xs-3" style="padding-top: 16px;">
+      <div class="col-xs-3" ng-if="$ctrl.showDatePicker==true">
         <sn-date-picker label="{{::$ctrl.viewStrings.endDate}}" on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})"></sn-date-picker>
       </div>
-      <div class="col-xs-2 col-xs-offset-4">
-        <sn-select label="'Status'" selected="$ctrl.viewStrings.status[0].value" options="$ctrl.viewStrings.status"
-          on-change="$ctrl.setFilter({ key: 'status', value: $event.value })"></sn-select>
-      </div>
+
     </div>
     <s-table items="$ctrl.items" headers="$ctrl.tableHeaders" loading="$ctrl.isLoading"></s-table>
     <div style="text-align: right; margin-top: 16px;" ng-if="$ctrl.items.length">

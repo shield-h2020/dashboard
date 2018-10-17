@@ -13,7 +13,7 @@
                                 <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12" ng-if="isAdmin">
                                     <label class="col-xl-2 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Tenants</label>
                                     <select id="tenants" ng-model="selected_tenant" ng-change="onTenantChange(this)"
-                                        class="col-xl-10 col-lg-8 col-md-9 col-sm-9 filter_selects" ng-options="tenant.tenant_id as tenant.tenant_name for tenant in tenants_list">>
+                                        class="col-xl-10 col-lg-8 col-md-9 col-sm-9 filter_selects" ng-options="tenant.tenant_id as tenant.tenant_name for tenant in tenants_list">
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
@@ -74,7 +74,7 @@
                                             <th class="text">Destination Port</th>
                                             <th class="text">Destination IP</th>
                                             <th class="text">Protocol</th>
-                                            <th class="text">Client</th>
+                                            <th class="text">Client name</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -86,7 +86,7 @@
                                             <td>{{value[3]}}</td>
                                             <td>{{value[4]}}</td>
                                             <td>{{value[10]}}</td>
-                                            <td>{{value[15]}}</td>
+                                            <td>{{value[16]}}</td>
                                         </tr>
                                         <tr ng-show="!attacks.results[0].series">
                                             <td class="text text-center" colspan="8">No data available</td>

@@ -1,5 +1,6 @@
 import template from './incidents-list.html';
 import styles from './incidents.scss';
+import moment from 'moment';
 
 const VIEW_STRINGS = {
   title: 'Security Incidents',
@@ -50,6 +51,8 @@ export const IncidentsListComponent = {
       this.viewStrings = VIEW_STRINGS;
       this.styles = styles;
       this.scope = $scope;
+      this.selected_period = 0;
+      this.showDatePicker = false;
       this.pagination = {
         page: 1,
         limit: 10,
@@ -67,6 +70,8 @@ export const IncidentsListComponent = {
       };
       this.modalEntries = MODAL_ENTRIES;
       this.incident = null;
+      this.setPeriod();
+      this.selectedStatus = "any";
       this.getData = debounce(this.getData, 100, true, this);
     }
 
@@ -89,26 +94,59 @@ export const IncidentsListComponent = {
         });
     }
 
+    setPeriod() {
+      switch (this.selected_period) {
+        case '0':
+          this.filters = {};
+          this.showDatePicker = false;
+          break;
+        case '1':
+          this.scope.sdate = moment()
+            .startOf('day')
+            .format('YYYY-MM-DDTHH:mm:ss');
+          this.setFilter({ key: 'startDate', value: this.scope.sdate });
+
+          this.scope.edate = moment()
+            .endOf('day')
+            .format('YYYY-MM-DDTHH:mm:ss');
+          this.setFilter({ key: 'endDate', value: this.scope.edate });
+
+          this.showDatePicker = true;
+          break;
+        default:
+          break;
+      }
+
+      this.getData();
+    }
+
     setFilter(filter) {
       if (filter.key === 'startDate' || filter.key === 'endDate') {
         const query = filter.key === 'startDate' ? '$gte' : '$lte';
-        if (!this.filters.detection) this.filters.detection = {};
+        if (!this.filters.detection) {
+          this.filters.detection = {};
+        }
+
         const date = new Date(filter.value);
         if (filter.key === 'endDate') {
           date.setSeconds(59);
         }
-        
+
         this.filters.detection[query] = date.toUTCString();
-      } else if (filter.key === 'status') {
+      }
+      else if (filter.key === 'status') {
         if (filter.value === 'any') {
           delete this.filters.status;
         } else {
           this.filters[filter.key] = filter.value;
         }
-      } else {
+
+        this.selectedStatus = filter.value
+      }
+      else {
         this.filters[filter.key] = filter.value;
       }
-      
+
       this.getData();
     }
 

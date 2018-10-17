@@ -9,14 +9,16 @@ const VIEW_STRING = {
 const TABLE_HEADERS_TM = {
   type: 'Type',
   node: 'Node',
-  trust: 'Trusted',
   driver: 'Driver',
+  trust: 'Trusted',
+  status: 'Status',
   time: 'Time'
 };
 
 const TABLE_HEADERS_VNSF = {
   "vnsf_name": "VNSF Name",
   trust: 'Trusted',
+  status: 'Status',
   time: 'Time'
 };
 
@@ -134,7 +136,6 @@ export const AttestationComponent = {
     }
 
     getNotifications() {
-      console.log("getNotifications")
       var typeNotification;
       this.attestationService.getNotifications(this.pagination, this.filters)
         .then(result => {
@@ -149,6 +150,7 @@ export const AttestationComponent = {
                   "trust": vnsfsitem.trust,
                   "ns_id": vnsfsitem.ns_id,
                   "time": item.time,
+                  "status": item.status,
                   "tenant_id": item.tenant_id
                 }
               })
@@ -159,13 +161,6 @@ export const AttestationComponent = {
               typeNotification = item.type;
               if (this.selected_type == 0) {
                 let itemsResult = item[typeNotification].map(typeitem => {
-                  var timeValue = '';
-                  if (typeitem.time) {
-                    timeValue = typeitem.time;
-                  }
-                  else {
-                    timeValue = typeitem.extra_info.Time;
-                  }
                   return {
                     "_id": item._id,
                     "type": item.type,
@@ -174,8 +169,8 @@ export const AttestationComponent = {
                     "extrainfo": typeitem.extra_info,
                     "remediation": typeitem.remediation,
                     "trust": typeitem.trust,
-                    "status": typeitem.status,
-                    "time": timeValue
+                    "status": item.status,
+                    "time": item.time
                   }
                 });
                 this.items = this.items.concat(itemsResult);

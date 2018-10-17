@@ -35,6 +35,7 @@ export const AttestationModalComponent = {
           firstLevelData.node = data.node;
           firstLevelData.driver = data.driver;
           firstLevelData.trust = data.trust;
+          firstLevelData.status = data.status;
           firstLevelData.time = data.time;
 
           this.remediation = data.extrainfo.Remediation;
@@ -46,6 +47,7 @@ export const AttestationModalComponent = {
           firstLevelData.status = data.status;
           firstLevelData.driver = data.driver;
           firstLevelData.trust = data.trust;
+          firstLevelData.status = data.status;
           firstLevelData.time = data.time;
 
           this.extrainfo = data.extrainfo;
@@ -55,6 +57,7 @@ export const AttestationModalComponent = {
           firstLevelData.vnsf_id = data.vnsf_id;
           firstLevelData.vnsf_name = data.vnsf_name;
           firstLevelData.trust = data.trust;
+          firstLevelData.status = data.status;
           firstLevelData.ns_id = data.ns_id;
           firstLevelData.time = data.time;
 
