@@ -56,7 +56,7 @@ class VNSFONSInstanceProcessor(Processor):
 
             self.logger.debug(f"Polling NS instance '{instance_id }'")
 
-            response = requests.get(url)
+            response = requests.get(url, verify=False)
             if not response.status_code == http_utils.HTTP_200_OK:
                 # TODO: raise exception
                 self.logger.error(f"Couldn't retrieve running NS instance_id '{instance_id }' from vNSFO")
