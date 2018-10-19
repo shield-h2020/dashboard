@@ -16,7 +16,7 @@
 				<div class="{{::$ctrl.styles.entry}}" ng-if="$ctrl.ns['descriptor']">
 					<div class="{{::$ctrl.styles.label}}">Description</div>
 					<pre>
-						{{ $ctrl.ns['descriptor'] | json}}
+						{{ $ctrl.prettyYAML($ctrl.ns['descriptor']) }}
 					</pre>
 				</div>
 			</article>

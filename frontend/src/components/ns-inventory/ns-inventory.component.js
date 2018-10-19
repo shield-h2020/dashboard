@@ -1,5 +1,6 @@
 import template from "./ns-inventory.html";
 import styles from "./ns-inventory.scss";
+import * as YAML from "yamljs";
 
 const VIEW_STRINGS = {
   title: "NS inventory",
@@ -35,6 +36,7 @@ export const InventoryComponent = {
       this.inventoryService = InventoryService;
       this.authService = AuthService;
       this.toast = toastr;
+      this.yaml = YAML;
       this.scope = $scope;
       this.createOpen = false;
       this.deleteOpen = false;
@@ -89,12 +91,18 @@ export const InventoryComponent = {
       );
       nsinventorySocket.onmessage = message => {
         const data = JSON.parse(message.data);
-        this.toast.info(data.ns_name + " is up and running", {
-          onShown: () => {
-            this.scope.$broadcast("NSINVENTORY_UPDATE_DATA");
-          },
-          closeButton: true
-        });
+        if (data.result == "success") {
+          this.toast.info(data.ns_name + " is up and running", {
+            onShown: () => {
+              this.scope.$broadcast("NSINVENTORY_UPDATE_DATA");
+            },
+            closeButton: true
+          });
+        } else {
+          this.toast.error(data.ns_name + ": failed to instantiate", {
+            closeButton: true
+          });
+        }
       };
     }
 
@@ -140,6 +148,7 @@ export const InventoryComponent = {
           type: ns.manifest["manifest:ns"].type,
           target: ns.manifest["manifest:ns"].target
         };
+        // debugger;
       }
       this.modalOpen = !this.modalOpen;
     }
@@ -160,6 +169,10 @@ export const InventoryComponent = {
       this.inventoryService
         .terminateService(_id, _etag)
         .then(() => this.getData());
+    }
+
+    prettyYAML(obj) {
+      return JSON.stringify(this.yaml.parse(obj), null, 4);
     }
   }
 };
