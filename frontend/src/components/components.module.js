@@ -49,7 +49,7 @@ export const ComponentsModule = angular.module('root.components', [
   CatalogueModule,
   OnboardValidationModule,
   NsInventoryModule,
-  VnsfNotificationsModule,
+  VnsfNotificationsModule
 ])
   .name;
 

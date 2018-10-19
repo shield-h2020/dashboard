@@ -16,7 +16,7 @@
     <div
       sn-modal
       open="$ctrl.detailsOpen"
-      title="$ctrl.viewStrings.modalTitle"
+      title-modal="$ctrl.viewStrings.modalTitle"
     >
       <article class="{{::$ctrl.styles.scroller}}">
         <div class="{{::$ctrl.styles.entrygroup}}">
@@ -47,7 +47,7 @@
       </footer>
     </div>
 
-    <div sn-modal title="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
+    <div sn-modal title-modal="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
       <article>
         {{::$ctrl.viewStrings.confirmDelete}}
         <span class="delete-modal--target">{{$ctrl.ns._id}}</span>?

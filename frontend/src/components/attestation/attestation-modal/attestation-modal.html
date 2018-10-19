@@ -1,4 +1,4 @@
-<div sn-modal title="$ctrl.viewStrings.title" open="$ctrl.open">
+<div sn-modal title-modal="$ctrl.viewStrings.titleModal" open="$ctrl.open">
   <article>
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 stack-ss {{::$ctrl.styles['event-entry']}}" ng-repeat="(key, val) in $ctrl.data">
       <span class="col-xl-5 col-lg-5 col-md-5 col-sm-5 {{::$ctrl.styles['event-entry__title']}}">{{
@@ -18,9 +18,9 @@
   </article>
   <article ng-if="$ctrl.extrainfo">
     <div class="{{::$ctrl.styles['event-entry__title']}}">Extra Info: </div>
-    <div class="{{::$ctrl.styles.xmlviewer}}">
-      {{$ctrl.prettyJSON($ctrl.extrainfo)}}
-    </div>
+    <pre>
+      {{ $ctrl.extrainfo | json}}
+    </pre>
   </article>
   <footer>
     <button ng-click="$ctrl.toggleModal()" class="sn-button sn-button--primary">{{$ctrl.viewStrings.cancel}}</button>

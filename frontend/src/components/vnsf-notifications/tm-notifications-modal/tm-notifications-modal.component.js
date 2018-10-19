@@ -38,11 +38,6 @@ export const TmNotificationsModalComponent = {
     toggleModal() {
       this.open = !this.open;
     }
-
-    prettyJSON(obj) {
-      //console.log(obj);
-      return JSON.stringify(obj, null, 2);
-    }
   },
 };
 
