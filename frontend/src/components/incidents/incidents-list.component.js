@@ -182,14 +182,13 @@ export const IncidentsListComponent = {
         .recommendAction(this.incident._id, this.incident._etag)
         .then(() => {
           this.toast.success(
-            "",
             "Your recommendation was sent to the Orchestrator",
-              {
+            "Apply recommendation",
+            {
               onHidden: () => this.closeHandler && this.closeHandler()
             }
           );
           this.toggleIncidentModal();
-          this.getData();
         });
     }
 
