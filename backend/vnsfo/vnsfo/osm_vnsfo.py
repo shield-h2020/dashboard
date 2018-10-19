@@ -104,8 +104,8 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             r = requests.post(url, headers=headers, json=inst_body, verify=False)
 
             if not r.status_code == http_utils.HTTP_200_OK:
-                self.logger.error("Couldn't instantiate network service '%s'", ns_id)
-                return
+                self.logger.error("Couldn't instantiate network service '%s'", ns_name)
+                return r
 
             self.logger.debug("Network service '{}' instantiated successfully."
                               "\nGot response:\n{}".format(ns_name, r.json()))

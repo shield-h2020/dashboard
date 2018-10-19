@@ -102,9 +102,10 @@ class NssInventoryHooks:
             r = vnsfo.instantiate_ns(ns_name, target)
             if not r:
                 logger.error("FAILED instantiation of network service '{}'".format(ns_name))
+                message = r.text if r.text else r.json() if r.json() else None
                 abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                     {"code": r.status_code, "message":
-                                        "Instantiation failed. vNSFO replied: {}".format(r.text())}}), r.status_code))
+                                        "Instantiation failed. vNSFO replied: {}".format(message)}}), r.status_code))
                 return
 
             r = r.json()
