@@ -50,7 +50,7 @@ class VNSFONSInstanceProcessor(Processor):
 
         running_status = ''
         data = {}
-        while running_status != 'running':
+        while running_status != 'running' or running_status != 'failed':
             time.sleep(3)
             url = f"{self.basepath}/ns/running/{instance_id }"
 
@@ -79,7 +79,7 @@ class VNSFONSInstanceProcessor(Processor):
             "type": "ns_instance",
             "data": {
                 "instance_id": instance_id,
-                "operational_status": "running",
+                "operational_status": running_status,
                 "vnsf_instances": vnsf_instances,
                 "ns_name": data['ns'][0]['ns_name']
             }

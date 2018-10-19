@@ -1,0 +1,46 @@
+{
+  "ns": [
+    {
+      "config_status": "configured",
+      "constituent_vnf_instances": [
+        {
+          "config_jobs": [
+            {
+              "created_time": 1523980730,
+              "job_id": 1,
+              "job_status": "success",
+              "primitives": [
+                {
+                  "execution_id": "action-62e63d58-c95a-40a8-81e3-ff68232dc4b6",
+                  "execution_status": "success",
+                  "name": "set-policies"
+                }
+              ],
+              "triggered_by": "vnf-primitive"
+            }
+          ],
+          "config_status": "configuring",
+          "ip": "10.101.20.52",
+          "ns_id": "d75efa2d-b4d4-42a3-9bcb-20324f7d8e47",
+          "ns_name": "fl7f_test25",
+          "operational_status": "running",
+          "vendor": "POLITO",
+          "vim": "openstack-orion",
+          "vnf_id": "6c358c6b-2807-4988-826e-6c601e674e0d",
+          "vnf_name": "fl7f_test25__fl7filter_vnfd__1"
+        }
+      ],
+      "instance_id": "d75efa2d-b4d4-42a3-9bcb-20324f7d8e47",
+      "instance_name": "fl7filter_nsd",
+      "ns_name": "fl7filter_nsd",
+      "nsd_id": "mspl_vnf",
+      "operational_status": "running",
+      "vlrs": [
+        {
+          "vim_id": "f9acd550-9d48-11e7-ae4c-00163e3afbe5",
+          "vlr_id": "8cb0c418-830f-4bf6-acdc-fbccdc0b1818"
+        }
+      ]
+    }
+  ]
+}

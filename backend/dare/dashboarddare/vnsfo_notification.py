@@ -188,7 +188,8 @@ class VNSFONotification(PipeProducer):
             "type": "ns_instance",
             "instance_id": ns_instance_id,
             "ns_id": ns_id,
-            "ns_name": ns_name
+            "ns_name": ns_name,
+            "result": 'success' if op_status == 'running' else 'failure'
         }
         self.logger.debug('Sending Notification: {}'.format(notification_json))
         self.notify_by_tenant(notification_json, tenant_id)
