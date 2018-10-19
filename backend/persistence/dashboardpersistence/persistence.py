@@ -66,8 +66,9 @@ class DashboardPersistence:
                                                   cfg.VNSFO_API)
             vnsfo.apply_policy(policy['vnsf_id'], policy)
 
-        except VnsfOrchestratorPolicyIssue:
-            logger.error('VnsfOrchestratorPolicyIssue')
+        #except VnsfOrchestratorPolicyIssue:
+        #    logger.error('VnsfOrchestratorPolicyIssue')
+
         except VnsfoNotSupported:
             logger.error('VnsfOrchestratorPolicyIssue')
 

@@ -79,7 +79,7 @@ class NssInventoryHooks:
                 logger.error("Couldn't retrieve data of Network Service '%s'", original['ns_id'])
                 abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                     {"code": r.status_code, "message":
-                                        "Instantiation failed. Store replied: {}".format(r.text())}}), r.status_code))
+                                        "Instantiation failed. Store replied: {}".format(r.text)}}), r.status_code))
 
         except requests.exceptions.ConnectionError as e:
             #  TODO: raise exception
@@ -116,7 +116,7 @@ class NssInventoryHooks:
             logger.error('VnsfOrchestratorPolicyIssue')
             abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                 {"code": 400, "message":
-                                    "Instantiation failed. vNSFO Policy Issue not supported".format(r.text())}}), 400))
+                                    "Instantiation failed. vNSFO Policy Issue not supported".format(r.text)}}), 400))
 
         # Trigger NS Instance polling
         url = "{}/ns_instance_update".format(cfg.BACKENDAPI)
@@ -161,7 +161,7 @@ class NssInventoryHooks:
                 logger.error("FAILED termination of network service instance id '{}'".format(instance_id))
                 abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                     {"code": r.status_code, "message":
-                                        "Instantiation failed. vNSFO replied: {}".format(r.text())}}), r.status_code))
+                                        "Instantiation failed. vNSFO replied: {}".format(r.text)}}), r.status_code))
                 return
             r = r.json()
             updates['status'] = "available"
@@ -171,4 +171,4 @@ class NssInventoryHooks:
             logger.error('VnsfOrchestratorPolicyIssue')
             abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                 {"code": 400, "message":
-                                    "Instantiation failed. vNSFO Policy Issue not supported".format(r.text())}}), 400))
+                                    "Instantiation failed. vNSFO Policy Issue not supported".format(r.text)}}), 400))

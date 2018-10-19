@@ -64,16 +64,16 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         headers = {'Content-Type': 'application/json'}
 
-        self.logger.debug("Send policy data to '%s'", url)
+        self.logger.debug("-> Send policy data to '%s'", url)
 
         try:
             r = requests.post(url, headers=headers, json=sec_policy, verify=False)
 
-            if len(r.text) > 0:
+            if r.text:
                 self.logger.debug(r.text)
 
-            if not r.status_code == http_utils.HTTP_200_OK or r.status_code == http_utils.HTTP_201_CREATED or \
-                    r.status_code == http_utils.HTTP_202_ACCEPTED:
+            if not (r.status_code == http_utils.HTTP_200_OK or r.status_code == http_utils.HTTP_201_CREATED or
+                    r.status_code == http_utils.HTTP_202_ACCEPTED):
                 self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
                                     [[url, r.status_code]])
 
