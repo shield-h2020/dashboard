@@ -107,12 +107,10 @@ class VNSFONotification(PipeProducer):
         vnsf_instances = data['vnsf_instances']
         ns_name = data['ns_name']
 
-        if not op_status == "running":
-            self.logger.error("Notification for NS instance_id '{}' has an invalid running status '{}'"
-                              .format(ns_instance_id, op_status))
-            return
+        self.logger.error("Notification for NS instance_id '{}' operational status '{}'"
+                          .format(ns_instance_id, op_status))
 
-        # 1. Retrieve the tenant associated with this instance_id in nss inventory
+        # Retrieve the tenant associated with this instance_id in nss inventory
         self.logger.debug("-> Retrieving tenant associated with NS instance_id '{}'".format(ns_instance_id))
         url = '{}?where={{\"instance_id\": \"{}\"}}'.format(cfg.VNSFO_NOTIFICATION_API_INVENTORY_NSS_URL, ns_instance_id)
         self.logger.debug("\n\nRequesting URL: {}\n\n".format(url))
@@ -128,60 +126,64 @@ class VNSFONotification(PipeProducer):
         inventory_nss_etag = r['_items'][0]['_etag']
         self.logger.debug("NS instance_id '{}' is associated with tenant_id '{}'".format(ns_instance_id, tenant_id))
 
-        # 2. Update tenant associations with vNSF instances running under this ns_instance_id
-        self.logger.debug('Updating tenant <-> vNSF instances association')
-        headers = cfg.TENANT_VNSF_INSTANCE_ASSOCIATION_HEADERS
+        # Operations if instantiation was successful
+        if op_status == "running":
+            # Update tenant associations with vNSF instances running under this ns_instance_id
+            self.logger.debug('Updating tenant <-> vNSF instances association')
+            headers = cfg.TENANT_VNSF_INSTANCE_ASSOCIATION_HEADERS
 
-        url = '{}/{}'.format(cfg.TENANT_VNSF_INSTANCE_ASSOCIATION_URL, tenant_id)
+            url = '{}/{}'.format(cfg.TENANT_VNSF_INSTANCE_ASSOCIATION_URL, tenant_id)
 
-        r = requests.get(url, headers=headers)
+            r = requests.get(url, headers=headers)
 
-        # if this tenant doesn't have any record of association -> create it
-        if r.status_code == http_utils.HTTP_404_NOT_FOUND:
-            self.logger.debug("The tenant_id '{}' doesn't have any association record of vNSF Instances. Creating it."
-                              .format(tenant_id))
-            url = '{}'.format(cfg.TENANT_VNSF_INSTANCE_ASSOCIATION_URL)
-            post_json = {
-	            "tenant_id": tenant_id,
-	            "vnsf_instances": vnsf_instances
-            }
-            r = requests.post(url, json=post_json, headers=headers, verify=False)
-            if not r.status_code == http_utils.HTTP_201_CREATED:
-                self.logger.debug("Couldn't create tenant <-> vNSF instances association: {}".format(post_json))
-                return
+            # if this tenant doesn't have any record of association -> create it
+            if r.status_code == http_utils.HTTP_404_NOT_FOUND:
+                self.logger.debug("The tenant_id '{}' doesn't have any association record of vNSF Instances. Creating it."
+                                  .format(tenant_id))
+                url = '{}'.format(cfg.TENANT_VNSF_INSTANCE_ASSOCIATION_URL)
+                post_json = {
+                    "tenant_id": tenant_id,
+                    "vnsf_instances": vnsf_instances
+                }
+                r = requests.post(url, json=post_json, headers=headers, verify=False)
+                if not r.status_code == http_utils.HTTP_201_CREATED:
+                    self.logger.debug("Couldn't create tenant <-> vNSF instances association: {}".format(post_json))
+                    return
 
-        # if this tenant already has a record of association -> patch it and removing old vnsf instances
-        elif r.status_code == 200:
-            r = r.json()
-            etag = r['_etag']
-            headers['If-Match'] = etag
+            # if this tenant already has a record of association -> patch it and removing old vnsf instances
+            elif r.status_code == 200:
+                r = r.json()
+                etag = r['_etag']
+                headers['If-Match'] = etag
 
-            patch_json = {
-                "vnsf_instances": vnsf_instances
-            }
+                patch_json = {
+                    "vnsf_instances": vnsf_instances
+                }
 
-            r = requests.patch(url, headers=headers, json=patch_json, verify=False)
-            if not r.status_code == http_utils.HTTP_200_OK:
-                self.logger.debug("Couldn't update tenant_id {} <-> vNSF instances association: {}".format(tenant_id, patch_json))
-                return
+                r = requests.patch(url, headers=headers, json=patch_json, verify=False)
+                if not r.status_code == http_utils.HTTP_200_OK:
+                    self.logger.debug("Couldn't update tenant_id {} <-> vNSF instances association: {}".format(tenant_id, patch_json))
+                    return
 
-        # Persist the notification
-        notification_persistence.persist_ns_instance(ns_instance_id, op_status)
-
-        # Everything went ok, update status of NS instance to 'running'
-
+        # Update status of NS instance to according to operational status
         url = '{}/{}?where={{\"tenant_id\": \"{}\"}}'.format(cfg.VNSFO_NOTIFICATION_API_INVENTORY_NSS_URL,
                                                             inventory_nss_id, tenant_id)
-        self.logger.debug("Updating NS instance_id '{}' status to 'running'".format(ns_instance_id))
+
+        status_update = 'running' if op_status == 'running' else 'available'
+
+        self.logger.debug("Updating NS instance_id '{}' status to '{}'".format(ns_instance_id, status_update))
         headers = cfg.VNSFO_NOTIFICATION_API_INVENTORY_NSS_HEADERS
         headers['If-Match'] = inventory_nss_etag
         update_json = {
-            "status": "running"
+            "status": status_update
         }
         r = requests.patch(url, headers=headers, json=update_json, verify=False)
         if not r.status_code == http_utils.HTTP_200_OK:
-            self.logger.debug("Couldn't update instance_id {} to 'running' status".format(ns_instance_id))
+            self.logger.debug("Couldn't update instance_id {} to '{}' status".format(status_update, ns_instance_id))
             return
+
+        # Persist the notification
+        notification_persistence.persist_ns_instance(ns_instance_id, op_status)
 
         # Notify by tenant
         notification_json = {

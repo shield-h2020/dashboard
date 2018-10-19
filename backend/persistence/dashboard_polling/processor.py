@@ -50,7 +50,7 @@ class VNSFONSInstanceProcessor(Processor):
 
         running_status = ''
         data = {}
-        while running_status != 'running' or running_status != 'failed':
+        while running_status not in ['running', 'failed']:
             time.sleep(3)
             url = f"{self.basepath}/ns/running/{instance_id }"
 
@@ -69,11 +69,11 @@ class VNSFONSInstanceProcessor(Processor):
         self.logger.debug(f"NS instance '{instance_id }' ready")
         vnsf_instances = list([vnf['vnf_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
 
-        if not vnsf_instances:
-            # TODO: raise exception
-            self.logger.error(
-                f"Couldn't retrieve associated vNSF instances with NS instance_id '{instance_id }' from vNSFO")
-            return False
+        # if not vnsf_instances:
+        #     # TODO: raise exception
+        #     self.logger.error(
+        #         f"Couldn't retrieve associated vNSF instances with NS instance_id '{instance_id }' from vNSFO")
+        #     return False
 
         message = {
             "type": "ns_instance",
