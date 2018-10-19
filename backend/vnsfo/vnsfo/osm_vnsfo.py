@@ -56,7 +56,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         sec_policy['vnsf_id'] = target_id
         sec_policy['action'] = 'set-policies'
         sec_policy['params'] = dict()
-        sec_policy['params']['policy'] = policy['recommendation']
+        sec_policy['params']['policies'] = policy['recommendation']
 
         self.logger.debug('Policy for Orchestrator: %r', json.dumps(sec_policy))
 

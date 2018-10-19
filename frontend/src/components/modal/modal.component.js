@@ -35,10 +35,6 @@ export const ModalComponent = {
     toggleModal() {
       this.modalHandler({ $event: { value: !this.modalOpen } });
     }
-
-    prettyJSON(obj) {
-      return JSON.stringify(obj, null, 2);
-    }
   },
 
 };

@@ -11,14 +11,14 @@ const TABLE_HEADERS_TM = {
   node: 'Node',
   driver: 'Driver',
   trust: 'Trusted',
-  status: 'Status',
+  status: 'Recommendation',
   time: 'Time'
 };
 
 const TABLE_HEADERS_VNSF = {
   "vnsf_name": "VNSF Name",
   trust: 'Trusted',
-  status: 'Status',
+  status: 'Recommendation',
   time: 'Time'
 };
 
@@ -139,6 +139,10 @@ export const AttestationComponent = {
       var typeNotification;
       this.attestationService.getNotifications(this.pagination, this.filters)
         .then(result => {
+          if(this.selected_type != 0){
+            this.items = [];
+          }
+          
           if (this.authService.isUserTenantAdmin()) {
             result.notifs.map(item => {
               this.items = item.vnsfs.map(vnsfsitem => {
@@ -192,7 +196,7 @@ export const AttestationComponent = {
                     "extrainfo": typeitem.extra_info,
                     "remediation": typeitem.remediation,
                     "trust": typeitem.trust,
-                    "status": typeitem.status,
+                    "status": item.status,
                     "time": timeValue
                   }
                 })
@@ -200,7 +204,7 @@ export const AttestationComponent = {
 
             });
           }
-
+          
           this.pagination.total = (result && result.meta.total) || 0;
           this.paging = this.calcPageItems();
         });

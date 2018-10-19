@@ -13,7 +13,7 @@
 
   <div
     sn-modal
-    title="$ctrl.isCreate ? $ctrl.viewStrings.modalCreateTitle : $ctrl.viewStrings.modalUpdateTitle" 
+    title-modal="$ctrl.isCreate ? $ctrl.viewStrings.modalCreateTitle : $ctrl.viewStrings.modalUpdateTitle" 
     open="$ctrl.createOpen"
   >
       <article class="row">
@@ -49,7 +49,7 @@
       </footer>
     </div>
 
-    <div sn-modal title="$ctrl.viewStrings.modalDeleteTitle" open="$ctrl.deleteOpen">
+    <div sn-modal title-modal="$ctrl.viewStrings.modalDeleteTitle" open="$ctrl.deleteOpen">
         <article class="row">
           <div class="col-xs-12">
             {{::$ctrl.viewStrings.confirmDelete}}

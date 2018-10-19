@@ -38,16 +38,14 @@
     </div>
   </div>
 
-  <div sn-modal open="$ctrl.modalOpen" title="$ctrl.viewStrings.modalTitle">
+  <div sn-modal open="$ctrl.modalOpen" title-modal="$ctrl.viewStrings.modalTitle">
     <article class="{{::$ctrl.styles.scroller}}">
       <div ng-repeat="(key, val) in $ctrl.modalEntries" class="{{::$ctrl.styles['event-entry']}}">
         <span class="{{::$ctrl.styles['event-entry__title']}}">{{ val }}</span>
         <span>{{ $ctrl.incident[key] }}</span>
       </div>
       <h5 class="{{::$ctrl.styles['modal-title']}}">{{::$ctrl.viewStrings.modalSubtitle}}</h5>
-      <div class="{{::$ctrl.styles.xmlviewer}}">
-        {{$ctrl.incident.recommendation}}
-      </div>
+      <pre ng-if="$ctrl.incident.recommendation">{{ $ctrl.incident.recommendation | prettyXml }}</pre>
     </article>
     <footer class="{{::$ctrl.styles.footer}}">
       <button class="{{::$ctrl.styles.button}}" ng-click="$ctrl.toggleIncidentModal()">{{::$ctrl.viewStrings.close}}</button>

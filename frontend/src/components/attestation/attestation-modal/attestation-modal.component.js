@@ -2,7 +2,7 @@ import template from './attestation-modal.html';
 import styles from '../attestation.scss';
 
 const VIEW_STRINGS = {
-  title: 'Attestation Notification',
+  titleModal: 'Attestation Notification',
   cancel: 'Cancel',
   apply: 'Apply',
   node: 'Node',
@@ -63,7 +63,7 @@ export const AttestationModalComponent = {
 
           this.remediation = data.remediation;
         }
-
+        
         this.data = firstLevelData;
         this.open = true;
       });
@@ -75,11 +75,6 @@ export const AttestationModalComponent = {
 
     applyRemediation() {
       this.open = !this.open;
-    }
-
-    prettyJSON(obj) {
-      //console.log(obj);
-      return JSON.stringify(obj, null, 2);
     }
   },
 };

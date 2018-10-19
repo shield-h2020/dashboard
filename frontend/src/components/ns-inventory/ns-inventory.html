@@ -5,7 +5,7 @@
 			<h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
 		</header>
 		<table-custom-actions headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading"></table-custom-actions>
-		<div sn-modal open="$ctrl.modalOpen" title="$ctrl.viewStrings.modalTitle">
+		<div sn-modal open="$ctrl.modalOpen" title-modal="$ctrl.viewStrings.modalTitle">
 			<article>
 				<div class="{{::$ctrl.styles.entrygroup}}">
 					<div ng-repeat="(key, val) in $ctrl.modalEntries" class="{{::$ctrl.styles.entry}}">
@@ -15,9 +15,9 @@
 				</div>
 				<div class="{{::$ctrl.styles.entry}}" ng-if="$ctrl.ns['descriptor']">
 					<div class="{{::$ctrl.styles.label}}">Description</div>
-					<div class="{{::$ctrl.styles.xmlviewer}}">
-						{{$ctrl.prettyJSON($ctrl.ns['descriptor'])}}
-					</div>
+					<pre>
+						{{ $ctrl.ns['descriptor'] | json}}
+					</pre>
 				</div>
 			</article>
 			<footer class="{{::$ctrl.styles.footer}}">

@@ -112,10 +112,6 @@ export const VNSFListComponent = {
         });
     }
 
-    prettyJSON(obj) {
-      return JSON.stringify(obj, null, 2);
-    }
-
     toggleFileUploadModal() {
       this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.OPEN, {
         fileType: '.tar.gz',
