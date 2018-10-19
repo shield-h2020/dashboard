@@ -92,15 +92,16 @@ class NssInventoryHooks:
         # Retrieve relevant network service parameters
         r = r.json()
         ns_id = r['ns_id']
+        ns_name = r['ns_name']
         target = r['manifest']['manifest:ns']['target']
-        print("\n\n\nRetrieved ns_id: {}, target: {}\n\n".format(ns_id, target))
+        print("\n\n\nRetrieved ns_id: '{}', ns_name: '{}' target: {}\n\n".format(ns_id, ns_name, target))
 
         try:
             vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                                   cfg.VNSFO_API)
-            r = vnsfo.instantiate_ns(ns_id, target)
+            r = vnsfo.instantiate_ns(ns_name, target)
             if not r:
-                logger.error("FAILED instantiation of network service '{}'".format(ns_id))
+                logger.error("FAILED instantiation of network service '{}'".format(ns_name))
                 abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                     {"code": r.status_code, "message":
                                         "Instantiation failed. vNSFO replied: {}".format(r.text())}}), r.status_code))

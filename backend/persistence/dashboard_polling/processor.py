@@ -63,7 +63,8 @@ class VNSFONSInstanceProcessor(Processor):
                 return False
 
             data = response.json()
-            running_status = data['ns'][0]['operational_status']
+            if data['ns']:
+                running_status = data['ns'][0]['operational_status']
 
         self.logger.debug(f"NS instance '{instance_id }' ready")
         vnsf_instances = list([vnf['vnf_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])

@@ -81,7 +81,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
                                 [[url]])
 
-    def instantiate_ns(self, ns_id, target):
+    def instantiate_ns(self, ns_name, target):
         """
         Instantiates a Network Service using the Orchestrator REST interface (vNSFO API).
         :param ns_id: Network Service ID
@@ -89,14 +89,14 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         """
 
         inst_body = {
-            "instance_name": ns_id,
-            "ns_name": ns_id,
+            "instance_name": ns_name,
+            "ns_name": ns_name,
             "virt_type": target
         }
 
         url = '{}/{}'.format(self.basepath, 'ns/instantiate')
         headers = {'Content-Type': 'application/json'}
-        self.logger.debug("Instantiating Network Service '%s'", ns_id)
+        self.logger.debug("Instantiating Network Service '%s'", ns_name)
 
         try:
             self.logger.debug("Connecting to vNSFO: {}".format(url))
@@ -108,7 +108,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
                 return
 
             self.logger.debug("Network service '{}' instantiated successfully."
-                              "\nGot response:\n{}".format(ns_id, r.json()))
+                              "\nGot response:\n{}".format(ns_name, r.json()))
             return r
 
         except requests.exceptions.ConnectionError:
