@@ -189,6 +189,7 @@ export const IncidentsListComponent = {
             }
           );
           this.toggleIncidentModal();
+          this.getData();
         });
     }
 

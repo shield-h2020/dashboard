@@ -7,6 +7,7 @@ export const TableCustomActionsComponent = {
     items: '<',
     headers: '<',
     loading: '<',
+    buttonclicked: '<'
   },
   controller: class TableCustomActionsComponent {
     constructor() {

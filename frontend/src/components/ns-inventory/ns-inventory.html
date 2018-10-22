@@ -4,7 +4,7 @@
 		<header class="sn-card__header">
 			<h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
 		</header>
-		<table-custom-actions headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading"></table-custom-actions>
+		<table-custom-actions headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading" buttonclicked="$ctrl.buttonClicked"></table-custom-actions>
 		<div sn-modal open="$ctrl.modalOpen" title-modal="$ctrl.viewStrings.modalTitle">
 			<article>
 				<div class="{{::$ctrl.styles.entrygroup}}">

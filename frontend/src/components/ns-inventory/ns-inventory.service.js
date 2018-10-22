@@ -111,7 +111,7 @@ export class InventoryService {
       .then(response => response.data);
   }
 
-  connecNSInventorySocket(tenantId) {
+  connectNSInventorySocket(tenantId) {
     return new WebSocket(API_NSINVENTORY_SOCKET.replace(ACC_ID, tenantId));
   }
 }

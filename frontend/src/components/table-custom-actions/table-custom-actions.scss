@@ -127,3 +127,8 @@
     border-radius: 3px;
   }
 }
+
+.disabled_actions{
+  pointer-events: none!important;
+  opacity: 0.5!important;
+}

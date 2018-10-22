@@ -54,6 +54,14 @@ export const InventoryComponent = {
           action: this.instantiateToInventory.bind(this)
         }
       ];
+
+      this.actionsItemConfiguring = [
+        {
+          label: "view",
+          action: this.toggleNSDetails.bind(this)
+        }
+      ];
+
       this.actionsItemRunning = [
         {
           label: "view",
@@ -73,6 +81,8 @@ export const InventoryComponent = {
         ...TABLE_HEADERS
       };
       this.modalOpen = false;
+      this.buttonClicked = false;
+      this.nsSocketAtmp = 0;
     }
 
     $onInit() {
@@ -86,9 +96,10 @@ export const InventoryComponent = {
     }
 
     initNsinventorySocket() {
-      var nsinventorySocket = this.inventoryService.connecNSInventorySocket(
+      var nsinventorySocket = this.inventoryService.connectNSInventorySocket(
         this.authService.getTenant()
       );
+      nsinventorySocket.onopen = (e) => {this.nsSocketAtmp = 0;};
       nsinventorySocket.onmessage = message => {
         const data = JSON.parse(message.data);
         if (data.result == "success") {
@@ -102,6 +113,12 @@ export const InventoryComponent = {
           this.toast.error(data.ns_name + ": failed to instantiate", {
             closeButton: true
           });
+        }
+      };
+      nsinventorySocket.onclose = (e) => {
+        if(this.nsSocketAtmp < 3) {
+          this.nsSocketAtmp++;
+          setTimeout(this.initNsinventorySocket(), 1000);
         }
       };
     }
@@ -123,8 +140,10 @@ export const InventoryComponent = {
             // item.status = "running";
             if (item.status == "available") {
               selectedActions = this.actionsItemAvailable;
-            } else {
+            } else if (item.status == "running") {
               selectedActions = this.actionsItemRunning;
+            } else {
+              selectedActions = this.actionsItemConfiguring;
             }
 
             return {
@@ -154,21 +173,42 @@ export const InventoryComponent = {
     }
 
     removeFromInventory({ _id, _etag }) {
+      this.buttonClicked = true;
       this.inventoryService
         .removeServiceFromInventory(_id, _etag)
-        .then(() => this.getData());
+        .then(() => {
+          this.buttonClicked = false;
+          this.getData();
+        })
+        .catch(() => {
+          this.buttonClicked = false;
+        });
     }
 
     instantiateToInventory({ _id, _etag }) {
+      this.buttonClicked = true;
       this.inventoryService
         .instantiateService(_id, _etag)
-        .then(() => this.getData());
+        .then(() => {
+          this.buttonClicked = false;
+          this.getData();
+        })
+        .catch(() => {
+          this.buttonClicked = false;
+        });
     }
 
     stopInstance({ _id, _etag }) {
+      this.buttonClicked = true;
       this.inventoryService
         .terminateService(_id, _etag)
-        .then(() => this.getData());
+        .then(() => {
+          this.buttonClicked = false;
+          this.getData();
+        })
+        .catch(() => {
+          this.buttonClicked = false;
+        });
     }
 
     prettyYAML(obj) {

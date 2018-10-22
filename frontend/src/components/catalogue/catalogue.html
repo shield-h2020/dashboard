@@ -3,33 +3,24 @@
   <div class="sn-card" auto-resizer>
     <header class="sn-card__header">
       <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
-      <button ng-click="$ctrl.toggleFileUploadModal()" class="sn-button sn-button--primary">{{ ::$ctrl.viewStrings.button }}</button>
+      <button ng-click="$ctrl.toggleFileUploadModal()" class="sn-button sn-button--primary">{{
+        ::$ctrl.viewStrings.button }}</button>
     </header>
-    <s-table
-      headers="$ctrl.headers"
-      items="$ctrl.items"
-      loading="$ctrl.isLoading"
-    ></s-table>
+    <s-table headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading" buttonclicked="$ctrl.buttonClicked"></s-table>
 
     <sn-upload-box on-submit="$ctrl.uploadApp($event.file)"></sn-upload-box>
 
-    <div
-      sn-modal
-      open="$ctrl.detailsOpen"
-      title-modal="$ctrl.viewStrings.modalTitle"
-    >
+    <div sn-modal open="$ctrl.detailsOpen" title-modal="$ctrl.viewStrings.modalTitle">
       <article class="{{::$ctrl.styles.scroller}}">
         <div class="{{::$ctrl.styles.entrygroup}}">
-          <div
-            ng-repeat="(key, val) in $ctrl.modalEntries"
-            class="{{::$ctrl.styles.entry}}"
-          >
+          <div ng-repeat="(key, val) in $ctrl.modalEntries" class="{{::$ctrl.styles.entry}}">
             <span class="{{::$ctrl.styles.label}}">{{ val }}</span>
             <span class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.ns[key] }}</span>
           </div>
           <div class="{{::$ctrl.styles.entry}}">
-              <span class="{{::$ctrl.styles.label}}">{{ $ctrl.viewStrings.validations }}</span>
-              <a ui-sref="validation({id: $ctrl.ns.validation })" class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.ns.validation }}</a>
+            <span class="{{::$ctrl.styles.label}}">{{ $ctrl.viewStrings.validations }}</span>
+            <a ui-sref="validation({id: $ctrl.ns.validation })" class="{{::$ctrl.styles.entry__text}}">{{
+              $ctrl.ns.validation }}</a>
           </div>
         </div>
         <div collapsible>
@@ -40,17 +31,14 @@
         </div>
       </article>
       <footer class="{{::$ctrl.styles.footer}}">
-        <button
-          ng-click="$ctrl.toggleDetailsModal()"
-          class="{{::$ctrl.styles.button}}"
-        >{{ ::$ctrl.viewStrings.close }}</button>
+        <button ng-click="$ctrl.toggleDetailsModal()" class="{{::$ctrl.styles.button}}">{{ ::$ctrl.viewStrings.close }}</button>
       </footer>
     </div>
 
     <div sn-modal title-modal="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
       <article>
         {{::$ctrl.viewStrings.confirmDelete}}
-        <span class="delete-modal--target">{{$ctrl.ns._id}}</span>?
+        <span class="delete-modal--target">{{$ctrl.ns.ns_name}}</span> ({{$ctrl.ns._id}})?
       </article>
       <footer class="inset-ss text-right">
         <button class="sn-button inline-ss" ng-click="$ctrl.toggleDeleteModal()">{{::$ctrl.viewStrings.cancelButton}}</button>
