@@ -99,7 +99,9 @@ export const InventoryComponent = {
       var nsinventorySocket = this.inventoryService.connectNSInventorySocket(
         this.authService.getTenant()
       );
-      nsinventorySocket.onopen = (e) => {this.nsSocketAtmp = 0;};
+      nsinventorySocket.onopen = e => {
+        this.nsSocketAtmp = 0;
+      };
       nsinventorySocket.onmessage = message => {
         const data = JSON.parse(message.data);
         if (data.result == "success") {
@@ -111,12 +113,15 @@ export const InventoryComponent = {
           });
         } else {
           this.toast.error(data.ns_name + ": failed to instantiate", {
+            onShown: () => {
+              this.scope.$broadcast("NSINVENTORY_UPDATE_DATA");
+            },
             closeButton: true
           });
         }
       };
-      nsinventorySocket.onclose = (e) => {
-        if(this.nsSocketAtmp < 3) {
+      nsinventorySocket.onclose = e => {
+        if (this.nsSocketAtmp < 3) {
           this.nsSocketAtmp++;
           setTimeout(this.initNsinventorySocket(), 1000);
         }

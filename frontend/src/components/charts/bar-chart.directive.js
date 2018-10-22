@@ -58,7 +58,6 @@ export const BarChartDirective = ($compile, $timeout) => ({
                 }
                 if (scope.$ctrl.dayTimeAgr === DAY_TIME_AGR.month) {
                     xAxisData[i] = moment.utc(datachart[0].values[i][0]).format('MMMM').substring(0, 3);
-                    xTimeFormat = "%b";
                 }
             }
 
