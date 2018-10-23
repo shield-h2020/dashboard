@@ -119,9 +119,8 @@ class TMNotification(PipeProducer):
         if 'hosts' in notifications:
             for host in notifications['hosts']:
                 vnsfs = host.pop('vnsfs', [])
-
                 for vnsf in vnsfs:
-                    tenant = notification_persistence.__associate_vnsf_instance__(vnsf.get('vnsfd_name'))
+                    tenant = notification_persistence.__associate_vnsf_instance__(vnsf.get('vnsfr_id'))
                     if tenant not in tenant_vnsf_association:
                         tenant_vnsf_association[tenant] = {}
                         tenant_vnsf_association[tenant]['vnsfs'] = []
