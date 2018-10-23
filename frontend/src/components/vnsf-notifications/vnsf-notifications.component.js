@@ -10,7 +10,8 @@ const VIEW_STRINGS = {
 const TABLE_HEADERS = {
   type: 'Type',
   tenant_name: 'Client',
-  "_created": 'Created'
+  classification: 'Classification',
+  "_created": 'Date'
 };
 
 export const VnsfNotificationsComponent = {
@@ -100,6 +101,7 @@ export const VnsfNotificationsComponent = {
       this.items = [];
       this.vnsfNotificationService.getNotifications(this.pagination, this.filters)
         .then((items) => {
+          console.log(items)
           this.items = UsersListComponent.addExtraClasses(items);
           this.pagination.total = (items && items.meta.total) || 0;
           this.paging = this.calcPageItems();

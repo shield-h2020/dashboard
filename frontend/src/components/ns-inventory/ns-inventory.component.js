@@ -11,7 +11,7 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   capabilities: "Capabilities",
-  _created: "Created",
+  _created: "Instantiated",
   status: "Status",
   actions: "Actions"
 };
@@ -19,7 +19,7 @@ const TABLE_HEADERS = {
 const MODAL_ENTRIES = {
   _id: "Id",
   capabilities: "Capabilities",
-  _created: "Created",
+  _created: "Instantiated",
   type: "Type",
   target: "Target"
 };

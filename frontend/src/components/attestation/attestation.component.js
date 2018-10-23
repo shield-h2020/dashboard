@@ -148,8 +148,8 @@ export const AttestationComponent = {
               this.items = item.vnsfs.map(vnsfsitem => {
                 return {
                   "_id": item._id,
-                  "vnsf_id": vnsfsitem.vnsf_id,
-                  "vnsf_name": vnsfsitem.vnsfd_name,
+                  "vnsf_id": vnsfsitem.vnsfr_id,
+                  "vnsf_name": vnsfsitem.vnsfd_id,
                   "remediation": vnsfsitem.remediation,
                   "trust": vnsfsitem.trust,
                   "ns_id": vnsfsitem.ns_id,

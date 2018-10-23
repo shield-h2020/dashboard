@@ -39,6 +39,7 @@ export class VnsfNotificationService {
             .then(tenant => ({
               ...notifs[i],
               tenant_name: tenant.tenant_name,
+              classification: JSON.parse(notifs[i].data).event.classification
             })));
         }
 

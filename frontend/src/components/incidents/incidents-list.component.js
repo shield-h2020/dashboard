@@ -29,7 +29,7 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   attack: "Incident",
-  detection: "Detection Date",
+  detection: "Date",
   severity: "Severity",
   status: "Recommendation"
 };
@@ -37,7 +37,7 @@ const TABLE_HEADERS = {
 const MODAL_ENTRIES = {
   _id: "Id",
   attack: "Incident",
-  detection: "Detection Date",
+  detection: "Date",
   severity: "Severity",
   status: "Recommendation"
 };

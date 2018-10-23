@@ -18,13 +18,13 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   capabilities: 'Capabilities',
-  _created: 'Created',
+  _created: 'Enrolled',
 };
 
 const MODAL_ENTRIES = {
   _id: 'Id',
   capabilities: 'Capabilities',
-  _created: 'Created',
+  _created: 'Enrolled',
   _updated: 'Updated',
   state: 'State',
   vendor: 'Vendor',
