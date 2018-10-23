@@ -121,7 +121,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         try:
             self.logger.debug("Connecting to vNSFO: {}".format(url))
-            r = requests.delete(url, headers=headers)
+            r = requests.delete(url, headers=headers, verify=False)
 
             if not r.status_code == http_utils.HTTP_200_OK:
                 self.logger.error("Couldn't terminate network service with instance id '%s'", instance_id)

@@ -104,8 +104,9 @@ class NssInventoryHooks:
                 logger.error("FAILED instantiation of network service '{}'".format(ns_name))
                 message = r.text if r.text else r.json() if r.json() else None
                 abort(make_response(jsonify(**{"_status": "ERR", "_error":
-                                    {"code": r.status_code, "message":
-                                        "Instantiation failed. vNSFO replied: {}".format(message)}}), r.status_code))
+                                    {"code": http_utils.HTTP_504_TIMEOUT, "message":
+                                        "Instantiation failed. vNSFO replied: {}".format(message)}}),
+                                    http_utils.HTTP_504_TIMEOUT))
                 return
 
             r = r.json()
@@ -160,8 +161,9 @@ class NssInventoryHooks:
             if not r:
                 logger.error("FAILED termination of network service instance id '{}'".format(instance_id))
                 abort(make_response(jsonify(**{"_status": "ERR", "_error":
-                                    {"code": r.status_code, "message":
-                                        "Instantiation failed. vNSFO replied: {}".format(r.text)}}), r.status_code))
+                                    {"code": http_utils.HTTP_504_TIMEOUT, "message":
+                                        "Instantiation failed. vNSFO replied: {}".format(r.text)}}),
+                                    http_utils.HTTP_504_TIMEOUT))
                 return
             r = r.json()
             updates['status'] = "available"
