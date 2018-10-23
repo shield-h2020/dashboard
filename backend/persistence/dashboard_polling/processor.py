@@ -67,7 +67,16 @@ class VNSFONSInstanceProcessor(Processor):
                 running_status = data['ns'][0]['operational_status']
 
         self.logger.debug(f"NS instance '{instance_id }' ready")
-        vnsf_instances = list([vnf['vnf_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
+
+        vnsf_instances = list()
+        for vnf_instance in data['ns'][0]['constituent_vnf_instances']:
+            vnfr_id = vnf_instance['vnfr_id']
+            vnsf_instances.append(vnfr_id)
+
+        # vnsf_instances = list([vnf['vnfr_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
+        # print(data['ns'][0]['constituent_vnf_instances'])
+
+        self.logger.debug("vNSF Instances running: {}".format(vnsf_instances))
 
         # if not vnsf_instances:
         #     # TODO: raise exception
@@ -84,6 +93,8 @@ class VNSFONSInstanceProcessor(Processor):
                 "ns_name": data['ns'][0]['ns_name']
             }
         }
+
+        self.logger.debug("About to submit message to Queue, topic: {}".format(item['routing_key']))
 
         item['producer'].submit_message(message, item['routing_key'])
         return True
