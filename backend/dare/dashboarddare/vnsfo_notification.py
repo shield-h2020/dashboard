@@ -150,14 +150,19 @@ class VNSFONotification(PipeProducer):
                     self.logger.debug("Couldn't create tenant <-> vNSF instances association: {}".format(post_json))
                     return
 
-            # if this tenant already has a record of association -> patch it and removing old vnsf instances
+            # if this tenant already has a record of association -> patch it and update with new vnsf instances
             elif r.status_code == 200:
                 r = r.json()
                 etag = r['_etag']
                 headers['If-Match'] = etag
+                updated_vnsf_instances = r['vnsf_instances']
+
+                for vnf_instance in vnsf_instances:
+                    if vnf_instance not in updated_vnsf_instances:
+                        updated_vnsf_instances.append(vnf_instance)
 
                 patch_json = {
-                    "vnsf_instances": vnsf_instances
+                    "vnsf_instances": updated_vnsf_instances
                 }
 
                 r = requests.patch(url, headers=headers, json=patch_json, verify=False)
