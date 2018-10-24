@@ -34,6 +34,11 @@ export const HomeComponent = {
       this.tmAdminSocketAtmp = 0;
       this.vnsfSocketAtmp = 0;
       this.incidentsSocketAtmp = 0;
+      this.incidentsfSocket;
+      this.vnsfSocket;
+      this.tmAdminSocket;
+      this.tmSocket;
+
     }
 
     $onInit() {
@@ -63,10 +68,28 @@ export const HomeComponent = {
       });
     }
 
+    $onDestroy() {
+      if (this.userdata.roles.find(r => r.name === TENANT_ADMIN || r.name === TENANT_USER)) {
+        this.incidentsSocketAtmp = 3;
+        this.incidentsfSocket.close();
+
+        this.vnsfSocketAtmp=3;
+        this.vnsfSocket.close();
+
+        this.tmSocketAtmp=3;
+        this.tmSocket.close();
+
+      }
+      else{
+        this.tmAdminSocketAtmp=3;
+        this.tmAdminSocket.close();
+      }
+    }
+
     initIncidentSocket(){
-      var incidentsfSocket = this.incidentsService.connectIncidentSocket(this.userdata.user.domain.id);
-      incidentsfSocket.onopen = (e) => {this.incidentsSocketAtmp = 0;};
-      incidentsfSocket.onmessage = (message) => {
+      this.incidentsfSocket = this.incidentsService.connectIncidentSocket(this.userdata.user.domain.id);
+      this.incidentsfSocket.onopen = (e) => {this.incidentsSocketAtmp = 0;};
+      this.incidentsfSocket.onmessage = (message) => {
         const data = JSON.parse(message.data);
         const { attack } = data;
         this.toast.info(`Type of attack: ${attack}`, 'A new security incident was detected', {
@@ -75,7 +98,7 @@ export const HomeComponent = {
           closeButton: true,
         });
       };
-      incidentsfSocket.onclose = (e) => {
+      this.incidentsfSocket.onclose = (e) => {
         if(this.incidentsSocketAtmp < 3) {
           this.incidentsSocketAtmp++;
           setTimeout(this.initIncidentSocket(), 1000);
@@ -84,9 +107,9 @@ export const HomeComponent = {
     }
 
     initVNSFSocket() {
-      var vnsfSocket = this.vnsfNotificationService.connectNotificationsSocket(this.userdata.user.domain.id);
-      vnsfSocket.onopen = (e) => {this.vnsfSocketAtmp = 0;};
-      vnsfSocket.onmessage = (message) => {
+      this.vnsfSocket = this.vnsfNotificationService.connectNotificationsSocket(this.userdata.user.domain.id);
+      this.vnsfSocket.onopen = (e) => {this.vnsfSocketAtmp = 0;};
+      this.vnsfSocket.onmessage = (message) => {
         //console.log("Broadcasting");
         const data = JSON.parse(message.data);
         this.toast.info(templateNotification(data), data.event.classification, {
@@ -95,7 +118,7 @@ export const HomeComponent = {
         });
         this.scope.$broadcast('VNSF_UPDATE_BROADCAST');
       };
-      vnsfSocket.onclose = (e) => {
+      this.vnsfSocket.onclose = (e) => {
         if(this.vnsfSocketAtmp < 3) {
           this.vnsfSocketAtmp++;
           setTimeout(this.initVNSFSocket(), 1000);
@@ -104,9 +127,9 @@ export const HomeComponent = {
     }
 
     initTMAdminSocket(){
-      var tmAdminSocket = this.vnsfNotificationService.connectTMAdminNotificationsSocket();
-      tmAdminSocket.onopen = (e) => {this.tmAdminSocketAtmp = 0;};
-      tmAdminSocket.onmessage = (message) => {
+      this.tmAdminSocket = this.vnsfNotificationService.connectTMAdminNotificationsSocket();
+      this.tmAdminSocket.onopen = (e) => {this.tmAdminSocketAtmp = 0;};
+      this.tmAdminSocket.onmessage = (message) => {
         this.toast.info(message.data, 'TM Notification', {
           onTap: () => {this.state.go('attestation', { prevRoute: this.state.current.name })},
           onShown: () => {this.scope.$broadcast('ATTESTATION_UPDATE_DATA');},
@@ -115,7 +138,7 @@ export const HomeComponent = {
         
         this.scope.$broadcast('TM_UPDATE_BROADCAST');
       };
-      tmAdminSocket.onclose = (e) => {
+      this.tmAdminSocket.onclose = (e) => {
         if(this.tmAdminSocketAtmp < 3) {
           this.tmAdminSocketAtmp++;
           setTimeout(this.initTMAdminSocket(), 1000);
@@ -125,9 +148,9 @@ export const HomeComponent = {
 
     initTMSocket() {
 
-      var tmSocket = this.vnsfNotificationService.connectTMNotificationsSocket(this.userdata.user.domain.id);
-      tmSocket.onopen = (e) => {this.tmSocketAtmp = 0;};
-      tmSocket.onmessage = (message) => {
+      this.tmSocket = this.vnsfNotificationService.connectTMNotificationsSocket(this.userdata.user.domain.id);
+      this.tmSocket.onopen = (e) => {this.tmSocketAtmp = 0;};
+      this.tmSocket.onmessage = (message) => {
         this.toast.info(message.data, 'TM Notification', {
           onTap: () => {this.state.go('attestation', { prevRoute: this.state.current.name })},
           onShown: () => {this.scope.$broadcast('ATTESTATION_UPDATE_DATA');},
@@ -136,7 +159,7 @@ export const HomeComponent = {
         
         this.scope.$broadcast('TM_UPDATE_BROADCAST');
       };
-      tmSocket.onclose = (e) => {
+      this.tmSocket.onclose = (e) => {
         if(this.tmSocketAtmp < 3) {
           this.tmSocketAtmp++;
           setTimeout(this.initTMSocket(), 1000);
