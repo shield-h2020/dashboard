@@ -45,7 +45,7 @@
   <div sn-modal title-modal="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
     <article>
       {{::$ctrl.viewStrings.confirmDelete}}
-      <span class="delete-modal--target">{{$ctrl.currVnsf._id}}</span>?
+      <span class="delete-modal--target">{{$ctrl.currVnsf.vnsf_id}}</span> ({{$ctrl.currVnsf._id}})?
     </article>
     <footer class="inset-ss text-right">
       <button class="sn-button inline-ss" ng-click="$ctrl.toggleDeleteModal()">{{::$ctrl.viewStrings.cancelButton}}</button>

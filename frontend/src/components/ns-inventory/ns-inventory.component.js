@@ -11,7 +11,7 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   capabilities: "Capabilities",
-  _created: "Instantiated",
+  // _created: "Instantiated",
   status: "Status",
   actions: "Actions"
 };
@@ -83,6 +83,7 @@ export const InventoryComponent = {
       this.modalOpen = false;
       this.buttonClicked = false;
       this.nsSocketAtmp = 0;
+      this.nsinventorySocket;
     }
 
     $onInit() {
@@ -95,14 +96,19 @@ export const InventoryComponent = {
       this.getData();
     }
 
+    $onDestroy(){
+      this.nsSocketAtmp=3;
+      this.nsinventorySocket.close();
+    }
+
     initNsinventorySocket() {
-      var nsinventorySocket = this.inventoryService.connectNSInventorySocket(
+      this.nsinventorySocket = this.inventoryService.connectNSInventorySocket(
         this.authService.getTenant()
       );
-      nsinventorySocket.onopen = e => {
+      this.nsinventorySocket.onopen = e => {
         this.nsSocketAtmp = 0;
       };
-      nsinventorySocket.onmessage = message => {
+      this.nsinventorySocket.onmessage = message => {
         const data = JSON.parse(message.data);
         if (data.result == "success") {
           this.toast.info(data.ns_name + " is up and running", {
@@ -120,7 +126,7 @@ export const InventoryComponent = {
           });
         }
       };
-      nsinventorySocket.onclose = e => {
+      this.nsinventorySocket.onclose = e => {
         if (this.nsSocketAtmp < 3) {
           this.nsSocketAtmp++;
           setTimeout(this.initNsinventorySocket(), 1000);
@@ -139,7 +145,6 @@ export const InventoryComponent = {
           this.filters
         )
         .then(items => {
-          console.log(items);
           this.items = items.filter(it => it).map(item => {
             var selectedActions = [];
             // item.status = "running";
