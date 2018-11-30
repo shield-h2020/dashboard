@@ -49,6 +49,27 @@ MSGQ_DARE = os.environ.get('MSGQ_DARE', '__no_DARE_queue_set__')
 MSGQ_DARE_ACK = bool(os.environ.get('MSGQ_DARE_ACK', False))
 MSGQ_DARE_TOPIC = os.environ.get('MSGQ_DARE_TOPIC', 'shield.dare.policy')
 
+# vNSFO message queue settings
+MSGQ_VNSFO = os.environ.get('MSGQ_VNSFO', '__no_VNSFO_queue_set__')
+MSGQ_VNSFO_ACK = bool(os.environ.get('MSGQ_VNSFO_ACK', False))
+MSGQ_VNSFO_TOPIC = os.environ.get('MSGQ_VNSFO_TOPIC', 'shield.notifications.vnsfo')
+
+# VNSF message queue settings
+MSGQ_VNSF = os.environ.get('MSGQ_VNSF', '__no_VNSF_queue_set__')
+MSGQ_VNSF_ACK = bool(os.environ.get('MSGQ_VNSF_ACK', False))
+MSGQ_VNSF_TOPIC = os.environ.get('MSGQ_VNSF_TOPIC', 'shield.notifications.vnsf')
+
+# Trust Monitor message queue settings
+MSGQ_TM = os.environ.get('MSGQ_TM', "__no_TM_queue_set__")
+MSGQ_TM_ACK = bool(os.environ.get('MSGQ_TM_ACT', False))
+MSGQ_TM_TOPIC = os.environ.get('MSGQ_TM_TOPIC', 'shield.notifications.tm')
+
+# CSV attack message queue settings
+MSGQ_ATTACK = os.environ.get('MSGQ_ATTACK', '__no_CSV_queue_set__')
+MSGQ_ATTACK_ACK = bool(os.environ.get('MSGQ_ATTACK_ACK', True))
+MSGQ_ATTACK_TOPIC = os.environ.get('MSGQ_ATTACK_TOPIC', 'shield.notifications.csv')
+
+
 ###
 #   Websocket
 ###
@@ -65,18 +86,173 @@ BACKENDAPI_HOST = os.environ.get('BACKENDAPI_HOST', 'localhost')
 BACKENDAPI_PORT = os.environ.get('BACKENDAPI_PORT', 3030)
 BACKENDAPI_URL = '{}://{}:{}'.format(BACKENDAPI_PROTOCOL, BACKENDAPI_HOST, BACKENDAPI_PORT)
 
+
+###
+#   vNSFO API
+#
+VNSFOAPI_PROTOCOL = os.environ.get('VNSFO_PROTOCOL', 'None')
+VNSFOAPI_HOST = os.environ.get('VNSFO_HOST', None)
+VNSFOAPI_PORT = os.environ.get('VNSFO_PORT', None)
+
+
 __policy_rest__ = {
     'persist_policy': {
-        'url': '{}/{}'.format(BACKENDAPI_URL, 'admin/policies'),
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'admin/policies'),
         'headers': {'Content-Type': 'application/json'}
+        }
     }
-}
 
 POLICYAPI_PERSIST_URL = __policy_rest__['persist_policy']['url']
 POLICYAPI_PERSIST_HEADERS = __policy_rest__['persist_policy']['headers']
 
 ###
-#   Policy schema
+#   Notification persistence
+###
+
+__vnsf_notification_rest__ = {
+    'persist_notification': {
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'admin/notifications'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+NOTIFICATION_API_PERSIST_URL = __vnsf_notification_rest__['persist_notification']['url']
+NOTIFICATION_API_PERSIST_HEADERS = __vnsf_notification_rest__['persist_notification']['headers']
+
+###
+#  vNSFO Notification persistence
+###
+
+__vnsfo_notification_rest__ = {
+    'persist_vnsfo_notification': {
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'admin/vnsfo/notifications'),
+        'headers': {'Content-Type': 'application/json'}
+        },
+    'inventory_nss': {
+        'url':     '{}/{}'.format(BACKENDAPI_URL, 'inventory/nss'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+VNSFO_NOTIFICATION_API_PERSIST_HOST_URL = __vnsfo_notification_rest__['persist_vnsfo_notification']['url']
+VNSFO_NOTIFICATION_API_PERSIST_HOST_HEADERS = __vnsfo_notification_rest__['persist_vnsfo_notification']['headers']
+VNSFO_NOTIFICATION_API_INVENTORY_NSS_URL = __vnsfo_notification_rest__['inventory_nss']['url']
+VNSFO_NOTIFICATION_API_INVENTORY_NSS_HEADERS = __vnsfo_notification_rest__['inventory_nss']['headers']
+
+###
+#  Trusted Monitor Notification persistence
+###
+
+__tm_notification_rest__ = {
+    'persist_host_notification': {
+        'url':     f'{BACKENDAPI_URL}/admin/tm/notifications',
+        'headers': {'Content-Type': 'application/json'}
+        },
+    'persist_vnsf_notification': {
+        'url': f'{BACKENDAPI_URL}/admin/tm/vnsf/notifications',
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+TM_NOTIFICATION_API_PERSIST_HOST_URL = __tm_notification_rest__['persist_host_notification']['url']
+TM_NOTIFICATION_API_PERSIST_HOST_HEADERS = __tm_notification_rest__['persist_host_notification']['headers']
+TM_NOTIFICATION_API_PERSIST_VNSF_URL = __tm_notification_rest__['persist_vnsf_notification']['url']
+TM_NOTIFICATION_API_PERSIST_VNSF_HEADERS = __tm_notification_rest__['persist_vnsf_notification']['headers']
+
+###
+#   Association Tenant IP
+###
+
+TENANT_IP_PROTOCOL = os.environ.get('TENANT_IP_PROTOCOL', None)
+TENANT_IP_HOST = os.environ.get('TENANT_IP_HOST', 'localhost')
+TENANT_IP_PORT = os.environ.get('TENANT_IP_PORT', -1)
+TENANT_IP_URL = '{}://{}:{}'.format(TENANT_IP_PROTOCOL, TENANT_IP_HOST, TENANT_IP_PORT)
+
+__association_rest__ = {
+    'association': {
+        'url':     '{}/{}'.format(TENANT_IP_URL, 'tenant_ips'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+ASSOCIATION_API_URL = __association_rest__['association']['url']
+ASSOCIATION_API_HEADERS = __association_rest__['association']['headers']
+
+###
+#   Tenant Endpoint
+###
+__tenant_rest__ = {
+    'tenant': {
+        'url':     '{}/{}/{}'.format(TENANT_IP_URL, 'catalogue/tenants', {}),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+TENANT_API_URL = __tenant_rest__['tenant']['url']
+TENANT_API_HEADERS = __tenant_rest__['tenant']['headers']
+
+
+###
+#   Association vNSF Instance
+###
+VNSF_INSTANCE_PROTOCOL = os.environ.get('TENANT_IP_PROTOCOL', None)
+VNSF_INSTANCE_HOST = os.environ.get('TENANT_IP_HOST', 'localhost')
+VNSF_INSTANCE_PORT = os.environ.get('TENANT_IP_PORT', -1)
+VNSF_INSTANCE_URL = '{}://{}:{}'.format(VNSF_INSTANCE_PROTOCOL, VNSF_INSTANCE_HOST, VNSF_INSTANCE_PORT)
+
+__mspl_association_rest__ = {
+    'mspl_association': {
+        'url':     '{}/{}'.format(VNSF_INSTANCE_URL, 'tenant_vnsfs'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+MSPL_ASSOCIATION_API_URL = __mspl_association_rest__['mspl_association']['url']
+MSPL_ASSOCIATION_API_HEADERS = __mspl_association_rest__['mspl_association']['headers']
+
+__tm_association_rest__ = {
+    'tm_association': {
+        'url':     '{}/{}'.format(VNSF_INSTANCE_URL, 'tenant_vnsfs'),
+        'headers': {'Content-Type': 'application/json'}
+        }
+    }
+
+TM_ASSOCIATION_API_URL = __tm_association_rest__['tm_association']['url']
+TM_ASSOCIATION_API_HEADERS = __tm_association_rest__['tm_association']['headers']
+
+TM_ATTESTATION_MESSAGE = 'New attestation data available'
+
+
+###
+#   Tenant <-> vNSF Instances Association
+###
+__tenant_vnsf_instance_association_rest__ = {
+    'tenant_vnsf_instance_association': {
+        'url':      '{}/{}'.format(BACKENDAPI_URL, 'tenant_vnsfs'),
+        'headers': {'Content-Type': 'application/json'}
+    }
+}
+
+TENANT_VNSF_INSTANCE_ASSOCIATION_URL = __tenant_vnsf_instance_association_rest__['tenant_vnsf_instance_association']['url']
+TENANT_VNSF_INSTANCE_ASSOCIATION_HEADERS = __tenant_vnsf_instance_association_rest__['tenant_vnsf_instance_association']['headers']
+
+
+
+###
+#   Schemas
 ###
 
 POLICYSCHEMA_FILE = 'schema/mspl.xsd'
+
+###
+# InfluxDB variables
+###
+
+INFLUXDB_PROTOCOL = os.environ.get('INFLUXDB_PROTOCOL', 'http')
+INFLUXDB_HOST = os.environ.get('INFLUXDB_HOST', 'influx-persistence')
+INFLUXDB_PORT = os.environ.get('INFLUXDB_PORT', 8086)
+INFLUXDB_USER = os.environ.get('INFLUXDB_USER', '')
+INFLUXDB_USER_PASSWORD = os.environ.get('INFLUXDB_USER_PASSWORD', '')
+INFLUXDB_DB = os.environ.get('INFLUXDB_DB', '')
+INFLUXDB_URL = f'{INFLUXDB_PROTOCOL}://{INFLUXDB_HOST}:{INFLUXDB_PORT}/write?db={INFLUXDB_DB}'
+INFLUXDB_BATCH_SIZE = 7500
+INFLUXDB_REQUEST_TIMEOUT = 10

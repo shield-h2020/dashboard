@@ -29,7 +29,7 @@ import threading
 import websocket
 
 
-class ReceiveOnlySocketClient:
+class SendOnlySocketClient:
     """
     Creates a receive-only socket which conveys the data received to a callback function.
 

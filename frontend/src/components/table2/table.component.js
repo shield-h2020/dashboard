@@ -13,6 +13,7 @@ export const TableComponent = {
       this.styles = styles;
       this.strings = {
         loading: 'Loading data, please wait…',
+        noData: 'No data to display',
       };
     }
 

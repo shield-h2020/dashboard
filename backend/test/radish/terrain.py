@@ -35,8 +35,10 @@ def setup(features, marker):
     world.my_context = dict()
     world.my_context['msgq_connection'] = None
     world.my_context['msgq_channel'] = None
-    world.my_context['socket'] = None
+    world.my_context['socket'] = dict()
     world.my_context['socket_output_file'] = tempfile.NamedTemporaryFile(delete=False).name
+    #world.my_context['socket_output_file_2'] = tempfile.NamedTemporaryFile(delete=False).name
+
 
 
 @before.each_scenario
@@ -59,7 +61,8 @@ def cleanup(features, marker):
         world.my_context['msgq_connection'].close()
 
     if world.my_context['socket'] is not None:
-        world.my_context['socket'].close()
+        for tenant in world.my_context['socket'].keys():
+            world.my_context['socket'][tenant].close()
 
     if os.path.isfile(world.my_context['socket_output_file']):
         os.remove(world.my_context['socket_output_file'])

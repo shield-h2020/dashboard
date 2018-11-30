@@ -10,16 +10,20 @@ import { TableModule } from './table/table.module';
 import { UtilitiesModule } from './utilities/utilities.module';
 import { JsonViewerModule } from './json-viewer/json-viewer.module';
 import { IncidentsModule } from './incidents/incidents.module';
-import { VNSFModule } from './vnsfs/vnsf.module';
+import { VNSFCatalogueModule } from './vnsfs-catalogue/vnsfs-catalogue.module';
 import { ModalModule } from './modal2/modal.module';
-import { NSModule } from './nss/ns.module';
 import { FooterModule } from './footer/footer.module';
 import { UsersModule } from './users/users.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { AttestationModule } from './attestation/attestation.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
-import { InventoryModule } from './inventory/inventory.module';
+import { NsInventoryModule } from './ns-inventory/ns-inventory.module';
+import { VnsfNotificationsModule } from './vnsf-notifications/vnsf-notifications.module';
+
 import Table2Module from './table2/table.module';
+import TableCustomActionsModule from './table-custom-actions/table-custom-actions.module';
 
 export const ComponentsModule = angular.module('root.components', [
   MenuModule,
@@ -33,16 +37,19 @@ export const ComponentsModule = angular.module('root.components', [
   UtilitiesModule,
   JsonViewerModule,
   IncidentsModule,
-  VNSFModule,
+  VNSFCatalogueModule,
   ModalModule,
-  NSModule,
   FooterModule,
   UsersModule,
+  DashboardModule,
+  AttestationModule,
   TenantsModule,
   Table2Module,
+  TableCustomActionsModule,
   CatalogueModule,
   OnboardValidationModule,
-  InventoryModule,
+  NsInventoryModule,
+  VnsfNotificationsModule
 ])
   .name;
 

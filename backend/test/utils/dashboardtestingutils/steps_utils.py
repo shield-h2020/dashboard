@@ -24,10 +24,13 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
-import json
 
+import json
 import os
 import re
+from pprint import pprint
+from shutil import copyfile
+
 import requests
 from deepdiff import DeepDiff
 from radish import given, when, then, world
@@ -73,33 +76,38 @@ def set_http_response(step, r):
     http_headers_to_send = dict()
 
 
-def http_get(step, url):
-    r = requests.get(url, headers=http_headers_to_send)
+def http_get(step, url, **kwargs):
+    r = requests.get(url, headers=http_headers_to_send, **kwargs)
     set_http_response(step, r)
 
 
-def http_post(step, url, data):
-    r = requests.post(url, headers=http_headers_to_send, data=data)
+def http_post(step, url, data, **kwargs):
+    r = requests.post(url, headers=http_headers_to_send, data=data, **kwargs)
     set_http_response(step, r)
 
 
-def http_post_json(step, url, data):
-    r = requests.post(url, headers=http_headers_to_send, json=data)
+def http_post_json(step, url, data={}, **kwargs):
+    r = requests.post(url, headers=http_headers_to_send, json=data, **kwargs)
     set_http_response(step, r)
 
 
-def http_post_file(step, url, files):
-    r = requests.post(url, headers=http_headers_to_send, files=files)
+def http_post_file(step, url, files, data={}, **kwargs):
+    r = requests.post(url, headers=http_headers_to_send, data=data, files=files, **kwargs)
     set_http_response(step, r)
 
 
-def http_patch_json(step, url, data):
-    r = requests.patch(url, headers=http_headers_to_send, json=data)
+def http_patch_json(step, url, data, **kwargs):
+    r = requests.patch(url, headers=http_headers_to_send, json=data, **kwargs)
     set_http_response(step, r)
 
 
-def http_delete(step, url, headers):
-    r = requests.delete(url, headers=headers)
+def http_put_json(step, url, data, **kwargs):
+    r = requests.put(url, headers=http_headers_to_send, json=data, **kwargs)
+    set_http_response(step, r)
+
+
+def http_delete(step, url, **kwargs):
+    r = requests.delete(url, headers=http_headers_to_send, **kwargs)
     set_http_response(step, r)
 
 
@@ -149,7 +157,7 @@ def matches_json(actual_data, expected_info):
         # 'ignore' always precedes expected data, otherwise the schema is wrong.
         if 'expected' not in expected_info:
             raise KeyError(
-                "Expected data schema missing 'expected' key in: " + expected_info)
+                    "Expected data schema missing 'expected' key in: " + expected_info)
 
         expected_data = expected_info['expected']
         ignore = expected_info['ignore']
@@ -160,6 +168,17 @@ def matches_json(actual_data, expected_info):
     # similar objects when ignoring order' (https://github.com/seperman/deepdiff/issues/29).
     diffs = DeepDiff(actual_data, expected_data, exclude_paths=ignore)
     assert diffs == {}, diffs
+
+
+@given(re.compile(u'I am logged in as (.*)'))
+def set_role(step, role):
+    """
+    :param step:
+    :param role:
+    :return:
+    """
+
+    set_http_headers(step, {'Authorization': 'Basic YWRtaW46cGFzcw=='})
 
 
 @then(re.compile(u'I expect the JSON response to be as in (.*)'))
@@ -183,7 +202,7 @@ def expected_status_code(step, code):
     :param code: the expected HTTP status code
     """
     assert step.context.api['response']['status'] == code, 'status code: {}\n and message: {}'.format(str(
-        step.context.api['response']['status']), step.context.api['response']['text'])
+            step.context.api['response']['status']), step.context.api['response']['text'])
 
 
 @given(re.compile(u'I mock the vNSFO response with (.*)'))
@@ -197,3 +216,46 @@ def set_vnsfo_mock_response(step, file):
     """
 
     step.context.mock_vnsfo['response_file'] = file
+
+
+@given(re.compile(u'I mock the association response with (.*)'))
+def set_association_mock_response(step, file):
+    """
+    Defines the response to be sent by the mock Association IP tenant.
+
+    :param step: the test step context data
+    :param file: the file where the mock data lives. It is assumed that the file base path is the mock-vNSFO-data
+    folder defined in the testing environment settings.
+    """
+
+    # Set proper association response.
+    endpoint = os.path.dirname(file)
+    dest_file = os.path.join(world.env['mock']['tenant_ip_folder'], endpoint, 'index.get.json')
+    dest_path = os.path.dirname(dest_file)
+    if not os.path.exists(dest_path):
+        os.makedirs(dest_path, exist_ok=True)
+
+    src_file = os.path.join(world.env['mock']['tenant_ip_data'], file)
+    assert os.path.isfile(src_file)
+    copyfile(src_file, dest_file)
+
+@given(re.compile(u'I mock the vNSF association response with (.*)'))
+def set_association_mock_response(step, file):
+    """
+    Defines the response to be sent by the mock Association IP tenant.
+
+    :param step: the test step context data
+    :param file: the file where the mock data lives. It is assumed that the file base path is the mock-vNSFO-data
+    folder defined in the testing environment settings.
+    """
+
+    # Set proper association response.
+    endpoint = os.path.dirname(file)
+    dest_file = os.path.join(world.env['mock']['tenant_vnsf_folder'], endpoint, 'index.get.json')
+    dest_path = os.path.dirname(dest_file)
+    if not os.path.exists(dest_path):
+        os.makedirs(dest_path, exist_ok=True)
+
+    src_file = os.path.join(world.env['mock']['tenant_vnsf_data'], file)
+    assert os.path.isfile(src_file)
+    copyfile(src_file, dest_file)

@@ -2,7 +2,7 @@ import angular from 'angular';
 import toastr from 'angular-toastr';
 import uiRouter from '@uirouter/angularjs';
 import { AuthService } from './services/auth.service';
-import { DataService } from './services/data.service';
+import { ErrorHandleService } from './services/error-handle.service';
 import { AppComponent, appAbsState, homeState } from './app.component';
 import { ComponentsModule } from 'components/components.module';
 import { INTERNAL_ERROR_MODAL_EVENT } from 'components/modal-box/internal-error/internal-error.component';
@@ -19,7 +19,7 @@ export const AppModule = angular
     ])
     .component('root', AppComponent)
     .service('AuthService', AuthService)
-    .service('DataService', DataService)
+    .service('ErrorHandleService', ErrorHandleService)
     .config(($stateProvider, $urlServiceProvider) => {
       'ngInject';
 
@@ -39,7 +39,7 @@ export const AppModule = angular
         return {
           responseError(response) {
             if (response.status === 401) {
-              $state.go('login');
+              $state.go('login', { prevRoute: $state.current.name });
             } else if (response.data && response.data.code === '205') {
               $rootScope.$broadcast(INTERNAL_ERROR_MODAL_EVENT.CAST.OPEN, response.data);
             }

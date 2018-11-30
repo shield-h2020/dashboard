@@ -1,0 +1,11 @@
+{
+  "type": "ns_instance",
+  "data": {
+      "instance_id": "59c17893-f41b-46a7-9646-de0a94db75d8",
+      "operational_status": "running",
+      "vnsf_instances": [
+        "93856v9i3y5i8y",
+        "04wtuweoçrpiuo"
+      ]
+    }
+}

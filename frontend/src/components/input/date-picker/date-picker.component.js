@@ -33,7 +33,7 @@ export const DatePickerComponent = {
     $onInit() {
       if (this.currentDate) {
         this.selectedDate = new Date(this.currentDate);
-        // format(this.currentDate, this.dateFormat || 'short');
+        this.showDate = format(this.selectedDate, this.dateFormat || 'YYYY-MM-DD HH:mm');
       }
 
       const today = new Date();
@@ -44,6 +44,7 @@ export const DatePickerComponent = {
         const hour = this.hour || this.hour === 0 ? this.hour : today.getHours();
         const minute = this.minute || this.minute === 0 ? this.minute : today.getMinutes();
         this.selectedDate = new Date(year, month, day, hour, minute, 0);
+        this.showDate = format(this.selectedDate, this.dateFormat || 'YYYY-MM-DD HH:mm');
       }
       this.inputHour = this.selectedDate.getHours();
       this.inputMinute = this.selectedDate.getMinutes();
@@ -71,6 +72,7 @@ export const DatePickerComponent = {
     updateDate(day) {
       this.selectedDate = new Date(this.mv.year,
         this.mv.month, day || this.selectedDate.getDate(), this.inputHour, this.inputMinute);
+      this.showDate = format(this.selectedDate, this.dateFormat || 'YYYY-MM-DD HH:mm');
       this.selectedDay = this.selectedDate.getDate();
       let dateValue;
       if (this.currentDate) {

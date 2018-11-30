@@ -29,15 +29,11 @@ export const ModalComponent = {
     }
 
     $onInit() {
-      this.transclude(this.scope, (clone) => { this.element.find('article').append(clone); });
+      this.transclude(this.scope, (clone) => { this.element.find('section').append(clone); });
     }
 
     toggleModal() {
       this.modalHandler({ $event: { value: !this.modalOpen } });
-    }
-
-    prettyJSON(obj) {
-      return JSON.stringify(obj, null, 2);
     }
   },
 

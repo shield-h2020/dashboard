@@ -3,7 +3,7 @@ import styles from './modal.scss';
 const TEMPLATE = `<div class="{{::styles.modal}} {{::styles['modal--hidden']}}">
 <div class="{{::styles.background}}"></div>
 <div class="{{::styles.container}} {{::styles.modal}}">
-    <header class="{{::styles.header}}">{{title}}</header>
+    <header class="{{::styles.header}}">{{titleModal}}</header>
     <div class="{{::styles.content}}" ng-transclude="content"></div>
     <div class="{{::styles.footer}}" ng-transclude="buttons"></div>
 </div>
@@ -19,7 +19,7 @@ export const ModalDirective = () => {
       buttons: 'footer',
     },
     scope: {
-      title: '<',
+      titleModal: '<',
       open: '<',
     },
     replace: true,
@@ -27,7 +27,6 @@ export const ModalDirective = () => {
     link(scope, element) {
       scope.styles = styles;
       scope.$watch('open', (newVal) => {
-        console.log(newVal)
         if (newVal) {
           element.removeClass(scope.styles['modal--hidden']);
         } else {

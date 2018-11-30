@@ -1,0 +1,7 @@
+{
+  "name": "shield.client-a.user",
+  "password": "pass",
+  "description": "Tenant A user",
+  "email": "jdoe@example.com",
+  "group_code": "shield-client-users"
+}

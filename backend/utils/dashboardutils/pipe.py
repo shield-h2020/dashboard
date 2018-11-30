@@ -98,9 +98,12 @@ class PipeProducer(metaclass=ABCMeta):
         self.logger.debug('Subscriber removed: {}'.format(type(subscriber).__name__))
 
     def notify_all(self, data):
+        self.notify_by_tenant(data, None)
+
+    def notify_by_tenant(self, data, tenant):
         for subscriber in self.subscribers:
             self.logger.debug('Notify {}'.format(type(subscriber).__name__))
-            subscriber.update(data)
+            subscriber.update(data, tenant=tenant)
 
     @abstractmethod
     def setup(self):
@@ -142,7 +145,7 @@ class PipeConsumer(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def update(self, data):
+    def update(self, data, **kwargs):
         """
         Defines the method to use as a notification by the producer (to the consumer) whenever a new event is
         available.The implementation details are extended-class specific.

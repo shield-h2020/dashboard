@@ -6,7 +6,7 @@
     </header>
     <sn-table
       config="$ctrl.tableConf"
-      item-source="$ctrl.tableSource(pagination, filters)"
+      item-source="$ctrl.tableSource"
       actions-callback="$ctrl.onAction($event.value.item, $event.value.action)"
       actions="['recommendation']"
       needs-refresh="$ctrl.refreshTable"
@@ -15,5 +15,5 @@
       filter-inputs="$ctrl.strings.filters"
     ></sn-table>
   </div>
-  <incidents-modal incident="$ctrl.currentIncident" is-open="$ctrl.modalOpen" close-handler="$ctrl.modalCloseHandler()"/>
+  <!-- <incidents-modal incident="$ctrl.currentIncident" is-open="$ctrl.modalOpen" close-handler="$ctrl.modalCloseHandler()"/> -->
 </section>

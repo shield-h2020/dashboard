@@ -1,0 +1,17 @@
+<div sn-modal title-modal="$ctrl.viewStrings.title" open="$ctrl.open">
+  <article>
+    <div class="stack-ss {{::$ctrl.styles['event-entry']}}" ng-repeat="(key, val) in $ctrl.data">
+      <span class="{{::$ctrl.styles['event-entry__title']}}">{{ $ctrl.viewStrings[key] }}</span>
+      <span>{{ val }}</span>
+    </div>
+  </article>
+  <article>
+    <div class="{{::$ctrl.styles['event-entry__title']}}">Extra Info: </div>
+    <pre>
+      {{ $ctrl.extrainfo | json}}
+    </pre>
+  </article>
+  <footer style="text-align: end;">
+    <button ng-click="$ctrl.toggleModal()" class="sn-button sn-button--primary">{{$ctrl.viewStrings.close}}</button>
+  </footer>
+</div>

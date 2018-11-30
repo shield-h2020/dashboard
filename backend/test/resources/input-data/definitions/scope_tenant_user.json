@@ -1,0 +1,5 @@
+{
+  "name": "SecaaS Client User",
+  "code": "shield_scope_tenant_user",
+  "description": "User associated with a Client for SHIELD services"
+}

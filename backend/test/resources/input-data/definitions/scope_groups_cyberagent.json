@@ -1,0 +1,6 @@
+{
+  "name": "Cyber Agents Scope",
+  "code": "shield_scope_group_cyberagents",
+  "scope_code": "shield_scope_cyberagent",
+  "groups": ["shield-cyberagents"]
+}

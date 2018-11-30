@@ -1,0 +1,6 @@
+//! statusCode: 200
+{
+  "action": "delete",
+  "instance_id": "59c17893-f41b-46a7-9646-de0a94db75d8",
+  "result": "success"
+}

@@ -3,12 +3,14 @@
 * If a development build is made the HOST is given by variable replacement.
 * Else the HOST is read from the window's location.
 */
+
+//CURRENTLY ONLY USED BY VNSF-CATALOGUE SERVICE**********************
 const BACKEND_HOST = window.location.hostname;
 const ADDRESS = __API_URL__ || BACKEND_HOST;
 const SOCKET_URL = BACKEND_HOST;
 const STORE_URL = __API_STORE_HOST__;
 
-const baseUrl = `http://${'localhost'}`;
+const baseUrl = `http://${ADDRESS}`;
 const socketsUrl = `ws://${SOCKET_URL}`;
 const storeUrl = `http://${STORE_URL}`;
 
@@ -32,7 +34,7 @@ const strings = {
 const topologyEndpoint = '/topology/subscribe';
 
 export const APP_ADDRESSES = {
-  authAddress: `${baseUrl}:${13030}`,
+  authAddress: `${baseUrl}:${__API_PORT__}`,
   baseAddress: `${baseUrl}:${__API_PORT__}`,
   cataAddress: `${baseUrl}:${__API_PORT__}`,
   sockAddress: `${socketsUrl}:${__API_SOCKET_PORT__}`,

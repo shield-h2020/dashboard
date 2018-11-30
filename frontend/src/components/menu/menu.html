@@ -3,8 +3,8 @@
       <img src="~assets/images/shield-logo.svg" alt="">
   </div>
   <div class="{{::$ctrl.styles.section}}">
-      <span>{{$ctrl.user.user.domain.name}}</span>
-      <span ng-if="$ctrl.userRole">({{ $ctrl.userRole }})</span>
+      <p class="mb-0">{{$ctrl.user.user.domain.name}}</p>
+      <p class="mb-0" ng-if="$ctrl.userRole">({{ $ctrl.userRole }})</p>
   </div>
   <ul class="{{::$ctrl.styles.list}}">
     <li

@@ -1,0 +1,14 @@
+<section class="container">
+  <form>
+    <div class="drop-area">
+      <div class="icon glyphicon glyphicon-open-file"></div>
+      <div class="info">{{$ctrl.filename}}</div>
+      <div class="separator">or</div>
+      <label>
+        <input class="fileinput" type="file" />
+        <span>{{ $ctrl.files.length ? $ctrl.viewStrings.withFile : $ctrl.viewStrings.noFiles }}</span>
+      </label>
+    </div>
+  </form>
+  <div class="{{::$ctrl.styles.loading}}" ng-if="$ctrl.isLoading"><div class="animate--rotating-dark"></div>{{::$ctrl.viewStrings.loading}}</div>
+</section>

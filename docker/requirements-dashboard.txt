@@ -32,11 +32,13 @@ Eve==0.7.4
 Eve-Swagger==0.0.8
 Events==0.2.2
 Flask==0.12
+Flask-Cors==3.0.6
 Flask-PyMongo==0.5.1
 idna==2.5
 itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==0.23
+oslo.policy==1.33.1
 pymongo==3.4.0
 python3-pika==0.9.14
 PyYAML==3.12
@@ -45,3 +47,4 @@ simplejson==3.11.1
 urllib3==1.22
 Werkzeug==0.11.15
 xmlschema==0.9.13
+aiohttp==3.3.2

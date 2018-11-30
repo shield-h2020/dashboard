@@ -1,21 +1,21 @@
-import { APP_ADDRESSES } from '../strings/api-strings';
+import { AUTH_ADDRESS } from 'api/api-config';
 
 const AUTH_API = '/login';
 
 export class AuthService {
 
-  constructor($http, $window, $q, $state, DataService) {
+  constructor($http, $window, $q, $state) {
     'ngInject';
 
     this.http = $http;
     this.window = $window;
     this.q = $q;
     this.state = $state;
-    this.dataService = DataService;
   }
 
   login(username, password, scope) {
-    return this.http.post(APP_ADDRESSES.authAddress + AUTH_API, {}, {
+    console.log(AUTH_ADDRESS + AUTH_API);
+    return this.http.post(AUTH_ADDRESS + AUTH_API, {}, {
       headers: {
         Authorization: `Basic ${this.window.btoa(`${username}:${password}`)}`,
         'Shield-Authz-Scope': scope,
@@ -62,7 +62,7 @@ export class AuthService {
 
   isUserTenantAdmin() {
     const user = this.getSessionInfo();
-    return !!user.session.roles.find(r => r.name === 'shield_tenant_admin');
+    return !!user.session.roles.find(r => r.name === 'shield_client_admin');
   }
 
   getTenant() {

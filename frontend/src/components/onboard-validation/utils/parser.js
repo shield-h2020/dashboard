@@ -104,5 +104,18 @@ export function parseXML(string) {
   return promise;
 }
 
+export function syncParseXML(string) {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(string, 'text/xml');
+  const nodes = xmlGetNodes(xmlDoc);
+  const links = xmlGetLinks(xmlDoc);
+  const attributes = xmlGetAttributes(xmlDoc);
+
+  const jnodes = joinKeyDataNodes(nodes, attributes);
+  const jlinks = joinKeyDataLinks(links, attributes);
+
+  return { nodes: jnodes, links: jlinks };
+}
+
 
 export default parseXML;

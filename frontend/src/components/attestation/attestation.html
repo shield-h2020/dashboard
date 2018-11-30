@@ -1,0 +1,26 @@
+<section>
+    <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+
+    <div class="sn-card">
+        <header class="sn-card__header">
+            <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
+        </header>
+        <div class="row" ng-if="!$ctrl.authService.isUserTenantAdmin()">
+            <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
+                <label class="col-xl-2 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Type</label>
+                <select id="attestationType" ng-model="$ctrl.selected_type" ng-change="$ctrl.onTypeChange($ctrl.selected_type)"
+                    class="col-xl-10 col-lg-8 col-md-9 col-sm-9 filter_selects" ng-options="typeElement.type_id as typeElement.type_name for typeElement in $ctrl.typeList">
+                </select>
+            </div>
+        </div>
+        <div class="mediumdiv" ng-if="!$ctrl.authService.isUserTenantAdmin()"></div>
+        <s-table items="$ctrl.items" headers="$ctrl.tableHeaders" loading="$ctrl.loading"></s-table>
+        <div style="text-align: right; margin-top: 16px;" ng-if="$ctrl.items.length">
+            <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+            <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+            <span class="sn-table__footer">
+              Showing {{$ctrl.paging.min}} to {{$ctrl.paging.max}} of {{$ctrl.pagination.total}}
+            </span>
+          </div>
+    </div>
+</section>

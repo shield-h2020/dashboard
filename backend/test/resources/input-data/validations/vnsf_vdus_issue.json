@@ -1,0 +1,14 @@
+{
+  "result": {
+    "error_count": 1,
+    "warning_count": 1,
+    "issues": "[{\r\n      \"detail\": [{\r\n        \"detail_event_id\": \"Ref_NS_1\",\r\n        \"message\": \"Constituent VNF ns_vnf_index 'Ref_NS_1.Ref_Vnf_11.1', vnf_id_ref 'Ref_Vnf_11' of NS 'Ref_NS_1' not available\"\r\n      }],\r\n      \"event_code\": \"evt_nsd_itg_function_unavailable\",\r\n      \"event_id\": \"Ref_NS_1\",\r\n      \"header\": \"Constituent VNF not available\",\r\n      \"level\": \"error\",\r\n      \"source_id\": \"Ref_NS_1\"\r\n    }, {\r\n      \"detail\": [{\r\n        \"detail_event_id\": \"Ref_Vnf_11\",\r\n        \"message\": \"Couldn't load the VDUs of VNF 'Ref_Vnf_11'\"\r\n      }],\r\n      \"event_code\": \"evt_vnfd_itg_badsection_vdus\",\r\n      \"event_id\": \"Ref_Vnf_11\",\r\n      \"header\": \"Missing virtual deployment units (VDUs)\",\r\n      \"level\": \"warning\",\r\n      \"source_id\": \"Ref_Vnf_11\"\r\n    }]"
+  },
+  "topology": {
+    "graph": "[]"
+  },
+  "fwgraph": {
+    "graph": "[]"
+  },
+  "log": "2018-05-14 13:58:19,968 - core-validator - INFO - Validating VNF '/usr/nsfval/core/artifacts/1526306299898.012/tmp_tmp64janbxq_ref11_vnf_ref11_vnfd.yaml' [SIT]\n2018-05-14 13:58:19,977 - plugin-loader-osm - INFO - Loading VNFD from file '/usr/nsfval/core/artifacts/1526306299898.012/tmp_tmp64janbxq_ref11_vnf_ref11_vnfd.yaml'\n2018-05-14 13:58:20,057 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11': added connection point 'mgmt0'\n2018-05-14 13:58:20,066 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11': added connection point 'west'\n2018-05-14 13:58:20,077 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11': added virtual link 'VL12'\n2018-05-14 13:58:20,087 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11, virtual link 'VL12': added connection point reference '('iface11_', 'CPR_VDU')'\n2018-05-14 13:58:20,096 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11, virtual link 'VL12': added connection point reference '('iface21', 'CPR_VDU')'\n2018-05-14 13:58:20,106 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11', VDU 'Ref_VM1': added (external) connection point 'iface10'\n2018-05-14 13:58:20,116 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11': added virtual link ('iface10' <--> 'mgmt0')\n2018-05-14 13:58:20,126 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11', VDU 'Ref_VM1': added connection point 'iface11'\n2018-05-14 13:58:20,136 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11', VDU 'Ref_VM2': added (external) connection point 'iface22'\n2018-05-14 13:58:20,145 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11': added virtual link ('iface22' <--> 'west')\n2018-05-14 13:58:20,155 - plugin-loader-osm - DEBUG - VNF 'Ref_Vnf_11', VDU 'Ref_VM2': added connection point 'iface21'\n2018-05-14 13:58:20,164 - core-validator - INFO - Validating integrity of VNF 'Ref_Vnf_11'\n2018-05-14 13:58:20,174 - core-validator - INFO - Validating topology of VNF 'Ref_Vnf_11'\n2018-05-14 13:58:20,184 - core-validator - CRITICAL - VALIDATION FAILED\n"
+}

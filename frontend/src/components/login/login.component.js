@@ -18,7 +18,7 @@ export const LoginComponent = {
     constructor(AuthService, $state) {
       'ngInject';
 
-      this.states = $state;
+      this.state = $state;
       this.strings = UI_STRINGS;
       this.auth = AuthService;
       this.styles = styles;
@@ -30,13 +30,15 @@ export const LoginComponent = {
     }
 
     login(isValid) {
+      const goTo = this.state.params.prevRoute || 'home';
+      console.log(goTo)
       this.errorSubmitted = false;
       if (isValid) {
         this.isChecking = true;
         this.auth.login(this.username, this.password, this.domain)
           .then((response) => {
             if (response.status === 201) {
-              this.states.go('home');
+              this.state.go(goTo);
             } else if (response.status === 401) {
               this.errorSubmitted = true;
               this.isChecking = false;
@@ -55,6 +57,9 @@ export const loginState = {
   name: 'login',
   url: '/login',
   component: 'loginView',
+  params: {
+    prevRoute: null,
+  },
 };
 
 export default LoginComponent;

@@ -38,6 +38,9 @@ PyYAML==3.12
 requests==2.18.4
 six==1.10.0
 tornado==4.5.2
+Werkzeug==0.11.15
 urllib3==1.22
 xmlschema==0.9.12
 zope.interface==4.4.3
+cerberus==1.2
+influxdb==5.2.0

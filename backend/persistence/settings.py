@@ -25,10 +25,15 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-import api_endpoints
 import os
 
+import api_endpoints
+
+BACKENDAPI_PROTOCOL = os.environ.get('BACKENDAPI_PROTOCOL', '13030')
+BACKENDAPI_HOST = os.environ.get('BACKENDAPI_HOST', 'localhost')
 BACKENDAPI_PORT = int(os.environ.get('BACKENDAPI_PORT', 4000))
+
+BACKENDAPI = "{}://{}:{}".format(BACKENDAPI_PROTOCOL, BACKENDAPI_HOST, BACKENDAPI_PORT)
 
 MONGO_HOST = os.environ.get('DATASTORE_HOST', 'dashboard-persistence')
 MONGO_PORT = os.environ.get('DATASTORE_PORT', 27017)
@@ -36,16 +41,26 @@ MONGO_USERNAME = os.environ.get('DATASTORE_USERNAME', 'user')
 MONGO_PASSWORD = os.environ.get('DATASTORE_PASSWORD', 'user')
 MONGO_DBNAME = os.environ.get('DATASTORE_DBNAME', 'shield-dashboard')
 
+STORE_HOST = os.environ.get('VNSF_STORE_HOST')
+STORE_PORT = os.environ.get('VNSF_STORE_PORT')
+
 VNSFO_PROTOCOL = os.environ.get('VNSFO_PROTOCOL', 'http')
-VNSFO_HOST = os.environ.get('VNSFO_HOST', '__missing_vnsfo_address__')
+VNSFO_HOST = os.environ.get('VNSFO_HOST', '__missing_vnsfo_host__')
 VNSFO_PORT = os.environ.get('VNSFO_PORT', '')
 VNSFO_API = os.environ.get('VNSFO_API', '__missing_vnsfo_api_basepath__')
+
+AAA_PROTOCOL = os.environ.get('AAA_PROTOCOL', 'http')
+AAA_HOST = os.environ.get('AAA_HOST', '__missing_aaa_host__')
+AAA_PORT = os.environ.get('AAA_PORT', 0)
+AAA_SVC_ADMIN_SCOPE = os.environ.get('AAA_SVC_ADMIN_SCOPE', '__missing_svc_scope__')
+AAA_SVC_ADMIN_USER = os.environ.get('AAA_SCV_ADMIN_USER', '__missing_svc_admin_user__')
+AAA_SVC_ADMIN_PASS = os.environ.get('AAA_SCV_ADMIN_PASS', '__missing_svc_admin_user__')
 
 # NOTE: this shall be removed once AAA is in place.
 VNSFO_TENANT_ID = os.environ.get('VNSFO_TENANT_ID', '__no_tenant_set__')
 
 X_DOMAINS = '*'  # CORS-related settings.
-X_HEADERS = ['Content-Type, ''If-Match']
+X_HEADERS = ['Content-Type', 'If-Match', 'Authorization', 'Shield-Authz-Scope']
 
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.
@@ -66,6 +81,65 @@ TRANSPARENT_SCHEMA_RULES = True
 # The DOMAIN dict explains which resources will be available and how they will
 # be accessible to the API consumer.
 DOMAIN = {
-    'policies': api_endpoints.policies,
-    'policies_admin': api_endpoints.policies_admin
-}
+    'login':                  api_endpoints.login,
+    'login_user':             api_endpoints.login_user,
+    'tenant_scopes':          api_endpoints.tenant_scopes,
+    'tenant_groups':          api_endpoints.tenant_groups,
+    'tenant_roles':           api_endpoints.tenant_roles,
+    'tenant_scope_groups':    api_endpoints.tenant_scope_groups,
+    'tenant_group_roles':     api_endpoints.tenant_group_roles,
+    'tenants_catalogue':      api_endpoints.tenants_catalogue,
+    'tenant':                 api_endpoints.tenant,
+    'tenant_users_catalogue': api_endpoints.tenant_users_catalogue,
+    'tenant_user':            api_endpoints.tenant_user,
+    'vnsfs_catalogue':        api_endpoints.vnsfs_catalogue,
+    'vnsf':                   api_endpoints.vnsf,
+    'nss_catalogue':          api_endpoints.nss_catalogue,
+    'nss_inventory':          api_endpoints.nss_inventory,
+    'ns_instance':            api_endpoints.ns_instance,
+    'ns_instantiate':         api_endpoints.ns_instantiate,
+    'ns_terminate':           api_endpoints.ns_terminate,
+    'policies':               api_endpoints.policies,
+    'policies_admin':         api_endpoints.policies_admin,
+    'validations':            api_endpoints.validations,
+    'notifications':          api_endpoints.notifications,
+    'notifications_admin':    api_endpoints.notifications_admin,
+    'notifications_vnsfo_admin': api_endpoints.notifications_vnsfo_admin,
+    'notifications_tm_vnsf_admin': api_endpoints.notifications_tm_vnsf_admin,
+    'notifications_tm_vnsf': api_endpoints.notifications_tm_vnsf,
+    'notifications_tm_host_admin': api_endpoints.notifications_tm_host_admin,
+    'notifications_tm_host': api_endpoints.notifications_tm_host,
+    'tenant_ips':             api_endpoints.tenant_ip_association,
+    'tenant_vnsfs':           api_endpoints.tenant_vnsf_association,
+    'ns_instance_update':     api_endpoints.ns_instance_update
+    }
+
+
+###
+#   Association Tenant IP
+###
+
+TENANT_IP_PROTOCOL = os.environ.get('TENANT_IP_PROTOCOL', None)
+TENANT_IP_HOST = os.environ.get('TENANT_IP_HOST', 'localhost')
+TENANT_IP_PORT = os.environ.get('TENANT_IP_PORT', -1)
+TENANT_IP_URL = '{}://{}:{}'.format(TENANT_IP_PROTOCOL, TENANT_IP_HOST, TENANT_IP_PORT)
+
+__association_rest__ = {
+    'association': {
+        'url':     '{}/{}'.format(TENANT_IP_URL, 'tenant_ips')
+        }
+    }
+
+ASSOCIATION_API_URL = __association_rest__['association']['url']
+
+# Server hostname or IP.
+MSGQ_HOST = os.environ.get('MSGQ_HOST', 'localhost')
+
+# Server port
+MSGQ_PORT = os.environ.get('MSGQ_PORT', '5672')
+
+# NS Instance Update Rabbit
+MSGQ_EXCHANGE_DASHBOARD = os.environ.get('MSGQ_EXCHANGE_DASHBOARD', '__MSGQ_EXCHANGE_SHIELD_DASHBOARD__')
+MSGQ_VNSFO = os.environ.get('MSGQ_VNSFO', '__no_NS_IUPDATE_queue_set__')
+MSGQ_VNSFO_TOPIC_ACK = bool(os.environ.get('MSGQ_VNSFO_TOPIC_ACK', True))
+MSGQ_VNSFO_TOPIC = os.environ.get('MSGQ_VNSFO_TOPIC', 'shield.notification.vnsfo')

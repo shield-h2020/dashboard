@@ -23,7 +23,7 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 
-version:             '3'
+version:             '3.3'
 
 services:
 
@@ -50,7 +50,32 @@ services:
             context:       .
             dockerfile:    ${DOCKER_FILE_MSGQ}
         ports:
-            - "15671:15671" # Management
+            - "15672:15672" # Management
+
+
+    ${CNTR_AAA_DB}:
+        image: mysql:5.7
+        labels:
+          - "project=${CNTR_PROJECT}"
+        ports:
+          - ${AAA_DB_PORT}:${AAA_DB_PORT}
+        environment:
+          MYSQL_ROOT_PASSWORD: ${AAA_DB_ADMIN_PASS}
+        volumes:
+            - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
+
+    ${CNTR_AAA}:
+        depends_on:
+          - ${CNTR_AAA_DB}
+        env_file:          ${ENV_FILE}
+        build:
+            context:       .
+            dockerfile:    ${DOCKER_FILE_AAA}
+        links:
+          - ${CNTR_AAA_DB}:mysql
+        ports:
+          - ${AAA_ADMIN_PORT}:${AAA_ADMIN_PORT}
+          - ${AAA_PORT}:${AAA_PORT}
 
 
     # Data Store.
@@ -62,6 +87,37 @@ services:
         volumes:
             - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
 
+    ${CNTR_INFLUX}:
+        image: influxdb:1.5.4
+        env_file:
+          - ${ENV_FILE}
+        volumes:
+          - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
+        ports:
+          - ${INFLUXDB_PORT}:${INFLUXDB_PORT}
+        labels:
+          - "project=${CNTR_PROJECT}"
+
+    ${CNTR_CHRONOGRAF}:
+        image: chronograf:1.5
+        volumes:
+          - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
+        command: --influxdb-url=${INFLUXDB_PROTOCOL}://${CNTR_INFLUX}:${INFLUXDB_PORT} --influxdb-username=${INFLUXDB_ADMIN_USER} --influxdb-password=${INFLUXDB_ADMIN_PASSWORD} --kapacitor-url=http://${CNTR_KAPACITOR}:9092 --kapacitor-username=${KAPACITOR_USER} --kapacitor-password=${KAPACITOR_USER_PASSWORD}
+        ports:
+          - "4000:8888"
+        labels:
+          - "project=${CNTR_PROJECT}"
+
+    #${CNTR_KAPACITOR}:
+    #    image: kapacitor:1.4.1
+    #    env_file:
+    #      - ${ENV_FILE}
+    #    volumes:
+    #      - ${SHARED_FOLDER_DEV}:${CNTR_FOLDER_DEV}
+    #    ports:
+    #      - "9092:9092"
+    #    labels:
+    #      - "project=${CNTR_PROJECT}"
 
     # Dashboard API.
     ${CNTR_DASHBOARD_API}:
@@ -90,7 +146,7 @@ services:
 
             # Source files.
             - ${SHARED_FOLDER_DEV_Q}:${CNTR_FOLDER_DEV_Q}
-        command:         python3.6 dare_policy_pipe.py
+        command:         python3.6 notifications_pipe.py
 
 
     # Dashboard GUI.

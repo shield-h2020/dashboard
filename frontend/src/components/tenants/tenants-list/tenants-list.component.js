@@ -1,11 +1,15 @@
+import { ipValidator } from '@/validators';
 import template from './tenants-list.html';
 
-const UI_STRINGS = {
-  title: 'Secaas clients list',
+const VIEW_STRINGS = {
+  title: 'SecaaS clients',
+  tableTitle: 'SecaaS clients list',
   create: 'Create',
+  update: 'Update',
   modalCreateTitle: 'Create client',
+  modalUpdateTitle: 'Update client',
   modalDeleteTitle: 'Delete client',
-  confirmDelete: 'Are you sure you want to delete this client?',
+  confirmDelete: 'Are you sure you want to delete the client',
   cancel: 'Cancel',
   delete: 'Delete',
 };
@@ -18,16 +22,19 @@ const TABLE_HEADERS = {
 export const TenantsListComponent = {
   template,
   controller: class TenantsListComponent {
-    constructor(TenantsService) {
+    constructor($q, TenantsService, AuthService, toastr) {
       'ngInject';
 
-      this.strings = UI_STRINGS;
+      this.q = $q;
+      this.viewStrings = VIEW_STRINGS;
       this.tenantsService = TenantsService;
+      this.authService = AuthService;
+      this.toast = toastr;
       this.createOpen = false;
       this.deleteOpen = false;
 
-      this.removeTenant = this.removeTenant.bind(this);
       this.updateTenant = this.updateTenant.bind(this);
+      this.ipValidator = ipValidator;
       this.offset = 0;
       this.limit = 25;
       this.filters = {};
@@ -35,18 +42,27 @@ export const TenantsListComponent = {
         ...TABLE_HEADERS,
         actions: [
           {
-            label: 'view',
-            func: this.updateTenant,
-          },
-          {
-            label: 'remove',
-            func: this.removeTenant,
+            label: 'update',
+            action: this.updateTenant,
           },
         ],
       };
+      this.isCreate = true;
+      this.isCreateIps = false;
+
+      if (this.authService.isUserPlatformAdmin()) {
+        this.headers.actions.push({
+          label: 'delete',
+          action: this.toggleDeleteModal.bind(this),
+        });
+      }
     }
 
     $onInit() {
+      this.getData();
+    }
+
+    getData() {
       this.tenantsService.getTenants({
         page: this.offset,
         limit: this.limit,
@@ -56,11 +72,51 @@ export const TenantsListComponent = {
         });
     }
 
-    toggleCreate() {
+    toggleCreate(tenant) {
       this.createOpen = !this.createOpen;
+      if (this.createOpen) {
+        this.setCurrentTenant(tenant);
+      }
     }
 
-    toggleDelete() {
+    setCurrentTenant(tenant) {
+      this.isCreate = !tenant;
+      if (tenant) {
+        this.currTenant = {
+          ...tenant,
+          prevIps: true,
+          scope_code: 'shield_scope_tenant',
+        };
+        this.tenantsService.getTenantIps(tenant.tenant_id)
+          .then((data) => {
+            if (data) {
+              this.currTenant.ip = [...data.ip];
+              this.currTenant.ipEtag = data.etag;
+            }
+            else {
+              this.currTenant.ip = [];
+              this.currTenant.ipEtag = null;
+              this.currTenant.prevIps = false;
+            }
+          });
+      } else {
+        this.currTenant = {
+          tenant_name: '',
+          description: '',
+          scope_code: 'shield_scope_tenant',
+          ip: [],
+        };
+        this.tenantsService.getScopeId(this.currTenant.scope_code)
+          .then((scopeId) => {
+            if (scopeId) {
+              this.currTenant.scope_id = scopeId;
+            }
+          });
+      }
+    }
+
+    toggleDeleteModal(tenant) {
+      this.currTenant = tenant;
       this.deleteOpen = !this.deleteOpen;
     }
 
@@ -72,8 +128,36 @@ export const TenantsListComponent = {
       this.toggleCreate(tenant);
     }
 
-    removeTenant(tenant) {
-      this.toggleDelete(tenant);
+    deleteTenant() {
+      this.tenantsService.deleteTenant(this.currTenant)
+        .then(() => {
+          this.toast.success('Client deleted successfully', 'Client delete');
+          this.toggleDeleteModal();
+          this.getData();
+        });
+    }
+
+    changeCurrTenant(key, value) {
+      this.currTenant[key] = Array.isArray(value) ? [...value] : value;
+    }
+
+    createOrUpdateTenant() {
+      let httpPromise;
+      if (this.isCreate) {
+        httpPromise = this.tenantsService.createTenantAndIps(this.currTenant);
+      } else {
+        if(this.isCreateIps) {
+          httpPromise = this.tenantsService.updateTenantAndCreateIps(this.currTenant);
+        }
+        else {
+          httpPromise = this.tenantsService.updateTenantAndIps(this.currTenant);
+        }
+      }
+
+      httpPromise.then(() => {
+        this.toggleCreate();
+        this.getData();
+      });
     }
   },
 };

@@ -64,9 +64,11 @@ class DashboardPersistence:
         try:
             vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                                   cfg.VNSFO_API)
-            vnsfo.apply_policy(cfg.VNSFO_TENANT_ID, policy)
-        except VnsfOrchestratorPolicyIssue:
-            logger.error('VnsfOrchestratorPolicyIssue')
+            vnsfo.apply_policy(policy['vnsf_id'], policy)
+
+        #except VnsfOrchestratorPolicyIssue:
+        #    logger.error('VnsfOrchestratorPolicyIssue')
+
         except VnsfoNotSupported:
             logger.error('VnsfOrchestratorPolicyIssue')
 

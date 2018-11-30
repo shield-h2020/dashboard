@@ -1,0 +1,22 @@
+{
+  "results": [
+    {
+      "statement_id": 0,
+      "series": [
+        {
+          "name": "attack",
+          "columns": [
+            "time",
+            "count"
+          ],
+          "values": [
+            [
+              "2018-01-01T00:00:00.000000001Z",
+              2
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

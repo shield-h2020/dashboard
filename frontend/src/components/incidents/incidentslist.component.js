@@ -24,7 +24,7 @@ const UI_STRINGS = {
       { label: 'Detection Date', key: 'detection' },
       { label: 'Severity', key: 'severity' },
       { label: 'Status', key: 'status' },
-      { label: 'Type of attack', key: 'attack' }],
+      { label: 'Type of incident', key: 'attack' }],
     actions: {
       update: 'recommendation',
     },
@@ -34,13 +34,14 @@ const UI_STRINGS = {
 export const IncidentsListComponent = {
   template,
   controller: class IncidentsListComponent {
-    constructor($state, $scope, toastr, IncidentsService) {
+    constructor($state, $scope, toastr, AuthService, IncidentsService) {
       'ngInject';
 
       this.strings = UI_STRINGS;
       this.state = $state;
       this.scope = $scope;
       this.toast = toastr;
+      this.authService = AuthService;
       this.incidentsService = IncidentsService;
       this.isLoading = true;
       this.incidents = [];
@@ -62,14 +63,19 @@ export const IncidentsListComponent = {
       };
       this.tableConf.rowSizes = [10, 20, 30];
       this.modalOpen = false;
+      this.tableSource = this.tableSource.bind(this);
     }
 
     $onInit() {
-      this.socket = this.incidentsService.connectIncidentSocket();
+      let tenant_id;
+      if (!this.authService.isUserPlatformAdmin()) {
+        tenant_id = this.authService.getTenant()
+      }
+      this.socket = this.incidentsService.connectIncidentSocket(tenant_id);
       this.socket.onmessage = (message) => {
         const data = JSON.parse(message.data);
         const attackType = data.attack;
-        this.toast.info(`Type of attack: ${attackType}`, 'A new security incident was detected', {
+        this.toast.error(`Type of attack: ${attackType}`, 'A new security incident was detected', {
           onTap: () => this.openRecommendation(data),
           onHidden: () => { this.refreshTable = true; },
           closeButton: true,
@@ -79,7 +85,7 @@ export const IncidentsListComponent = {
 
     tableSource(pagination, filters) {
       this.refreshTable = false;
-      return this.incidentsService.getAllIncidents(pagination, filters);
+      return this.incidentsService.getIncidents(pagination, filters);
     }
 
     openRecommendation(incident) {

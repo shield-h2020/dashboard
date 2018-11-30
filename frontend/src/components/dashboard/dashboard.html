@@ -1,0 +1,120 @@
+<section>
+    <div class="page-container mb50 p30">
+        <div class="page-content ml0">
+            <div class="page-content-wrap">
+                <div class="row">
+                    <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+                    <div class="panel panel-default mt30 m0 shadow_box">
+                        <div class="panel-body mp4 w92 p20">
+                            <label class="ubi_subtitle"> Security Incidents Summary </label>
+                            <div class="separator mt30 mb30"></div>
+                            <!-- SELECTS-->
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12" ng-if="isAdmin">
+                                    <label class="col-xl-2 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Tenants</label>
+                                    <select id="tenants" ng-model="selected_tenant" ng-change="onTenantChange(this)"
+                                        class="col-xl-10 col-lg-8 col-md-9 col-sm-9 filter_selects" ng-options="tenant.tenant_id as tenant.tenant_name for tenant in tenants_list">
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+                                    <label class="col-xl-4 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Period</label>
+                                    <select id="period" ng-model="selected_period" class="col-xl-8 col-lg-8 col-md-9 col-sm-9 filter_selects"
+                                        ng-change="$ctrl.setPeriod()">
+                                        <option ng-selected="true" value="0">Today</option>
+                                        <option value="1">Yesterday</option>
+                                        <option value="2">Last Week</option>
+                                        <option value="3">Custom</option>
+                                    </select>
+                                </div>
+                                <!-- DATEPICKERS -->
+
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" ng-if="$ctrl.showDatePicker==true">
+                                    <sn-date-picker class="datepickerClass pl0 pr0 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                        label="Start" current-date="$ctrl.LastStartDate" on-change="$ctrl.setFilter({ key: 'sDate', value: $event.value})">
+                                    </sn-date-picker>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" ng-if="$ctrl.showDatePicker==true">
+                                    <sn-date-picker class="datepickerClass pl0 pr0 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                        label="End" current-date="$ctrl.LastEndDate" on-change="$ctrl.setFilter({ key: 'eDate', value: $event.value})">
+                                    </sn-date-picker>
+                                </div>
+                            </div>
+                            <div class="smalldiv"></div>
+                            <!-- NUMBER OF INCIDENTS-->
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                    <div class="chart_holder">
+                                        <div class="bg_partial">
+                                            <label class="m5">Number of incidents</label>
+                                        </div>
+                                        <div donut-labels-chart id="chart_attacks" class="text-center"></div>
+                                    </div>
+                                </div>
+                                <!-- ATTACKS INCIDENTS-->
+                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                                    <div class="chart_holder">
+                                        <div class="bg_partial">
+                                            <label class="m5">Incidents ocurrence</label>
+                                        </div>
+                                        <div bar-chart ng-if="$ctrl.attackIndex==-1" id="chart_ocurrences"></div>
+                                        <div lines-chart ng-if="$ctrl.attackIndex!=-1" id="chart_ocurrences_line"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- TABLE -->
+                            <div class="col-lg-12 p0 mt30 mb20">
+
+                                <table class="table mt15">
+                                    <thead class="table__header">
+                                        <tr class="bg_partial">
+                                            <th class="text">Type</th>
+                                            <th class="text">Severity</th>
+                                            <th class="text">Date</th>
+                                            <th class="text">Duration</th>
+                                            <th class="text">Destination Port</th>
+                                            <th class="text">Destination IP</th>
+                                            <th class="text">Protocol</th>
+                                            <th class="text">Client name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="attacks.results[0].series" style="height:48px" ng-repeat="value in attacks.results[0].series[0].values">
+                                            <td>{{value[1]}}</td>
+                                            <td>{{value[13]}}</td>
+                                            <td>{{value[0]}}</td>
+                                            <td>{{value[5]}}</td>
+                                            <td>{{value[3]}}</td>
+                                            <td>{{value[4]}}</td>
+                                            <td>{{value[10]}}</td>
+                                            <td>{{value[16]}}</td>
+                                        </tr>
+                                        <tr ng-show="!attacks.results[0].series">
+                                            <td class="text text-center" colspan="8">No data available</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="col-xs-12 p0">
+
+                                    <label ng-show="total_attacks>0 && (10*table_page+10 <= total_attacks)" class="text">Showing
+                                        {{10*table_page+1}} to {{10*table_page+10}} of attack
+                                        {{total_attacks}}</label>
+                                    <label ng-show="total_attacks>0 && (10*table_page+10 > total_attacks)" class="text">Showing
+                                        {{10*table_page+1}} to {{total_attacks}} of attack {{total_attacks}}</label>
+
+                                    <div class="btn-group pull-right">
+                                        <button class="btn btn-default mr10" ng-click="$ctrl.setPage(false)"
+                                            ng-disabled="table_page===0">
+                                            < </button> <button class="btn btn-default" ng-click="$ctrl.setPage(true)"
+                                                ng-disabled="table_page+1===table_total_pages">>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -31,7 +31,10 @@
 }
 
 .content {
+  padding-bottom: 5vh!important;
   padding: 16px;
+  overflow-y: auto;
+  max-height: 60vh;
 }
 
 .footer > footer {

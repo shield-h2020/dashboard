@@ -1,0 +1,56 @@
+@import '~styleglobals/colors';
+
+.event-entry {
+  display: flex;
+  font-size: 15px;
+
+  &__title {
+    font-size: 14px;
+    display: inline-block;
+    width: 40%;
+    color: #acacac;
+    vertical-align: bottom;
+  }
+}
+
+.xmlviewer {
+  border: 1px solid #D8D8D8;
+  background-color: #F1F0F0;
+  padding: 9px;
+  color: #22293B;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 19px;
+  margin: 12px 0;
+  white-space: pre-line;
+  word-break: break-all;
+}
+
+.sn-card {
+  overflow-y: scroll;
+}
+
+
+.page-button {
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  display: inline-block;
+  padding: 0;
+}
+
+.prev-button {
+  @extend .page-button;
+  border-left: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(45deg);
+}
+
+.next-button {
+  @extend .page-button;
+  border-right: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(-45deg);
+}

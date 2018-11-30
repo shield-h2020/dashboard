@@ -77,6 +77,7 @@
 
     .isCollapsed {
       .collapse_icon {
+        margin-left: 8px;
         &:before {
           content: '▾';
         }
@@ -84,6 +85,7 @@
     }
 
     .collapse_icon {
+      margin-left: 8px;
       &:before {
         content: '▴';
       }
@@ -96,4 +98,36 @@
       cursor: pointer;
       padding: 0;
     }
+
+  // MODALS
+  .delete-modal--target {
+    font-weight: 600;
+  }
+
+  // TABLES
+
+  .cell--unimportant {
+    color: #ccc;
+    font-style: italic;
+  }
+
+  .icon-red,
+  .icon-yellow {
+    margin-left: 12px;
+    font-size: 18px;
+  }
+
+  .icon-red {
+    color: $color-red;
+  }
+
+  .icon-yellow {
+    color: $yellow;
+  }
+  
+  // UTIL
+
+  .text-right {
+    text-align: right;
+  }
 }

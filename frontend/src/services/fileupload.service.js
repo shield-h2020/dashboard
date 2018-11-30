@@ -18,7 +18,7 @@ export class FileUploadService {
       method,
       data: formData,
       transformRequest: identity,
-      headers: { 'Content-Type': undefined },
+      headers: { 'Content-Type': undefined, Authorization: undefined },
     });
   }
 }

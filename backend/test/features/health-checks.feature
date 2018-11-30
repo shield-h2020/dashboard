@@ -27,6 +27,9 @@
 Feature: Health Checks
   Ensures the Store is up and running.
 
+  Background:
+    Given I am logged in as xpto
+
   Scenario: Backend API ready
     When I list the backend API endpoints
     Then I expect the JSON response to be as in api-endpoints.json

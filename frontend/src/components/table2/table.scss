@@ -19,11 +19,11 @@
       padding: 0 10px;
     }
 
-    &:first-of-type {
+    th:first-of-type {
       padding-left: 32px;
     }
 
-    &:last-of-type {
+    th:last-of-type {
       padding-right: 32px;
     }
   }
@@ -40,11 +40,11 @@
       padding: 0 10px;
     }
 
-      &:first-of-type {
+      td:first-of-type {
         padding-left: 32px;
       }
 
-      &:last-of-type {
+      td:last-of-type {
         padding-right: 32px;
       }
 
@@ -78,6 +78,17 @@
     & img {
       width: 64px;
     }
+  }
+
+  &__nodata {
+    text-align: center;
+    margin-top: 150px;
+    margin-bottom: 150px;
+    color: #ccc;
+    font-family: Orbitron;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 28px;
   }
 }
 

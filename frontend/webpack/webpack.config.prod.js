@@ -17,10 +17,6 @@ module.exports = webpackMerge(commonConfig, {
   },
 
   plugins: [
-    new UglifyJSPlugin({
-      compress: true,
-      mangle: false,
-    }),
     new ExtractTextPlugin('[name].[hash].css'),
     new CleanWebpackPlugin(['prod']),
     new webpack.DefinePlugin({
@@ -30,6 +26,7 @@ module.exports = webpackMerge(commonConfig, {
       __API_STORE_HOST__: JSON.stringify(process.env.VNSF_STORE_HOST),
       __API_STORE_PORT__: JSON.stringify(process.env.VNSF_STORE_PORT),
       __API_SOCKET_PORT__: JSON.stringify(process.env.SKT_PORT),
+      __INFLUXPORT__: JSON.stringify(process.env.INFLUXDB_PORT)
     }),
   ],
 });

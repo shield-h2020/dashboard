@@ -24,16 +24,16 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
-from dashboardutils import exceptions
+from dashboardutils import error_utils
 
 from .osm_vnsfo import OsmVnsfoAdapter
 
 
-class VnsfoNotSupported(exceptions.ExceptionMessage):
+class VnsfoNotSupported(error_utils.ExceptionMessage):
     """Requested orchestrator isn't supported."""
 
 
-class VnsfoFactory:
+class VnsfoFactory(object):
     """
     Orchestrator factory for vNSF.
     """
@@ -54,7 +54,7 @@ class VnsfoFactory:
         # Currently supported Orchestrator.
         supported = {
             'OSM': OsmVnsfoAdapter
-        }
+            }
 
         orchestrator = supported.get(kind)(protocol, server, port, api_basepath, logger)
         if orchestrator is None:

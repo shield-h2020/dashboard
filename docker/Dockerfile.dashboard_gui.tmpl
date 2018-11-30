@@ -32,10 +32,6 @@ FROM node:8.7.0
 
 LABEL project="${CNTR_PROJECT}"
 
-# Dependencies
-RUN apt-get update -y && \
-    apt-get clean all
-
 WORKDIR ${CNTR_FOLDER_DEV_GUI}
 
 ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-dashboard-gui.sh"]

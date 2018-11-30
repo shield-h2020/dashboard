@@ -36,7 +36,8 @@ LABEL project="${CNTR_PROJECT}"
 RUN yum update -y && \
     yum install -y https://centos7.iuscommunity.org/ius-release.rpm \
     yum makecache fast && \
-    yum install -y python36u python36u-pip && \
+    yum install -y gcc && \
+    yum install -y python36 python36-devel python36u-pip && \
     pip3.6 install --upgrade pip && \
     yum clean all
 

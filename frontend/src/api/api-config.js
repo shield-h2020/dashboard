@@ -13,16 +13,18 @@
   __API_SOCKET_PORT__
 */
 const BACKEND_HOST = window.location.hostname;
-const API_PORT = 13030 || __API_PORT__;
-const SOCKET_PORT = __API_SOCKET_PORT__;
-const STORE_PORT = __API_STORE_PORT__;
+const API_PORT = __API_PORT__ || 13030;
+const SOCKET_PORT = __API_SOCKET_PORT__ || 18888;
+const STORE_PORT = __API_STORE_PORT__ || 6060;
+const INFLUXPORT = __INFLUXPORT__ || 8086;
 
-const API_URL = `http://${'localhost' || __API_URL__ || BACKEND_HOST}`;
-const SOCKET_URL = `ws://${BACKEND_HOST}`;
-const STORE_URL = `http://${__API_STORE_HOST__}`;
+const API_URL = `http://${__API_URL__ || BACKEND_HOST}`;
+const SOCKET_URL = `ws://${BACKEND_HOST || 'localhost'}`;
+const STORE_URL = `http://${__API_STORE_HOST__ || 'localhost'}`;
 
 export const AUTH_ADDRESS = `${API_URL}:${API_PORT}`;
 export const API_ADDRESS = `${API_URL}:${API_PORT}`;
+export const INFLUX_ADDRESS = `${API_URL}:${INFLUXPORT}`;
 export const CATALOG_ADDRESS = `${API_URL}:${API_PORT}`;
 export const SOCKET_ADDRESS = `${SOCKET_URL}:${SOCKET_PORT}`;
 export const STORE_ADDRESS = `${STORE_URL}:${STORE_PORT}`;

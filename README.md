@@ -12,6 +12,12 @@ The Security Dashboard (Dashboard from now on) is SHIELD’s topmost component b
 * [Node](https://nodejs.org/) for the HTTP server
 * [AngularJS](https://angularjs.org/) for the web application framework
 
+### Dependencies lock-down
+
+To prevent undesired side-effects from dependencies update by third-party frameworks, all the libraries in use by this project are declared in the  [requirements-dashboard.txt](docker/requirements-dashboard.txt) and [requirements-dashboard-q.txt](docker/requirements-dashboard-q.txt) files.
+
+The rationale behind the freeze for every dependency in use is to ensure that no update on libraries used by third-party frameworks will ever render this application undeployable.
+Usually a framework developer doesn't lock the version of the libraries it depends on  hoping that its application can automagically use the updated version of any library. Unfortunately real-life coding doesn't always works like that and previous version support isn't always assured.
 
 ## Python virtual environment
 
@@ -39,7 +45,7 @@ sudo pip install docker-compose
 
 Finally, add current user to the docker group (allows issuing Docker commands w/o sudo):
 ```
-sudo usermod -G docker $(whoami)
+sudo usermod -aG docker $(whoami)
 ```
 
 ### Setup

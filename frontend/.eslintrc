@@ -29,6 +29,9 @@
               "int32Hint": true,
               "allow": ["&", "|"] 
           }
-      ]
+      ],
+      "no-underscore-dangle": ["error", {
+        "allow": ["_id", "_items", "_error", "_meta", "_etag"]
+      }]
   }
 }

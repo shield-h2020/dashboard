@@ -23,19 +23,18 @@
 
 .scroller {
   overflow-y: auto;
-  height: calc(100% - 55px);
-  padding-top: 48px;
+  height: 600px;
+  margin-bottom: 56px;
 }
 
 .header {
-    font-size: 20px;
-    line-height: 24px;
-    color: $color-blue;
-    padding: 0px 48px;
-    font-family: Orbitron;
-    font-size: 20px;
-    font-weight: 500;
-    letter-spacing: 1px;
+  font-size: 20px;
+  line-height: 24px;
+  color: $color-blue;
+  font-family: Orbitron;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
 .entrygroup {
@@ -73,19 +72,19 @@
   font-family: "OpenSans";
   font-size: 14px;
   line-height: 19px;
-  margin: 12px 48px;
+  margin: 12px 0;
   white-space: pre-line;
 }
 
 .text {
-    font-family: "OpenSans";
-    font-size: 13px;
-    line-height: 24px;
-    color: $color-black;
-    padding: 0 30px 30px;
-    max-height: 70vh;
-    overflow-y: auto;
-    white-space: pre;
+  font-family: "OpenSans";
+  font-size: 13px;
+  line-height: 24px;
+  color: $color-black;
+  padding: 0 30px 30px;
+  max-height: 70vh;
+  overflow-y: auto;
+  white-space: pre;
 }
 
 .footer {
@@ -94,6 +93,8 @@
   position: absolute;
   bottom: 0;
   width: 100%;
+  background-color: #fff;
+  padding: 0 !important;
 }
 
 .button {

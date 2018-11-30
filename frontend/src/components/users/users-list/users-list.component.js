@@ -1,11 +1,12 @@
 import template from './users-list.html';
 
-const UI_STRINGS = {
+const VIEW_STRINGS = {
   title: 'Users',
   tableTitle: 'Users list',
   modalCreateTitle: 'Create user',
+  modalUpdateTitle: 'User information',
   modalDeleteTitle: 'Delete user',
-  confirmDelete: 'Are you sure you want to delete this user?',
+  confirmDelete: 'Are you sure you want to delete the user ',
   create: 'Create',
   update: 'Update',
   cancel: 'Cancel',
@@ -14,7 +15,12 @@ const UI_STRINGS = {
 
 const TABLE_HEADERS = {
   name: 'Name',
-  email: 'Email',
+  tenant_name: 'SecaaS client',
+  roles: 'Role',
+
+  // secaaas_client,
+  // roles
+  // remove: email
 };
 
 export const UsersListComponent = {
@@ -23,17 +29,17 @@ export const UsersListComponent = {
     tenant: '<',
   },
   controller: class UsersListComponent {
-    constructor($scope, UsersService, TenantsService, AuthService) {
+    constructor($scope, toastr, UsersService, TenantsService, AuthService) {
       'ngInject';
 
-      this.strings = UI_STRINGS;
+      this.viewStrings = VIEW_STRINGS;
+      this.toast = toastr;
       this.scope = $scope;
       this.usersService = UsersService;
       this.tenantsService = TenantsService;
       this.authService = AuthService;
       this.createOpen = false;
       this.deleteOpen = false;
-      this.toggleDelete = this.toggleDelete.bind(this);
       this.toggleCreate = this.toggleCreate.bind(this);
       this.selectedUser = null;
       this.isCreate = true;
@@ -46,7 +52,7 @@ export const UsersListComponent = {
           },
           {
             label: 'delete',
-            action: this.toggleDelete,
+            action: this.toggleDeleteModal.bind(this),
           },
         ],
       };
@@ -59,32 +65,53 @@ export const UsersListComponent = {
     }
 
     $onInit() {
-      this.getUsers();
-      this.getRoles();
       this.isPlatformAdmin = this.authService.isUserPlatformAdmin();
+      this.getData();
     }
 
     toggleCreate(user) {
       this.createOpen = !this.createOpen;
+      if(!this.createOpen)
+        return;
+      
       if (user) {
         this.newUser = { ...user };
+        this.newUser.password = '';
+        this.newUser.tenant = this.newUser.tenant_name;
+        this.roles = this.newUser.groups;
         this.isCreate = false;
       } else {
-        this.isCreate = true;
-        this.newUser = {
-          name: '',
-          role: '',
-          tenant: this.tenant,
-          password: '',
-        };
+        /* When we add support for user addition by super admin, we
+        will have to edit this logic. We first have to check if i'm a 
+        super admin or not. If not, the following logic is up to date.
+        If i am a super admin, we have to unlock tenant dropdown with
+        a list of available tenants, and on change of this dropdown
+        we have to update available roles.
+        get tenant list:
+        http://{{ dashboard_api}}/catalogue/tenants
+        get tenant roles: 
+        http://{{ dashboard_api}}/catalogue/tenants/674568b4584c43d19f441b996f0ce3cc
+        */
+        this.usersService.getRoles()
+        .then((items) => {
+          this.roles = items;
+          this.isCreate = true;
+          this.newUser = {
+            name: '',
+            role: '',
+            tenant: this.tenant,
+            password: '',
+          };
+        })
+        .catch(() => {
+          console.log("Error getting users");
+        });
       }
     }
 
-    toggleDelete(user) {
+    toggleDeleteModal(user) {
+      this.selectedUser = user;
       this.deleteOpen = !this.deleteOpen;
-      if (user) {
-        this.selectedUser = user;
-      }
     }
 
     setNewUser(property, val) {
@@ -103,7 +130,7 @@ export const UsersListComponent = {
       if (this.newUser) {
         this.usersService.createUser(this.newUser)
         .then(() => {
-          this.getUsers();
+          this.getData();
           this.toggleCreate();
           this.newUser = null;
         });
@@ -113,32 +140,38 @@ export const UsersListComponent = {
     updateUser() {
       this.usersService.updateUser(this.newUser)
         .then(() => {
-          this.getUsers();
+          this.getData();
           this.toggleCreate();
           this.newUser = null;
         });
     }
 
-    removeUser() {
+    deleteUser() {
       this.usersService.deleteUser(this.selectedUser)
         .then(() => {
-          this.toggleDelete();
+          this.toast.success('Client deleted successfully', 'Client delete');
+          this.toggleDeleteModal();
+          this.getData();
         });
     }
 
-    getRoles() {
-      this.usersService.getRoles()
-        .then((roles) => {
-          this.roles = roles;
+    getTenantInfo({ tenant_id }) {
+      this.usersService.getTenantInfo(tenant_id)
+        .then((info) => {
+          this.newUser.tenant = info.tenant_name;
+          this.roles = info.groups;
         });
     }
 
-    getUsers() {
+    getData() {
       this.loading = true;
       this.users = [];
-      this.usersService.getUsers(this.pagination, this.filters)
+      this.usersService.getUsersWithTenant(this.pagination, this.filters)
         .then((items) => {
           this.users = items;
+          this.loading = false;
+        })
+        .catch(() => {
           this.loading = false;
         });
     }

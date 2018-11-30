@@ -1,0 +1,56 @@
+<section>
+  <h4 class="sn-uppertitle">{{ ::$ctrl.viewStrings.title }}</h4>
+  <div class="sn-card" auto-resizer>
+    <header class="sn-card__header">
+      <h5 class="header__title">{{ ::$ctrl.viewStrings.tableTitle }}</h5>
+    </header>
+    <div class="row stack-m">
+      <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">
+        <label class="col-xl-2 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Status</label>
+        <select id="statusSelect" ng-model="$ctrl.selectedStatus" ng-change="$ctrl.setFilter({ key: 'status', value: $ctrl.selectedStatus })"
+          class="col-xl-10 col-lg-8 col-md-9 col-sm-9 filter_selects" ng-options="selectedItem.value as selectedItem.text for selectedItem in $ctrl.viewStrings.status">
+        </select>
+      </div>
+      <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+        <label class="col-xl-4 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Period</label>
+        <select id="period" ng-model="$ctrl.selected_period" class="col-xl-8 col-lg-8 col-md-9 col-sm-9 filter_selects"
+          ng-change="$ctrl.setPeriod()">
+          <option ng-selected="true" value="0">Any</option>
+          <option value="1">Custom</option>
+        </select>
+      </div>
+      <div class="col-xs-3" ng-if="$ctrl.showDatePicker==true">
+        <sn-date-picker label="{{::$ctrl.viewStrings.startDate}}" on-change="$ctrl.setFilter({ key: 'startDate', value: $event.value})"
+          current-date="$ctrl.setStartDate()"></sn-date-picker>
+      </div>
+      <div class="col-xs-3" ng-if="$ctrl.showDatePicker==true">
+        <sn-date-picker label="{{::$ctrl.viewStrings.endDate}}" on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})"></sn-date-picker>
+      </div>
+
+    </div>
+    <s-table items="$ctrl.items" headers="$ctrl.tableHeaders" loading="$ctrl.isLoading"></s-table>
+    <div style="text-align: right; margin-top: 16px;" ng-if="$ctrl.items.length">
+      <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+      <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+      <span class="sn-table__footer">
+        Showing {{$ctrl.paging.min}} to {{$ctrl.paging.max}} of {{$ctrl.pagination.total}}
+      </span>
+    </div>
+  </div>
+
+  <div sn-modal open="$ctrl.modalOpen" title-modal="$ctrl.viewStrings.modalTitle">
+    <article class="{{::$ctrl.styles.scroller}}">
+      <div ng-repeat="(key, val) in $ctrl.modalEntries" class="{{::$ctrl.styles['event-entry']}}">
+        <span class="{{::$ctrl.styles['event-entry__title']}}">{{ val }}</span>
+        <span>{{ $ctrl.incident[key] }}</span>
+      </div>
+      <h5 class="{{::$ctrl.styles['modal-title']}}">{{::$ctrl.viewStrings.modalSubtitle}}</h5>
+      <pre ng-if="$ctrl.incident.recommendation">{{ $ctrl.incident.recommendation | prettyXml }}</pre>
+    </article>
+    <footer class="{{::$ctrl.styles.footer}}">
+      <button class="{{::$ctrl.styles.button}}" ng-click="$ctrl.toggleIncidentModal()">{{::$ctrl.viewStrings.close}}</button>
+      <button ng-if="$ctrl.incident.status && $ctrl.incident.status !== 'Applied'" class="{{::$ctrl.styles.button}}"
+        ng-click="$ctrl.applyRecommendation()">{{::$ctrl.viewStrings.apply}}</button>
+    </footer>
+  </div>
+</section>

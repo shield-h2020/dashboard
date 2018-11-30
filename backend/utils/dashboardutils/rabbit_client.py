@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-
+import json
 import logging
 import time
 
 import pika
+
+logger = logging.getLogger(__name__)
 
 
 class RabbitAsyncConsumer:
@@ -84,7 +86,9 @@ class RabbitAsyncConsumer:
 
     def reconnect(self):
         self.logger.info('reconnecting')
-        self._connection.ioloop.stop();
+
+        if self._connection:
+            self._connection.ioloop.stop()
 
         if not self._closing:
             self._connection = self.connect()
@@ -132,7 +136,7 @@ class RabbitAsyncConsumer:
 
     def setup_queue(self):
         self.logger.info('setting up queue')
-        self._channel.queue_declare(self.on_queue_declareok, self._queue)
+        self._channel.queue_declare(self.on_queue_declareok, self._queue, durable=True)
 
     def on_queue_declareok(self, frame):
         self.logger.info('binding queue')
@@ -183,3 +187,32 @@ class RabbitAsyncConsumer:
         self._closing = True
         self.stop_consuming()
         self._connection.ioloop.stop()
+
+
+class RabbitProducer:
+
+    logger = logging.getLogger(__name__)
+
+    def __init__(self, host, port, exchange):
+        # TODO: Add remaining connection parameters
+        self._host = host
+        self._port = int(port)
+
+        self._channel = None
+        self._connection = None
+
+        self._exchange = exchange
+
+    def submit_message(self, message, routing_key):
+        self._connection = pika.BlockingConnection(pika.ConnectionParameters(host=self._host, port=self._port))
+
+        self._channel = self._connection.channel()
+        self._channel.exchange_declare(exchange=self._exchange,
+                                       exchange_type='topic')
+        self.logger.debug(f"Submitting message to topic {routing_key} with body, {message}, with exchange {self._exchange}")
+        self._channel.basic_publish(exchange=self._exchange,
+                                    routing_key=routing_key,
+                                    body=json.dumps(message))
+
+        self._connection.close()
+        self.logger.debug(f"Message submitted")

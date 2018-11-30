@@ -34,6 +34,6 @@ Feature: Security Policies application
     Then I expect the JSON response to be as in <file>
 
     Examples:
-      | mock_file                             | MSPL                |  status | file                                  |
+      | mock_file                           | MSPL                         | status | file                         |
       # HTTP_200_OK
-      | mspl/mspl-apply-success.json         | mspl/mspl-apply-success.json         | 200 | mspl/mspl-apply-success.json         |
+      | vnsf/action/mspl-apply-success.json | mspl/mspl-apply-success.json | 200    | mspl/mspl-apply-success.json |
