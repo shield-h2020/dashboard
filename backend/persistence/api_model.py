@@ -525,3 +525,116 @@ ns_instance_update = {
         'required': True
         }
     }
+
+#
+# Defines the fee a Developer charges for the use of its vNSF.
+#
+billing_vnsf = {
+    # ID, from the catalogue, assigned to a vNSF onboarded by the Developer.
+    'vnsf_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # vNSF fee charged by the Developer to the ISP.
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Support fee charged by the Developer to the ISP.
+    'support_fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    }
+}
+
+
+#
+# Defines the fee a SecaaS Client ows to the ISP for the use of a NS.
+#
+billing_ns = {
+    # ID, from the catalogue, assigned to the NS available to a SecaaS Client.
+    'ns_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Tenant ID using the NS.
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Month to charge. Format: YYYY-MM.
+    'month': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Fee to charge for the NS availability.
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    }
+}
+
+
+#
+# Records the NS usage for a given SecaaS Client.
+#
+billing_ns_usage = {
+    # ID, from the catalogue, assigned to the NS available to a SecaaS Client.
+    'ns_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Tenant ID using the NS.
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Fee to charge for the NS usage.
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Date when the NS was made available to the SecaaS Client. Format: ISO 8601.
+    'used_from': {
+        # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
+        # string must be sent. The trick is to convert the string to a datetime instance in a hook function.
+        # The string type caters for the serialization to JSON so the type must match or Cerberus won't validate it
+        # and so it never gets to the hook function. Once it gets to the hook function it is converted to datetime
+        # and stored. Storing as datetime doesn't seem to be a problem as pymongo doesn't check the instance type (
+        # the assumption is that it was previously validated by Cerberus so it won't check it again).
+        # This is not the most elegant hack but it seems the most adequate given the constraints.
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Date when the NS was removed from the SecaaS Client. Format: ISO 8601.
+    'used_to': {
+        # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
+        # string must be sent. The trick is to convert the string to a datetime instance in a hook function.
+        # The string type caters for the serialization to JSON so the type must match or Cerberus won't validate it
+        # and so it never gets to the hook function. Once it gets to the hook function it is converted to datetime
+        # and stored. Storing as datetime doesn't seem to be a problem as pymongo doesn't check the instance type (
+        # the assumption is that it was previously validated by Cerberus so it won't check it again).
+        # This is not the most elegant hack but it seems the most adequate given the constraints.
+        'type': 'string'
+    }
+}
