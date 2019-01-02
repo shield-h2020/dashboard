@@ -92,4 +92,6 @@
   "validations:update_validation": "rule:platform.admin",
   "validations:delete_validation": "rule:platform.admin",
 
+  "tm_attest:trigger": "rule:any.tenant.admin"
+
 }

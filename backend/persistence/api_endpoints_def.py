@@ -663,6 +663,21 @@ class Endpoint(Enum):
                       }
                   }
 
+    TM_ATTEST = {__NAME__:         'tm_attest',
+                __URL__:           'tm/attest',
+                __SCHEMA__: api_model.tm_attest_request,
+                __RESOURCE__: {
+                    __HTTP_POST__: {
+                        __POLICY__: 'tm_attest:trigger',
+                        __DOCS__: {
+                            'summary': 'On-demand Attestation',
+                            'description': 'Performs the attestation of all active nodes',
+                            'responses': http_utils.responses_read
+                        }
+                    },
+                }
+    }
+
     # NOTIFICATIONS = {__NAME__:     'notifications',
     #                  __URL__:      'notifications',
     #                  __SCHEMA__:   api_model.notification_model,

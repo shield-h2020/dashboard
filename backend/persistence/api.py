@@ -39,6 +39,7 @@ from hooks_ns_instance_update import NSInstanceHooks
 from hooks_nss_inventory import NssInventoryHooks
 from hooks_tenants import TenantHooks
 from hooks_tm_notifications import TMNotifications
+from hooks_tm_attestation import TMAttestation
 from security import TokenAuthzOslo
 from validators import NetworkValidator
 
@@ -70,6 +71,9 @@ app.register_blueprint(swagger)
 
 app.on_update_notifications_tm_vnsf += TMNotifications.apply_vnsf_remediation
 app.on_update_notifications_tm_host += TMNotifications.apply_host_remediation
+
+app.on_insert_tm_attest += TMAttestation.tm_attest
+
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info
 

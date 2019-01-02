@@ -528,3 +528,17 @@ validations = {
     'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.VALIDATION)],
     'schema':             EndpointHelper.get_schema(Endpoint.VALIDATION)
     }
+
+###
+#   Trigger on-demand Trust Monitor attestation
+###
+tm_attest = {
+    'item_title':       EndpointHelper.get_name(Endpoint.TM_ATTEST),
+    'url':              EndpointHelper.get_url(Endpoint.TM_ATTEST),
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.TM_ATTEST),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.TM_ATTEST)],
+    'schema':           EndpointHelper.get_schema(Endpoint.TM_ATTEST),
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':      ['POST']
+}

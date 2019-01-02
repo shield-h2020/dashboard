@@ -188,7 +188,8 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         action_map = {
             'isolate': 'isolated',
-            'reboot': 'reboot'
+            'reboot': 'reboot',
+            'terminate': 'terminated'
         }
 
         headers = {'Content-Type': 'application/json'}

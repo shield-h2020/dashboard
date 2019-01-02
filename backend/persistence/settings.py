@@ -44,6 +44,9 @@ MONGO_DBNAME = os.environ.get('DATASTORE_DBNAME', 'shield-dashboard')
 STORE_HOST = os.environ.get('VNSF_STORE_HOST')
 STORE_PORT = os.environ.get('VNSF_STORE_PORT')
 
+TM_HOST = os.environ.get('TRUST_MONITOR_HOST')
+TM_PORT = os.environ.get('TRUST_MONITOR_PORT')
+
 VNSFO_PROTOCOL = os.environ.get('VNSFO_PROTOCOL', 'http')
 VNSFO_HOST = os.environ.get('VNSFO_HOST', '__missing_vnsfo_host__')
 VNSFO_PORT = os.environ.get('VNSFO_PORT', '')
@@ -111,7 +114,8 @@ DOMAIN = {
     'notifications_tm_host': api_endpoints.notifications_tm_host,
     'tenant_ips':             api_endpoints.tenant_ip_association,
     'tenant_vnsfs':           api_endpoints.tenant_vnsf_association,
-    'ns_instance_update':     api_endpoints.ns_instance_update
+    'ns_instance_update':     api_endpoints.ns_instance_update,
+    'tm_attest':              api_endpoints.tm_attest,
     }
 
 

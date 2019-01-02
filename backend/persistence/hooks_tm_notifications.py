@@ -40,8 +40,8 @@ class TMNotifications:
         target_type = 'hosts' if 'hosts' in notification.keys() else 'sdn'
 
         for target in notification[target_type]:
-            remediation_dict = target['remediation'] if 'remediation' in target.keys() else target['extra_info'][
-                'Remediation']
+            remediation_dict = target['remediation'] if 'remediation' in target.keys() else target['extra_info']['Remediation']
+
             for remediation, value in remediation_dict.items():
                 if value:
                     vnsfo.apply_remediation(target_type, target['node'], remediation)

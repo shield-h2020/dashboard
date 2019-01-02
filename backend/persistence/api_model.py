@@ -525,3 +525,11 @@ ns_instance_update = {
         'required': True
         }
     }
+
+tm_attest_request = {
+    'node_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+    }
+}
