@@ -72,7 +72,11 @@ app.register_blueprint(swagger)
 app.on_update_notifications_tm_vnsf += TMNotifications.apply_vnsf_remediation
 app.on_update_notifications_tm_host += TMNotifications.apply_host_remediation
 
-app.on_insert_tm_attest += TMAttestation.tm_attest
+app.on_fetched_resource_distinct_notifications_tm_vnsf += TMNotifications.get_distinct_tm_vnsf_notifications
+app.on_fetched_resource_distinct_notifications_tm_host += TMNotifications.get_distinct_tm_notifications
+
+app.on_insert_tm_attest_node += TMAttestation.tm_attest_node
+app.on_insert_tm_attest_all += TMAttestation.tm_attest_all
 
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info

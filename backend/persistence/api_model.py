@@ -526,7 +526,11 @@ ns_instance_update = {
         }
     }
 
-tm_attest_request = {
+tm_attest_all = {
+
+}
+
+tm_attest_node = {
     'node_id': {
         'type': 'string',
         'empty': False,

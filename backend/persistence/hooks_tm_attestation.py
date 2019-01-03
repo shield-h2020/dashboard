@@ -41,24 +41,36 @@ class TMAttestation:
 
 
     @staticmethod
-    def tm_attest(items):
+    def tm_attest_all(items):
+
+        url = "https://{}/nfvi_attestation_info".format(cfg.TM_HOST)
 
         t = threading.Thread(
             target=TMAttestation.tm_attest_async_request,
-            args=[items[0]['node_id']] if 'node_id' in items[0] else [])
+            args=[url])
         t.start()
 
 
     @staticmethod
-    def tm_attest_async_request(node_id):
+    def tm_attest_node(items):
 
-        # attestation to whole infrastructure
-        if not node_id:
-            url = "https://{}/nfvi_attestation_info".format(cfg.TM_HOST)
+        if not items[0]['node_id']:
+            logger.error("A node identifier is required to trigger the attestation")
+            return
 
-        else:
-            url = "https://{}/nfvi_pop_attestation_info?node_id={}" \
-                .format(cfg.TM_HOST, node_id)
+        node_id = items[0]['node_id']
+
+        url = "https://{}/nfvi_pop_attestation_info?node_id={}" \
+              .format(cfg.TM_HOST, node_id)
+
+        t = threading.Thread(
+            target=TMAttestation.tm_attest_async_request,
+            args=[url])
+        t.start()
+
+
+    @staticmethod
+    def tm_attest_async_request(url):
 
         # trigger attestation in trust monitor
         logger.debug("Connecting to Trust Monitor: {}".format(url))

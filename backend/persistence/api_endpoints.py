@@ -223,6 +223,22 @@ notifications_tm_host = {
     'public_item_methods': ['GET', 'PATCH']
     }
 
+distinct_notifications_tm_host = {
+    'item_title':       'distinct tm host notifications',
+    'url':              'tm/notifications/distinct',
+    'schema':           api_model.notification_tm_host_model,
+    'resource_methods': ['GET'],
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'notifications_tm_host',
+        'default_sort': [('time', -1)],
+    },
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET'],
+
+}
+
 
 notifications_tm_host_admin = {
     'item_title':       'admin tm host notifications',
@@ -253,6 +269,22 @@ notifications_tm_vnsf = {
     'public_methods':      ['GET'],
     'public_item_methods': ['GET', 'PATCH']
     }
+
+distinct_notifications_tm_vnsf = {
+    'item_title':       'distinct tm host notifications',
+    'url':              'tm/vnsf/notifications/distinct',
+    'schema':           api_model.notification_tm_vnsf_model,
+    'resource_methods': ['GET'],
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'notifications_tm_vnsf',
+        'default_sort': [('time', -1)],
+    },
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET'],
+}
+
 
 notifications_tm_vnsf_admin = {
     'item_title':       'admin tm vnsf notifications',
@@ -532,7 +564,18 @@ validations = {
 ###
 #   Trigger on-demand Trust Monitor attestation
 ###
-tm_attest = {
+tm_attest_all = {
+    'item_title':       EndpointHelper.get_name(Endpoint.TM_ATTEST_ALL),
+    'url':              EndpointHelper.get_url(Endpoint.TM_ATTEST_ALL),
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.TM_ATTEST_ALL),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.TM_ATTEST_ALL)],
+    'schema':           EndpointHelper.get_schema(Endpoint.TM_ATTEST_ALL),
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods': ['POST']
+}
+
+tm_attest_node = {
     'item_title':       EndpointHelper.get_name(Endpoint.TM_ATTEST),
     'url':              EndpointHelper.get_url(Endpoint.TM_ATTEST),
     'resource_methods': EndpointHelper.get_resource_methods(Endpoint.TM_ATTEST),

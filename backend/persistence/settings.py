@@ -110,14 +110,19 @@ DOMAIN = {
     'notifications_vnsfo_admin': api_endpoints.notifications_vnsfo_admin,
     'notifications_tm_vnsf_admin': api_endpoints.notifications_tm_vnsf_admin,
     'notifications_tm_vnsf': api_endpoints.notifications_tm_vnsf,
+    'distinct_notifications_tm_vnsf': api_endpoints.distinct_notifications_tm_vnsf,
     'notifications_tm_host_admin': api_endpoints.notifications_tm_host_admin,
     'notifications_tm_host': api_endpoints.notifications_tm_host,
+    'distinct_notifications_tm_host': api_endpoints.distinct_notifications_tm_host,
     'tenant_ips':             api_endpoints.tenant_ip_association,
     'tenant_vnsfs':           api_endpoints.tenant_vnsf_association,
     'ns_instance_update':     api_endpoints.ns_instance_update,
-    'tm_attest':              api_endpoints.tm_attest,
+    'tm_attest_node':              api_endpoints.tm_attest_node,
+    'tm_attest_all':          api_endpoints.tm_attest_all
     }
 
+PAGINATION_LIMIT = 100
+PAGINATION_DEFAULT = 100
 
 ###
 #   Association Tenant IP
