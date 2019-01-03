@@ -98,6 +98,7 @@ class TMNotifications:
         response['_items'] = distinct_items
         response['_meta']['total'] = len(distinct_targets['hosts']) + len(distinct_targets['sdn'])
 
+
     @staticmethod
     def apply_host_remediation(updates, original):
 
@@ -114,6 +115,14 @@ class TMNotifications:
                 if value:
                     vnsfo.apply_remediation(target_type, target['node'], remediation)
 
+        if 'hosts' in updates:
+            del updates['hosts']
+        if 'sdn' in updates:
+            del updates['sdn']
+
+        updates['status'] = 'Applied'
+
+
     @staticmethod
     def apply_vnsf_remediation(updates, original):
 
@@ -124,3 +133,8 @@ class TMNotifications:
             for remediation, value in vnsf['remediation'].items():
                 if value:
                     vnsfo.apply_remediation('vnsf', vnsf['vnsf_id'], remediation)
+
+        if 'vnsfs' in updates:
+            del updates['vnsfs']
+
+        updates['status'] = 'Applied'

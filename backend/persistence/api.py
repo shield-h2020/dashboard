@@ -67,8 +67,6 @@ app.on_insert_nss_inventory += NssInventoryHooks.provision_network_service
 app.on_update_ns_instantiate += NssInventoryHooks.instantiate_network_service
 app.on_update_ns_terminate += NssInventoryHooks.terminate_network_service
 
-app.register_blueprint(swagger)
-
 app.on_update_notifications_tm_vnsf += TMNotifications.apply_vnsf_remediation
 app.on_update_notifications_tm_host += TMNotifications.apply_host_remediation
 
@@ -78,6 +76,7 @@ app.on_fetched_resource_distinct_notifications_tm_host += TMNotifications.get_di
 app.on_insert_tm_attest_node += TMAttestation.tm_attest_node
 app.on_insert_tm_attest_all += TMAttestation.tm_attest_all
 
+app.register_blueprint(swagger)
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info
 
