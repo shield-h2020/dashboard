@@ -46,7 +46,8 @@ class NSInstanceHooks:
 
         data = json.loads(request.data)
         item = {
-            "instance_id": data["ns_instance_id"]
+            "instance_id": data["ns_instance_id"],
+            "nfvo_version": data['nfvo_version']
         }
 
         if self.queue.put(item):

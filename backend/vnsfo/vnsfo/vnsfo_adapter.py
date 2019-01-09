@@ -106,7 +106,7 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def instantiate_ns(self, ns_id, target):
+    def instantiate_ns(self, ns_id, target, nfvo_version):
         """
         :param ns_id:
         :param target:

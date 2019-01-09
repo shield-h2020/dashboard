@@ -94,12 +94,15 @@ class NssInventoryHooks:
         ns_id = r['ns_id']
         ns_name = r['ns_name']
         target = r['manifest']['manifest:ns']['target']
+        orchestrator_type = r['manifest']['manifest:ns']['type']
+        orchestrator_version = 'r4' if orchestrator_type == 'OSM-R4' else 'r2'
+
         print("\n\n\nRetrieved ns_id: '{}', ns_name: '{}' target: {}\n\n".format(ns_id, ns_name, target))
 
         try:
             vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                                   cfg.VNSFO_API)
-            r = vnsfo.instantiate_ns(ns_name, target)
+            r = vnsfo.instantiate_ns(ns_name, target, orchestrator_version)
             if not r:
                 logger.error("FAILED instantiation of network service '{}'".format(ns_name))
                 message = r.text if r.text else r.json() if r.json() else None
@@ -122,7 +125,8 @@ class NssInventoryHooks:
         # Trigger NS Instance polling
         url = "{}/ns_instance_update".format(cfg.BACKENDAPI)
         json_instance_update = {
-            "ns_instance_id": updates['instance_id']
+            "ns_instance_id": updates['instance_id'],
+            "nfvo_version": orchestrator_version
         }
         headers = {'Content-Type': 'application/json'}
         r = requests.post(url, json=json_instance_update, headers=headers, verify=False)

@@ -47,12 +47,13 @@ class VNSFONSInstanceProcessor(Processor):
 
     def processor(self, item, *args, **kwargs):
         instance_id = item['instance_id']
+        vnfvo_version = item['nfvo_version']
 
         running_status = ''
         data = {}
         while running_status not in ['running', 'failed']:
             time.sleep(3)
-            url = f"{self.basepath}/ns/running/{instance_id }"
+            url = f"{self.basepath}/ns/{vnfvo_version}/running/{instance_id }"
 
             self.logger.debug(f"Polling NS instance '{instance_id }'")
 
