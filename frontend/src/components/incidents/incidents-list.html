@@ -24,7 +24,8 @@
           current-date="$ctrl.setStartDate()"></sn-date-picker>
       </div>
       <div class="col-xs-3" ng-if="$ctrl.showDatePicker==true">
-        <sn-date-picker label="{{::$ctrl.viewStrings.endDate}}" on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})"></sn-date-picker>
+        <sn-date-picker label="{{::$ctrl.viewStrings.endDate}}" on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})"
+        current-date="$ctrl.setEndDate()"></sn-date-picker>
       </div>
 
     </div>

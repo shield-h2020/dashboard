@@ -66,6 +66,9 @@ export const HomeComponent = {
       this.scope.$on('ATTESTATION_NOTIF_EMIT', (event, data) => {
         this.openAttestationNotificationDetails(data);
       });
+      this.scope.$on('MODAL_EVENT_EMIT', (event, data) => {
+        this.modalEvent(data);
+      });
     }
 
     $onDestroy() {
@@ -181,7 +184,10 @@ export const HomeComponent = {
 
     openAttestationNotificationDetails(data) {
       this.scope.$broadcast('ATTESTATION_NOTIF_BROADCAST', data);
-    } 
+    }
+    modalEvent(data) {
+      this.scope.$broadcast('MODAL_EVENT_BROADCAST', data);
+    }
   },
 };
 

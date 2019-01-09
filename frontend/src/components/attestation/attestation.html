@@ -4,6 +4,7 @@
     <div class="sn-card">
         <header class="sn-card__header">
             <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
+            <button ng-click="$ctrl.attestationAll()" class="sn-button sn-button--primary">{{$ctrl.viewStrings.attestationAll}}</button>
         </header>
         <div class="row" ng-if="!$ctrl.authService.isUserTenantAdmin()">
             <div class="col-xl-4 col-lg-3 col-md-6 col-sm-12">

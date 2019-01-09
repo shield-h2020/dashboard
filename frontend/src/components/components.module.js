@@ -16,6 +16,7 @@ import { FooterModule } from './footer/footer.module';
 import { UsersModule } from './users/users.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AttestationModule } from './attestation/attestation.module';
+import { AttestationHistoryModule } from './attestation-history/attestation-history.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
@@ -43,13 +44,14 @@ export const ComponentsModule = angular.module('root.components', [
   UsersModule,
   DashboardModule,
   AttestationModule,
+  AttestationHistoryModule,
   TenantsModule,
   Table2Module,
   TableCustomActionsModule,
   CatalogueModule,
   OnboardValidationModule,
   NsInventoryModule,
-  VnsfNotificationsModule
+  VnsfNotificationsModule,
 ])
   .name;
 
