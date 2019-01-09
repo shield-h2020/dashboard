@@ -132,7 +132,7 @@ class TMNotifications:
         for vnsf in notification['vnsfs']:
             for remediation, value in vnsf['remediation'].items():
                 if value:
-                    vnsfo.apply_remediation('vnsf', vnsf['vnsf_id'], remediation)
+                    vnsfo.apply_remediation('vnsf', vnsf['vnsfd_id'], remediation)
 
         if 'vnsfs' in updates:
             del updates['vnsfs']
