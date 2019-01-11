@@ -523,6 +523,11 @@ ns_instance_update = {
         'type':     'string',
         'empty':    False,
         'required': True
+        },
+    'nfvo_version': {
+        'type':     'string',
+        'empty':    False,
+        'required': True,
         }
     }
 

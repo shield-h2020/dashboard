@@ -86,7 +86,8 @@ class TMNotifications:
                 return
 
             for target in item[target_key]:
-                print("processing target {}".format(target['node']))
+                if 'node' not in target.keys():
+                    return
                 if target['node'] in distinct_targets[target_key]:
                     if len(distinct_item[target_key]) == 1:
                         distinct_items.remove(distinct_item)
