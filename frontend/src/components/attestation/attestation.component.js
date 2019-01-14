@@ -82,10 +82,6 @@ export const AttestationComponent = {
               label: 'View History',
               action: this.redirectToHistory.bind(this),
             },
-            {
-              label: 'Attest',
-              action: this.attestNode.bind(this),
-            },
           ],
         };
       } else {
