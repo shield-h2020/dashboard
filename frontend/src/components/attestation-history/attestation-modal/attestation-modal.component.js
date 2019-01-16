@@ -70,19 +70,19 @@ export const AttestationModalComponent = {
         if (this.authService.isUserTenantAdmin()) {
           Object.keys(data.remediation).forEach((key) => {
             if (data.remediation[key] === true && key.toLocaleLowerCase() !== 'terminate') {
-              this.optionsRemediation.push({ text: key, value: key.toLocaleLowerCase() });
+              this.optionsRemediation.push({ text: key, value: key });
             }
           });
         } else if (data.type === 'sdn') {
           Object.keys(data.extrainfo.Remediation).forEach((key) => {
             if (data.extrainfo.Remediation[key] === true && key.toLocaleLowerCase() !== 'terminate') {
-              this.optionsRemediation.push({ text: key, value: key.toLocaleLowerCase() });
+              this.optionsRemediation.push({ text: key, value: key });
             }
           });
         } else {
           Object.keys(data.remediation).forEach((key) => {
             if (data.remediation[key] === true && key.toLocaleLowerCase() !== 'terminate') {
-              this.optionsRemediation.push({ text: key, value: key.toLocaleLowerCase() });
+              this.optionsRemediation.push({ text: key, value: key });
             }
           });
         }
@@ -102,7 +102,7 @@ export const AttestationModalComponent = {
         this.scope.$broadcast('modalEvent', 'close');
       };
       this.open = !this.open;
-      this.scope.$emit('MODAL_EVENT_EMIT', { message: 'cancel'});
+      this.scope.$emit('MODAL_EVENT_EMIT', { message: 'cancel' });
     }
 
     applyRemediation() {
@@ -122,7 +122,7 @@ export const AttestationModalComponent = {
             },
           ],
         };
-        data.vnsfs[0].remediation[`${this.selectedRemediation.replace(/\s/g, '')}`] = true;
+        data.vnsfs[0].remediation[`${this.selectedRemediation}`] = true;
       } else if (this.nodeData.type === 'sdn') {
         id = this.nodeData._id;
         etag = this.nodeData._etag;
@@ -134,7 +134,7 @@ export const AttestationModalComponent = {
             },
           ],
         };
-        data.sdn[0].remediation[`${this.selectedRemediation.replace(/\s/g, '')}`] = true;
+        data.sdn[0].remediation[`${this.selectedRemediation}`] = true;
       } else {
         id = this.nodeData._id;
         etag = this.nodeData._etag;
@@ -146,7 +146,7 @@ export const AttestationModalComponent = {
             },
           ],
         };
-        data.hosts[0].remediation[`${this.selectedRemediation.replace(/\s/g, '')}`] = true;
+        data.hosts[0].remediation[`${this.selectedRemediation}`] = true;
       }
       this.attestationHistoryService.getRemediation(id, data, etag)
       .then(() => {

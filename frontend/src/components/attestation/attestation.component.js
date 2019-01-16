@@ -4,7 +4,7 @@ import styles from './attestation.scss';
 const VIEW_STRING = {
   title: 'Attestation',
   tableTitle: 'Attestation',
-  attestationAll: 'Attest Shield',
+  attestationAll: 'Attest NFV Infrastructure',
 };
 
 const TABLE_HEADERS_TM = {
@@ -227,14 +227,14 @@ export const AttestationComponent = {
       }
       this.attestationService.attestInfrastructure(this.filters)
       .then(() => {
-        this.toast.success('Attest has trigger successfully', 'Attest Trigger Successfully');
+        this.toast.success('Node attestation in progress', 'Node attestation');
       });
     }
 
     attestationAll() {
       this.attestationService.attestAllInfrastructure(this.filters)
       .then(() => {
-        this.toast.success('Attest all nodes has trigger successfully', 'Attest Trigger Successfully');
+        this.toast.success('NFV Infrastructure attestation in progress', 'NFV Infrastructure');
       });
     }
 
