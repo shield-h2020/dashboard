@@ -109,12 +109,15 @@ class TMNotifications:
         notification = dict(original)
         target_type = 'hosts' if 'hosts' in notification.keys() else 'sdn'
 
-        for target in notification[target_type]:
-            remediation_dict = target['remediation'] if 'remediation' in target.keys() else target['extra_info']['Remediation']
+        notification_updates = dict(updates)
+        for index, target in enumerate(notification_updates[target_type]):
+            remediation_updates_dict = target['remediation'] if 'remediation' in target.keys() else target['extra_info']['Remediation']
+            remediation_dict = notification[target_type][index]['remediation'] if 'remediation' in notification[target_type][index].keys() else notification[target_type][index]['extra_info']['Remediation']
 
-            for remediation, value in remediation_dict.items():
-                if value:
-                    vnsfo.apply_remediation(target_type, target['node'], remediation)
+            for remediation, value in remediation_updates_dict.items():
+                print(remediation_dict)
+                if value and remediation_dict[remediation]:
+                    vnsfo.apply_remediation(target_type, notification[target_type][index]['node'], remediation)
 
         if 'hosts' in updates:
             del updates['hosts']
@@ -130,10 +133,14 @@ class TMNotifications:
         vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                               cfg.VNSFO_API)
         notification = dict(original)
-        for vnsf in notification['vnsfs']:
-            for remediation, value in vnsf['remediation'].items():
-                if value:
-                    vnsfo.apply_remediation('vnsf', vnsf['vnsfd_id'], remediation)
+        notification_updates = dict(updates)
+
+        for index, vnsf in enumerate(notification_updates['vnsfs']):
+            remediation_dict = notification['vnsfs'][index]['remediation']
+            remediation_updates_dict = vnsf['remediation']
+            for remediation, value in remediation_updates_dict.items():
+                if value and remediation_dict[remediation]:
+                    vnsfo.apply_remediation('vnsf', notification['vnsfs'][index]['vnsfd_id'], remediation)
 
         if 'vnsfs' in updates:
             del updates['vnsfs']

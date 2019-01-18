@@ -155,7 +155,8 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         action_map = {
             'isolate': 'isolated',
-            'reboot': 'reboot'
+            'reboot': 'reboot',
+            'terminate': 'terminated'
         }
 
         headers = {'Content-Type': 'application/json'}
@@ -167,7 +168,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         self.logger.debug(f"Send remediation data {remediation} to {url}")
 
         try:
-            r = requests.put(url, headers=headers, json=remediation)
+            r = requests.put(url, headers=headers, json=remediation, verify=False)
 
             if r.text:
                 self.logger.debug(r.text)
@@ -202,7 +203,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         self.logger.debug(f"Send remediation data {remediation} to {url}")
 
         try:
-            r = requests.post(url, headers=headers, json=remediation)
+            r = requests.post(url, headers=headers, json=remediation, verify=False)
             if r.text:
                 self.logger.debug(r.text)
 
