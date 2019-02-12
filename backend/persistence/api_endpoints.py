@@ -668,10 +668,12 @@ billing_ns_summary = {
     'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_SUMMARY),
     'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_SUMMARY),
     'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_NS_SUMMARY),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_NS_SUMMARY),
     'schema':             EndpointHelper.get_schema(Endpoint.BILLING_NS_SUMMARY),
 
     # TODO: remove later
-    'public_methods':     ['POST', 'GET']
+    'public_methods':     ['POST', 'GET'],
+    'public_item_methods': ['DELETE']
 }
 
 billing_vnsf_summary = {

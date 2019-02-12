@@ -41,7 +41,7 @@ from eve.methods.post import post_internal
 
 from dashboardutils import http_utils
 from keystone_adapter import KeystoneAuthzApi
-
+import pprint
 import logging
 import requests
 from flask import current_app
@@ -254,9 +254,9 @@ class BillingActions:
         logger.debug("Retrieving 'billing_ns_usage' of NS instance id={} for month={}"
                      .format(ns_instance_id, month))
 
-        (ns_usage_data, _, _, status, _) = get_internal('billing_vnsf', ns_instance_id=ns_instance_id, month=month)
+        (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage', ns_instance_id=ns_instance_id, month=month)
 
-        if not status == http_utils.HTTP_200_OK or billing_vnsf_data['_meta']['total'] != 1:
+        if not status == http_utils.HTTP_200_OK or ns_usage_data['_meta']['total'] != 1:
             logger.debug("The 'billing_ns_usage' of NS instance id={} for month={} does not exist."
                          .format(ns_instance_id, month))
             return None
@@ -287,6 +287,17 @@ class BillingActions:
             abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 409, "message":
                                         "Specification of fields other than 'ns_instance_id' is not allowed."}}), 409))
 
+        # Protect against inserting a new usage with the same ns_instance_id and month combination
+        current_date = datetime.datetime.now()
+        month = current_date.strftime('%Y-%m')
+        ns_usage_item = BillingActions._get_billing_ns_usage(request.json['ns_instance_id'], month)
+        if ns_usage_item:
+            logger.error("NS Usage record for NS instance id={} and month={} already exists"
+                         .format(request.json['ns_instance_id'], month))
+            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 400, "message":
+                                "NS Usage record for NS instance id={} and month={} already exists"
+                                .format(request.json['ns_instance_id'], month)}}), 400))
+
         # Retrieve 'ns_id' and 'tenant_id' using the 'instance_id' from the nss_inventory
         logger.debug("Retrieving information about provided instance id {}".format(request.json['ns_instance_id']))
         # Returns a tuple: (response, last_modified, etag, status, headers)
@@ -304,17 +315,19 @@ class BillingActions:
 
         # Retrieve current fee from 'billing_ns' for this 'ns_id'
         fee = BillingActions._get_billing_ns_fee(ns_id)
-
-        current_date = datetime.datetime.now()
         used_from = current_date.date()
         used_to = current_date.date()
+
+
+
+
+
 
         # Assign calculated fields to post request
         request.json['tenant_id'] = tenant_id
         request.json['ns_id'] = ns_id
         request.json['usage_status'] = 'open'
-        request.json['instance_status'] = 'running'
-        request.json['month'] = current_date.strftime('%Y-%m')
+        request.json['month'] = month
         request.json['used_from'] = used_from.isoformat()
         request.json['used_to'] = used_to.isoformat()
         request.json['fee'] = fee
@@ -357,7 +370,7 @@ class BillingActions:
 
         # Update calculated fields
         updates['used_to'] = used_to.isoformat()
-        updates['instance_status'] = "terminated"
+        updates['usage_status'] = 'closed'
         updates['billable_percentage'] = BillingActions._get_ns_usage_billable_percentage(
             used_from, used_to
         )
@@ -419,7 +432,16 @@ class BillingActions:
         billing_ns_usage, billing_vnsf_usage, billing_ns_summary and billing_vnsf_summary
         """
         logger = logging.getLogger(__name__)
-        logger.info("Updating billing information data")
+        logger.info("Updating Billing Information")
+
+        BillingActions._update_billing_usage()
+        BillingActions._update_billing_summary()
+
+
+    @staticmethod
+    def _update_billing_usage():
+        logger = logging.getLogger(__name__)
+        logger.debug("Updating Billing NS Usage")
 
         # retrieve current billing ns usage data
         (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage')
@@ -433,121 +455,306 @@ class BillingActions:
 
             if instance_status == 'terminated':
                 logger.debug("NS Instance '{}' status is terminated. Skipping.".format(item['ns_instance_id']))
-                return
+                continue
 
             # get 'used_from' date
             used_from = dateutil.parser.parse(item['used_from']).date()
 
-            # set 'used_to' date
-            # a new 'billing_ns_usage' record needs to be created if the month has finished
-            # (used_from month is lower than used_to month) and consequently define 'used_to' as the end of the
-            # 'used_from' year-month
+            # get current date
             current_date = datetime.datetime.now().date()
 
+            # current month no longer applies to this ns usage record
             if current_date.year > used_from.year or current_date.month > used_from.month:
+                logger.debug("Current date month is higher in NS Usage instance id={} month={}"
+                             .format(item['ns_instance_id'], item['ns_id']))
 
+                # skip if this month's usage record is already closed
+                if item['usage_status'] == 'closed':
+                    continue
+
+                # calculate 'used_to' for this month's usage record
                 (_, year_month_last_day) = calendar.monthrange(used_from.year, used_from.month)
                 used_to = datetime.datetime(used_from.year, used_from.month, year_month_last_day).date()
-                billable_percentage = BillingActions._get_ns_usage_billable_percentage(used_from, used_to)
-                billable_fee = BillingActions._get_ns_usage_billable_fee(item['fee'], billable_percentage)
 
-                # close this 'billing_ns_usage' if isn't already closed
-                if item['usage_status'] != 'closed':
-                    logger.debug("Closing usage of NS instance={} month={}"
-                                 .format(item['ns_instance_id'], item['month']))
+                # close this month's usage record
+                logger.debug("Closing usage of NS instance={} month={}".format(item['ns_instance_id'], item['month']))
 
-                    with current_app.test_request_context():
-                        payload = {
-                            'used_to': used_to.isoformat(),
-                            'billable_percentage': billable_percentage,
-                            'billable_fee': billable_fee,
-                            'usage_status': 'closed'
-                        }
-                        lookup = {"_id": item['_id']}
-                        (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
-                        if status != http_utils.HTTP_200_OK:
-                            logger.debug("Failed to update 'billing_ns_usage' id '{}'".format(item['_id']))
-                            return
+                BillingActions._update_billing_ns_usage(current_date, item, used_to)
 
-                # for each month up to current month, get 'billing_ns_usage' if existent,
+                # for each month up to current month, get 'billing_ns_usage' if existent and update it,
                 # otherwise create new 'billing_ns_usage' record
                 time_delta = relativedelta(used_to, used_from)
-                months_delta = time_delta.months + time_delta.years*12 + (1 if time_delta.days else 0)
+                months_delta = time_delta.months + time_delta.years * 12 + (1 if time_delta.days else 0)
 
                 print("Dealing with months delta = {}".format(months_delta))
                 # TODO: check if this delta is correct!
 
                 for i in range(months_delta):
-                    used_from = (datetime.datetime(used_from.year, used_from.month, 1) +
-                                 relativedelta(months=1)).date()
 
-                    instance_status = BillingActions._get_ns_instance_status(item['ns_instance_id'])
+                    # calculate 'used_from' for this month's record
+                    used_from = (datetime.datetime(used_from.year, used_from.month, 1) + relativedelta(months=1)).date()
 
+                    # determine 'used_to' based on the current year/month
                     if current_date.year == used_from.year and current_date.month == used_from.month:
                         used_to = current_date
-                        usage_status = 'open' if instance_status == 'running' else 'closed'
                     else:
                         (_, year_month_last_day) = calendar.monthrange(used_from.year, used_from.month)
                         used_to = datetime.datetime(used_from.year, used_from.month, year_month_last_day).date()
-                        usage_status = 'closed'
 
+                    # get month's usage record
                     month = used_from.strftime('%Y-%m')
-                    logger.debug("Creating usage of NS instance={}, month={}, used_from={}, used_to={}"
-                                 .format(item['ns_instance_id'], month, used_from.isoformat(), used_to.isoformat()))
+                    ns_usage_item = BillingActions._get_billing_ns_usage(item['ns_instance_id'], month)
 
-                    fee = BillingActions._get_billing_ns_fee(item['ns_id'])
-                    billable_percentage = BillingActions._get_ns_usage_billable_percentage(used_from, used_to)
-                    billable_fee = BillingActions._get_ns_usage_billable_fee(fee, billable_percentage)
-                    with current_app.test_request_context():
-                        payload = {
-                            'ns_instance_id': item['ns_instance_id'],
-                            'ns_id': item['ns_id'],
-                            'tenant_id': item['tenant_id'],
-                            'usage_status': usage_status,
-                            'month': month,
-                            'used_from': used_from.isoformat(),
-                            'used_to': used_to.isoformat(),
-                            'fee': fee,
-                            'billable_percentage': billable_percentage,
-                            'billable_fee': billable_fee
-                        }
-                        (result, _, etag, status, _) = post_internal("billing_ns_usage", payload)
-                        print("-------> creation status: {}, result: {}".format(status, result))
-                        if status != http_utils.HTTP_201_CREATED:
-                            logger.debug("Failed to create 'billing_ns_usage' for NS Instance '{}'"
-                                         .format(item['ns_instance_id']))
-                            return
+                    # 'ns_billing_usage' does not exist for this ns_instance_id and month -> create it
+                    if not ns_usage_item:
+                        logger.debug("The 'billing_ns_usage' for NS instance id={} of month={} does not exist. "
+                                     "Creating it.")
+                        BillingActions._create_billing_ns_usage(
+                            current_date,
+                            item['ns_instance_id'],
+                            item['tenant_id'],
+                            item['ns_id'],
+                            month,
+                            used_from,
+                            used_to,
+                        )
+
+                    # 'ns_billing_usage' already exists for this ns_instance_id and month
+                    else:
+                        # check if it is closed
+                        if ns_usage_item['usage_status'] == 'closed':
+                            # do nothing. silently ignore
+                            continue
+
+                        logger.debug("Updating NS Usage of instance_id={} and month={}"
+                                     .format(item['ns_instance_id'], item['month']))
+
+                        # update 'billing_ns_usage' of this month's record
+                        BillingActions._update_billing_ns_usage(current_date, item, used_to)
+
+            # current month applies to this ns usage record
             else:
-                # update 'used_to' date, 'billable_percentage' and 'billable_fee'
-                logger.debug("Updating usage of NS instance={} month={}"
+                logger.debug("Current date month is within the NS Usage instance id={} month={}"
+                             .format(item['ns_instance_id'], item['ns_id']))
+                logger.debug("Updating NS Usage of instance_id={} and month={} to current date."
                              .format(item['ns_instance_id'], item['month']))
 
-                used_to = current_date
-                billable_percentage = BillingActions._get_ns_usage_billable_percentage(used_from, used_to)
-                billable_fee = BillingActions._get_ns_usage_billable_fee(item['fee'], billable_percentage)
+                if current_date < used_from:
+                    logger.error("The system datetime clock was set ahead of time at some point. Skipping update.")
+                    continue
 
-                (_, year_month_last_day) = calendar.monthrange(used_from.year, used_from.month)
-                if current_date.day == year_month_last_day:
-                    logger.debug("Last day of the month {}: Closing usage of NS instance={}"
-                                 .format(item['month'], item['ns_instance_id']))
-                    usage_status = 'closed'
+                # update 'billing_ns_usage' of current month's record
+                BillingActions._update_billing_ns_usage(current_date, item, current_date)
+
+    @staticmethod
+    def _create_billing_ns_usage(current_date, ns_instance_id, tenant_id, ns_id, month, used_from, used_to):
+        logger = logging.getLogger(__name__)
+        logger.debug("Creating usage of NS instance={}, month={}, used_from={}, used_to={}"
+                     .format(ns_instance_id, month, used_from.isoformat(), used_to.isoformat()))
+
+        fee = BillingActions._get_billing_ns_fee(ns_id)
+        billable_percentage = BillingActions._get_ns_usage_billable_percentage(used_from, used_to)
+        billable_fee = BillingActions._get_ns_usage_billable_fee(fee, billable_percentage)
+        instance_status = BillingActions._get_ns_instance_status(ns_instance_id)
+        (_, year_month_last_day) = calendar.monthrange(used_from.year, used_from.month)
+        if current_date.day == year_month_last_day:
+            logger.debug("Last day of the month {}: Closing usage of NS instance={}"
+                         .format(month, ns_instance_id))
+            usage_status = 'closed'
+        else:
+            usage_status = 'open' if instance_status == 'running' else 'closed'
+
+        with current_app.test_request_context():
+            payload = {
+                'ns_instance_id': ns_instance_id,
+                'ns_id': ns_id,
+                'tenant_id': tenant_id,
+                'usage_status': usage_status,
+                'month': month,
+                'used_from': used_from.isoformat(),
+                'used_to': used_to.isoformat(),
+                'fee': fee,
+                'billable_percentage': billable_percentage,
+                'billable_fee': billable_fee
+            }
+            (result, _, etag, status, _) = post_internal("billing_ns_usage", payload)
+            print("-------> creation status: {}, result: {}".format(status, result))
+            if status != http_utils.HTTP_201_CREATED:
+                logger.error("Failed to create 'billing_ns_usage' for NS Instance '{}'"
+                             .format(item['ns_instance_id']))
+                return
+
+    @staticmethod
+    def _update_billing_ns_usage(current_date, item, used_to):
+        logger = logging.getLogger(__name__)
+        logger.debug("Updating usage of NS instance={} month={}".format(item['ns_instance_id'], item['month']))
+
+        used_from = dateutil.parser.parse(item['used_from']).date()
+        billable_percentage = BillingActions._get_ns_usage_billable_percentage(used_from, used_to)
+        billable_fee = BillingActions._get_ns_usage_billable_fee(item['fee'], billable_percentage)
+        instance_status = BillingActions._get_ns_instance_status(item['ns_instance_id'])
+
+        if current_date.month > used_to.month:
+            logger.debug("NS Instance={} used up to last day of the month={}. Closing usage record."
+                         .format(item['ns_instance_id'], item['month']))
+            usage_status = 'closed'
+        else:
+            usage_status = 'open' if instance_status == 'running' else 'closed'
+
+        with current_app.test_request_context():
+            payload = {
+                'used_to': used_to.isoformat(),
+                'billable_percentage': billable_percentage,
+                'billable_fee': billable_fee,
+                'usage_status': usage_status
+            }
+            lookup = {"_id": item['_id']}
+            (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
+            if status != http_utils.HTTP_200_OK:
+                logger.error("Failed to update 'billing_ns_usage' id '{}'".format(item['_id']))
+                return
+
+    @staticmethod
+    def _add_item_control_ns_summary(ns_summary, item):
+
+        # add tenant dict
+        if item['tenant_id'] not in ns_summary.keys():
+            ns_summary[item['tenant_id']] = dict()
+        tenant = ns_summary[item['tenant_id']]
+
+        # add tenant->month dict
+        if item['month'] not in tenant.keys():
+            tenant[item['month']] = dict()
+        month = tenant[item['month']]
+
+        # add tenant->month->ns_instances list
+        if 'ns_instances' not in month:
+            month['ns_instances'] = list()
+        ns_instances = month['ns_instances']
+
+        # add tenant->month->nss list
+        if 'nss' not in month:
+            month['nss'] = list()
+        nss = month['nss']
+
+        # append item ns_instance_id if not existent
+        if item['ns_instance_id'] not in ns_instances:
+            ns_instances.append(item['ns_instance_id'])
+
+        # append item ns_id to tenant->month->nss and create it if not existent
+        if item['ns_id'] not in nss:
+            nss.append(item['ns_id'])
+
+        # add tenant->month->billable_fee if not existent
+        if 'billable_fee' not in month.keys():
+            month['billable_fee'] = 0
+
+        #  add tenant->month->status if not existent
+        if 'status' not in month.keys():
+            month['status'] = 'closed'
+
+        # increase tenant->month->billable_fee of item billable_fee
+        month['billable_fee'] += item['billable_fee']
+
+        # set tenant->month->status to open if item is open
+        if item['usage_status'] == 'open':
+            month['status'] = 'open'
+
+    @staticmethod
+    def _update_billing_summary():
+        logger = logging.getLogger(__name__)
+        logger.debug("Updating Billing NS Summary")
+
+        ns_summary = dict()
+
+        # crawl trough current billing ns usage data to populate ns_summary
+        (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage')
+        for item in ns_usage_data['_items']:
+            logger.debug("Processing NS Instance '{}' of NS '{}' belonging to Tenant {}"
+                         .format(item['ns_instance_id'], item['ns_id'], item['tenant_id']))
+
+            BillingActions._add_item_control_ns_summary(ns_summary, item)
+
+        logger.debug("Retrieved the following Billing NS Summary:\n {}".format(pprint.pformat(ns_summary)))
+
+        # cycle through ns_summary tenants->months and retrieve its billing ns summary
+        for tenant, months in ns_summary.items():
+            for month, item in ns_summary[tenant].items():
+                (ns_summary_data, _, _, status, _) = get_internal('billing_ns_summary',
+                                                                  tenant_id=tenant,
+                                                                  month=month)
+
+                # if summary for this tenant->month doesn't exist > create it (post)
+                if not status == http_utils.HTTP_200_OK or ns_summary_data['_meta']['total'] == 0:
+                    logger.debug("Billing NS Summary of tenant id={} and month={} does not exist. Creating it."
+                                 .format(tenant, month))
+
+                    with current_app.test_request_context():
+
+                        payload = {
+                            'tenant_id': tenant,
+                            'month': month,
+                            'number_nss': len(item['nss']),
+                            'number_ns_instances': len(item['ns_instances']),
+                            'status': item['status'],
+                            'billable_fee': item['billable_fee']
+                        }
+                        (result, _, etag, status, _) = post_internal("billing_ns_summary", payload)
+                        logger.debug("Created NS Summary for tenant id={} and month={}".format(tenant, month))
+                        if status != http_utils.HTTP_201_CREATED:
+                            logger.error("Failed to create 'billing_ns_summary' for tenant id={} and month={}"
+                                         .format(tenant, month))
+                            continue  # or return?
+
+                # if summary for this tenant->month exist -> update it (patch)
                 else:
-                    usage_status = 'open'
+                    billing_ns_summary_id = ns_summary_data['_items'][0]['_id']
+                    with current_app.test_request_context():
+                        payload = {
+                            'number_nss': len(item['nss']),
+                            'number_ns_instances': len(item['ns_instances']),
+                            'status': item['status'],
+                            'billable_fee': item['billable_fee']
+                        }
+                        lookup = {"_id": billing_ns_summary_id}
+                        (result, _, etag, status) = patch_internal("billing_ns_summary", payload, **lookup)
+                        if status != http_utils.HTTP_200_OK:
+                            logger.error("Failed to update 'billing_ns_summary' for tenant id={} and month={}"
+                                         .format(tenant, month))
+                            continue  # or return?
 
-                with current_app.test_request_context():
-                    payload = {
-                        'used_to': used_to.isoformat(),
-                        'billable_percentage': billable_percentage,
-                        'billable_fee': billable_fee,
-                        'usage_status': usage_status
-                    }
-                    lookup = {"_id": item['_id']}
-                    (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
-                    if status != http_utils.HTTP_200_OK:
-                        logger.debug("Failed to update 'billing_ns_usage' id '{}'".format(item['_id']))
-                        return
-
-
-
-
-        print(ns_usage_data)
+    #
+    #         #     ns_summary[item['tenant_id']][item['month']] = dict()
+    #         #     ns_summary[item['tenant_id']][item['month']]['ns_instances'] = list()
+    #         #     ns_summary[item['tenant_id']][item['month']]['status'] = None
+    #         #     instance_
+    #         # else:
+    #
+    #
+    #
+    #         # retrieve summary for usage's month and tenant, if existent
+    #         (ns_summary_data, _, _, status, _) = get_internal(
+    #             'billing_ns_summary', tenant_id=item['tenant_id'], month=item['month'])
+    #
+    #         # Summary for this tenant and month does not exist -> create it
+    #         if not status == http_utils.HTTP_200_OK or ns_summary_data['_meta']['total'] == 0:
+    #             logger.debug("Billing NS Summary of tenant id={} and month={} does not exist. Creating it."
+    #                          .format(item['tenant_id'], item['month']))
+    #
+    #
+    #
+    #
+    #         instance_status = BillingActions._get_ns_instance_status(item['ns_instance_id'])
+    #
+    #     # retrieve current billing ns usage data
+    #     (ns_summary_data, _, _, status, _) = get_internal('billing_ns_summary')
+    #
+    #
+    #     # process NS summaries
+    #     for item in ns_summary_data['_items']:
+    #         logger.debug("Processing NS Summary _id={} of month={} belonging to tenant={}"
+    #                      .format(item['_id'], item['month'], item['tenant_id']))
+    #
+    #
+    # @staticmethod
+    # def create_billing_ns_summary(tenant_id, ,):

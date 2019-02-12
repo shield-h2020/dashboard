@@ -828,8 +828,8 @@ billing_ns_summary = {
         'required': True
     },
 
-    # Number of Network Instances used during the month
-    'number_ns': {
+    # Number of NSs used during the month
+    'number_nss': {
         'type': 'number',
         'empty': False,
         'required': True
@@ -850,23 +850,27 @@ billing_ns_summary = {
         'allowed':  ["closed", "open"],
     },
 
-    # NS instances associated with the billing summary
-    'ns_instances': {
-        'type': 'list',
-        'required': True,
-        'empty': True,
-        'schema': {
-            'ns_instance_id': {
-                'type': 'string',
-                'empty': False,
-                'required': True,
-                'unique': True
-            },
-            'billing_ns_usages': {
-
-            }
-        }
-    },
+    # # NS instances associated with the billing summary
+    # 'billing_ns_usages': {
+    #
+    # },
+    #
+    # 'ns_instances': {
+    #     'type': 'list',
+    #     'required': True,
+    #     'empty': True,
+    #     'schema': {
+    #         'ns_instance_id': {
+    #             'type': 'string',
+    #             'empty': False,
+    #             'required': True,
+    #             'unique': True
+    #         },
+    #         'billing_ns_usages': {
+    #
+    #         }
+    #     }
+    # },
 
     # Fee to charge for the NS availability.
     'billable_fee': {

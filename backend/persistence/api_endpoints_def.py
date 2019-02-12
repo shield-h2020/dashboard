@@ -859,7 +859,7 @@ class Endpoint(Enum):
                     'responses': http_utils.responses_read
                 }
             }
-        }
+        },
     }
 
     BILLING_NS_STOP_USAGE = {
@@ -897,6 +897,16 @@ class Endpoint(Enum):
                 __DOCS__: {
                     'summary': 'Create a billing summary',
                     'description': 'Create a billing summary for a particular tenant and month',
+                    'responses': http_utils.responses_read
+                }
+            }
+        },
+        __ITEM__: {
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_ns_summary:delete',
+                __DOCS__: {
+                    'summary': 'Remove a billing summary record',
+                    'description': 'Remove a billing summary record. (TESTS ONLY)',
                     'responses': http_utils.responses_read
                 }
             }
