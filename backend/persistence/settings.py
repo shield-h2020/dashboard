@@ -125,8 +125,12 @@ DOMAIN = {
     'billing_ns_start_usage': api_endpoints.billing_ns_start_usage,
     'billing_ns_stop_usage':  api_endpoints.billing_ns_stop_usage,
     'billing_ns_summary':     api_endpoints.billing_ns_summary,
+    'billing_vnsf_usage':     api_endpoints.billing_vnsf_usage,
     'billing_vnsf_summary':   api_endpoints.billing_vnsf_summary,
     'billing_update':         api_endpoints.billing_update,
+    'billing_ns_simulate':    api_endpoints.billing_ns_simulate,
+    'billing_usage':          api_endpoints.billing_usage,
+    'billing_summary':        api_endpoints.billing_ns_summary
     }
 
 PAGINATION_LIMIT = 100

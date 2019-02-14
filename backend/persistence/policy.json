@@ -108,5 +108,9 @@
   "billing_ns_usage:read": "rule:platform.admin",
   "billing_ns_usage:start": "rule:platform.admin",
   "billing_ns_usage:stop": "rule:platform.admin",
-  "billing_ns_usage:update": "rule:platform.admin"
+  "billing_ns_usage:update": "rule:platform.admin",
+
+  "billing_usage:read": "rule:platform.admin",
+  "billing_summary:read": "rule:platform.admin"
+
 }

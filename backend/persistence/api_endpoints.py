@@ -600,7 +600,7 @@ billing_ns = {
     'schema':             EndpointHelper.get_schema(Endpoint.BILLING_NS),
 
     # TODO: remove later
-    'public_methods':      ['GET', 'POST'],
+    'public_methods':      ['GET'],
     'public_item_methods': ['GET', 'PATCH', 'DELETE']
 }
 
@@ -617,6 +617,19 @@ billing_vnsf = {
     # TODO: remove later
     'public_methods':          ['GET'],
     'public_item_methods':     ['GET', 'PATCH', 'DELETE']
+}
+
+billing_usage = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_USAGE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_USAGE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_USAGE),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_USAGE),
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_USAGE)],
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_USAGE),
+
+    # TODO: remove later
+    'public_methods':    ['GET', 'POST'],
+    'public_item_methods': ['GET', 'DELETE', 'PATCH']
 }
 
 billing_ns_usage = {
@@ -664,6 +677,19 @@ billing_ns_stop_usage = {
     'public_item_methods': ['PATCH']
 }
 
+billing_vnsf_usage = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_VNSF_USAGE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_VNSF_USAGE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_VNSF_USAGE),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_VNSF_USAGE),
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_VNSF_USAGE)],
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_VNSF_USAGE),
+
+    # TODO: remove later
+    'public_methods':    ['GET', 'POST'],
+    'public_item_methods': ['GET', 'DELETE', 'PATCH']
+}
+
 billing_ns_summary = {
     'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_SUMMARY),
     'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_SUMMARY),
@@ -691,6 +717,16 @@ billing_update = {
     'url':                EndpointHelper.get_url(Endpoint.BILLING_UPDATE),
     'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_UPDATE),
     'schema':             EndpointHelper.get_schema(Endpoint.BILLING_UPDATE),
+
+    # TODO: remove later
+    'public_methods': ['POST']
+}
+
+billing_ns_simulate = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_SIMULATE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_SIMULATE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_NS_SIMULATE),
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_NS_SIMULATE),
 
     # TODO: remove later
     'public_methods': ['POST']

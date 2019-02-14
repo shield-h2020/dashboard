@@ -587,6 +587,12 @@ billing_ns = {
         'unique': True
     },
 
+    'constituent_vnsfs': {
+        'type': 'list',
+        'empty': False,
+        'required': True,
+    },
+
     # Calculated inherited monthly rates from the constituent vNSFs (OpEx)
     'expense_fee': {
         'type': 'number',
@@ -601,23 +607,6 @@ billing_ns = {
         'required': False,
         'default': 0.0
     },
-
-    # 'fee' minus 'expense_fee' balance
-    'instance_balance': {
-        'type': 'number',
-        'empty': False,
-        'required': False,
-        'default': 0.0
-    },
-
-    # Minimum number of instances to achieve a flatten balance
-    'flatten_min_instances': {
-        'type': 'number',
-        'empty': False,
-        'required': 'False',
-        'default': 0.0
-    }
-
 }
 
 
@@ -733,7 +722,6 @@ billing_ns_usage = {
 #
 
 billing_vnsf_usage = {
-
     # vNSF ID, from the Store catalogue
     'vnsf_id': {
         'type': 'string',
@@ -749,14 +737,19 @@ billing_vnsf_usage = {
     },
 
     # Active status -> specifies if the vNSF instance is active or idle
-    'vnsf_status': {
+    'usage_status': {
         'type': 'string',
         'empty': False,
         'required': True,
         'allowed':  ["active", "idle"],
     },
 
-
+    # Month of billing. Format: YYYY-MM.
+    'month': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
 
     # Date when the vNSF was instantiated by the SecaaS Client. Format: ISO 8601.
     'used_from': {
@@ -850,28 +843,6 @@ billing_ns_summary = {
         'allowed':  ["closed", "open"],
     },
 
-    # # NS instances associated with the billing summary
-    # 'billing_ns_usages': {
-    #
-    # },
-    #
-    # 'ns_instances': {
-    #     'type': 'list',
-    #     'required': True,
-    #     'empty': True,
-    #     'schema': {
-    #         'ns_instance_id': {
-    #             'type': 'string',
-    #             'empty': False,
-    #             'required': True,
-    #             'unique': True
-    #         },
-    #         'billing_ns_usages': {
-    #
-    #         }
-    #     }
-    # },
-
     # Fee to charge for the NS availability.
     'billable_fee': {
         'type': 'number',
@@ -885,34 +856,37 @@ billing_ns_summary = {
 #
 billing_vnsf_summary = {
 
-    # The Billing vNSF that this summary refers to
-    'billing_vnsf': {
-        'type': 'objectid',
-        'data_relation': {
-            'resource': 'billing_vnsf',
-            'field': '_id',
-            'embeddable': True
-        },
-        'required': True,
-        'empty': False
-    },
-
-    # # Tenant ID using the NS.
-    # 'tenant_id': {
-    #     'type': 'string',
-    #     'empty': False,
-    #     'required': True
-    # },
-
-    # Month to charge. Format: YYYY-MM.
-    'month': {
+    # Developer that owns the vNSF
+    'user_id': {
         'type': 'string',
         'empty': False,
         'required': True
     },
 
-    # Fee to charge for the NS availability.
-    'fee': {
+    # Month to charge. Format: YYYY-MM.
+    'month': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+        'unique': True,
+    },
+
+    'number_vnsfs': {
+        'type': 'number',
+        'empty': False,
+        'required': True,
+    },
+
+    # Specifies if this usage is still counting, i.e. subject to be updated (open or closed)
+    'status': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+        'allowed': ['open', 'closed']
+    },
+
+    # Fee to charge for the vNSF availability.
+    'billable_fee': {
         'type': 'number',
         'empty': False,
         'required': True
@@ -924,3 +898,4 @@ billing_vnsf_summary = {
 # typically called by the Billing Monitor Scheduler
 #
 billing_update = {}
+

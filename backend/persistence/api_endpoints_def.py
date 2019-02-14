@@ -795,6 +795,23 @@ class Endpoint(Enum):
         }
     }
 
+    BILLING_USAGE = {
+        __NAME__: 'admin billing usage',
+        __URL__: 'billing/usage',
+        __SCHEMA__: {},
+        __RESOURCE__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_usage:read',
+                __DOCS__: {
+                    'summary': 'Obtains the general administration billing usage counters for NSs and vNSFs.',
+                    'description': 'Obtains the general administration billing usage counters for NSs and vNSFs.',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+
     BILLING_NS_USAGE = {
         __NAME__: 'start ns instance billing usage',
         __URL__: 'billing/ns/usage',
@@ -846,6 +863,56 @@ class Endpoint(Enum):
         }
     }
 
+    BILLING_VNSF_USAGE = {
+        __NAME__: 'start vnsf billing usage',
+        __URL__: 'billing/vnsf/usage',
+        __SCHEMA__: api_model.billing_vnsf_usage,
+        __RESOURCE__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_vnsf_usage:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing usage counters for vNSFs',
+                    'description': 'Obtains the billing usage counters for vNSFs',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_POST__: {
+                __POLICY__: 'billing_vnsf_usage:create',
+                __DOCS__: {
+                    'summary': 'Create billing usage counters for vNSFs',
+                    'description': 'Create billing usage counters for vNSFs',
+                    'responses': http_utils.responses_read
+                }
+            }
+        },
+        __ITEM__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_vnsf_usage:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing usage counters for a particular vNSFs',
+                    'description': 'Obtains the billing usage counters for a particular vNSFs',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_PATCH__: {
+                __POLICY__: 'billing_vnsf_usage:update',
+                __DOCS__: {
+                    'summary': 'Updates the billing usage counters for a particular vNSF',
+                    'description': 'Updates the billing usage counters for a particular vNSF',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_vnsf_usage:delete',
+                __DOCS__: {
+                    'summary': 'Remove a billing usage record of a particular vNSF',
+                    'description': 'Remove a billing usage record of a particular vNSF (TEST ONLY)',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
     BILLING_NS_START_USAGE = {
         __NAME__: 'start ns instance billing usage',
         __URL__: 'billing/ns/start',
@@ -873,6 +940,55 @@ class Endpoint(Enum):
                 __DOCS__: {
                     'summary': 'Stop billing usage counters for a Network Service Instance',
                     'description': 'Registers the stop date of billing on a particular NS instance',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_VNSF_START_USAGE = {
+        __NAME__: 'start vNSF billing usage',
+        __URL__: 'billing/vnsf/start',
+        __SCHEMA__: api_model.billing_vnsf_usage,
+        __RESOURCE__: {
+            __HTTP_POST__: {
+                __POLICY__: 'billing_vnsf_usage:start',
+                __DOCS__: {
+                    'summary': 'Start billing usage counters for a vNSF',
+                    'description': 'Start billing usage counters for a vNSF',
+                    'responses': http_utils.responses_read
+                }
+            }
+        },
+    }
+
+    BILLING_VNSF_STOP_USAGE = {
+        __NAME__: 'stop vnsf instance billing usage',
+        __URL__: 'billing/vnsf/stop',
+        __SCHEMA__: api_model.billing_vnsf_usage,
+        __RESOURCE__: {},
+        __ITEM__: {
+            __HTTP_PATCH__: {
+                __POLICY__: 'billing_vnsf_usage:stop',
+                __DOCS__: {
+                    'summary': 'Stop billing usage counters for a vNSF',
+                    'description': 'Stop billing usage counters for a vNSF',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_SUMMARY = {
+        __NAME__: 'admin billing summary',
+        __URL__: 'billing/summary',
+        __SCHEMA__: {},
+        __RESOURCE__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_summary:read',
+                __DOCS__: {
+                    'summary': 'Obtains the general administration billing summary counters for NSs and vNSFs.',
+                    'description': 'Obtains the general administration billing summary counters for NSs and vNSFs.',
                     'responses': http_utils.responses_read
                 }
             }
@@ -916,7 +1032,7 @@ class Endpoint(Enum):
     BILLING_VNSF_SUMMARY = {
         __NAME__: 'Keeps record of monthly fees that the ISP owns to Developers',
         __URL__: 'billing/vnsf/summary',
-        __SCHEMA__: api_model.billing_ns_summary,
+        __SCHEMA__: api_model.billing_vnsf_summary,
         __RESOURCE__: {
             __HTTP_GET__: {
                 __POLICY__: 'billing_vnsf_summary:read',
@@ -947,6 +1063,22 @@ class Endpoint(Enum):
                 __DOCS__: {
                     'summary': 'Update Billing Information Data',
                     'description': 'Update Billing Information Data including NS and vNSF Usages and Summaries',
+                    'responses': http_utils.responses_read
+                }
+            },
+        },
+    }
+
+    BILLING_NS_SIMULATE = {
+        __NAME__: 'Simulate billing fees for a particular Network Service',
+        __URL__: 'billing/ns/simulate',
+        __SCHEMA__: {},
+        __RESOURCE__: {
+            __HTTP_POST__: {
+                __POLICY__: 'billing_ns:simulate',
+                __DOCS__: {
+                    'summary': 'Simulate billing fees for a particular Network Service',
+                    'description': 'Simulate billing fees for a particular Network Service',
                     'responses': http_utils.responses_read
                 }
             },
