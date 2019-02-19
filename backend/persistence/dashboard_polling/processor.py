@@ -49,8 +49,10 @@ class VNSFONSInstanceProcessor(Processor):
         instance_id = item['instance_id']
         vnfvo_version = item['nfvo_version']
 
-        running_status = ''
+        ns_name = ''
+        vnsf_instances = list()
         data = {}
+        running_status = ''
         while running_status not in ['running', 'failed']:
             time.sleep(3)
             url = f"{self.basepath}/ns/{vnfvo_version}/running/{instance_id }"
@@ -60,30 +62,35 @@ class VNSFONSInstanceProcessor(Processor):
             response = requests.get(url, verify=False)
             if not response.status_code == http_utils.HTTP_200_OK:
                 # TODO: raise exception
-                self.logger.error(f"Couldn't retrieve running NS instance_id '{instance_id }' from vNSFO")
-                return False
+                self.logger.error(f"Couldn't retrieve running NS instance_id '{instance_id }' from vNSFO.")
+                running_status = 'failed'
+                continue
 
             data = response.json()
             if data['ns']:
+                ns_name = data['ns'][0]['ns_name']
                 running_status = data['ns'][0]['operational_status']
+                self.logger.debug(f"Continuing to poll NS instance '{instance_id }'. Current status: {running_status}")
 
-        self.logger.debug(f"NS instance '{instance_id }' ready")
 
-        vnsf_instances = list()
-        for vnf_instance in data['ns'][0]['constituent_vnf_instances']:
-            vnfr_id = vnf_instance['vnfr_id']
-            vnsf_instances.append(vnfr_id)
+        self.logger.debug(f"NS instance '{instance_id }' polling terminated. vNSFO replied status: '{running_status}'")
 
-        # vnsf_instances = list([vnf['vnfr_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
-        # print(data['ns'][0]['constituent_vnf_instances'])
+        if running_status == 'running':
 
-        self.logger.debug("vNSF Instances running: {}".format(vnsf_instances))
+            for vnf_instance in data['ns'][0]['constituent_vnf_instances']:
+                vnfr_id = vnf_instance['vnfr_id']
+                vnsf_instances.append(vnfr_id)
 
-        # if not vnsf_instances:
-        #     # TODO: raise exception
-        #     self.logger.error(
-        #         f"Couldn't retrieve associated vNSF instances with NS instance_id '{instance_id }' from vNSFO")
-        #     return False
+            # vnsf_instances = list([vnf['vnfr_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
+            # print(data['ns'][0]['constituent_vnf_instances'])
+
+            self.logger.debug("vNSF Instances running: {}".format(vnsf_instances))
+
+            # if not vnsf_instances:
+            #     # TODO: raise exception
+            #     self.logger.error(
+            #         f"Couldn't retrieve associated vNSF instances with NS instance_id '{instance_id }' from vNSFO")
+            #     return False
 
         message = {
             "type": "ns_instance",
@@ -91,7 +98,7 @@ class VNSFONSInstanceProcessor(Processor):
                 "instance_id": instance_id,
                 "operational_status": running_status,
                 "vnsf_instances": vnsf_instances,
-                "ns_name": data['ns'][0]['ns_name']
+                "ns_name": ns_name
             }
         }
 

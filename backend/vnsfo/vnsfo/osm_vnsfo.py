@@ -114,9 +114,9 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         except requests.exceptions.ConnectionError:
             self.logger.error("Couldn't connect to vNSFO")
 
-    def terminate_ns(self, instance_id):
+    def terminate_ns(self, instance_id, osm_version):
 
-        url = '{}/{}/{}'.format(self.basepath, 'ns/running', instance_id)
+        url = '{}/{}/{}/{}/{}'.format(self.basepath, 'ns', osm_version, 'running', instance_id)
         headers = {'Content-Type': 'application/json'}
 
         try:
@@ -130,7 +130,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             return r
 
         except requests.exceptions.ConnectionError:
-            self.logger.error("Couldn't connect to vNSFO")
+            self.logger.error("Termination failed. Couldn't connect to vNSFO")
 
     def apply_remediation(self, target_type, target_id, action):
 

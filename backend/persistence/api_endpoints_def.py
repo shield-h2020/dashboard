@@ -713,6 +713,14 @@ class Endpoint(Enum):
                     'description': 'Obtains the billing fees of a all Network Services',
                     'responses': http_utils.responses_read
                 }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_ns:delete',
+                __DOCS__: {
+                    'summary': 'Delete ALL billing_ns (TEST PURPOSES)',
+                    'description': 'Delete ALL billing_ns (TEST PURPOSES)',
+                    'responses': http_utils.responses_read
+                }
             }
 
         },
@@ -766,6 +774,14 @@ class Endpoint(Enum):
                     'responses': http_utils.responses_read
                 }
             },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_vnsf:delete',
+                __DOCS__: {
+                    'summary': 'Delete ALL billing_vnsf (TEST PURPOSES)',
+                    'description': 'Delete ALL billing_vnsf (TEST PURPOSES)',
+                    'responses': http_utils.responses_read
+                }
+            }
         },
         __ITEM__: {
             __HTTP_GET__: {
@@ -794,22 +810,22 @@ class Endpoint(Enum):
             }
         }
     }
-
-    BILLING_USAGE = {
-        __NAME__: 'admin billing usage',
-        __URL__: 'billing/usage',
-        __SCHEMA__: {},
-        __RESOURCE__: {
-            __HTTP_GET__: {
-                __POLICY__: 'billing_usage:read',
-                __DOCS__: {
-                    'summary': 'Obtains the general administration billing usage counters for NSs and vNSFs.',
-                    'description': 'Obtains the general administration billing usage counters for NSs and vNSFs.',
-                    'responses': http_utils.responses_read
-                }
-            }
-        }
-    }
+    #
+    # BILLING_USAGE = {
+    #     __NAME__: 'admin billing usage',
+    #     __URL__: 'billing/usage',
+    #     __SCHEMA__: api_model.billing_usage,
+    #     __RESOURCE__: {
+    #         __HTTP_GET__: {
+    #             __POLICY__: 'billing_usage:read',
+    #             __DOCS__: {
+    #                 'summary': 'Obtains the general administration billing usage counters for NSs and vNSFs.',
+    #                 'description': 'Obtains the general administration billing usage counters for NSs and vNSFs.',
+    #                 'responses': http_utils.responses_read
+    #             }
+    #         }
+    #     }
+    # }
 
 
     BILLING_NS_USAGE = {
@@ -830,6 +846,14 @@ class Endpoint(Enum):
                 __DOCS__: {
                     'summary': 'Create billing usage counters a Network Service Instance',
                     'description': 'Create billing usage counters a Network Service Instance.',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_ns_usage:delete',
+                __DOCS__: {
+                    'summary': 'Delete ALL billing_ns_usage (TEST PURPOSES)',
+                    'description': 'Delete ALL billing_ns_usage (TEST PURPOSES)',
                     'responses': http_utils.responses_read
                 }
             }
@@ -881,6 +905,14 @@ class Endpoint(Enum):
                 __DOCS__: {
                     'summary': 'Create billing usage counters for vNSFs',
                     'description': 'Create billing usage counters for vNSFs',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_vnsf_usage:delete',
+                __DOCS__: {
+                    'summary': 'Delete ALL billing_vnsf_usage (TEST PURPOSES)',
+                    'description': 'Delete ALL billing_vnsf_usage (TEST PURPOSES)',
                     'responses': http_utils.responses_read
                 }
             }
@@ -982,13 +1014,31 @@ class Endpoint(Enum):
     BILLING_SUMMARY = {
         __NAME__: 'admin billing summary',
         __URL__: 'billing/summary',
-        __SCHEMA__: {},
+        __SCHEMA__: api_model.billing_summary,
         __RESOURCE__: {
             __HTTP_GET__: {
                 __POLICY__: 'billing_summary:read',
                 __DOCS__: {
                     'summary': 'Obtains the general administration billing summary counters for NSs and vNSFs.',
                     'description': 'Obtains the general administration billing summary counters for NSs and vNSFs.',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_summary:delete',
+                __DOCS__: {
+                    'summary': 'Delete ALL billing_summary (TEST PURPOSES)',
+                    'description': 'Delete ALL billing_summary (TEST PURPOSES)',
+                    'responses': http_utils.responses_read
+                }
+            }
+        },
+        __ITEM__: {
+            __HTTP_PATCH__: {
+                __POLICY__: 'billing_summary:update',
+                __DOCS__: {
+                    'summary': 'Updates the general administration billing summary counters for NSs and vNSFs.',
+                    'description': 'Updates the general administration billing summary counters for NSs and vNSFs.',
                     'responses': http_utils.responses_read
                 }
             }
@@ -1013,6 +1063,14 @@ class Endpoint(Enum):
                 __DOCS__: {
                     'summary': 'Create a billing summary',
                     'description': 'Create a billing summary for a particular tenant and month',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_ns_summary:delete',
+                __DOCS__: {
+                    'summary': 'Delete ALL billing_ns_summary (TEST PURPOSES)',
+                    'description': 'Delete ALL billing_ns_summary (TEST PURPOSES)',
                     'responses': http_utils.responses_read
                 }
             }
@@ -1049,6 +1107,24 @@ class Endpoint(Enum):
                     'description': 'Create a billing summary for a particular Developer and Month',
                     'responses': http_utils.responses_read
                 }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_vnsf_summary:delete',
+                __DOCS__: {
+                    'summary': 'Delete ALL billing_vnsf_summary (TEST PURPOSES)',
+                    'description': 'Delete ALL billing_vnsf_summary (TEST PURPOSES)',
+                    'responses': http_utils.responses_read
+                }
+            }
+        },
+        __ITEM__: {
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_vnsf_summary:delete',
+                __DOCS__: {
+                    'summary': 'Remove a billing vNSF summary record',
+                    'description': 'Remove a billing vNSF summary record. (TESTS ONLY)',
+                    'responses': http_utils.responses_read
+                }
             }
         }
     }
@@ -1063,6 +1139,22 @@ class Endpoint(Enum):
                 __DOCS__: {
                     'summary': 'Update Billing Information Data',
                     'description': 'Update Billing Information Data including NS and vNSF Usages and Summaries',
+                    'responses': http_utils.responses_read
+                }
+            },
+        },
+    }
+
+    BILLING_CLEAN = {
+        __NAME__: 'clean all billing information data',
+        __URL__: 'billing/clean',
+        __SCHEMA__: api_model.billing_clean,
+        __RESOURCE__: {
+            __HTTP_POST__: {
+                __POLICY__: 'billing:clean',
+                __DOCS__: {
+                    'summary': 'Clean Billing Information Data',
+                    'description': 'Clean Billing Information Data including NS and vNSF Usages and Summaries',
                     'responses': http_utils.responses_read
                 }
             },
@@ -1084,45 +1176,3 @@ class Endpoint(Enum):
             },
         },
     }
-
-
-    # NOTIFICATIONS = {__NAME__:     'notifications',
-    #                  __URL__:      'notifications',
-    #                  __SCHEMA__:   api_model.notification_model,
-    #                  __RESOURCE__: {
-    #                      __HTTP_POST__: {
-    #                          __POLICY__: 'notifications:create',
-    #                          __DOCS__:   {
-    #                              'summary':     'TBD',
-    #                              'description': 'TBD',
-    #                              'responses':   http_utils.responses_read
-    #                              }
-    #                          },
-    #                      __HTTP_GET__:  {
-    #                          __POLICY__: 'notifications:read',
-    #                          __DOCS__:   {
-    #                              'summary':     'TBD',
-    #                              'description': 'TBD',
-    #                              'responses':   http_utils.responses_read
-    #                              }
-    #                          }
-    #                      },
-    #                  __ITEM__:     {
-    #                      __HTTP_GET__:   {
-    #                          __POLICY__: 'notifications:read_notification',
-    #                          __DOCS__:   {
-    #                              'summary':     'Shows a tenant details',
-    #                              'description': 'Provides detailed information on a tenant.',
-    #                              'responses':   http_utils.responses_read
-    #                              }
-    #                          },
-    #                      __HTTP_PATCH__: {
-    #                          __POLICY__: 'notifications:update_notification',
-    #                          __DOCS__:   {
-    #                              'summary':     'TBD',
-    #                              'description': 'TBD',
-    #                              'responses':   http_utils.responses_read
-    #                              }
-    #                          }
-    #                      }
-    #                  }

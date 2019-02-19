@@ -115,7 +115,7 @@ class VnsfOrchestratorAdapter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def terminate_ns(self, instance_id):
+    def terminate_ns(self, instance_id, nfvo_version):
         """
         :param instance_id: Instance ID of Network Service
         :return: Response from vNSFO

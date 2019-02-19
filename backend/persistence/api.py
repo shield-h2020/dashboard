@@ -72,6 +72,7 @@ app.on_insert_nss_inventory += NssInventoryHooks.provision_network_service
 app.on_update_ns_instantiate += NssInventoryHooks.instantiate_network_service
 app.on_update_ns_terminate += NssInventoryHooks.terminate_network_service
 
+
 app.on_update_notifications_tm_vnsf += TMNotifications.apply_vnsf_remediation
 app.on_update_notifications_tm_host += TMNotifications.apply_host_remediation
 
@@ -87,14 +88,16 @@ app.on_pre_POST_billing_ns += BillingActions.create_ns_billing_placeholder
 app.on_update_billing_ns += BillingActions.set_billing_ns_fee
 app.on_update_billing_vnsf += BillingActions.set_billing_vnsf_fee
 app.on_pre_POST_billing_ns_start_usage += BillingActions.start_billing_ns_usage
-app.on_update_billing_ns_stop_usage += BillingActions.stop_billing_ns_usage
-app.on_fetched_resource_billing_ns_usage += BillingActions.get_billins_ns_usage
+app.on_inserted_billing_ns_start_usage += BillingActions.after_start_billing_ns_usage
+app.on_updated_ns_terminate += BillingActions.stop_billing_ns_usage
+app.on_fetched_resource_billing_ns_usage += BillingActions.get_billing_ns_usage
 app.on_fetched_resource_billing_vnsf_usage += BillingActions.get_billing_vnsf_usage
 app.on_fetched_item_billing_ns_usage += BillingActions.get_billing_ns_usage_item
 app.on_pre_POST_billing_update += BillingActions.update_billing
+app.on_pre_POST_billing_clean += BillingActions.clean_billing
 app.on_post_POST_billing_ns_simulate += BillingActions.billing_ns_simulate
-app.on_pre_GET_billing_usage += BillingActions.get_billing_usage
-app.on_pre_get_billing_summary += BillingActions.get_billing_summary
+#app.on_post_GET_billing_usage += BillingActions.get_billing_usage
+# app.on_fetched_resource_billing_summary += BillingActions.get_billing_summary
 
 app.register_blueprint(swagger)
 

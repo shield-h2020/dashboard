@@ -28,6 +28,7 @@ import json
 import settings as cfg
 import copy
 import math
+import time
 import datetime
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
@@ -38,6 +39,7 @@ from flask import abort, make_response, jsonify
 from eve.methods.get import get_internal, getitem_internal
 from eve.methods.patch import patch_internal
 from eve.methods.post import post_internal
+from eve.methods.delete import deleteitem_internal
 
 from dashboardutils import http_utils
 from keystone_adapter import KeystoneAuthzApi
@@ -67,7 +69,7 @@ class BillingActions:
             logger.error("Failed to create billing placeholder for NS '{}': 'ns_id' value is required."
                          .format(json_data['ns_id']))
             abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 422, "message":
-                "Failed to create billing placeholder for NS '{}".format(json_data['ns_id'])}}), 422))
+                  "Failed to create billing placeholder for NS '{}".format(json_data['ns_id'])}}), 422))
 
         logger.debug("Creating billing model for NS '{}'".format(json_data['ns_id']))
 
@@ -82,7 +84,7 @@ class BillingActions:
             if not r.status_code == http_utils.HTTP_200_OK:
                 logger.error("Couldn't retrieve data of Network Service '%s'", json_data['ns_id'])
                 abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": r.status_code, "message":
-                    "Failed retrieving Network Service '{}'. Store replied: {}".format(json_data['ns_id'], r.text)}}),
+                      "Failed retrieving Network Service '{}'. Store replied: {}".format(json_data['ns_id'], r.text)}}),
                                     r.status_code))
 
         except requests.exceptions.ConnectionError as e:
@@ -137,7 +139,6 @@ class BillingActions:
 
         # note: no need to mess with 'fee' and 'support_fee' as they have a default value of 0.0 in the data model
 
-
     @staticmethod
     def _get_vnsf_id_from_store(vnsf_record_id):
         """
@@ -154,13 +155,15 @@ class BillingActions:
             r = requests.get(url)
             if not r.status_code == http_utils.HTTP_200_OK:
                 logger.error("Couldn't retrieve data of vNSF '%s' from the Store", vnsf_record_id)
-                abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": r.status_code, "message":
-                    "Failed retrieving vNSF '{}'. Store replied: {}".format(vnsf_record_id, r.text)}}), r.status_code))
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": r.status_code, "message":
+                #     "Failed retrieving vNSF '{}'. Store replied: {}".format(vnsf_record_id, r.text)}}), r.status_code))
+                return
 
         except requests.exceptions.ConnectionError as e:
             logger.error("Couldn't connect to Store: {}".format(e))
-            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
-                "Failed retrieving vNSF '{}'. Store is unavailable".format(vnsf_record_id)}}), 404))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
+            #     "Failed retrieving vNSF '{}'. Store is unavailable".format(vnsf_record_id)}}), 404))
+            return
 
         vnsf_json = r.json()
         return vnsf_json['vnsf_id']
@@ -182,13 +185,15 @@ class BillingActions:
 
             if not r.status_code == http_utils.HTTP_200_OK:
                 logger.error("Couldn't retrieve data of NS '%s' from the Store", ns_record_id)
-                abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": r.status_code, "message":
-                    "Failed retrieving NS '{}'. Store replied: {}".format(ns_record_id, r.text)}}), r.status_code))
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": r.status_code, "message":
+                #     "Failed retrieving NS '{}'. Store replied: {}".format(ns_record_id, r.text)}}), r.status_code))
+                return
 
         except requests.exceptions.ConnectionError as e:
             logger.error("Couldn't connect to Store: {}".format(e))
-            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
-                "Failed retrieving NS '{}'. Store is unavailable".format(ns_record_id)}}), 404))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
+            #     "Failed retrieving NS '{}'. Store is unavailable".format(ns_record_id)}}), 404))
+            return
 
         ns_json = r.json()
         return ns_json['ns_id']
@@ -251,10 +256,8 @@ class BillingActions:
             abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 409, "message":
                                 "Specification of fields other than 'fee' is not allowed."}}), 409))
 
-        # TODO: Trigger NS Billing expense fees here or let it be done automatically in billing update?
-
     @staticmethod
-    def _get_billing_ns_usage(ns_instance_id, month):
+    def _get_billing_ns_usage(ns_instance_id, month=datetime.datetime.now().strftime('%Y-%m')):
         logger = logging.getLogger(__name__)
         logger.debug("Retrieving 'billing_ns_usage' of NS instance id={} for month={}"
                      .format(ns_instance_id, month))
@@ -304,19 +307,21 @@ class BillingActions:
         allowed_fields = ['ns_instance_id']
         if not list(request.json.keys()) == allowed_fields:
             logger.error("Specification of fields other than 'ns_instance_id' is not allowed.")
-            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 409, "message":
-                                        "Specification of fields other than 'ns_instance_id' is not allowed."}}), 409))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 409, "message":
+            #                             "Specification of fields other than 'ns_instance_id' is not allowed."}}), 409))
+            return
 
         # Protect against inserting a new usage with the same ns_instance_id and month combination
         current_date = datetime.datetime.now()
         month = current_date.strftime('%Y-%m')
-        ns_usage_item = BillingActions._get_billing_ns_usage(request.json['ns_instance_id'], month)
+        ns_usage_item = BillingActions._get_billing_ns_usage(request.json['ns_instance_id'], month=month)
         if ns_usage_item:
             logger.error("NS Usage record for NS instance id={} and month={} already exists"
                          .format(request.json['ns_instance_id'], month))
-            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 400, "message":
-                                "NS Usage record for NS instance id={} and month={} already exists"
-                                .format(request.json['ns_instance_id'], month)}}), 400))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 400, "message":
+            #                     "NS Usage record for NS instance id={} and month={} already exists"
+            #                     .format(request.json['ns_instance_id'], month)}}), 400))
+            return
 
         # Retrieve 'ns_id' and 'tenant_id' using the 'instance_id' from the nss_inventory
         logger.debug("Retrieving information about provided instance id {}".format(request.json['ns_instance_id']))
@@ -326,9 +331,10 @@ class BillingActions:
         if instance_data['_meta']['total'] == 0:
             logger.error("Couldn't retrieve information about provided NS instance id {}"
                          .format(request.json['ns_instance_id']))
-            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                                "Couldn't retrieve information about provided NS instance id '{}'"
-                                        .format(request.json['ns_instance_id'])}}), 500))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #                     "Couldn't retrieve information about provided NS instance id '{}'"
+            #                             .format(request.json['ns_instance_id'])}}), 500))
+            return
 
         tenant_id = instance_data['_items'][0]['tenant_id']
         ns_id = instance_data['_items'][0]['ns_id']
@@ -353,14 +359,26 @@ class BillingActions:
             request.json['fee'], request.json['billable_percentage']
         )
 
-        # Start Billing vNSF usage for constituent vNSFs
-        constituent_vnsfs = BillingActions._get_billing_ns(ns_id)['constituent_vnsfs']
-        logger.debug("Creating Billing vNSF Usages for vnsfs={}".format(constituent_vnsfs))
-        for vnsf_id in constituent_vnsfs:
-            BillingActions._start_billing_vnsf_usage(vnsf_id)
+    @staticmethod
+    def after_start_billing_ns_usage(items):
+        """
+        Post actions after starting of a particular NS instance usage.
+        """
+        logger = logging.getLogger(__name__)
+
+        for item in items:
+            logger.debug("Performing post-actions after the creation of 'billing_ns_usage' for ns_id={} and "
+                         "ns_instance_id={}"
+                         .format(item['ns_id'], item['ns_instance_id']))
+            # Start/Update Billing vNSF usage for constituent vNSFs of this NS usage
+            constituent_vnsfs = BillingActions._get_billing_ns(item['ns_id'])['constituent_vnsfs']
+            logger.debug("Starting/Updating Billing vNSF Usages for vnsfs={}".format(constituent_vnsfs))
+            for vnsf_id in constituent_vnsfs:
+                BillingActions._start_billing_vnsf_usage(vnsf_id, item['_id'])
+
 
     @staticmethod
-    def _start_billing_vnsf_usage(vnsf_id):
+    def _start_billing_vnsf_usage(vnsf_id, ns_usage_id):
         logger = logging.getLogger(__name__)
 
         # Get current fee for this vnsf_id from 'billing_vnsf'
@@ -372,42 +390,109 @@ class BillingActions:
         month = current_date.strftime('%Y-%m')
         billing_vnsf_usage = BillingActions._get_billing_vnsf_usage(vnsf_id, month, fee)
         if billing_vnsf_usage:
-            logger.debug("vNSF Usage record for vnsf_id={} and month={} and fee={} already exists. Nothing to do."
+            logger.debug("vNSF Usage record for vnsf_id={} and month={} and fee={} already exists."
                          .format(vnsf_id, month, fee))
-            return
 
-        used_from = current_date.date()
-        used_to = current_date.date()
-        billable_percentage = BillingActions._get_usage_billable_percentage(used_from, used_to)
-        billable_fee = BillingActions._get_usage_billable_fee(fee, billable_percentage)
+            if ns_usage_id in billing_vnsf_usage['associated_ns_usages']:
+                logger.debug("The ns_usage_id={} is already in its 'associated_ns_usages' list. Nothing to do."
+                             .format(ns_usage_id))
+            else:
+                logger.debug("Adding 'ns_usage' id={} to its 'associated_ns_usages' list.".format(ns_usage_id))
+                associated_ns_usages_list = billing_vnsf_usage['associated_ns_usages']
+                associated_ns_usages_list.append(ns_usage_id)
+                with current_app.test_request_context():
+                    payload = {
+                        'usage_status': 'active',
+                        'associated_ns_usages': associated_ns_usages_list
+                    }
+                    lookup = {"_id": billing_vnsf_usage['_id']}
+                    (result, _, etag, status) = patch_internal("billing_vnsf_usage", payload, **lookup)
+                    if status != http_utils.HTTP_200_OK:
+                        logger.error("Failed to add 'ns_usage' id={} to 'billing_vnsf_usage' vnsf_id={}"
+                                     .format(ns_usage_id, billing_vnsf_usage['_id']))
+        else:
+            used_from = current_date.date()
+            used_to = current_date.date()
+            billable_percentage = BillingActions._get_usage_billable_percentage(used_from, used_to)
+            billable_fee = BillingActions._get_usage_billable_fee(fee, billable_percentage)
+            associated_ns_usages_list = [ns_usage_id]
+            with current_app.test_request_context():
+                payload = {
+                    'vnsf_id': vnsf_id,
+                    'usage_status': 'active',
+                    'fee': fee,
+                    'user_id': billing_vnsf['user_id'],
+                    'used_from': used_from.isoformat(),
+                    'used_to': used_to.isoformat(),
+                    'month': month,
+                    'billable_percentage': billable_percentage,
+                    'billable_fee': billable_fee,
+                    'associated_ns_usages': associated_ns_usages_list
+                }
+                logger.debug("Creating vNSF usage for vnsf_id={} and month={} and fee={}"
+                             .format(vnsf_id, month, fee))
+                (result, _, etag, status, _) = post_internal("billing_vnsf_usage", payload)
+                if status != http_utils.HTTP_201_CREATED:
+                    logger.error("Failed to create 'billing_vnsf_usage' for vnsf_id={}".format(vnsf_id))
+                    return
+
+    @staticmethod
+    def _stop_billing_vnsf_usage(ns_usage_item):
+        logger = logging.getLogger(__name__)
+        ns_usage_id = ns_usage_item['_id']
+        ns_id = ns_usage_item['ns_id']
+        logger.info("Updating/Closing Billing vNSF Usages associated with 'billing_ns_usage' id={}".format(ns_usage_id))
 
         with current_app.test_request_context():
-            payload = {
-                'vnsf_id': vnsf_id,
-                'usage_status': 'active',
-                'fee': fee,
-                'user_id': billing_vnsf['user_id'],
-                'used_from': used_from.isoformat(),
-                'used_to': used_to.isoformat(),
-                'month': month,
-                'billable_percentage': billable_percentage,
-                'billable_fee': billable_fee
-            }
-            logger.debug("Creating vNSF usage for vnsf_id={} and month={} and fee={}"
-                         .format(vnsf_id, month, fee))
-            (result, _, etag, status, _) = post_internal("billing_vnsf_usage", payload)
-            if status != http_utils.HTTP_201_CREATED:
-                logger.error("Failed to create 'billing_vnsf_usage' for vnsf_id={}".format(vnsf_id))
+            lookup = {"associated_ns_usages": ns_usage_id}
+            (vnsf_usage_data, _, _, status, _) = get_internal('billing_vnsf_usage', **lookup)
+
+            if not status == http_utils.HTTP_200_OK or vnsf_usage_data['_meta']['total'] == 0:
+                logger.error("Couldn't find Billing vNSF Usages associated with NS Usage id=={}".format(ns_id))
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+                #                     "Couldn't find Billing vNSF Usages associated with NS Usage id=={}"
+                #                             .format(ns_id)}}), 500))
                 return
+
+        # Patch each retrieved vnsf item removing the passed ns_usage_item id
+        for vnsf_item in vnsf_usage_data['_items']:
+            associated_ns_usages = vnsf_item['associated_ns_usages']
+            associated_ns_usages.remove(ns_usage_id)
+            if len(associated_ns_usages) == 0:
+                usage_status = "idle"
+            else:
+                usage_status = "active"
+
+            current_date = datetime.datetime.now()
+            used_from = dateutil.parser.parse(vnsf_item['used_from'])
+            used_to = current_date.date()
+
+            with current_app.test_request_context():
+                payload = {
+                    'associated_ns_usages': associated_ns_usages,
+                    'usage_status': usage_status,
+                    'used_to': used_to.isoformat(),
+                    'billable_percentage': BillingActions._get_usage_billable_percentage(used_from, used_to)
+                }
+
+                lookup = {"_id": vnsf_item['_id']}
+                (result, _, etag, status) = patch_internal("billing_vnsf_usage", payload, **lookup)
+                if status != http_utils.HTTP_200_OK:
+                    logger.error("Failed to update 'billing_vnsf_usage' vnsf_id={}".format(vnsf_item['_id']))
+                    # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+                    #                     "Failed to update 'billing_vnsf_usage' vnsf_id={}"
+                    #                             .format(vnsf_item['_id'])}}), 500))
+                    return
 
     @staticmethod
     def _get_usage_billable_percentage(used_from, used_to):
         logger = logging.getLogger(__name__)
         if not used_from.year == used_to.year or not used_from.month == used_to.month:
             logger.error("Can't calculate billing percentage ranging different months")
-            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                                "Can't calculate billing percentage ranging different months '{}' and '{}'"
-                                .format(used_from.isoformat(), used_to.isoformat())}}), 500))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #                     "Can't calculate billing percentage ranging different months '{}' and '{}'"
+            #                     .format(used_from.isoformat(), used_to.isoformat())}}), 500))
+            return
 
         (_, year_month_days) = calendar.monthrange(used_from.year, used_from.month)
         billable_days = used_to.day - used_from.day + 1
@@ -420,28 +505,56 @@ class BillingActions:
     @staticmethod
     def stop_billing_ns_usage(updates, original):
         """
-        Registers the start date on billing of particular NS instance.
+        Registers the stop date on billing of a particular NS instance and updates its 'usage_status' as closed
         Fields such as 'ns_id', 'tenant_id', 'used_from', 'fee', 'used_to' should not be sent in the request,
         they are fulfilled automatically.
+        This hook is called after an inventory/nss patch. It should trigger an 'billing_ns_usage' patch and possibly
+        'billing_vnsf_usage' patches
         """
         logger = logging.getLogger(__name__)
-        logger.debug("Stopping Billing Usage of NS instance '{}'".format(original['ns_instance_id']))
+        ns_id = original['ns_id']
+        instance_id = original['instance_id']
+        logger.info("Closing NS Billing Usage for NS id={} with Instance id={}".format(ns_id, instance_id))
+
+        # Ensure the updated status is not 'running'
+        if updates['status'] == 'running':
+            logger.error("Failed to close NS Billing Usage of NS id={} with Instance id={}: Instance is running"
+                         .format(ns_id, instance_id))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #                     "Failed to close NS Billing Usage of NS id={} with Instance id={}: Instance is running"
+            #                             .format(ns_id, instance_id)}}), 500))
+            return
+
+        # Get the 'billing_ns_usage' item for current month
+        billing_ns_usage_item = BillingActions._get_billing_ns_usage(instance_id)
+
+        # Patch the 'billing_ns_usage' item
         current_date = datetime.datetime.now()
-        used_from = dateutil.parser.parse(original['used_from'])
+        used_from = dateutil.parser.parse(billing_ns_usage_item['used_from'])
         used_to = current_date.date()
 
-        # Update calculated fields
-        updates['used_to'] = used_to.isoformat()
-        updates['usage_status'] = 'closed'
-        updates['billable_percentage'] = BillingActions._get_usage_billable_percentage(
-            used_from, used_to
-        )
-        updates['billable_fee'] = BillingActions._get_usage_billable_fee(
-            original['fee'], updates['billable_percentage']
-        )
+        with current_app.test_request_context():
+            payload = {
+                'used_to': used_to.isoformat(),
+                'usage_status': 'closed',
+                'billable_percentage': BillingActions._get_usage_billable_percentage(used_from, used_to)
+            }
+
+            lookup = {"_id": billing_ns_usage_item['_id']}
+            (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
+            if status != http_utils.HTTP_200_OK:
+                logger.error("Failed to update 'billing_ns_usage' ns_id={} ns_instance_id={}"
+                             .format(ns_id, instance_id))
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+                #                     "Failed to update 'billing_ns_usage' ns_id={} ns_instance_id={}"
+                #                             .format(ns_id, instance_id)}}), 500))
+                return
+
+        # Stop 'billing_vnsf_usage' items associated to this ns usage
+        BillingActions._stop_billing_vnsf_usage(billing_ns_usage_item)
 
     @staticmethod
-    def get_billins_ns_usage(response):
+    def get_billing_ns_usage(response):
         """
         Gets information about a the billing of a NS usage.
         On top of the database data it adds useful information, such as NS instance status and total billable fee
@@ -502,12 +615,10 @@ class BillingActions:
         # retrieve current billing ns usage data
         with current_app.test_request_context():
             (nss_inventory_data, _, _, status, _) = get_internal('nss_inventory', instance_id=ns_instance_id)
-            print("status: {}".format(status))
-            print("nss_inventory_data: {}".format(nss_inventory_data))
-
             if not status == http_utils.HTTP_200_OK or nss_inventory_data['_meta']['total'] == 0:
-                abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                                    "Failed retrieving status of NS instance '{}'".format(ns_instance_id)}}), 500))
+                return "terminated"
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+                #                     "Failed retrieving status of NS instance '{}'".format(ns_instance_id)}}), 500))
 
             return 'terminated' if nss_inventory_data['_items'][0]['status'] != 'running' else 'running'
 
@@ -519,8 +630,10 @@ class BillingActions:
             # retrieve current billing ns usage data
             (billing_ns_data, _, _, status, _) = get_internal('billing_ns', ns_id=ns_id)
             if not status == http_utils.HTTP_200_OK or billing_ns_data['_meta']['total'] != 1:
-                abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                      "Failed retrieving billing for NS '{}'".format(ns_id)}}), 500))
+                logger.debug("Failed retrieving billing for NS '{}'".format(ns_id))
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+                #       "Failed retrieving billing for NS '{}'".format(ns_id)}}), 500))
+                return
 
             return billing_ns_data['_items'][0]
 
@@ -533,10 +646,41 @@ class BillingActions:
             # retrieve current billing ns usage data
             (billing_vnsf_data, _, _, status, _) = get_internal('billing_vnsf', vnsf_id=vnsf_id)
             if not status == http_utils.HTTP_200_OK or billing_vnsf_data['_meta']['total'] != 1:
-                abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                      "Failed retrieving billing for vnsf_id={}".format(vnsf_id)}}), 500))
+                logger.debug("Failed retrieving billing for vnsf_id={}".format(vnsf_id))
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+                #       "Failed retrieving billing for vnsf_id={}".format(vnsf_id)}}), 500))
+                return
 
             return billing_vnsf_data['_items'][0]
+
+    @staticmethod
+    def clean_billing(request):
+        """
+        This hook triggers the cleanup of all top-down billing information, such as
+        billing_ns_usage, billing_vnsf_usage, billing_ns_summary and billing_vnsf_summary
+        """
+        logger = logging.getLogger(__name__)
+        logger.info("Cleaning ALL Billing Information")
+
+        # if 'resources' not in request.json:
+        #     abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
+        #                         "The 'resources' list must be specified at the request."}}), 404))
+
+        resources = request.json['resources']
+
+        for resource in resources:
+
+            # Trigger NS Instance polling
+            url = "{}/{}".format(cfg.BACKENDAPI, resource)
+            headers = {'Content-Type': 'application/json'}
+            r = requests.delete(url, json={}, headers=headers, verify=False)
+
+            if not r.status_code == http_utils.HTTP_204_NO_CONTENT:
+                logger.debug("Cleaning resource '{}' failed with status: {}".format(resource, r.status_code))
+                continue
+
+            logger.debug("Resource '{}' deleted".format(resource))
+
 
     @staticmethod
     def update_billing(request):
@@ -550,7 +694,6 @@ class BillingActions:
         BillingActions._update_billing_ns()
         BillingActions._update_billing_usage()
         BillingActions._update_billing_summary()
-
 
 
 
@@ -649,12 +792,11 @@ class BillingActions:
 
                     # get month's usage record
                     month = used_from.strftime('%Y-%m')
-                    ns_usage_item = BillingActions._get_billing_ns_usage(item['ns_instance_id'], month)
+                    ns_usage_item = BillingActions._get_billing_ns_usage(item['ns_instance_id'], month=month)
 
                     # 'ns_billing_usage' does not exist for this ns_instance_id and month -> create it
                     if not ns_usage_item:
-                        logger.debug("The 'billing_ns_usage' for NS instance id={} of month={} does not exist. "
-                                     "Creating it.")
+                        logger.debug("The 'billing_ns_usage' for NS instance id={} of month={} does not exist. Creating it.")
                         BillingActions._create_billing_ns_usage(
                             current_date,
                             item['ns_instance_id'],
@@ -761,6 +903,76 @@ class BillingActions:
                 return
 
     @staticmethod
+    def _add_item_control_global_summary(global_summary, ns_item=None, vnsf_item=None):
+
+        assert (ns_item or vnsf_item) and not (ns_item and vnsf_item)
+        item = ns_item or vnsf_item
+
+        # add month dict
+        if item['month'] not in global_summary.keys():
+            global_summary[item['month']] = dict()
+        month = global_summary[item['month']]
+
+        # add tenant_list
+        if 'tenant_list' not in month:
+            month['tenant_list'] = list()
+            month['number_tenants'] = 0
+        tenant_list = month['tenant_list']
+
+        # add ns_list
+        if 'ns_list' not in month:
+            month['ns_list'] = list()
+            month['number_nss'] = 0
+        ns_list = month['ns_list']
+
+        # add ns_instance_list
+        if 'ns_instance_list' not in month:
+            month['ns_instance_list'] = list()
+            month['number_ns_instances'] = 0
+        ns_instance_list = month['ns_instance_list']
+
+        # add vnsf_list
+        if 'vnsf_list' not in month:
+            month['vnsf_list'] = list()
+            month['number_vnsfs'] = 0
+        vnsf_list = month['vnsf_list']
+
+        # add profit_balance if not existent
+        if 'profit_balance' not in month.keys():
+            month['profit_balance'] = 0
+
+        #  add status if not existent
+        if 'status' not in month.keys():
+            month['status'] = 'closed'
+
+        if ns_item:
+            if item['tenant_id'] not in tenant_list:
+                tenant_list.append(item['tenant_id'])
+
+            if item['ns_id'] not in ns_list:
+                ns_list.append(item['ns_id'])
+
+            if item['ns_instance_id'] not in ns_instance_list:
+                ns_instance_list.append(item['ns_instance_id'])
+
+            month['profit_balance'] += item['billable_fee']
+            if item['usage_status'] == 'open':
+                month['status'] = 'open'
+
+        else:
+            if item['vnsf_id'] not in vnsf_list:
+                vnsf_list.append(item['vnsf_id'])
+
+            month['profit_balance'] -= item['billable_fee']
+            if item['usage_status'] == 'active':
+                month['status'] = 'open'
+
+        month['number_tenants'] = len(tenant_list)
+        month['number_nss'] = len(ns_list)
+        month['number_ns_instances'] = len(ns_instance_list)
+        month['number_vnsfs'] = len(vnsf_list)
+
+    @staticmethod
     def _add_item_control_ns_summary(ns_summary, item):
 
         # add tenant dict
@@ -853,6 +1065,7 @@ class BillingActions:
         logger = logging.getLogger(__name__)
         logger.debug("Updating Billing NS Summary")
 
+        global_summary = dict()
         ns_summary = dict()
 
         # crawl trough current billing ns usage data to populate ns_summary
@@ -862,12 +1075,14 @@ class BillingActions:
                          .format(item['ns_instance_id'], item['ns_id'], item['tenant_id']))
 
             BillingActions._add_item_control_ns_summary(ns_summary, item)
+            BillingActions._add_item_control_global_summary(global_summary, ns_item=item)
 
         logger.debug("Retrieved the following Billing NS Summary:\n {}".format(pprint.pformat(ns_summary)))
 
         # cycle through ns_summary tenants->months and retrieve its billing ns summary
         for tenant, months in ns_summary.items():
             for month, item in ns_summary[tenant].items():
+
                 (ns_summary_data, _, _, status, _) = get_internal('billing_ns_summary',
                                                                   tenant_id=tenant,
                                                                   month=month)
@@ -919,6 +1134,7 @@ class BillingActions:
                          .format(item['vnsf_id'], item['month'], item['user_id']))
 
             BillingActions._add_item_control_vnsf_summary(vnsf_summary, item)
+            BillingActions._add_item_control_global_summary(global_summary, vnsf_item=item)
 
         logger.debug("Retrieved the following Billing vNSF Summary:\n {}".format(pprint.pformat(vnsf_summary)))
 
@@ -964,6 +1180,48 @@ class BillingActions:
                                          .format(user, month))
                             continue  # or return?
 
+        # cycle through global_summary months and retrieve its billing summary to update it
+        for month, item in global_summary.items():
+
+            (summary_data, _, _, status, _) = get_internal('billing_summary', month=month)
+
+            # if summary for this month doesn't exist > create it (post)
+            if not status == http_utils.HTTP_200_OK or summary_data['_meta']['total'] == 0:
+                logger.debug("Global Billing Summary of month={} does not exist. Creating it.".format(month))
+
+                with current_app.test_request_context():
+                    payload = {
+                        'month': month,
+                        'number_tenants': item['number_tenants'],
+                        'number_nss': item['number_nss'],
+                        'number_ns_instances': item['number_ns_instances'],
+                        'number_vnsfs': item['number_vnsfs'],
+                        'status': item['status'],
+                        'profit_balance': item['profit_balance']
+                    }
+                    logger.debug("Creating Global Summary for month={}".format(month))
+                    (result, _, etag, status, _) = post_internal("billing_summary", payload)
+                    if status != http_utils.HTTP_201_CREATED:
+                        logger.error("Failed to create 'billing_summary' for month={}".format(month))
+                        continue  # or return?
+
+            # if summary for this month exist -> update it (patch)
+            else:
+                billing_summary_id = summary_data['_items'][0]['_id']
+                with current_app.test_request_context():
+                    payload = {
+                        'number_tenants': item['number_tenants'],
+                        'number_nss': item['number_nss'],
+                        'number_ns_instances': item['number_ns_instances'],
+                        'number_vnsfs': item['number_vnsfs'],
+                        'status': item['status'],
+                        'profit_balance': item['profit_balance']
+                    }
+                    lookup = {"_id": billing_summary_id}
+                    (result, _, etag, status) = patch_internal("billing_summary", payload, **lookup)
+                    if status != http_utils.HTTP_200_OK:
+                        logger.error("Failed to update 'billing_summary' for month={}".format(month))
+                        continue  # or return?
 
     @staticmethod
     def billing_ns_simulate(request, payload):
@@ -993,36 +1251,93 @@ class BillingActions:
                 flatten_min_instances = 0
             else:
                 flat_ratio = 1 / (fee / expense_fee)
-                flatten_min_instances = math.trunc(flat_ratio if flat_ratio % 10 == 0.0 else flat_ratio + 1)
+                flatten_min_instances = math.trunc(flat_ratio - 1 if flat_ratio % 10 == 0.0 else flat_ratio)
 
-        request.json['instance_balance'] = [1, instance_balance]
-
-        request.json['running_instances'] = [len(running_instances), len(running_instances)*fee]
-        request.json['flatten_min_instances'] = [flatten_min_instances, flatten_min_instances*fee]
-        request.json['total_balance'] = instance_balance + len(running_instances)*fee + flatten_min_instances*fee
+        request.json['instance_balance'] = [1, round(instance_balance, 2)]
+        request.json['running_instances'] = [len(running_instances), round(len(running_instances)*fee, 2)]
+        request.json['flatten_min_instances'] = [flatten_min_instances, round(flatten_min_instances*fee, 2)]
+        request.json['total_balance'] = round(instance_balance + len(running_instances)*fee + flatten_min_instances*fee, 2)
 
         # Don't actually store this simulation, just return it
         abort(make_response(jsonify(**request.json), 200))
 
+
+    # @staticmethod
+    # def _update_global_billing_usage():
+    #     # retrieve current billing usage data
+    #     (usage_data, _, _, status, _) = get_internal('billing_usage')
+    #
+    #     # retrieve current billing ns usage data
+    #     (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage')
+    #
+    #     # go over usage_data and retrieve its ns_usage_items_ids
+    #     usage_ns_usages_item_ids = list()
+    #     for usage_item in usage_data['_items']['ns_usages']:
+    #         usage_ns_usages_item_ids.append(usage_item['_id'])
+    #
+    #     # go over ns_usage_data
+    #     for ns_usage_item in ns_usage_data['_items']:
+    #         if ns_usage_item['_id'] not in usage_ns_usages_item_ids:
+    #             usage_ns_usages_item_ids.append(ns_usage_item['_id'])
+    #
+    #         logger.debug("Processing NS Instance '{}' of NS '{}' belonging to Tenant {}"
+    #                      .format(item['ns_instance_id'], item['ns_id'], item['tenant_id']))
+    #
+    #         instance_status = BillingActions._get_ns_instance_status(item['ns_instance_id'])
+    #
+    # BillingActions._get_billing_usage()
+
     @staticmethod
-    def get_billing_usage(request, lookup):
+    def get_billing_usage(request, response):
         logger = logging.getLogger(__name__)
-        logger.debug("Getting general billing usage")
+        logger.debug("Generating general billing usage")
 
-        # with current_app.test_request_context():
-        #     (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage')
-        # 
-        #     if not status == http_utils.HTTP_200_OK or ns_usage_data['_meta']['total'] != 1:
-        #         logger.debug("The 'billing_ns_usage' of NS instance id={} for month={} does not exist."
-        #                      .format(ns_instance_id, month))
-        #         return None
-        #
-        #     return ns_usage_data['_items'][0]
+        print(request.json)
+
+        # process request
+        allowed_fields = ['month']
+        if not sorted(list(request.json.keys())) == sorted(allowed_fields):
+            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 400, "message":
+                  "A 'month' parameter must be passed in the request body".format(json_data['ns_id'])}}), 400))
+
+        month = request.json['month']
+
+        response_json = json.loads(response.get_data(as_text=True))
+        response_json_items = response_json['_items']
+
+        nss_items = list()
+        vnsf_items = list()
+
+        response_json_items.append({'nss_items': nss_items})
+        response_json_items.append({'vnsf_items': vnsf_items})
+
+        with current_app.test_request_context():
+            (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage')
+
+            if not status == http_utils.HTTP_200_OK or ns_usage_data['_meta']['total'] == 1:
+                logger.debug("The 'billing_ns_usage' doesn't have data."
+                             .format(ns_instance_id, month))
+                abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
+                      "The 'billing_ns_usage' doesn't have any data.".format(json_data['ns_id'])}}), 404))
+
+            for ns_usage_item in ns_usage_data['_items']:
+                if ns_usage_item['month'] != month:
+                    continue
+                rm_elements = ['_id', '_updated', '_created', '_etag', '_links']
+                for element in rm_elements:
+                    del ns_usage_item[element]
+                nss_items.append(ns_usage_item)
+            # TODO: WIP
+            # response_json_items['total_billable_fee': ns_usage_data['total_billable_fee']})
 
 
 
+        response_json['_meta']['total'] = 1
+        response.set_data(json.dumps(response_json))
 
     @staticmethod
     def get_billing_summary():
         logger = logging.getLogger(__name__)
-        logger.debug("Getting general billing summary")
+        logger.debug("Generating general billing summary")
+
+

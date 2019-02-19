@@ -736,6 +736,25 @@ billing_vnsf_usage = {
         'required': True
     },
 
+    # Associated 'billing_ns_usage_id' -> which ns usage this vnsf usage is refered to
+    'associated_ns_usages': {
+        'type': 'list',
+        'empty': False,
+        'required': True,
+        'schema': {
+            'ns_usage_id': {
+                'type': 'objectid',
+                'empty': False,
+                'required': True,
+                'data_relation': {
+                     'resource': 'billing_ns_usage',
+                     'field': '_id',
+                     'embeddable': True
+                 },
+            }
+        }
+    },
+
     # Active status -> specifies if the vNSF instance is active or idle
     'usage_status': {
         'type': 'string',
@@ -893,9 +912,69 @@ billing_vnsf_summary = {
     }
 }
 
+billing_summary = {
+
+    # Month. Format: YYYY-MM.
+    'month': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+        'unique': True,
+    },
+
+    'number_tenants': {
+        'type': 'number',
+        'empty': False,
+        'required': True,
+    },
+
+    'number_nss': {
+        'type': 'number',
+        'empty': False,
+        'required': True,
+    },
+
+    'number_ns_instances': {
+        'type': 'number',
+        'empty': False,
+        'required': True,
+    },
+
+    'number_vnsfs': {
+        'type': 'number',
+        'empty': False,
+        'required': True,
+    },
+
+    'status': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+        'allowed': ['open', 'closed']
+    },
+
+    'profit_balance': {
+        'type': 'number',
+        'empty': False,
+        'required': True,
+    },
+}
+
 #
 # Keeps information about billing updates which are
 # typically called by the Billing Monitor Scheduler
 #
 billing_update = {}
+
+#
+# Keeps information about billing updates which are
+# typically called for testing purposes
+#
+billing_clean = {
+    'resources': {
+        'type': 'list',
+        'empty': False,
+        'required': True,
+    }
+}
 
