@@ -161,6 +161,21 @@ policies_admin = {
     }
 
 
+distinct_policies = {
+    'item_title':       'distinct policies per vnsf instance id',
+    'url':              'policies/distinct',
+    'schema':           policies['schema'],
+    'resource_methods': ['GET'],
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'policies',
+    },
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET'],
+
+}
+
 
 ###
 #  NS Instances

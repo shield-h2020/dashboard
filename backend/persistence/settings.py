@@ -104,6 +104,7 @@ DOMAIN = {
     'ns_terminate':           api_endpoints.ns_terminate,
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin,
+    'distinct_policies':      api_endpoints.distinct_policies,
     'validations':            api_endpoints.validations,
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,

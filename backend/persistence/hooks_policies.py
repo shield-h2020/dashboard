@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #  Copyright (c) 2017 SHIELD, UBIWHERE
 # ALL RIGHTS RESERVED.
 #
@@ -22,26 +24,31 @@
 # Horizon 2020 program. The authors would like to acknowledge the contributions
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
+import logging
+import copy
 
-certifi==2017.7.27.1
-chardet==3.0.4
-click==6.7
-DateTime==4.2
-enum-compat==0.0.2
-idna==2.6
-itsdangerous==0.24
-Jinja2==2.9.6
-MarkupSafe==1.0
-python3-pika==0.9.14
-pytz==2017.2
-PyYAML==3.12
-requests==2.18.4
-six==1.10.0
-tornado==4.5.2
-Werkzeug==0.11.15
-urllib3==1.22
-xmlschema==1.0.9
-zope.interface==4.4.3
-cerberus==1.2
-influxdb==5.2.0
-lxml==4.3.1
+logger = logging.getLogger(__name__)
+
+
+class PolicyHooks:
+
+    def __init__(self):
+        self._node_id = None
+
+    @staticmethod
+    def get_distinct_vnsf_policies(response):
+
+        distinct_vnsfs = []
+
+        distinct_items = copy.deepcopy(response['_items'])
+
+        for item in response['_items']:
+
+            if item['vnsf_id'] in distinct_vnsfs:
+                distinct_items.remove(item)
+                continue
+
+            distinct_vnsfs.append(item['vnsf_id'])
+
+        response['_items'] = distinct_items
+        response['_meta']['total'] = len(distinct_vnsfs)

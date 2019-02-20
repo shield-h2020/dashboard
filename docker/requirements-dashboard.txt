@@ -46,7 +46,7 @@ requests==2.18.2
 simplejson==3.11.1
 urllib3==1.22
 Werkzeug==0.11.15
-xmlschema==0.9.13
+xmlschema==1.0.9
 aiohttp==3.3.2
 apscheduler==3.5.3
 python-dateutil==2.8.0

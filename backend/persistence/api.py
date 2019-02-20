@@ -44,9 +44,10 @@ from hooks_billing import BillingActions
 from security import TokenAuthzOslo
 from validators import NetworkValidator
 from billing.monitor import BillingMonitor
+from hooks_policies import PolicyHooks
 
 # Start Billing Update Monitor
-BillingMonitor().start()
+# BillingMonitor().start()
 
 app = Eve(auth=TokenAuthzOslo, validator=NetworkValidator)
 CORS(app)
@@ -55,6 +56,7 @@ app.on_post_POST_ns_instance_update += NSInstanceHooks().post_ns_instance
 
 app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
+app.on_fetched_resource_distinct_policies += PolicyHooks.get_distinct_vnsf_policies
 
 app.on_post_POST_login += LoginHooks.post_login
 app.on_post_POST_login_user += LoginHooks.post_login
@@ -111,4 +113,4 @@ if __name__ == '__main__':
 
     # use '0.0.0.0' to ensure your REST API is reachable from all your
     # network (and not only your computer).
-    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=False, threaded=True)
+    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True, threaded=True)
