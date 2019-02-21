@@ -92,4 +92,23 @@
   "validations:update_validation": "rule:platform.admin",
   "validations:delete_validation": "rule:platform.admin",
 
+  "tm_attest:trigger": "rule:any.tenant.admin",
+
+  "billing_vnsf:create": "rule:any.developer",
+  "billing_vnsf:read": "rule:developer.owned",
+  "billing_vnsf:update": "rule:developer.owned",
+  "billing_vnsf:delete": "rule:the.tenant.admin",
+
+  "billing_ns:create": "rule:platform.admin",
+  "billing_ns:read": "rule:the.tenant.admin",
+  "billing_ns:update": "rule:the.tenant.admin",
+  "billing_ns:delete": "rule:the.tenant.admin",
+
+  "billing_ns_usage:create": "rule:platform.admin",
+  "billing_ns_usage:read": "rule:platform.admin",
+  "billing_ns_usage:start": "rule:platform.admin",
+  "billing_ns_usage:stop": "rule:platform.admin",
+  "billing_ns_usage:update": "rule:platform.admin",
+  "billing_summary:read": "rule:platform.admin",
+  "billing_summary:update": "rule:platform.admin",
 }

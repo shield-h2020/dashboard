@@ -161,6 +161,21 @@ policies_admin = {
     }
 
 
+distinct_policies = {
+    'item_title':       'distinct policies per vnsf instance id',
+    'url':              'policies/distinct',
+    'schema':           policies['schema'],
+    'resource_methods': ['GET'],
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'policies',
+    },
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET'],
+
+}
+
 
 ###
 #  NS Instances
@@ -223,6 +238,22 @@ notifications_tm_host = {
     'public_item_methods': ['GET', 'PATCH']
     }
 
+distinct_notifications_tm_host = {
+    'item_title':       'distinct tm host notifications',
+    'url':              'tm/notifications/distinct',
+    'schema':           api_model.notification_tm_host_model,
+    'resource_methods': ['GET'],
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'notifications_tm_host',
+        'default_sort': [('time', -1)],
+    },
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET'],
+
+}
+
 
 notifications_tm_host_admin = {
     'item_title':       'admin tm host notifications',
@@ -243,8 +274,8 @@ notifications_tm_vnsf = {
     'item_title':           'tm vnsf notifications',
     'url':                  'tm/vnsf/notifications',
     'schema':               api_model.notification_tm_vnsf_model,
-    'item_lookup_field':    EndpointVar.__TENANT_ID__,
-    'item_url':             EndpointVar.__TENANT_ID_FMT__,
+    #'item_lookup_field':    EndpointVar.__TENANT_ID__,
+    #'item_url':             EndpointVar.__TENANT_ID_FMT__,
     'resource_methods':    ['POST', 'GET'],
     'item_methods':        ['GET', 'PATCH'],
     'allow_unknown':    True,
@@ -253,6 +284,22 @@ notifications_tm_vnsf = {
     'public_methods':      ['GET'],
     'public_item_methods': ['GET', 'PATCH']
     }
+
+distinct_notifications_tm_vnsf = {
+    'item_title':       'distinct tm host notifications',
+    'url':              'tm/vnsf/notifications/distinct',
+    'schema':           api_model.notification_tm_vnsf_model,
+    'resource_methods': ['GET'],
+    'allow_unknown':    True,
+    'datasource':       {
+        'source': 'notifications_tm_vnsf',
+        'default_sort': [('time', -1)],
+    },
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET'],
+}
+
 
 notifications_tm_vnsf_admin = {
     'item_title':       'admin tm vnsf notifications',
@@ -528,3 +575,198 @@ validations = {
     'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.VALIDATION)],
     'schema':             EndpointHelper.get_schema(Endpoint.VALIDATION)
     }
+
+###
+#   Trigger on-demand Trust Monitor attestation
+###
+tm_attest_all = {
+    'item_title':       EndpointHelper.get_name(Endpoint.TM_ATTEST_ALL),
+    'url':              EndpointHelper.get_url(Endpoint.TM_ATTEST_ALL),
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.TM_ATTEST_ALL),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.TM_ATTEST_ALL)],
+    'schema':           EndpointHelper.get_schema(Endpoint.TM_ATTEST_ALL),
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods': ['POST']
+}
+
+tm_attest_node = {
+    'item_title':       EndpointHelper.get_name(Endpoint.TM_ATTEST),
+    'url':              EndpointHelper.get_url(Endpoint.TM_ATTEST),
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.TM_ATTEST),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.TM_ATTEST)],
+    'schema':           EndpointHelper.get_schema(Endpoint.TM_ATTEST),
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':      ['POST']
+}
+###
+# Billing data
+###
+
+billing_ns = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_NS),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_NS),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_NS),
+    'item_lookup_field':  'ns_id',
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_NS)],
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.BILLING_NS)],
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_NS),
+
+    # TODO: remove later
+    'public_methods':      ['GET', 'DELETE'],
+    'public_item_methods': ['GET', 'PATCH', 'DELETE']
+}
+
+billing_vnsf = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_VNSF),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_VNSF),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_VNSF),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_VNSF),
+    'item_lookup_field':  'vnsf_id',
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_VNSF)],
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.BILLING_VNSF)],
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_VNSF),
+
+    # TODO: remove later
+    'public_methods':          ['GET', 'DELETE'],
+    'public_item_methods':     ['GET', 'PATCH', 'DELETE']
+}
+#
+# billing_usage = {
+#     'item_title':         EndpointHelper.get_name(Endpoint.BILLING_USAGE),
+#     'url':                EndpointHelper.get_url(Endpoint.BILLING_USAGE),
+#     'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_USAGE),
+#     'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_USAGE),
+#     'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_USAGE)],
+#     'schema':             EndpointHelper.get_schema(Endpoint.BILLING_USAGE),
+#
+#     # TODO: remove later
+#     'public_methods':    ['GET', 'POST'],
+#     'public_item_methods': ['GET', 'DELETE', 'PATCH']
+# }
+
+billing_ns_usage = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_USAGE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_USAGE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_NS_USAGE),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_NS_USAGE),
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_NS_USAGE)],
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_NS_USAGE),
+    #
+    # 'item_lookup_field':  'ns_instance_id',
+    # 'item_url':           'regex("[\w]+")',
+
+    # TODO: remove later
+    'public_methods':    ['GET', 'POST', 'DELETE'],
+    'public_item_methods': ['GET', 'DELETE', 'PATCH']
+}
+
+billing_ns_start_usage = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_START_USAGE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_START_USAGE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_NS_START_USAGE),
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_NS_START_USAGE)],
+    'schema':             billing_ns_usage['schema'],
+    'datasource':       {
+        'source': 'billing_ns_usage'
+        },
+
+    # TODO: remove later
+    'public_methods':    ['POST']
+}
+
+billing_ns_stop_usage = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_STOP_USAGE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_STOP_USAGE),
+    'resource_methods':   [],
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_NS_STOP_USAGE),
+    'allowed_item_roles': [EndpointHelper.get_item_policies(Endpoint.BILLING_NS_STOP_USAGE)],
+    'schema':             billing_ns_usage['schema'],
+    'datasource':       {
+        'source': 'billing_ns_usage'
+        },
+
+    # TODO: remove later
+    'public_item_methods': ['PATCH']
+}
+
+billing_vnsf_usage = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_VNSF_USAGE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_VNSF_USAGE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_VNSF_USAGE),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_VNSF_USAGE),
+    'allowed_roles':      [EndpointHelper.get_resource_policies(Endpoint.BILLING_VNSF_USAGE)],
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_VNSF_USAGE),
+
+    # TODO: remove later
+    'public_methods':    ['GET', 'POST', 'DELETE'],
+    'public_item_methods': ['GET', 'DELETE', 'PATCH']
+}
+
+billing_summary = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_SUMMARY),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_SUMMARY),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_SUMMARY),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_SUMMARY),
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_SUMMARY),
+
+    # TODO: remove later
+    'public_methods':     ['GET', 'DELETE'],
+    'public_item_methods': ['PATCH']
+}
+
+billing_ns_summary = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_SUMMARY),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_SUMMARY),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_NS_SUMMARY),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_NS_SUMMARY),
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_NS_SUMMARY),
+
+    # TODO: remove later
+    'public_methods':     ['POST', 'GET', 'DELETE'],
+    'public_item_methods': ['DELETE']
+}
+
+billing_vnsf_summary = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_VNSF_SUMMARY),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_VNSF_SUMMARY),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_VNSF_SUMMARY),
+    'item_methods':       EndpointHelper.get_item_methods(Endpoint.BILLING_VNSF_SUMMARY),
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_VNSF_SUMMARY),
+
+    # TODO: remove later
+    'public_methods': ['POST', 'GET', 'DELETE'],
+    'public_item_methods': ['DELETE']
+}
+
+billing_update = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_UPDATE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_UPDATE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_UPDATE),
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_UPDATE),
+
+    # TODO: remove later
+    'public_methods': ['POST']
+}
+
+billing_clean = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_CLEAN),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_CLEAN),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_CLEAN),
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_CLEAN),
+
+    # TODO: remove later
+    'public_methods': ['POST']
+}
+
+billing_ns_simulate = {
+    'item_title':         EndpointHelper.get_name(Endpoint.BILLING_NS_SIMULATE),
+    'url':                EndpointHelper.get_url(Endpoint.BILLING_NS_SIMULATE),
+    'resource_methods':   EndpointHelper.get_resource_methods(Endpoint.BILLING_NS_SIMULATE),
+    'schema':             EndpointHelper.get_schema(Endpoint.BILLING_NS_SIMULATE),
+
+    # TODO: remove later
+    'public_methods': ['POST']
+}

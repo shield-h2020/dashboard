@@ -32,10 +32,10 @@ export class IncidentsService {
     }
     if (!this.authService.isUserPlatformAdmin()) {
       params.where = JSON.stringify({
-        tenant_id: this.authService.getTenant()
+        ...filters,
+        tenant_id: this.authService.getTenant(),
       });
     }
-
     return this.http
       .get(API_INCIDENTS, { params })
       .then(response => {

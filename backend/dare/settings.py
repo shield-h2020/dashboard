@@ -236,6 +236,19 @@ TENANT_VNSF_INSTANCE_ASSOCIATION_URL = __tenant_vnsf_instance_association_rest__
 TENANT_VNSF_INSTANCE_ASSOCIATION_HEADERS = __tenant_vnsf_instance_association_rest__['tenant_vnsf_instance_association']['headers']
 
 
+###
+#   Start Billing NS Usage
+###
+__billing_ns_start_usage_rest__ = {
+    'billing_ns_start_usage': {
+        'url':      '{}/{}'.format(BACKENDAPI_URL, 'billing/ns/start'),
+        'headers': {'Content-Type': 'application/json'}
+    }
+}
+
+START_BILLING_NS_USAGE_URL = __billing_ns_start_usage_rest__['billing_ns_start_usage']['url']
+START_BILLING_NS_USAGE_HEADERS = __billing_ns_start_usage_rest__['billing_ns_start_usage']['headers']
+
 
 ###
 #   Schemas

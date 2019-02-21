@@ -44,6 +44,9 @@ MONGO_DBNAME = os.environ.get('DATASTORE_DBNAME', 'shield-dashboard')
 STORE_HOST = os.environ.get('VNSF_STORE_HOST')
 STORE_PORT = os.environ.get('VNSF_STORE_PORT')
 
+TM_HOST = os.environ.get('TRUST_MONITOR_HOST')
+TM_PORT = os.environ.get('TRUST_MONITOR_PORT')
+
 VNSFO_PROTOCOL = os.environ.get('VNSFO_PROTOCOL', 'http')
 VNSFO_HOST = os.environ.get('VNSFO_HOST', '__missing_vnsfo_host__')
 VNSFO_PORT = os.environ.get('VNSFO_PORT', '')
@@ -101,19 +104,38 @@ DOMAIN = {
     'ns_terminate':           api_endpoints.ns_terminate,
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin,
+    'distinct_policies':      api_endpoints.distinct_policies,
     'validations':            api_endpoints.validations,
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,
     'notifications_vnsfo_admin': api_endpoints.notifications_vnsfo_admin,
     'notifications_tm_vnsf_admin': api_endpoints.notifications_tm_vnsf_admin,
     'notifications_tm_vnsf': api_endpoints.notifications_tm_vnsf,
+    'distinct_notifications_tm_vnsf': api_endpoints.distinct_notifications_tm_vnsf,
     'notifications_tm_host_admin': api_endpoints.notifications_tm_host_admin,
     'notifications_tm_host': api_endpoints.notifications_tm_host,
+    'distinct_notifications_tm_host': api_endpoints.distinct_notifications_tm_host,
     'tenant_ips':             api_endpoints.tenant_ip_association,
     'tenant_vnsfs':           api_endpoints.tenant_vnsf_association,
-    'ns_instance_update':     api_endpoints.ns_instance_update
+    'ns_instance_update':     api_endpoints.ns_instance_update,
+    'tm_attest_node':         api_endpoints.tm_attest_node,
+    'tm_attest_all':          api_endpoints.tm_attest_all,
+    'billing_vnsf':           api_endpoints.billing_vnsf,
+    'billing_ns':             api_endpoints.billing_ns,
+    'billing_ns_usage':       api_endpoints.billing_ns_usage,
+    'billing_ns_start_usage': api_endpoints.billing_ns_start_usage,
+    'billing_ns_stop_usage':  api_endpoints.billing_ns_stop_usage,
+    'billing_ns_summary':     api_endpoints.billing_ns_summary,
+    'billing_vnsf_usage':     api_endpoints.billing_vnsf_usage,
+    'billing_vnsf_summary':   api_endpoints.billing_vnsf_summary,
+    'billing_update':         api_endpoints.billing_update,
+    'billing_ns_simulate':    api_endpoints.billing_ns_simulate,
+    'billing_summary':        api_endpoints.billing_summary,
+    'billing_clean':          api_endpoints.billing_clean
     }
 
+PAGINATION_LIMIT = 100
+PAGINATION_DEFAULT = 100
 
 ###
 #   Association Tenant IP

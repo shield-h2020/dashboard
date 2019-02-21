@@ -33,16 +33,11 @@ import requests
 import xmlschema
 from dashboardutils import http_utils
 from dashboardutils.error_utils import ExceptionMessage, IssueHandling, IssueElement
-from xmlschema import XMLSchemaValidationError
+
 
 
 class TenantAssociationError(ExceptionMessage):
     """Error associating tenant and vNSF Instance ID"""
-
-
-class SecurityPolicyNotComplaint(ExceptionMessage):
-    """Policy not compliant with the schema defined."""
-
 
 class SecurityPolicyNotPersisted(ExceptionMessage):
     """Error persisting the security policy."""
@@ -56,10 +51,7 @@ class MsplPersistence:
                 }
             },
         'POLICY':       {
-            'NOT_COMPLIANT': {
-                IssueElement.EXCEPTION: SecurityPolicyNotComplaint(
-                        'Policy not compliant with the schema defined.')
-                },
+
             'NOT_PERSISTED': {
                 IssueElement.ERROR:     ['Persistence error for {}. Status: {}'],
                 IssueElement.EXCEPTION: SecurityPolicyNotPersisted('Error persisting the security policy.')
@@ -111,30 +103,26 @@ class MsplPersistence:
             self.logger.error('Error associating the vNSF Instance at {}.'.format(url), e)
             raise Exception
 
-    def persist(self, policy):
+    def persist(self, policy, policy_xml_str):
         try:
-            # Check MSPL schema compliance.
-            policy_schema = xmlschema.XMLSchema(self.settings['policy_schema'])
-
             # Associate vNSF with tenant
-            it_resource = policy_schema.to_dict(policy, './tns:mspl-set/tns:it-resource')
-            print("it-resource:\n" + pformat(it_resource))
+            it_resource = policy['it-resource'][0]
             tenant = self.__associate_vnsf_instance__(it_resource['@id'])
 
             # Extract metadata.
-            policy_context = policy_schema.to_dict(policy, './tns:mspl-set/tns:context')
+            policy_context = policy['context']
             policy_info = dict()
             policy_info['tenant_id'] = tenant
             policy_info['vnsf_id'] = it_resource['@id']
-            policy_info['detection'] = policy_context['tns:timestamp']
-            policy_info['severity'] = policy_context['tns:severity']
+            policy_info['detection'] = policy_context['timestamp']
+            policy_info['severity'] = policy_context['severity']
             policy_info['status'] = 'Not applied'
-            policy_info['attack'] = policy_context['tns:type']
-            policy_info['recommendation'] = policy.decode('utf-8')
+            policy_info['attack'] = policy_context['type']
+            policy_info['recommendation'] = policy_xml_str
 
             policy_json = json.dumps(policy_info)
 
-            self.logger.debug('policy from XML\n%r', policy_info['recommendation'])
+            self.logger.debug('Policy from XML:\n{}'.format(pformat(policy_info['recommendation'])))
 
             # Persist policy.
             url = self.settings['persist_url']
@@ -157,9 +145,6 @@ class MsplPersistence:
             policy_info['_etag'] = response_data['_etag']
 
             return tenant, policy_info
-
-        except XMLSchemaValidationError:
-            self.issue.raise_ex_no_log(IssueElement.ERROR, self.errors['POLICY']['NOT_COMPLIANT'])
 
         except requests.exceptions.ConnectionError as e:
             self.logger.error('Error persisting the policy at {}.'.format(url), e)

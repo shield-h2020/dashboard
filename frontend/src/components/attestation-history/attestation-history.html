@@ -1,0 +1,18 @@
+<section>
+    <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+
+    <div class="sn-card">
+        <header class="sn-card__header">
+            <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}} {{::$ctrl.nodeName}}</h5>
+            <button  ui-sref="attestation" class="sn-button sn-button--primary">{{$ctrl.viewStrings.back}}</button>
+        </header>
+        <s-table items="$ctrl.items" headers="$ctrl.tableHeaders" loading="$ctrl.loading"></s-table>
+        <div style="text-align: right; margin-top: 16px;" ng-if="$ctrl.items.length">
+            <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+            <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+            <span class="sn-table__footer">
+              Showing {{$ctrl.paging.min}} to {{$ctrl.paging.max}} of {{$ctrl.pagination.total}}
+            </span>
+          </div>
+    </div>
+</section>

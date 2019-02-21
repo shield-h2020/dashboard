@@ -35,7 +35,6 @@ import settings as cfg
 from dashboardutils import http_utils
 from dashboardutils.pipe import PipeProducer
 from dashboardutils.rabbit_client import RabbitAsyncConsumer
-
 from .vnsfo_notification_persistence import VnsfoNotificationPersistence
 
 config = {
@@ -170,6 +169,22 @@ class VNSFONotification(PipeProducer):
                     self.logger.debug("Couldn't update tenant_id {} <-> vNSF instances association: {}".format(tenant_id, patch_json))
                     return
 
+            # Start NS Billing Usage if instantiation was successful
+            self.logger.debug(
+                "Starting 'billing_usage' for NS {}, instance ID {}".format(ns_id, ns_instance_id))
+
+            url = cfg.START_BILLING_NS_USAGE_URL
+            headers = cfg.START_BILLING_NS_USAGE_HEADERS
+            billing_data = {
+                'ns_instance_id': ns_instance_id
+            }
+
+            r = requests.post(url, headers=headers, json=billing_data, verify=False)
+            if not r.status_code == http_utils.HTTP_201_CREATED:
+                self.logger.error(
+                    "Couldn't start 'billing_usage' for NS {}, instance ID {}".format(ns_id, ns_instance_id))
+                return
+
         # Update status of NS instance to according to operational status
         url = '{}/{}?where={{\"tenant_id\": \"{}\"}}'.format(cfg.VNSFO_NOTIFICATION_API_INVENTORY_NSS_URL,
                                                             inventory_nss_id, tenant_id)
@@ -200,3 +215,5 @@ class VNSFONotification(PipeProducer):
         }
         self.logger.debug('Sending Notification: {}'.format(notification_json))
         self.notify_by_tenant(notification_json, tenant_id)
+
+

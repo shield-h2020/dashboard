@@ -81,7 +81,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
                                 [[url]])
 
-    def instantiate_ns(self, ns_name, target):
+    def instantiate_ns(self, ns_name, target, osm_version):
         """
         Instantiates a Network Service using the Orchestrator REST interface (vNSFO API).
         :param ns_id: Network Service ID
@@ -94,7 +94,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             "virt_type": target
         }
 
-        url = '{}/{}'.format(self.basepath, 'ns/instantiate')
+        url = '{}/{}/{}/{}'.format(self.basepath, 'ns', osm_version, 'instantiate')
         headers = {'Content-Type': 'application/json'}
         self.logger.debug("Instantiating Network Service '%s'", ns_name)
 
@@ -114,9 +114,9 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         except requests.exceptions.ConnectionError:
             self.logger.error("Couldn't connect to vNSFO")
 
-    def terminate_ns(self, instance_id):
+    def terminate_ns(self, instance_id, osm_version):
 
-        url = '{}/{}/{}'.format(self.basepath, 'ns/running', instance_id)
+        url = '{}/{}/{}/{}/{}'.format(self.basepath, 'ns', osm_version, 'running', instance_id)
         headers = {'Content-Type': 'application/json'}
 
         try:
@@ -130,7 +130,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
             return r
 
         except requests.exceptions.ConnectionError:
-            self.logger.error("Couldn't connect to vNSFO")
+            self.logger.error("Termination failed. Couldn't connect to vNSFO")
 
     def apply_remediation(self, target_type, target_id, action):
 
@@ -155,7 +155,8 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         action_map = {
             'isolate': 'isolated',
-            'reboot': 'reboot'
+            'reboot': 'reboot',
+            'terminate': 'terminated'
         }
 
         headers = {'Content-Type': 'application/json'}
@@ -167,7 +168,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         self.logger.debug(f"Send remediation data {remediation} to {url}")
 
         try:
-            r = requests.put(url, headers=headers, json=remediation)
+            r = requests.put(url, headers=headers, json=remediation, verify=False)
 
             if r.text:
                 self.logger.debug(r.text)
@@ -188,7 +189,8 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         action_map = {
             'isolate': 'isolated',
-            'reboot': 'reboot'
+            'reboot': 'reboot',
+            'terminate': 'terminated'
         }
 
         headers = {'Content-Type': 'application/json'}
@@ -201,7 +203,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
         self.logger.debug(f"Send remediation data {remediation} to {url}")
 
         try:
-            r = requests.post(url, headers=headers, json=remediation)
+            r = requests.post(url, headers=headers, json=remediation, verify=False)
             if r.text:
                 self.logger.debug(r.text)
 

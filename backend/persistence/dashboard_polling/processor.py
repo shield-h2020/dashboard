@@ -25,8 +25,9 @@
 import logging
 import time
 from abc import abstractmethod, ABCMeta
-
+import json
 import requests
+import yaml
 from dashboardutils import http_utils
 
 
@@ -47,36 +48,49 @@ class VNSFONSInstanceProcessor(Processor):
 
     def processor(self, item, *args, **kwargs):
         instance_id = item['instance_id']
+        vnfvo_version = item['nfvo_version']
 
-        running_status = ''
+        ns_name = ''
         data = {}
+        running_status = ''
+        vnsf_instances = list()
         while running_status not in ['running', 'failed']:
             time.sleep(3)
-            url = f"{self.basepath}/ns/running/{instance_id }"
+            url = f"{self.basepath}/ns/{vnfvo_version}/running/{instance_id }"
+            print("Polling url: '{}'".format(url))
 
             self.logger.debug(f"Polling NS instance '{instance_id }'")
 
             response = requests.get(url, verify=False)
             if not response.status_code == http_utils.HTTP_200_OK:
                 # TODO: raise exception
-                self.logger.error(f"Couldn't retrieve running NS instance_id '{instance_id }' from vNSFO")
-                return False
+                self.logger.error(f"Couldn't retrieve running NS instance_id '{instance_id }' from vNSFO.")
+                running_status = 'failed'
+                break
 
-            data = response.json()
+            # vNSFO API may return a json with single quotes, which is not a json standard
+            # This hack loads the json response with the yaml loader which is more permissive
+            print(response.text)
+            data = yaml.load(response.text)
+
+            print(data)
+
             if data['ns']:
+                ns_name = data['ns'][0]['ns_name']
                 running_status = data['ns'][0]['operational_status']
+                self.logger.debug(f"Continuing to poll NS instance '{instance_id }'. Current status: {running_status }")
 
-        self.logger.debug(f"NS instance '{instance_id }' ready")
+        self.logger.debug(f"NS instance '{instance_id }' polling terminated. vNSFO replied status: '{running_status }'")
 
-        vnsf_instances = list()
-        for vnf_instance in data['ns'][0]['constituent_vnf_instances']:
-            vnfr_id = vnf_instance['vnfr_id']
-            vnsf_instances.append(vnfr_id)
+        if running_status == 'running':
+            for vnf_instance in data['ns'][0]['constituent_vnf_instances']:
+                vnfr_id = vnf_instance['vnfr_id']
+                vnsf_instances.append(vnfr_id)
 
-        # vnsf_instances = list([vnf['vnfr_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
-        # print(data['ns'][0]['constituent_vnf_instances'])
+            # vnsf_instances = list([vnf['vnfr_id'] for vnf in data['ns'][0]['constituent_vnf_instances']])
+            # print(data['ns'][0]['constituent_vnf_instances'])
 
-        self.logger.debug("vNSF Instances running: {}".format(vnsf_instances))
+            self.logger.debug("vNSF Instances running: {}".format(vnsf_instances))
 
         # if not vnsf_instances:
         #     # TODO: raise exception
@@ -90,7 +104,7 @@ class VNSFONSInstanceProcessor(Processor):
                 "instance_id": instance_id,
                 "operational_status": running_status,
                 "vnsf_instances": vnsf_instances,
-                "ns_name": data['ns'][0]['ns_name']
+                "ns_name": ns_name
             }
         }
 

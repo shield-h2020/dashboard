@@ -35,6 +35,8 @@ import flask
 from flask import abort, make_response, jsonify
 import requests
 from dashboardutils import http_utils
+from hooks_billing import BillingActions
+
 
 class NssInventoryHooks:
     """
@@ -94,12 +96,15 @@ class NssInventoryHooks:
         ns_id = r['ns_id']
         ns_name = r['ns_name']
         target = r['manifest']['manifest:ns']['target']
-        print("\n\n\nRetrieved ns_id: '{}', ns_name: '{}' target: {}\n\n".format(ns_id, ns_name, target))
+        orchestrator_type = r['manifest']['manifest:ns']['type']
+        orchestrator_version = 'r4' if orchestrator_type == 'OSM-R4' else 'r2'
+
+        logger.debug("Retrieved from Store ns_id: '{}', ns_name: '{}' target: {}".format(ns_id, ns_name, target))
 
         try:
             vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                                   cfg.VNSFO_API)
-            r = vnsfo.instantiate_ns(ns_name, target)
+            r = vnsfo.instantiate_ns(ns_name, target, orchestrator_version)
             if not r:
                 logger.error("FAILED instantiation of network service '{}'".format(ns_name))
                 message = r.text if r.text else r.json() if r.json() else None
@@ -122,7 +127,8 @@ class NssInventoryHooks:
         # Trigger NS Instance polling
         url = "{}/ns_instance_update".format(cfg.BACKENDAPI)
         json_instance_update = {
-            "ns_instance_id": updates['instance_id']
+            "ns_instance_id": updates['instance_id'],
+            "nfvo_version": orchestrator_version
         }
         headers = {'Content-Type': 'application/json'}
         r = requests.post(url, json=json_instance_update, headers=headers, verify=False)
@@ -134,7 +140,7 @@ class NssInventoryHooks:
                                     "Instantiation failed. Failed to trigger polling for NS instance_id '{}'"
                                         .format(updates['instance_id'])}}), 500))
 
-        logger.debug("NS instance_id '{}' instantiation cess was successful".format(updates['instance_id']))
+        logger.debug("NS instance_id '{}' instantiation process started successfully".format(updates['instance_id']))
 
     @staticmethod
     def terminate_network_service(updates, original):
@@ -151,18 +157,49 @@ class NssInventoryHooks:
             return
 
         instance_id = original['instance_id']
+        ns_id = original['ns_id']
 
-        logger.debug("Terminating network service '{}'".format(original['ns_id']))
+        logger.debug("Terminating network service '{}' with instance id '{}'".format(ns_id, instance_id))
+
+        # get network service data from Store
+        url = "http://{}:{}/nss/{}".format(cfg.STORE_HOST, cfg.STORE_PORT, ns_id)
+        logger.debug("Connecting to store: {}".format(url))
+
+        try:
+            r = requests.get(url)
+
+            if not r.status_code == http_utils.HTTP_200_OK:
+                # TODO: raise exception
+                logger.error("Couldn't retrieve data of Network Service '%s'", ns_id)
+                abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                      {"code": r.status_code, "message":
+                       "Termination failed. Store replied: {}".format(r.text)}}), r.status_code))
+
+        except requests.exceptions.ConnectionError as e:
+            #  TODO: raise exception
+            logger.error("Couldn't connect to Store: {}".format(e))
+            abort(make_response(jsonify(**{"_status": "ERR", "_error":
+                  {"code": 404, "message":
+                   "Termination failed. Store is unavailable"}}), 404))
+
+        # Retrieve relevant network service parameters
+        r = r.json()
+        ns_name = r['ns_name']
+        target = r['manifest']['manifest:ns']['target']
+        orchestrator_type = r['manifest']['manifest:ns']['type']
+        orchestrator_version = 'r4' if orchestrator_type == 'OSM-R4' else 'r2'
+
+        logger.debug("Retrieved from Store ns_id: '{}', ns_name: '{}' target: {}\n\n".format(ns_id, ns_name, target))
 
         try:
             vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                                   cfg.VNSFO_API)
-            r = vnsfo.terminate_ns(instance_id)
+            r = vnsfo.terminate_ns(instance_id, orchestrator_version)
             if not r:
                 logger.error("FAILED termination of network service instance id '{}'".format(instance_id))
                 abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                     {"code": http_utils.HTTP_504_TIMEOUT, "message":
-                                        "Instantiation failed. vNSFO replied: {}".format(r.text)}}),
+                                        "Termination failed. vNSFO replied: {}".format(r.text)}}),
                                     http_utils.HTTP_504_TIMEOUT))
                 return
             r = r.json()

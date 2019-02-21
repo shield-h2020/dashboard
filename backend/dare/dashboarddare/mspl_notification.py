@@ -28,12 +28,27 @@
 import logging
 from pprint import pprint
 from threading import Thread
-
 import settings as cfg
+from pprint import pformat
 from dashboardutils.pipe import PipeProducer
 from dashboardutils.rabbit_client import RabbitAsyncConsumer
-
 from .mspl_notification_persistence import MsplPersistence
+import xmlschema
+from xmlschema import XMLSchemaValidationError
+from lxml import etree
+from dashboardutils.error_utils import ExceptionMessage, IssueHandling, IssueElement
+
+class SecurityPolicyNotComplaint(ExceptionMessage):
+    """Policy not compliant with the schema defined."""
+
+errors = {
+    'POLICY':       {
+        'NOT_COMPLIANT': {
+                IssueElement.EXCEPTION: SecurityPolicyNotComplaint(
+                        'Policy not compliant with the schema defined.')
+                }
+    }
+}
 
 config = {
     'policy_schema':       cfg.POLICYSCHEMA_FILE,
@@ -71,6 +86,8 @@ class MsplNotification(PipeProducer):
         # Setup the instance as the events producer for the managed pipe.
         self.pipe.boot_in_sink(self)
 
+        self.issue = IssueHandling(self.logger)
+
     def setup(self):
         """
         The logic is provided by the RabbitMQ client hence nothing to do here.
@@ -94,11 +111,37 @@ class MsplNotification(PipeProducer):
         :param body: the actual security policy.
         """
 
-        self.logger.info('Policy: %r', body)
+        self.logger.info("Policy: {}".format(body))
 
         policy_persistence = MsplPersistence(config)
 
-        tenant, policy = policy_persistence.persist(body)
-        if tenant:
-            self.logger.debug('Sending Notification: {}'.format(pprint(policy)))
-            self.notify_by_tenant(policy, tenant)
+        # Check MSPL schema compliance.
+        try:
+            policy_schema = xmlschema.XMLSchema(config['policy_schema'])
+            policy_schema.validate(body.decode())
+
+        except XMLSchemaValidationError:
+            self.issue.raise_ex_no_log(errors['POLICY']['NOT_COMPLIANT'])
+            return
+
+        # Following the new schema, each MSPL can carry multiple recommendations (mspl sets)
+        # belonging to different it-resources (vnsf instances) and therefore to different tenants
+        # Here, we have to break down each recommendation and persist it accordingly.
+        body_str = body.decode()
+        recommendations = policy_schema.to_dict(body_str)
+        xml_tree = etree.fromstring(body_str)
+        self.logger.debug("Schema validation PASSED.\n{}".format(pformat(recommendations)))
+
+        # Process each mspl-set
+        for index, mspl_set in enumerate(recommendations['mspl-set']):
+            self.logger.debug("Processing mspl-set #{}".format(index))
+            tenant, policy = policy_persistence.persist(mspl_set,
+                                                        etree.tostring(xml_tree[index], pretty_print=True,
+                                                                       xml_declaration=True,
+                                                                       encoding="UTF-8").decode("UTF-8"))
+            if tenant:
+                self.logger.debug('Sending Notification: {}'.format(pprint(policy)))
+                self.notify_by_tenant(policy, tenant)
+
+
+

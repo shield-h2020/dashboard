@@ -25,10 +25,80 @@
 # of their colleagues of the SHIELD partner consortium (www.shield-h2020.eu).
 
 import settings as cfg
+import copy
 from vnsfo.vnsfo import VnsfoFactory
 
 
 class TMNotifications:
+
+    @staticmethod
+    def get_distinct_tm_vnsf_notifications(response):
+
+        distinct_vnsfs = []
+
+        distinct_items = copy.deepcopy(response['_items'])
+
+        for item in response['_items']:
+
+            distinct_item = None
+            for di in distinct_items:
+                if di['_id'] == item['_id']:
+                    distinct_item = di
+
+            if not distinct_item:
+                return
+
+            for vnsf in item['vnsfs']:
+                print("processing vnsf {}".format(vnsf['vnsfd_id']))
+
+                if vnsf['vnsfd_id'] in distinct_vnsfs:
+                    if len(distinct_item['vnsfs']) == 1:
+                        distinct_items.remove(distinct_item)
+                    else:
+                        distinct_item['vnsfs'].remove(vnsf)
+                else:
+                    distinct_vnsfs.append(vnsf['vnsfd_id'])
+
+        response['_items'] = distinct_items
+        response['_meta']['total'] = len(distinct_vnsfs)
+
+    @staticmethod
+    def get_distinct_tm_notifications(response):
+        distinct_targets = {
+            'hosts': [],
+            'sdn': []
+        }
+
+        distinct_items = copy.deepcopy(response['_items'])
+
+        for item in response['_items']:
+
+            target_key = item['type']
+            if not target_key in ['hosts', 'sdn']:
+                return
+
+            distinct_item = None
+            for di in distinct_items:
+                if di['_id'] == item['_id']:
+                    distinct_item = di
+
+            if not distinct_item:
+                return
+
+            for target in item[target_key]:
+                if 'node' not in target.keys():
+                    return
+                if target['node'] in distinct_targets[target_key]:
+                    if len(distinct_item[target_key]) == 1:
+                        distinct_items.remove(distinct_item)
+                    else:
+                        distinct_item[target_key].remove(target)
+                else:
+                    distinct_targets[target_key].append(target['node'])
+
+        response['_items'] = distinct_items
+        response['_meta']['total'] = len(distinct_targets['hosts']) + len(distinct_targets['sdn'])
+
 
     @staticmethod
     def apply_host_remediation(updates, original):
@@ -39,12 +109,23 @@ class TMNotifications:
         notification = dict(original)
         target_type = 'hosts' if 'hosts' in notification.keys() else 'sdn'
 
-        for target in notification[target_type]:
-            remediation_dict = target['remediation'] if 'remediation' in target.keys() else target['extra_info'][
-                'Remediation']
-            for remediation, value in remediation_dict.items():
-                if value:
-                    vnsfo.apply_remediation(target_type, target['node'], remediation)
+        notification_updates = dict(updates)
+        for index, target in enumerate(notification_updates[target_type]):
+            remediation_updates_dict = target['remediation'] if 'remediation' in target.keys() else target['extra_info']['Remediation']
+            remediation_dict = notification[target_type][index]['remediation'] if 'remediation' in notification[target_type][index].keys() else notification[target_type][index]['extra_info']['Remediation']
+
+            for remediation, value in remediation_updates_dict.items():
+                print(remediation_dict)
+                if value and remediation_dict[remediation]:
+                    vnsfo.apply_remediation(target_type, notification[target_type][index]['node'], remediation)
+
+        if 'hosts' in updates:
+            del updates['hosts']
+        if 'sdn' in updates:
+            del updates['sdn']
+
+        updates['status'] = 'Applied'
+
 
     @staticmethod
     def apply_vnsf_remediation(updates, original):
@@ -52,7 +133,16 @@ class TMNotifications:
         vnsfo = VnsfoFactory.get_orchestrator('OSM', cfg.VNSFO_PROTOCOL, cfg.VNSFO_HOST, cfg.VNSFO_PORT,
                                               cfg.VNSFO_API)
         notification = dict(original)
-        for vnsf in notification['vnsfs']:
-            for remediation, value in vnsf['remediation'].items():
-                if value:
-                    vnsfo.apply_remediation('vnsf', vnsf['vnsf_id'], remediation)
+        notification_updates = dict(updates)
+
+        for index, vnsf in enumerate(notification_updates['vnsfs']):
+            remediation_dict = notification['vnsfs'][index]['remediation']
+            remediation_updates_dict = vnsf['remediation']
+            for remediation, value in remediation_updates_dict.items():
+                if value and remediation_dict[remediation]:
+                    vnsfo.apply_remediation('vnsf', notification['vnsfs'][index]['vnsfd_id'], remediation)
+
+        if 'vnsfs' in updates:
+            del updates['vnsfs']
+
+        updates['status'] = 'Applied'
