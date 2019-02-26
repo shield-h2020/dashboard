@@ -80,6 +80,10 @@ export const CatalogueComponent = {
             label: 'Delete',
             action: this.toggleDeleteModal.bind(this),
           },
+          {
+            label: 'Billing Fee',
+            action: this.toggleBillingFee.bind(this),
+          },
         ];
       }
 
