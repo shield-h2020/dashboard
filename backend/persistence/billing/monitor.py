@@ -49,7 +49,7 @@ class BillingMonitor:
         self._job = self._scheduler.add_job(self.work, 'interval', minutes=self._update_interval)
 
         # TODO: enable scheduler after testing phase
-        # self._scheduler.start()
+        self._scheduler.start()
 
     def stop(self):
         self._working = False

@@ -14,6 +14,7 @@ const VIEW_STRINGS = {
   deleteButton: 'Delete',
   cancelButton: 'Cancel',
   confirmDelete: 'Are you sure you want to delete the NS',
+  modalTitleBilling: 'Assign Billing for NS',
 };
 
 const TABLE_HEADERS = {
@@ -46,9 +47,11 @@ export const CatalogueComponent = {
       this.createOpen = false;
       this.deleteOpen = false;
       this.detailsOpen = false;
+      this.billingOpen = false;
       this.offset = 1;
       this.limit = 25;
       this.isLoading = false;
+      this.isLoadingBilling = false;
       this.filters = {};
       this.vnsfsService = VNSFService;
 
@@ -56,12 +59,8 @@ export const CatalogueComponent = {
         ...TABLE_HEADERS,
         actions: [
           {
-            label: 'view',
+            label: 'View',
             action: this.toggleDetailsModal.bind(this),
-          },
-          {
-            label: 'delete',
-            action: this.toggleDeleteModal.bind(this),
           },
         ],
       };
@@ -70,12 +69,41 @@ export const CatalogueComponent = {
         this.headers.actions = [
           ...this.headers.actions,
           {
-            label: 'enroll',
+            label: 'Enroll',
             action: this.addToInventory.bind(this),
           },
         ];
+      } else if (this.authService.isUserPlatformAdmin()) {
+        this.headers.actions = [
+          ...this.headers.actions,
+          {
+            label: 'Delete',
+            action: this.toggleDeleteModal.bind(this),
+          },
+        ];
       }
+
+      this.billing = {
+        table: {
+          title: 'Simulation Results',
+          headers: {
+            parameter: 'Parameter',
+            description: 'Description',
+            ns_instances: '# NS Instances',
+            fee: 'Fee',
+          },
+        },
+        input: {
+          labelTotal: 'Total monthly expense fee',
+          labelMonthly: 'Specify monthly fee per instance',
+        },
+        button: {
+          simulate: 'Simulate',
+          apllyFee: 'Apply Fee',
+        },
+      };
     }
+
 
     $onInit() {
       this.getData();
@@ -100,9 +128,77 @@ export const CatalogueComponent = {
       this.catalogueService.addServiceToInventory(_id);
     }
 
+    toggleBillingFee(ns) {
+      this.billingOpen = !this.billingOpen;
+      if (this.billingOpen) {
+        this.getInfoBilling(ns);
+      }
+    }
+
+    getInfoBilling(data) {
+      this.infoBilling = {};
+      this.isLoadingBilling = true;
+      this.catalogueService.getBillingFeeService(data._id).then((info) => {
+        this.infoBilling = {
+          fee: info.fee,
+          expense_fee: info.expense_fee,
+          nsId: info.ns_id,
+          etag: info._etag,
+        };
+      }).finally(() => {
+        this.isLoadingBilling = false;
+        this.getBillingSimulation();
+      });
+    }
+
+    getBillingSimulation() {
+      this.catalogueService.simulateBillingFee(this.infoBilling)
+        .then((data) => {
+          this.infoTableBilling = [
+            {
+              parameter: 'Balance per instance',
+              description: 'Balance of a single instance (expense fee minus specified fee)',
+              ns_instances: data.instance_balance[0],
+              fee: data.instance_balance[1],
+            },
+            {
+              parameter: 'Active instances usage',
+              description: 'Current active instances usage (assumed for active for the entire month)',
+              ns_instances: data.running_instances[0],
+              fee: data.running_instances[1],
+            },
+            {
+              parameter: 'Balance per instance',
+              description: 'Minimum amount of instances to achieve profitablility',
+              ns_instances: data.flatten_min_instances[0],
+              fee: data.flatten_min_instances[1],
+            },
+            {
+              parameter: 'Balance',
+              description: '',
+              ns_instances: '',
+              fee: data.total_balance,
+            },
+          ];
+        });
+    }
+
+    getBillingApllyFee() {
+      this.catalogueService.applyFeeBilling(this.infoBilling)
+        .then(() => {
+          this.billingOpen = !this.billingOpen;
+          this.toast.success('Fee update successfully', 'Fee update');
+        });
+    }
+
+
     toggleDetailsModal(ns) {
       this.ns = ns;
       this.detailsOpen = !this.detailsOpen;
+    }
+
+    changeCurrFee(key, value) {
+      this.infoBilling[key] = parseFloat(value, 10);
     }
 
     toggleFileUploadModal() {
@@ -130,9 +226,10 @@ export const CatalogueComponent = {
     uploadApp(file) {
       try {
         this.vnsfsService.uploadNS(file)
-          .then(() => {
+          .then((data) => {
             this.toast.success('NS file uploaded', 'Successful onboard');
             this.getData();
+            this.catalogueService.createBillingService(data._id);
           })
           .finally(() => {
             this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);

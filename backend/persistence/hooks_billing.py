@@ -262,15 +262,15 @@ class BillingActions:
         logger.debug("Retrieving 'billing_ns_usage' of NS instance id={} for month={}"
                      .format(ns_instance_id, month))
 
-        with current_app.test_request_context():
-            (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage', ns_instance_id=ns_instance_id, month=month)
+        #with current_app.test_request_context():
+        (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage', ns_instance_id=ns_instance_id, month=month)
 
-            if not status == http_utils.HTTP_200_OK or ns_usage_data['_meta']['total'] != 1:
-                logger.debug("The 'billing_ns_usage' of NS instance id={} for month={} does not exist."
-                             .format(ns_instance_id, month))
-                return None
+        if not status == http_utils.HTTP_200_OK or ns_usage_data['_meta']['total'] != 1:
+            logger.debug("The 'billing_ns_usage' of NS instance id={} for month={} does not exist."
+                         .format(ns_instance_id, month))
+            return None
 
-            return ns_usage_data['_items'][0]
+        return ns_usage_data['_items'][0]
 
     @staticmethod
     def _get_billing_vnsf_usage(vnsf_id, month, fee):
@@ -278,16 +278,16 @@ class BillingActions:
         logger.debug("Retrieving 'billing_vnsf_usage' of vnsf_id={} for month={} for fee={}"
                      .format(vnsf_id, month, fee))
 
-        with current_app.test_request_context():
-            (vnsf_usage_data, _, _, status, _) = get_internal('billing_vnsf_usage')
-            if not status == http_utils.HTTP_200_OK or vnsf_usage_data['_meta']['total'] != 1:
-                logger.debug("The 'billing_vnsf_usage' of vnsf_id={} for month={} for fee={} does not exist."
-                             .format(vnsf_id, month, fee))
-                return None
+        #with current_app.test_request_context():
+        (vnsf_usage_data, _, _, status, _) = get_internal('billing_vnsf_usage')
+        if not status == http_utils.HTTP_200_OK or vnsf_usage_data['_meta']['total'] != 1:
+            logger.debug("The 'billing_vnsf_usage' of vnsf_id={} for month={} for fee={} does not exist."
+                         .format(vnsf_id, month, fee))
+            return None
 
-            for item in vnsf_usage_data['_items']:
-                if item['vnsf_id'] == vnsf_id and item['month'] == month and item['fee'] == fee:
-                    return item
+        for item in vnsf_usage_data['_items']:
+            if item['vnsf_id'] == vnsf_id and item['month'] == month and item['fee'] == fee:
+                return item
 
     @staticmethod
     def start_billing_ns_usage(request):
@@ -400,59 +400,63 @@ class BillingActions:
                 logger.debug("Adding 'ns_usage' id={} to its 'associated_ns_usages' list.".format(ns_usage_id))
                 associated_ns_usages_list = billing_vnsf_usage['associated_ns_usages']
                 associated_ns_usages_list.append(ns_usage_id)
-                with current_app.test_request_context():
-                    payload = {
-                        'usage_status': 'active',
-                        'associated_ns_usages': associated_ns_usages_list
-                    }
-                    lookup = {"_id": billing_vnsf_usage['_id']}
-                    (result, _, etag, status) = patch_internal("billing_vnsf_usage", payload, **lookup)
-                    if status != http_utils.HTTP_200_OK:
-                        logger.error("Failed to add 'ns_usage' id={} to 'billing_vnsf_usage' vnsf_id={}"
-                                     .format(ns_usage_id, billing_vnsf_usage['_id']))
+                #with current_app.test_request_context():
+                payload = {
+                    'usage_status': 'active',
+                    'associated_ns_usages': associated_ns_usages_list
+                }
+                lookup = {"_id": billing_vnsf_usage['_id']}
+                (result, _, etag, status) = patch_internal("billing_vnsf_usage", payload, **lookup)
+                if status != http_utils.HTTP_200_OK:
+                    logger.error("Failed to add 'ns_usage' id={} to 'billing_vnsf_usage' vnsf_id={}"
+                                 .format(ns_usage_id, billing_vnsf_usage['_id']))
         else:
             used_from = current_date.date()
             used_to = current_date.date()
             billable_percentage = BillingActions._get_usage_billable_percentage(used_from, used_to)
             billable_fee = BillingActions._get_usage_billable_fee(fee, billable_percentage)
             associated_ns_usages_list = [ns_usage_id]
-            with current_app.test_request_context():
-                payload = {
-                    'vnsf_id': vnsf_id,
-                    'usage_status': 'active',
-                    'fee': fee,
-                    'user_id': billing_vnsf['user_id'],
-                    'used_from': used_from.isoformat(),
-                    'used_to': used_to.isoformat(),
-                    'month': month,
-                    'billable_percentage': billable_percentage,
-                    'billable_fee': billable_fee,
-                    'associated_ns_usages': associated_ns_usages_list
-                }
-                logger.debug("Creating vNSF usage for vnsf_id={} and month={} and fee={}"
-                             .format(vnsf_id, month, fee))
-                (result, _, etag, status, _) = post_internal("billing_vnsf_usage", payload)
-                if status != http_utils.HTTP_201_CREATED:
-                    logger.error("Failed to create 'billing_vnsf_usage' for vnsf_id={}".format(vnsf_id))
-                    return
+            #with current_app.test_request_context():
+            payload = {
+                'vnsf_id': vnsf_id,
+                'usage_status': 'active',
+                'fee': fee,
+                'user_id': billing_vnsf['user_id'],
+                'used_from': used_from.isoformat(),
+                'used_to': used_to.isoformat(),
+                'month': month,
+                'billable_percentage': billable_percentage,
+                'billable_fee': billable_fee,
+                'associated_ns_usages': associated_ns_usages_list
+            }
+            logger.debug("Creating vNSF usage for vnsf_id={} and month={} and fee={}"
+                         .format(vnsf_id, month, fee))
+            (result, _, etag, status, _) = post_internal("billing_vnsf_usage", payload)
+            if status != http_utils.HTTP_201_CREATED:
+                logger.error("Failed to create 'billing_vnsf_usage' for vnsf_id={}".format(vnsf_id))
+                return
 
     @staticmethod
     def _stop_billing_vnsf_usage(ns_usage_item):
         logger = logging.getLogger(__name__)
-        ns_usage_id = ns_usage_item['_id']
-        ns_id = ns_usage_item['ns_id']
-        logger.info("Updating/Closing Billing vNSF Usages associated with 'billing_ns_usage' id={}".format(ns_usage_id))
+        ns_usage_id = str(ns_usage_item['_id'])
+        #ns_id = ns_usage_item['ns_id']
+        logger.info("Updating/Closing Billing vNSF Usages associated with 'billing_ns_usage' id='{}'".format(ns_usage_id))
 
-        with current_app.test_request_context():
-            lookup = {"associated_ns_usages": ns_usage_id}
-            (vnsf_usage_data, _, _, status, _) = get_internal('billing_vnsf_usage', **lookup)
+        #with current_app.test_request_context():
+        #lookup = '?where={{"associated_ns_usages":"{}"}}'.format(ns_usage_id)
 
-            if not status == http_utils.HTTP_200_OK or vnsf_usage_data['_meta']['total'] == 0:
-                logger.error("Couldn't find Billing vNSF Usages associated with NS Usage id=={}".format(ns_id))
-                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                #                     "Couldn't find Billing vNSF Usages associated with NS Usage id=={}"
-                #                             .format(ns_id)}}), 500))
-                return
+        url = '{}/billing/vnsf/usage?where={{"associated_ns_usages":"{}"}}'.format(cfg.BACKENDAPI, ns_usage_id)
+        headers = {'Content-Type': 'application/json'}
+        r = requests.get(url, headers=headers, verify=False)
+        if not r.status_code == http_utils.HTTP_200_OK or r.json()['_meta']['total'] == 0:
+            logger.error("Couldn't find Billing vNSF Usages associated with NS Usage id='{}'".format(ns_usage_id))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #                     "Couldn't find Billing vNSF Usages associated with NS Usage id=={}"
+            #                             .format(ns_id)}}), 500))
+            return
+
+        vnsf_usage_data = r.json()
 
         # Patch each retrieved vnsf item removing the passed ns_usage_item id
         for vnsf_item in vnsf_usage_data['_items']:
@@ -467,22 +471,22 @@ class BillingActions:
             used_from = dateutil.parser.parse(vnsf_item['used_from'])
             used_to = current_date.date()
 
-            with current_app.test_request_context():
-                payload = {
-                    'associated_ns_usages': associated_ns_usages,
-                    'usage_status': usage_status,
-                    'used_to': used_to.isoformat(),
-                    'billable_percentage': BillingActions._get_usage_billable_percentage(used_from, used_to)
-                }
+            #with current_app.test_request_context():
+            payload = {
+                'associated_ns_usages': associated_ns_usages,
+                'usage_status': usage_status,
+                'used_to': used_to.isoformat(),
+                'billable_percentage': BillingActions._get_usage_billable_percentage(used_from, used_to)
+            }
 
-                lookup = {"_id": vnsf_item['_id']}
-                (result, _, etag, status) = patch_internal("billing_vnsf_usage", payload, **lookup)
-                if status != http_utils.HTTP_200_OK:
-                    logger.error("Failed to update 'billing_vnsf_usage' vnsf_id={}".format(vnsf_item['_id']))
-                    # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                    #                     "Failed to update 'billing_vnsf_usage' vnsf_id={}"
-                    #                             .format(vnsf_item['_id'])}}), 500))
-                    return
+            lookup = {"_id": vnsf_item['_id']}
+            (result, _, etag, status) = patch_internal("billing_vnsf_usage", payload, **lookup)
+            if status != http_utils.HTTP_200_OK:
+                logger.error("Failed to update 'billing_vnsf_usage' vnsf_id={}".format(vnsf_item['_id']))
+                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+                #                     "Failed to update 'billing_vnsf_usage' vnsf_id={}"
+                #                             .format(vnsf_item['_id'])}}), 500))
+                return
 
     @staticmethod
     def _get_usage_billable_percentage(used_from, used_to):
@@ -533,22 +537,22 @@ class BillingActions:
         used_from = dateutil.parser.parse(billing_ns_usage_item['used_from'])
         used_to = current_date.date()
 
-        with current_app.test_request_context():
-            payload = {
-                'used_to': used_to.isoformat(),
-                'usage_status': 'closed',
-                'billable_percentage': BillingActions._get_usage_billable_percentage(used_from, used_to)
-            }
+        #with current_app.test_request_context():
+        payload = {
+            'used_to': used_to.isoformat(),
+            'usage_status': 'closed',
+            'billable_percentage': BillingActions._get_usage_billable_percentage(used_from, used_to)
+        }
 
-            lookup = {"_id": billing_ns_usage_item['_id']}
-            (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
-            if status != http_utils.HTTP_200_OK:
-                logger.error("Failed to update 'billing_ns_usage' ns_id={} ns_instance_id={}"
-                             .format(ns_id, instance_id))
-                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                #                     "Failed to update 'billing_ns_usage' ns_id={} ns_instance_id={}"
-                #                             .format(ns_id, instance_id)}}), 500))
-                return
+        lookup = {"_id": billing_ns_usage_item['_id']}
+        (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
+        if status != http_utils.HTTP_200_OK:
+            logger.error("Failed to update 'billing_ns_usage' ns_id={} ns_instance_id={}"
+                         .format(ns_id, instance_id))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #                     "Failed to update 'billing_ns_usage' ns_id={} ns_instance_id={}"
+            #                             .format(ns_id, instance_id)}}), 500))
+            return
 
         # Stop 'billing_vnsf_usage' items associated to this ns usage
         BillingActions._stop_billing_vnsf_usage(billing_ns_usage_item)
@@ -598,60 +602,60 @@ class BillingActions:
         logger.debug("Fetching NS Instances of ns_id={}".format(ns_id))
 
         ns_instances = list()
-        with current_app.test_request_context():
-            (nss_inventory_data, _, _, status, _) = get_internal('nss_inventory')
-            if not status == http_utils.HTTP_200_OK or nss_inventory_data['_meta']['total'] == 0:
-                logger.debug("Couldn't find NS instances for ns_id={}".format(ns_id))
-                return
+        #with current_app.test_request_context():
+        (nss_inventory_data, _, _, status, _) = get_internal('nss_inventory')
+        if not status == http_utils.HTTP_200_OK or nss_inventory_data['_meta']['total'] == 0:
+            logger.debug("Couldn't find NS instances for ns_id={}".format(ns_id))
+            return
 
-            for item in nss_inventory_data['_items']:
-                if item['ns_id'] == ns_id and item['status'] == 'running':
-                    ns_instances.append(item['instance_id'])
+        for item in nss_inventory_data['_items']:
+            if item['ns_id'] == ns_id and item['status'] == 'running':
+                ns_instances.append(item['instance_id'])
 
-            return ns_instances
+        return ns_instances
 
     @staticmethod
     def _get_ns_instance_status(ns_instance_id):
         # retrieve current billing ns usage data
-        with current_app.test_request_context():
-            (nss_inventory_data, _, _, status, _) = get_internal('nss_inventory', instance_id=ns_instance_id)
-            if not status == http_utils.HTTP_200_OK or nss_inventory_data['_meta']['total'] == 0:
-                return "terminated"
-                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                #                     "Failed retrieving status of NS instance '{}'".format(ns_instance_id)}}), 500))
+        # with current_app.test_request_context():
+        (nss_inventory_data, _, _, status, _) = get_internal('nss_inventory', instance_id=ns_instance_id)
+        if not status == http_utils.HTTP_200_OK or nss_inventory_data['_meta']['total'] == 0:
+            return "terminated"
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #                     "Failed retrieving status of NS instance '{}'".format(ns_instance_id)}}), 500))
 
-            return 'terminated' if nss_inventory_data['_items'][0]['status'] != 'running' else 'running'
+        return 'terminated' if nss_inventory_data['_items'][0]['status'] != 'running' else 'running'
 
     @staticmethod
     def _get_billing_ns(ns_id):
         logger = logging.getLogger(__name__)
         logger.debug("Retrieving current Billing NS for NS id='{}'".format(ns_id))
-        with current_app.test_request_context():
-            # retrieve current billing ns usage data
-            (billing_ns_data, _, _, status, _) = get_internal('billing_ns', ns_id=ns_id)
-            if not status == http_utils.HTTP_200_OK or billing_ns_data['_meta']['total'] != 1:
-                logger.debug("Failed retrieving billing for NS '{}'".format(ns_id))
-                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                #       "Failed retrieving billing for NS '{}'".format(ns_id)}}), 500))
-                return
+        #with current_app.test_request_context():
+        # retrieve current billing ns usage data
+        (billing_ns_data, _, _, status, _) = get_internal('billing_ns', ns_id=ns_id)
+        if not status == http_utils.HTTP_200_OK or billing_ns_data['_meta']['total'] != 1:
+            logger.debug("Failed retrieving billing for NS '{}'".format(ns_id))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #       "Failed retrieving billing for NS '{}'".format(ns_id)}}), 500))
+            return
 
-            return billing_ns_data['_items'][0]
+        return billing_ns_data['_items'][0]
 
     @staticmethod
     def _get_billing_vnsf(vnsf_id):
         logger = logging.getLogger(__name__)
         logger.debug("Retrieving current Billing vNSF for vnsf_id='{}'".format(vnsf_id))
 
-        with current_app.test_request_context():
-            # retrieve current billing ns usage data
-            (billing_vnsf_data, _, _, status, _) = get_internal('billing_vnsf', vnsf_id=vnsf_id)
-            if not status == http_utils.HTTP_200_OK or billing_vnsf_data['_meta']['total'] != 1:
-                logger.debug("Failed retrieving billing for vnsf_id={}".format(vnsf_id))
-                # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
-                #       "Failed retrieving billing for vnsf_id={}".format(vnsf_id)}}), 500))
-                return
+        # with current_app.test_request_context():
+        # retrieve current billing ns usage data
+        (billing_vnsf_data, _, _, status, _) = get_internal('billing_vnsf', vnsf_id=vnsf_id)
+        if not status == http_utils.HTTP_200_OK or billing_vnsf_data['_meta']['total'] != 1:
+            logger.debug("Failed retrieving billing for vnsf_id={}".format(vnsf_id))
+            # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
+            #       "Failed retrieving billing for vnsf_id={}".format(vnsf_id)}}), 500))
+            return
 
-            return billing_vnsf_data['_items'][0]
+        return billing_vnsf_data['_items'][0]
 
     @staticmethod
     def clean_billing(request):
@@ -681,7 +685,6 @@ class BillingActions:
 
             logger.debug("Resource '{}' deleted".format(resource))
 
-
     @staticmethod
     def update_billing(request):
         """
@@ -695,8 +698,6 @@ class BillingActions:
         BillingActions._update_billing_usage()
         BillingActions._update_billing_summary()
 
-
-
     @staticmethod
     def _update_billing_ns():
         logger = logging.getLogger(__name__)
@@ -709,15 +710,15 @@ class BillingActions:
             logger.debug("Processing Billing NS ns_id={}".format(billing_ns['ns_id']))
             expense_fee = BillingActions._calc_vnsfs_expense_fee(billing_ns['constituent_vnsfs'])
 
-            with current_app.test_request_context():
-                payload = {
-                    'expense_fee': expense_fee
-                }
-                lookup = {"_id": billing_ns['_id']}
-                (result, _, etag, status) = patch_internal("billing_ns", payload, **lookup)
-                if status != http_utils.HTTP_200_OK:
-                    logger.error("Failed to update 'billing_ns' ns_id={}".format(billing_ns['_id']))
-                    return
+            # with current_app.test_request_context():
+            payload = {
+                'expense_fee': expense_fee
+            }
+            lookup = {"_id": billing_ns['_id']}
+            (result, _, etag, status) = patch_internal("billing_ns", payload, **lookup)
+            if status != http_utils.HTTP_200_OK:
+                logger.error("Failed to update 'billing_ns' ns_id={}".format(billing_ns['_id']))
+                return
 
     @staticmethod
     def _update_billing_usage():
@@ -852,25 +853,25 @@ class BillingActions:
         else:
             usage_status = 'open' if instance_status == 'running' else 'closed'
 
-        with current_app.test_request_context():
-            payload = {
-                'ns_instance_id': ns_instance_id,
-                'ns_id': ns_id,
-                'tenant_id': tenant_id,
-                'usage_status': usage_status,
-                'month': month,
-                'used_from': used_from.isoformat(),
-                'used_to': used_to.isoformat(),
-                'fee': fee,
-                'billable_percentage': billable_percentage,
-                'billable_fee': billable_fee
-            }
-            (result, _, etag, status, _) = post_internal("billing_ns_usage", payload)
-            print("-------> creation status: {}, result: {}".format(status, result))
-            if status != http_utils.HTTP_201_CREATED:
-                logger.error("Failed to create 'billing_ns_usage' for NS Instance '{}'"
-                             .format(item['ns_instance_id']))
-                return
+        # with current_app.test_request_context():
+        payload = {
+            'ns_instance_id': ns_instance_id,
+            'ns_id': ns_id,
+            'tenant_id': tenant_id,
+            'usage_status': usage_status,
+            'month': month,
+            'used_from': used_from.isoformat(),
+            'used_to': used_to.isoformat(),
+            'fee': fee,
+            'billable_percentage': billable_percentage,
+            'billable_fee': billable_fee
+        }
+        (result, _, etag, status, _) = post_internal("billing_ns_usage", payload)
+        print("-------> creation status: {}, result: {}".format(status, result))
+        if status != http_utils.HTTP_201_CREATED:
+            logger.error("Failed to create 'billing_ns_usage' for NS Instance '{}'"
+                         .format(item['ns_instance_id']))
+            return
 
     @staticmethod
     def _update_billing_ns_usage(current_date, item, used_to):
@@ -889,18 +890,18 @@ class BillingActions:
         else:
             usage_status = 'open' if instance_status == 'running' else 'closed'
 
-        with current_app.test_request_context():
-            payload = {
-                'used_to': used_to.isoformat(),
-                'billable_percentage': billable_percentage,
-                'billable_fee': billable_fee,
-                'usage_status': usage_status
-            }
-            lookup = {"_id": item['_id']}
-            (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
-            if status != http_utils.HTTP_200_OK:
-                logger.error("Failed to update 'billing_ns_usage' id '{}'".format(item['_id']))
-                return
+        #with current_app.test_request_context():
+        payload = {
+            'used_to': used_to.isoformat(),
+            'billable_percentage': billable_percentage,
+            'billable_fee': billable_fee,
+            'usage_status': usage_status
+        }
+        lookup = {"_id": item['_id']}
+        (result, _, etag, status) = patch_internal("billing_ns_usage", payload, **lookup)
+        if status != http_utils.HTTP_200_OK:
+            logger.error("Failed to update 'billing_ns_usage' id '{}'".format(item['_id']))
+            return
 
     @staticmethod
     def _add_item_control_global_summary(global_summary, ns_item=None, vnsf_item=None):
@@ -1092,38 +1093,38 @@ class BillingActions:
                     logger.debug("Billing NS Summary of tenant id={} and month={} does not exist. Creating it."
                                  .format(tenant, month))
 
-                    with current_app.test_request_context():
-                        payload = {
-                            'tenant_id': tenant,
-                            'month': month,
-                            'number_nss': len(item['nss']),
-                            'number_ns_instances': len(item['ns_instances']),
-                            'status': item['status'],
-                            'billable_fee': item['billable_fee']
-                        }
-                        (result, _, etag, status, _) = post_internal("billing_ns_summary", payload)
-                        logger.debug("Created NS Summary for tenant id={} and month={}".format(tenant, month))
-                        if status != http_utils.HTTP_201_CREATED:
-                            logger.error("Failed to create 'billing_ns_summary' for tenant id={} and month={}"
-                                         .format(tenant, month))
-                            continue  # or return?
+                    #with current_app.test_request_context():
+                    payload = {
+                        'tenant_id': tenant,
+                        'month': month,
+                        'number_nss': len(item['nss']),
+                        'number_ns_instances': len(item['ns_instances']),
+                        'status': item['status'],
+                        'billable_fee': item['billable_fee']
+                    }
+                    (result, _, etag, status, _) = post_internal("billing_ns_summary", payload)
+                    logger.debug("Created NS Summary for tenant id={} and month={}".format(tenant, month))
+                    if status != http_utils.HTTP_201_CREATED:
+                        logger.error("Failed to create 'billing_ns_summary' for tenant id={} and month={}"
+                                     .format(tenant, month))
+                        continue  # or return?
 
                 # if summary for this tenant->month exist -> update it (patch)
                 else:
                     billing_ns_summary_id = ns_summary_data['_items'][0]['_id']
-                    with current_app.test_request_context():
-                        payload = {
-                            'number_nss': len(item['nss']),
-                            'number_ns_instances': len(item['ns_instances']),
-                            'status': item['status'],
-                            'billable_fee': item['billable_fee']
-                        }
-                        lookup = {"_id": billing_ns_summary_id}
-                        (result, _, etag, status) = patch_internal("billing_ns_summary", payload, **lookup)
-                        if status != http_utils.HTTP_200_OK:
-                            logger.error("Failed to update 'billing_ns_summary' for tenant id={} and month={}"
-                                         .format(tenant, month))
-                            continue  # or return?
+                    #with current_app.test_request_context():
+                    payload = {
+                        'number_nss': len(item['nss']),
+                        'number_ns_instances': len(item['ns_instances']),
+                        'status': item['status'],
+                        'billable_fee': item['billable_fee']
+                    }
+                    lookup = {"_id": billing_ns_summary_id}
+                    (result, _, etag, status) = patch_internal("billing_ns_summary", payload, **lookup)
+                    if status != http_utils.HTTP_200_OK:
+                        logger.error("Failed to update 'billing_ns_summary' for tenant id={} and month={}"
+                                     .format(tenant, month))
+                        continue  # or return?
 
         vnsf_summary = dict()
 
@@ -1149,36 +1150,36 @@ class BillingActions:
                     logger.debug("Billing vNSF Summary of user_id={} and month={} does not exist. Creating it."
                                  .format(user, month))
 
-                    with current_app.test_request_context():
-                        payload = {
-                            'user_id': user,
-                            'month': month,
-                            'number_vnsfs': item['number_vnsfs'],
-                            'status': item['status'],
-                            'billable_fee': item['billable_fee']
-                        }
-                        logger.debug("Creating vNSF Summary for user_id={} and month={}".format(user, month))
-                        (result, _, etag, status, _) = post_internal("billing_vnsf_summary", payload)
-                        if status != http_utils.HTTP_201_CREATED:
-                            logger.error("Failed to create 'billing_vnsf_summary' for user_id={} and month={}"
-                                         .format(user, month))
-                            continue  # or return?
+                    #with current_app.test_request_context():
+                    payload = {
+                        'user_id': user,
+                        'month': month,
+                        'number_vnsfs': item['number_vnsfs'],
+                        'status': item['status'],
+                        'billable_fee': item['billable_fee']
+                    }
+                    logger.debug("Creating vNSF Summary for user_id={} and month={}".format(user, month))
+                    (result, _, etag, status, _) = post_internal("billing_vnsf_summary", payload)
+                    if status != http_utils.HTTP_201_CREATED:
+                        logger.error("Failed to create 'billing_vnsf_summary' for user_id={} and month={}"
+                                     .format(user, month))
+                        continue  # or return?
 
                 # if summary for this month exist -> update it (patch)
                 else:
                     billing_vnsf_summary_id = vnsf_summary_data['_items'][0]['_id']
-                    with current_app.test_request_context():
-                        payload = {
-                            'number_vnsfs': item['number_vnsfs'],
-                            'status': item['status'],
-                            'billable_fee': item['billable_fee']
-                        }
-                        lookup = {"_id": billing_vnsf_summary_id}
-                        (result, _, etag, status) = patch_internal("billing_vnsf_summary", payload, **lookup)
-                        if status != http_utils.HTTP_200_OK:
-                            logger.error("Failed to update 'billing_vnsf_summary' for user_id={} and month={}"
-                                         .format(user, month))
-                            continue  # or return?
+                    #with current_app.test_request_context():
+                    payload = {
+                        'number_vnsfs': item['number_vnsfs'],
+                        'status': item['status'],
+                        'billable_fee': item['billable_fee']
+                    }
+                    lookup = {"_id": billing_vnsf_summary_id}
+                    (result, _, etag, status) = patch_internal("billing_vnsf_summary", payload, **lookup)
+                    if status != http_utils.HTTP_200_OK:
+                        logger.error("Failed to update 'billing_vnsf_summary' for user_id={} and month={}"
+                                     .format(user, month))
+                        continue  # or return?
 
         # cycle through global_summary months and retrieve its billing summary to update it
         for month, item in global_summary.items():
@@ -1189,39 +1190,39 @@ class BillingActions:
             if not status == http_utils.HTTP_200_OK or summary_data['_meta']['total'] == 0:
                 logger.debug("Global Billing Summary of month={} does not exist. Creating it.".format(month))
 
-                with current_app.test_request_context():
-                    payload = {
-                        'month': month,
-                        'number_tenants': item['number_tenants'],
-                        'number_nss': item['number_nss'],
-                        'number_ns_instances': item['number_ns_instances'],
-                        'number_vnsfs': item['number_vnsfs'],
-                        'status': item['status'],
-                        'profit_balance': item['profit_balance']
-                    }
-                    logger.debug("Creating Global Summary for month={}".format(month))
-                    (result, _, etag, status, _) = post_internal("billing_summary", payload)
-                    if status != http_utils.HTTP_201_CREATED:
-                        logger.error("Failed to create 'billing_summary' for month={}".format(month))
-                        continue  # or return?
+                #with current_app.test_request_context():
+                payload = {
+                    'month': month,
+                    'number_tenants': item['number_tenants'],
+                    'number_nss': item['number_nss'],
+                    'number_ns_instances': item['number_ns_instances'],
+                    'number_vnsfs': item['number_vnsfs'],
+                    'status': item['status'],
+                    'profit_balance': round(item['profit_balance'], 2)
+                }
+                logger.debug("Creating Global Summary for month={}".format(month))
+                (result, _, etag, status, _) = post_internal("billing_summary", payload)
+                if status != http_utils.HTTP_201_CREATED:
+                    logger.error("Failed to create 'billing_summary' for month={}".format(month))
+                    continue  # or return?
 
             # if summary for this month exist -> update it (patch)
             else:
                 billing_summary_id = summary_data['_items'][0]['_id']
-                with current_app.test_request_context():
-                    payload = {
-                        'number_tenants': item['number_tenants'],
-                        'number_nss': item['number_nss'],
-                        'number_ns_instances': item['number_ns_instances'],
-                        'number_vnsfs': item['number_vnsfs'],
-                        'status': item['status'],
-                        'profit_balance': item['profit_balance']
-                    }
-                    lookup = {"_id": billing_summary_id}
-                    (result, _, etag, status) = patch_internal("billing_summary", payload, **lookup)
-                    if status != http_utils.HTTP_200_OK:
-                        logger.error("Failed to update 'billing_summary' for month={}".format(month))
-                        continue  # or return?
+                #with current_app.test_request_context():
+                payload = {
+                    'number_tenants': item['number_tenants'],
+                    'number_nss': item['number_nss'],
+                    'number_ns_instances': item['number_ns_instances'],
+                    'number_vnsfs': item['number_vnsfs'],
+                    'status': item['status'],
+                    'profit_balance': round(item['profit_balance'], 2)
+                }
+                lookup = {"_id": billing_summary_id}
+                (result, _, etag, status) = patch_internal("billing_summary", payload, **lookup)
+                if status != http_utils.HTTP_200_OK:
+                    logger.error("Failed to update 'billing_summary' for month={}".format(month))
+                    continue  # or return?
 
     @staticmethod
     def billing_ns_simulate(request, payload):
@@ -1311,24 +1312,24 @@ class BillingActions:
         response_json_items.append({'nss_items': nss_items})
         response_json_items.append({'vnsf_items': vnsf_items})
 
-        with current_app.test_request_context():
-            (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage')
+        #with current_app.test_request_context():
+        (ns_usage_data, _, _, status, _) = get_internal('billing_ns_usage')
 
-            if not status == http_utils.HTTP_200_OK or ns_usage_data['_meta']['total'] == 1:
-                logger.debug("The 'billing_ns_usage' doesn't have data."
-                             .format(ns_instance_id, month))
-                abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
-                      "The 'billing_ns_usage' doesn't have any data.".format(json_data['ns_id'])}}), 404))
+        if not status == http_utils.HTTP_200_OK or ns_usage_data['_meta']['total'] == 1:
+            logger.debug("The 'billing_ns_usage' doesn't have data."
+                         .format(ns_instance_id, month))
+            abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 404, "message":
+                  "The 'billing_ns_usage' doesn't have any data.".format(json_data['ns_id'])}}), 404))
 
-            for ns_usage_item in ns_usage_data['_items']:
-                if ns_usage_item['month'] != month:
-                    continue
-                rm_elements = ['_id', '_updated', '_created', '_etag', '_links']
-                for element in rm_elements:
-                    del ns_usage_item[element]
-                nss_items.append(ns_usage_item)
-            # TODO: WIP
-            # response_json_items['total_billable_fee': ns_usage_data['total_billable_fee']})
+        for ns_usage_item in ns_usage_data['_items']:
+            if ns_usage_item['month'] != month:
+                continue
+            rm_elements = ['_id', '_updated', '_created', '_etag', '_links']
+            for element in rm_elements:
+                del ns_usage_item[element]
+            nss_items.append(ns_usage_item)
+        # TODO: WIP
+        # response_json_items['total_billable_fee': ns_usage_data['total_billable_fee']})
 
 
 

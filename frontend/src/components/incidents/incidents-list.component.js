@@ -31,12 +31,13 @@ const VIEW_STRINGS = {
 const TABLE_HEADERS = {
   attack: 'Incident',
   detection: 'Date',
+  vnsf_id: 'Resource Id',
   severity: 'Severity',
   status: 'Recommendation',
 };
 
 const MODAL_ENTRIES = {
-  _id: 'Id',
+  vnsf_id: 'Resource Id',
   attack: 'Incident',
   detection: 'Date',
   severity: 'Severity',

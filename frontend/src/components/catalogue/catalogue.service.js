@@ -3,6 +3,7 @@ import { API_ADDRESS, STORE_ADDRESS, ACC_ID } from 'api/api-config';
 const API_CATALOGUE = `${STORE_ADDRESS}/nss`;
 const API_INVENTORY = `${API_ADDRESS}/inventory/nss`;
 const API_INVENTORY_ONE = `${API_INVENTORY}/${ACC_ID}`;
+const API_BILLING = `${API_ADDRESS}/billing/ns`;
 
 export class CatalogueService {
   constructor($http, AuthService, toastr, ErrorHandleService) {
@@ -38,6 +39,31 @@ export class CatalogueService {
         this.toast.success('Service added to client\'s inventory');
       })
       .catch(this.errorHandlerService.handleHttpError);
+  }
+
+  getBillingFeeService(nsId) {
+    const params = { nocache: (new Date()).getTime() };
+    return this.http.get(`${API_BILLING}/${nsId}`, { params }, {
+      headers: { Authorization: undefined } })
+      .then(response => response.data);
+  }
+
+  simulateBillingFee(simulation) {
+    const data = JSON.stringify({ ns_id: simulation.nsId, fee: simulation.fee });
+    return this.http.post(`${API_BILLING}/simulate`, data)
+      .then(response => response.data);
+  }
+
+  applyFeeBilling({ fee, nsId, etag }) {
+    const data = JSON.stringify({ fee: fee });
+    return this.http.patch(`${API_BILLING}/${nsId}`, data,
+      { headers: { 'If-Match': etag } })
+      .then(response => response.data);
+  }
+
+  createBillingService(id) {
+    return this.http.post(API_BILLING, { ns_id: id })
+      .then(response => response.data._items);
   }
 }
 

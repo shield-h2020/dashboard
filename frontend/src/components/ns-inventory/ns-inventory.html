@@ -4,16 +4,32 @@
 		<header class="sn-card__header">
 			<h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
 		</header>
-		<table-custom-actions headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading" buttonclicked="$ctrl.buttonClicked"></table-custom-actions>
-		<div sn-modal open="$ctrl.modalOpen" title-modal="$ctrl.viewStrings.modalTitle">
+		<table-custom-actions 
+			headers="$ctrl.headers" 
+			items="$ctrl.items" 
+			loading="$ctrl.isLoading" 
+			buttonclicked="$ctrl.buttonClicked"
+		>
+		</table-custom-actions>
+		<!-- Modal -->
+		<div 
+			sn-modal 
+			open="$ctrl.modalOpen" 
+			title-modal="$ctrl.viewStrings.modalTitle"
+		>
 			<article>
 				<div class="{{::$ctrl.styles.entrygroup}}">
-					<div ng-repeat="(key, val) in $ctrl.modalEntries" class="{{::$ctrl.styles.entry}}">
+					<div 
+						ng-repeat="(key, val) in $ctrl.modalEntries" 
+						class="{{::$ctrl.styles.entry}}">
 						<span class="{{::$ctrl.styles.label}}">{{ val }}</span>
 						<span class="{{::$ctrl.styles.entry__text}}">{{ $ctrl.ns[key] }}</span>
 					</div>
 				</div>
-				<div class="{{::$ctrl.styles.entry}}" ng-if="$ctrl.ns['descriptor']">
+				<div 
+					class="{{::$ctrl.styles.entry}}" 
+					ng-if="$ctrl.ns['descriptor']"
+				>
 					<div class="{{::$ctrl.styles.label}}">Description</div>
 					<pre>
 						{{ $ctrl.prettyYAML($ctrl.ns['descriptor']) }}
@@ -21,7 +37,12 @@
 				</div>
 			</article>
 			<footer class="{{::$ctrl.styles.footer}}">
-				<button ng-click="$ctrl.toggleNSDetails()" class="{{::$ctrl.styles.button}}">{{ ::$ctrl.viewStrings.close }}</button>
+				<button 
+					ng-click="$ctrl.toggleNSDetails()" 
+					class="{{::$ctrl.styles.button}}"
+				>
+					{{ ::$ctrl.viewStrings.close }}
+				</button>
 			</footer>
 		</div>
 	</div>
