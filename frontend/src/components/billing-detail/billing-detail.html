@@ -1,0 +1,58 @@
+<section>
+  <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+  <div class="sn-card" auto-resizer>
+    <header class="sn-card__header">
+      <h5 class="header__title">
+        {{::$ctrl.viewStrings.tableTitle}} {{::$ctrl.month}}
+      </h5>
+      <button 
+        ui-sref="billing" 
+        class="sn-button sn-button--primary"
+      >
+        {{::$ctrl.viewStrings.button }}
+      </button>
+    </header>
+    <s-table
+      ng-if="!$ctrl.showTableAdmin"
+      headers="$ctrl.headers" 
+      class="{{::$ctrl.styles.lastTr}}"
+      items="$ctrl.items" 
+      loading="$ctrl.isLoading" 
+      buttonclicked="$ctrl.buttonClicked"
+    >
+    </s-table>
+    <s-table 
+      ng-if="$ctrl.showTableAdmin"
+      headers="$ctrl.headersNS"
+      class="{{::$ctrl.styles.lastTr}}"
+      items="$ctrl.itemsNS" 
+      loading="$ctrl.isLoading" 
+      buttonclicked="$ctrl.buttonClicked"
+    >
+    </s-table>
+    <s-table 
+      ng-if="$ctrl.showTableAdmin"
+      headers="$ctrl.headersVNSFs"
+      class="{{::$ctrl.styles.lastTr}}"
+      items="$ctrl.itemsVNSFs" 
+      loading="$ctrl.isLoading" 
+      buttonclicked="$ctrl.buttonClicked"
+    >
+    </s-table>
+    <div ng-if="$ctrl.showTableAdmin">
+      <div class="{{::$ctrl.styles.entrygroup}}">
+        <div class="{{::$ctrl.styles.entry}}">
+          <span class="{{::$ctrl.styles.label}}">Network Service Profit</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeNS}}€</span>
+        </div>
+        <div class="{{::$ctrl.styles.entry}}">
+          <span class="{{::$ctrl.styles.label}}">vNSF Expense</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeVNSF}}€</span>
+        </div>
+        <div class="{{::$ctrl.styles.lastEntry}}">
+          <span class="{{::$ctrl.styles.label}}">Total Proffit Balance (€)</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feeNS - $ctrl.feeVNSF)}}€</span>
+        </div>
+    </div>
+  </div>
+</section>
