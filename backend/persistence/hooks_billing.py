@@ -439,20 +439,24 @@ class BillingActions:
     @staticmethod
     def _stop_billing_vnsf_usage(ns_usage_item):
         logger = logging.getLogger(__name__)
-        ns_usage_id = ns_usage_item['_id']
-        ns_id = ns_usage_item['ns_id']
-        logger.info("Updating/Closing Billing vNSF Usages associated with 'billing_ns_usage' id={}".format(ns_usage_id))
+        ns_usage_id = str(ns_usage_item['_id'])
+        #ns_id = ns_usage_item['ns_id']
+        logger.info("Updating/Closing Billing vNSF Usages associated with 'billing_ns_usage' id='{}'".format(ns_usage_id))
 
         #with current_app.test_request_context():
-        lookup = {"associated_ns_usages": ns_usage_id}
-        (vnsf_usage_data, _, _, status, _) = get_internal('billing_vnsf_usage', **lookup)
+        #lookup = '?where={{"associated_ns_usages":"{}"}}'.format(ns_usage_id)
 
-        if not status == http_utils.HTTP_200_OK or vnsf_usage_data['_meta']['total'] == 0:
-            logger.error("Couldn't find Billing vNSF Usages associated with NS Usage id=={}".format(ns_id))
+        url = '{}/billing/vnsf/usage?where={{"associated_ns_usages":"{}"}}'.format(cfg.BACKENDAPI, ns_usage_id)
+        headers = {'Content-Type': 'application/json'}
+        r = requests.get(url, headers=headers, verify=False)
+        if not r.status_code == http_utils.HTTP_200_OK or r.json()['_meta']['total'] == 0:
+            logger.error("Couldn't find Billing vNSF Usages associated with NS Usage id='{}'".format(ns_usage_id))
             # abort(make_response(jsonify(**{"_status": "ERR", "_error": {"code": 500, "message":
             #                     "Couldn't find Billing vNSF Usages associated with NS Usage id=={}"
             #                             .format(ns_id)}}), 500))
             return
+
+        vnsf_usage_data = r.json()
 
         # Patch each retrieved vnsf item removing the passed ns_usage_item id
         for vnsf_item in vnsf_usage_data['_items']:
@@ -1194,7 +1198,7 @@ class BillingActions:
                     'number_ns_instances': item['number_ns_instances'],
                     'number_vnsfs': item['number_vnsfs'],
                     'status': item['status'],
-                    'profit_balance': item['profit_balance']
+                    'profit_balance': round(item['profit_balance'], 2)
                 }
                 logger.debug("Creating Global Summary for month={}".format(month))
                 (result, _, etag, status, _) = post_internal("billing_summary", payload)
@@ -1212,7 +1216,7 @@ class BillingActions:
                     'number_ns_instances': item['number_ns_instances'],
                     'number_vnsfs': item['number_vnsfs'],
                     'status': item['status'],
-                    'profit_balance': item['profit_balance']
+                    'profit_balance': round(item['profit_balance'], 2)
                 }
                 lookup = {"_id": billing_summary_id}
                 (result, _, etag, status) = patch_internal("billing_summary", payload, **lookup)

@@ -47,7 +47,7 @@ from billing.monitor import BillingMonitor
 from hooks_policies import PolicyHooks
 
 # Start Billing Update Monitor
-# BillingMonitor().start()
+BillingMonitor(update_interval=0.5).start()
 
 app = Eve(auth=TokenAuthzOslo, validator=NetworkValidator)
 CORS(app)

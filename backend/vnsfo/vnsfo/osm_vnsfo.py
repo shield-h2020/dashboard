@@ -60,22 +60,27 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         self.logger.debug('Policy for Orchestrator: %r', json.dumps(sec_policy))
 
-        url = '{}/{}'.format(self.basepath, 'vnsf/action')
+        url_r2 = '{}/{}'.format(self.basepath, 'vnsf/r2/action')
+        url_r4 = '{}/{}'.format(self.basepath, 'vnsf/r4/action')
 
         headers = {'Content-Type': 'application/json'}
 
         self.logger.debug("-> Send policy data to '%s'", url)
 
         try:
-            r = requests.post(url, headers=headers, json=sec_policy, verify=False)
+            r = requests.post(url_r4, headers=headers, json=sec_policy, verify=False)
+            if not (r.status_code == http_utils.HTTP_200_OK or r.status_code == http_utils.HTTP_201_CREATED or
+                    r.status_code == http_utils.HTTP_202_ACCEPTED):
+
+                r = requests.post(url_r2, headers=headers, json=sec_policy, verify=False)
+                if not (r.status_code == http_utils.HTTP_200_OK or r.status_code == http_utils.HTTP_201_CREATED or
+                        r.status_code == http_utils.HTTP_202_ACCEPTED):
+                    self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
+                                        [[url, r.status_code]])
 
             if r.text:
                 self.logger.debug(r.text)
 
-            if not (r.status_code == http_utils.HTTP_200_OK or r.status_code == http_utils.HTTP_201_CREATED or
-                    r.status_code == http_utils.HTTP_202_ACCEPTED):
-                self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                                    [[url, r.status_code]])
 
         except requests.exceptions.ConnectionError:
             self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
