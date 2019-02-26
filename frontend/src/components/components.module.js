@@ -23,7 +23,6 @@ import { BillingModule } from './billing/billing.module';
 import { BillingDetailModule } from './billing-detail/billing-detail.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
 import { NsInventoryModule } from './ns-inventory/ns-inventory.module';
-import { NsInstancesModule } from './ns-instances/ns-instances.module';
 import { VnsfNotificationsModule } from './vnsf-notifications/vnsf-notifications.module';
 
 import Table2Module from './table2/table.module';
@@ -56,7 +55,6 @@ export const ComponentsModule = angular.module('root.components', [
   BillingDetailModule,
   OnboardValidationModule,
   NsInventoryModule,
-  NsInstancesModule,
   VnsfNotificationsModule,
 ])
   .name;

@@ -1,0 +1,153 @@
+@import '~styleglobals/colors';
+
+.scroller {
+  overflow-y: auto;
+  height: 600px;
+  margin-bottom: -16px;
+}
+
+.lastTr table {
+  margin-bottom: 50px;
+}
+
+.lastTr tr:last-child  {
+  font-weight: bold;
+}
+
+.header {
+  font-size: 20px;
+  line-height: 24px;
+  color: $color-blue;
+  font-family: Orbitron;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.entrygroup {
+  margin:0;
+}
+
+.entry {
+  color: #818181;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 12px;
+  display: flex;
+  border-bottom: 1px solid #c6c6c6;
+
+  .label {
+    width: 95%;
+  }
+
+  &__text {
+    color: #000000;
+  }
+
+  & a {
+    color: #00B5E2;
+  }
+}
+.lastEntry {
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 12px;
+  display: flex;
+  font-weight: bold;
+
+  .label {
+    width: 95%;
+  }
+
+  &__text {
+    color: #000000;
+  }
+}
+
+
+.xmlviewer {
+  border: 1px solid #D8D8D8;
+  background-color: #F1F0F0;
+  padding: 9px;
+  color: #22293B;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 19px;
+  margin: 12px 0;
+  white-space: pre-line;
+  word-break: break-all;
+}
+
+.text {
+    font-family: "OpenSans";
+    font-size: 13px;
+    line-height: 24px;
+    color: $color-black;
+    padding: 0 30px 30px;
+    max-height: 70vh;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.footer {
+  display: flex;
+  border-top: 1px solid #D8D8D8;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  padding: 0 !important;
+}
+
+.button {
+    display: inline-block;
+    font-family: "OpenSans";
+    font-size: 14px;
+    line-height: 22px;
+    color: $color-black;
+    background-color: $color-app-background;
+    width: 100%;
+    min-height: 40px;
+    height: 5vh;
+    border: none;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    transition: background-color 0.2s ease;
+
+    & + & {
+      box-shadow: inset 1px 0 0 #D8D8D8;
+      color: $color-blue;
+    }
+
+    &:hover {
+      background-color: darken($color-app-background, 5%);
+    }
+}
+
+.viewer--hidden {
+    display: none;
+}
+
+@mixin modal--sm() {
+   .container {
+     top: 8vh;
+   }
+}
+
+@mixin modal--lg() {
+   .container {
+     top: 12vh;
+   }
+}
+
+@media (min-height: 500px) {
+  @include modal--sm();
+}
+
+@media (min-height: 800px) {
+  @include modal--lg();
+}
