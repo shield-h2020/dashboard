@@ -32,6 +32,16 @@ FROM haproxy:1.7.9
 
 LABEL project="${CNTR_PROJECT}"
 
+RUN apt update && \
+    apt install -y openssl
+
+RUN mkdir -p /etc/ssl
+
+RUN openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
+    -subj "/C=EU/ST=EUROPE/L=EUROPE/O=Dis/CN=dashboard.shield-h2020.com" \
+    -keyout /etc/ssl/certificate.key  -out /etc/ssl/certificate.cert && \
+    cat /etc/ssl/certificate.cert /etc/ssl/certificate.key | tee /etc/ssl/certificate.pem
+
 WORKDIR ${CNTR_FOLDER_DEV}
 
 ENTRYPOINT ["${CNTR_FOLDER_DEV}/docker/setup-revproxy.sh"]

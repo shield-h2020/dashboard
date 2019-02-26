@@ -30,9 +30,9 @@ export const MENU_ENTRIES = [
     route: 'vnsfnotificationslist',
     roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN],
   },
-  /*{
+  /* {
     text: 'Global options',
-  },*/
+  } */
   {
     text: 'SecaaS Client Management',
     route: 'tenantslist',
@@ -52,6 +52,11 @@ export const MENU_ENTRIES = [
     text: 'NS Inventory',
     route: 'nsinventory',
     roles: [TENANT_ADMIN, TENANT_USER],
+  },
+  {
+    text: 'Billing',
+    route: 'billing',
+    roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN, DEVELOPER],
   },
   {
     text: 'Onboard validations',

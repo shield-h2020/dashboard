@@ -210,4 +210,4 @@ class NssInventoryHooks:
             logger.error('VnsfOrchestratorPolicyIssue')
             abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                 {"code": 400, "message":
-                                    "Instantiation failed. vNSFO Policy Issue not supported".format(r.text)}}), 400))
+                                    "Termination failed. vNSFO Policy Issue not supported".format(r.text)}}), 400))

@@ -35,12 +35,13 @@ const TABLE_HEADERS = {
 export const VNSFListComponent = {
   template,
   controller: class VNSFListComponent {
-    constructor($state, $scope, toastr, VNSFService) {
+    constructor($state, $scope, toastr, AuthService, VNSFService) {
       'ngInject';
 
       this.viewStrings = VIEW_STRINGS;
       this.styles = styles;
       this.state = $state;
+      this.authService = AuthService;
       this.scope = $scope;
       this.toast = toastr;
       this.vnsfsService = VNSFService;
@@ -58,6 +59,17 @@ export const VNSFListComponent = {
           },
         ],
       };
+
+      if (this.authService.isUserDeveloper()) {
+        this.tableHeaders.actions = [
+          ...this.tableHeaders.actions,
+          {
+            label: 'Billing Fee',
+            action: this.toggleBillingFee.bind(this),
+          },
+        ];
+      }
+
       this.page = 0;
       this.filters = {};
       this.items = [];
@@ -69,6 +81,15 @@ export const VNSFListComponent = {
         securityExpanded: false,
       };
       this.isLoading = false;
+
+      this.billing = {
+        input: {
+          labelMonthly: 'Specify monthly fee',
+        },
+        button: {
+          apllyFee: 'Apply Fee',
+        },
+      };
     }
 
     $onInit() {
@@ -103,6 +124,32 @@ export const VNSFListComponent = {
       this.deleteModalOpen = !this.deleteModalOpen;
     }
 
+    toggleBillingFee(data) {
+      this.billingOpen = !this.billingOpen;
+      if (this.billingOpen) {
+        this.getBillingApplyFee(data._id);
+      }
+    }
+
+    getBillingApplyFee(id) {
+      this.vnsfsService.getBillingApplyFee(id)
+        .then((data) => {
+          this.infoBilling = data;
+        });
+    }
+
+    setBillingApplyFee() {
+      this.vnsfsService.setBillingApplyFee(this.infoBilling)
+        .then(() => {
+          this.billingOpen = !this.billingOpen;
+          this.toast.success('Fee update successfully', 'Fee update');
+        });
+    }
+
+    changeCurrFee(key, value) {
+      this.infoBilling[key] = parseFloat(value, 10);
+    }
+
     deleteVnfs() {
       this.vnsfsService.deleteVnsf(this.currVnsf)
         .then(() => {
@@ -123,9 +170,10 @@ export const VNSFListComponent = {
     uploadApp(file) {
       try {
         this.vnsfsService.uploadVNSF(file)
-          .then((response) => {
+          .then((data) => {
             this.getData();
             this.toast.success('vNSF file uploaded', 'Successful onboard');
+            this.vnsfsService.createBillingvNSF(this.authService.getTenant(), data._id);
           })
           .finally(() => {
             this.scope.$broadcast(UPLOAD_MODAL_EVENT.CAST.CLOSE);

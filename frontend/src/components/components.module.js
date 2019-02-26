@@ -19,8 +19,11 @@ import { AttestationModule } from './attestation/attestation.module';
 import { AttestationHistoryModule } from './attestation-history/attestation-history.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { CatalogueModule } from './catalogue/catalogue.module';
+import { BillingModule } from './billing/billing.module';
+import { BillingDetailModule } from './billing-detail/billing-detail.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
 import { NsInventoryModule } from './ns-inventory/ns-inventory.module';
+import { NsInstancesModule } from './ns-instances/ns-instances.module';
 import { VnsfNotificationsModule } from './vnsf-notifications/vnsf-notifications.module';
 
 import Table2Module from './table2/table.module';
@@ -49,8 +52,11 @@ export const ComponentsModule = angular.module('root.components', [
   Table2Module,
   TableCustomActionsModule,
   CatalogueModule,
+  BillingModule,
+  BillingDetailModule,
   OnboardValidationModule,
   NsInventoryModule,
+  NsInstancesModule,
   VnsfNotificationsModule,
 ])
   .name;

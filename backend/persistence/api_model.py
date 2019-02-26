@@ -743,14 +743,9 @@ billing_vnsf_usage = {
         'required': True,
         'schema': {
             'ns_usage_id': {
-                'type': 'objectid',
+                'type': 'string',
                 'empty': False,
                 'required': True,
-                'data_relation': {
-                     'resource': 'billing_ns_usage',
-                     'field': '_id',
-                     'embeddable': True
-                 },
             }
         }
     },
@@ -977,4 +972,3 @@ billing_clean = {
         'required': True,
     }
 }
-

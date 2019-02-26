@@ -106,7 +106,7 @@ class VNSFONotification(PipeProducer):
         vnsf_instances = data['vnsf_instances']
         ns_name = data['ns_name']
 
-        self.logger.error("Notification for NS instance_id '{}' operational status '{}'"
+        self.logger.info("Notification for NS instance_id '{}' operational status '{}'"
                           .format(ns_instance_id, op_status))
 
         # Retrieve the tenant associated with this instance_id in nss inventory
@@ -183,7 +183,6 @@ class VNSFONotification(PipeProducer):
             if not r.status_code == http_utils.HTTP_201_CREATED:
                 self.logger.error(
                     "Couldn't start 'billing_usage' for NS {}, instance ID {}".format(ns_id, ns_instance_id))
-                return
 
         # Update status of NS instance to according to operational status
         url = '{}/{}?where={{\"tenant_id\": \"{}\"}}'.format(cfg.VNSFO_NOTIFICATION_API_INVENTORY_NSS_URL,
