@@ -11,7 +11,7 @@ const TABLE_HEADERS = {
   type: 'Type',
   tenant_name: 'Client',
   classification: 'Classification',
-  "_created": 'Date'
+  _created: 'Date',
 };
 
 export const VnsfNotificationsComponent = {
@@ -54,13 +54,10 @@ export const VnsfNotificationsComponent = {
     }
 
     $onInit() {
-
       this.scope.$on('TM_UPDATE_BROADCAST', () => {
-
         this.getNotifications();
       });
       this.scope.$on('VNSF_UPDATE_BROADCAST', () => {
-
         this.getNotifications();
       });
 
@@ -81,10 +78,11 @@ export const VnsfNotificationsComponent = {
     }
 
     toggleNotificationsModal(notif) {
-      if (notif.type === 'TRUST_MONITOR')
+      if (notif.type === 'TRUST_MONITOR') {
         this.scope.$emit('TM_NOTIF_EMIT', JSON.parse(notif.data));
-      else
+      } else {
         this.scope.$emit('NSVF_NOTIF_EMIT', JSON.parse(notif.data));
+      }
     }
 
     static addExtraClasses(items) {
@@ -101,7 +99,6 @@ export const VnsfNotificationsComponent = {
       this.items = [];
       this.vnsfNotificationService.getNotifications(this.pagination, this.filters)
         .then((items) => {
-          console.log(items)
           this.items = UsersListComponent.addExtraClasses(items);
           this.pagination.total = (items && items.meta.total) || 0;
           this.paging = this.calcPageItems();

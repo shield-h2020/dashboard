@@ -186,12 +186,12 @@ export const AttestationComponent = {
                     trust: typeitem.trust,
                     status: item.status,
                     time: item.time,
-                  }
+                  };
                 });
                 this.items = this.items.concat(itemsResult);
               } else {
                 item[typeNotification].forEach((typeitem) => {
-                  var timeValue = '';
+                  let timeValue = '';
                   if (typeitem.time) {
                     timeValue = typeitem.time;
                   } else {
@@ -207,12 +207,11 @@ export const AttestationComponent = {
                     trust: typeitem.trust,
                     status: item.status,
                     time: timeValue,
-                  })
-                })
+                  });
+                });
               }
             });
           }
-          
           this.pagination.total = (result && result.meta.total) || 0;
           this.paging = this.calcPageItems();
         });

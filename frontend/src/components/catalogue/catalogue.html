@@ -3,13 +3,13 @@
   <div class="sn-card" auto-resizer>
     <header class="sn-card__header">
       <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
-      <button ng-click="$ctrl.toggleFileUploadModal()" class="sn-button sn-button--primary">{{
+      <button ng-if="!$ctrl.authService.isUserTenantAdmin()" ng-click="$ctrl.toggleFileUploadModal()" class="sn-button sn-button--primary">{{
         ::$ctrl.viewStrings.button }}</button>
     </header>
     <s-table headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading" buttonclicked="$ctrl.buttonClicked"></s-table>
-
+    <!-- Modal Upload -->
     <sn-upload-box on-submit="$ctrl.uploadApp($event.file)"></sn-upload-box>
-
+    <!-- Modal Details -->
     <div sn-modal open="$ctrl.detailsOpen" title-modal="$ctrl.viewStrings.modalTitle">
       <article class="{{::$ctrl.styles.scroller}}">
         <div class="{{::$ctrl.styles.entrygroup}}">
@@ -34,7 +34,37 @@
         <button ng-click="$ctrl.toggleDetailsModal()" class="{{::$ctrl.styles.button}}">{{ ::$ctrl.viewStrings.close }}</button>
       </footer>
     </div>
-
+    <!-- Modal Billing -->
+    <div sn-modal class="{{::$ctrl.styles.modalBilling}}" open="$ctrl.billingOpen" title-modal="$ctrl.viewStrings.modalTitleBilling">
+      <article>
+          <div class="col-xs-6 stack-m">
+              <sn-input
+                field-label="{{$ctrl.billing.input.labelTotal}}"
+                field-value="$ctrl.infoBilling.expense_fee"
+                field-disabled="true"
+              ></sn-input>
+          </div>
+          <div class="col-xs-6 stack-m">
+                <sn-input
+                  field-label="{{$ctrl.billing.input.labelMonthly}}"
+                  on-update="$ctrl.changeCurrFee('fee', $event.value)"
+                  field-value="$ctrl.infoBilling.fee"
+                ></sn-input>
+          </div>
+          <div class="col-xs-offset-10">
+              <button class="sn-button sn-button--primary" ng-click="$ctrl.getBillingSimulation()">{{$ctrl.billing.button.simulate}}</button>
+          </div>
+          <div class="row {{::$ctrl.styles['blueHeader']}}">{{$ctrl.billing.button.title}}</div>
+        <s-table class="{{::$ctrl.styles.lastTr}}" headers="$ctrl.billing.table.headers" items="$ctrl.infoTableBilling" loading="$ctrl.isLoadingBilling"></s-table>
+        <div class="{{::$ctrl.styles.applyFee}}">
+        <button class="sn-button sn-button--primary " ng-click="$ctrl.getBillingApllyFee()">{{$ctrl.billing.button.apllyFee}}</button>
+        </div>
+      </article>
+      <footer class="{{::$ctrl.styles.footer}}">
+        <button ng-click="$ctrl.toggleBillingFee(null)" class="{{::$ctrl.styles.button}}">{{ ::$ctrl.viewStrings.close }}</button>
+      </footer>
+    </div>
+    <!-- Modal Delete -->
     <div sn-modal title-modal="$ctrl.viewStrings.deleteModalTitle" open="$ctrl.deleteModalOpen">
       <article>
         {{::$ctrl.viewStrings.confirmDelete}}

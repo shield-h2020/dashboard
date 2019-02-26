@@ -23,6 +23,17 @@
   padding-bottom: 24px;
 }
 
+.blueHeader{
+  font-size: 20px;
+  line-height: 24px;
+  color: $color-blue;
+  padding: 16px;
+  font-family: Orbitron;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;    
+}
+
 .entry {
   color: #818181;
   font-family: "OpenSans";
@@ -81,6 +92,33 @@
   background-color: #fff;
   padding: 0 !important;
 }
+
+.applyFee {
+  text-align: center;
+  margin: 10px;
+}
+
+.lastTr tr:last-child  {
+  font-weight: bold;
+}
+
+.modalBilling > div:nth-child(2)--hidden {
+  display: none;
+}
+.modalBilling {
+  //display: none;
+
+  > div:nth-child(2){
+    width: 1000px;
+    position: fixed;
+    top: 15vh;
+    left: calc(50vw - 500px);
+    background-color: $color-white;
+    border-radius: 4px;
+    box-shadow: 0 0 20px 0 rgba(0,0,0,0.15);
+  }
+}
+
 
 .button {
     display: inline-block;

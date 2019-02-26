@@ -103,7 +103,6 @@ export const AttestationHistoryComponent = {
         };
       }
       this.loading = false;
-
     }
 
     toggleNotificationsModal(notif) {

@@ -35,6 +35,7 @@ services:
           dockerfile:    ${DOCKER_FILE_REVPROXY}
         ports:
             - "${DASHBOARD_GUI_PORT_WEB}:${DASHBOARD_GUI_PORT_WEB}"
+            - 443:443
             - "${MSGQ_PORT}:${MSGQ_PORT}"
             - "${DATASTORE_PORT}:${DATASTORE_PORT}"
             - "${BACKENDAPI_PORT}:${BACKENDAPI_PORT}"

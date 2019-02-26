@@ -1,34 +1,36 @@
-import template from "./ns-inventory.html";
-import styles from "./ns-inventory.scss";
-import * as YAML from "yamljs";
+import template from './ns-inventory.html';
+import styles from './ns-inventory.scss';
+import * as YAML from 'yamljs';
+
 
 const VIEW_STRINGS = {
-  title: "NS inventory",
-  tableTitle: "Inventory",
-  modalTitle: "NS Details",
-  close: "Close"
+  title: 'NS inventory',
+  tableTitle: 'Inventory',
+  modalTitle: 'NS Details',
+  close: 'Close',
 };
 
 const TABLE_HEADERS = {
-  capabilities: "Capabilities",
-  // _created: "Instantiated",
-  status: "Status",
-  actions: "Actions"
+  capabilities: 'Capabilities',
+  // _created: 'Instantiated',
+  status: 'Status',
+  instance_id: 'Instance ID',
+  actions: 'Actions',
 };
 
 const MODAL_ENTRIES = {
-  _id: "Id",
-  capabilities: "Capabilities",
-  _created: "Instantiated",
-  type: "Type",
-  target: "Target"
+  _id: 'Id',
+  capabilities: 'Capabilities',
+  _created: 'Instantiated',
+  type: 'Type',
+  target: 'Target',
 };
 
 export const InventoryComponent = {
   template,
   controller: class InventoryComponent {
     constructor($scope, InventoryService, AuthService, toastr) {
-      "ngInject";
+      'ngInject';
 
       this.viewStrings = VIEW_STRINGS;
       this.modalEntries = MODAL_ENTRIES;
@@ -40,93 +42,92 @@ export const InventoryComponent = {
       this.scope = $scope;
       this.createOpen = false;
       this.deleteOpen = false;
+      this.nsIds = [];
       this.actionsItemAvailable = [
         {
-          label: "view",
-          action: this.toggleNSDetails.bind(this)
+          label: 'view',
+          action: this.toggleNSDetails.bind(this),
         },
         {
-          label: "withdraw",
-          action: this.removeFromInventory.bind(this)
+          label: 'withdraw',
+          action: this.removeFromInventory.bind(this),
         },
         {
-          label: "instantiate",
-          action: this.instantiateToInventory.bind(this)
-        }
+          label: 'instantiate',
+          action: this.instantiateToInventory.bind(this),
+        },
       ];
 
       this.actionsItemConfiguring = [
         {
-          label: "view",
-          action: this.toggleNSDetails.bind(this)
-        }
+          label: 'view',
+          action: this.toggleNSDetails.bind(this),
+        },
       ];
 
       this.actionsItemRunning = [
         {
-          label: "view",
-          action: this.toggleNSDetails.bind(this)
+          label: 'view',
+          action: this.toggleNSDetails.bind(this),
         },
         {
-          label: "terminate",
-          action: this.stopInstance.bind(this)
-        }
+          label: 'terminate',
+          action: this.stopInstance.bind(this),
+        },
       ];
 
       this.offset = 0;
       this.limit = 25;
       this.isLoading = false;
       this.filters = {};
-      this.headers = {
-        ...TABLE_HEADERS
-      };
       this.modalOpen = false;
       this.buttonClicked = false;
       this.nsSocketAtmp = 0;
       this.nsinventorySocket;
+      this.headers = { ...TABLE_HEADERS };
     }
 
     $onInit() {
       this.initNsinventorySocket();
 
-      this.scope.$on("NSINVENTORY_UPDATE_DATA", (event, data) => {
+      this.scope.$on('NSINVENTORY_UPDATE_DATA', (event, data) => {
         this.getData();
       });
 
       this.getData();
     }
 
-    $onDestroy(){
-      this.nsSocketAtmp=3;
+    $onDestroy() {
+      this.nsSocketAtmp = 3;
       this.nsinventorySocket.close();
     }
 
     initNsinventorySocket() {
       this.nsinventorySocket = this.inventoryService.connectNSInventorySocket(
-        this.authService.getTenant()
+        this.authService.getTenant(),
       );
-      this.nsinventorySocket.onopen = e => {
+      this.nsinventorySocket.onopen = () => {
         this.nsSocketAtmp = 0;
       };
-      this.nsinventorySocket.onmessage = message => {
+      this.nsinventorySocket.onmessage = (message) => {
         const data = JSON.parse(message.data);
-        if (data.result == "success") {
-          this.toast.info(data.ns_name + " is up and running", {
+        if (data.result === 'success') {
+          this.toast.info(data.ns_name + ' is up and running', {
             onShown: () => {
-              this.scope.$broadcast("NSINVENTORY_UPDATE_DATA");
+              this.scope.$broadcast('NSINVENTORY_UPDATE_DATA');
             },
-            closeButton: true
+            closeButton: true,
           });
         } else {
-          this.toast.error(data.ns_name + ": failed to instantiate", {
+          this.toast.error(`${data.ns_name} : failed to instantiate`, {
             onShown: () => {
-              this.scope.$broadcast("NSINVENTORY_UPDATE_DATA");
+              this.scope.$broadcast('NSINVENTORY_UPDATE_DATA');
             },
-            closeButton: true
+            closeButton: true,
           });
         }
       };
-      this.nsinventorySocket.onclose = e => {
+      this.nsinventorySocket.onclose = () => {
         if (this.nsSocketAtmp < 3) {
           this.nsSocketAtmp++;
           setTimeout(this.initNsinventorySocket(), 1000);
@@ -137,32 +138,33 @@ export const InventoryComponent = {
     getData() {
       this.isLoading = true;
       this.inventoryService
-        .getInventoryServices(
-          {
-            page: this.offset,
-            limit: this.limit
-          },
-          this.filters
+        .getInventoryServices({
+          page: this.offset,
+          limit: this.limit,
+        },
+          this.filters,
         )
-        .then(items => {
-          this.items = items.filter(it => it).map(item => {
-            var selectedActions = [];
-            // item.status = "running";
-            if (item.status == "available") {
+        .then((items) => {
+          this.items = [];
+          items.filter(it => it).forEach((item) => {
+            let selectedActions = [];
+            if (item.status === 'available') {
               selectedActions = this.actionsItemAvailable;
-            } else if (item.status == "running") {
+            } else if (item.status === 'running') {
               selectedActions = this.actionsItemRunning;
             } else {
               selectedActions = this.actionsItemConfiguring;
+              item.instance_id = 'N.A';
             }
-
-            return {
+            this.items.push({
               ...item,
               capabilities: item.manifest[
-                "manifest:ns"
-              ].properties.capabilities.join(", "),
-              headerActions: selectedActions
-            };
+              'manifest:ns'
+              ].properties.capabilities.join(', '),
+              headerActions: selectedActions,
+            });
+            this.items.map((data) => 
+              data.instance_id === '' ? data.instance_id = 'N.A' : data.instance_id = data.instance_id);
           });
         })
         .finally(() => {
@@ -174,10 +176,9 @@ export const InventoryComponent = {
       if (ns) {
         this.ns = {
           ...ns,
-          type: ns.manifest["manifest:ns"].type,
-          target: ns.manifest["manifest:ns"].target
+          type: ns.manifest['manifest:ns'].type,
+          target: ns.manifest['manifest:ns'].target,
         };
-        // debugger;
       }
       this.modalOpen = !this.modalOpen;
     }
@@ -224,12 +225,12 @@ export const InventoryComponent = {
     prettyYAML(obj) {
       return JSON.stringify(this.yaml.parse(obj), null, 4);
     }
-  }
+  },
 };
 
 export const inventoryState = {
-  parent: "home",
-  name: "nsinventory",
-  url: "/inventory",
-  component: "inventoryView"
+  parent: 'home',
+  name: 'nsinventory',
+  url: '/inventory',
+  component: 'inventoryView',
 };

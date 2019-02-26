@@ -65,6 +65,11 @@ export class AuthService {
     return !!user.session.roles.find(r => r.name === 'shield_client_admin');
   }
 
+  isUserDeveloper() {
+    const user = this.getSessionInfo();
+    return !!user.session.roles.find(r => r.name === 'shield_developer');
+  }
+
   getTenant() {
     return this.getSessionInfo().session.user.domain.id;
   }

@@ -1,6 +1,6 @@
 import styles from './modal.scss';
 
-const TEMPLATE = `<div class="{{::styles.modal}} {{::styles['modal--hidden']}}">
+const TEMPLATE = `<div ng-class="{'{{::$ctrl.styles['modal--hidden']}}': !$ctrl.modalOpen}">
 <div class="{{::styles.background}}"></div>
 <div class="{{::styles.container}} {{::styles.modal}}">
     <header class="{{::styles.header}}">{{titleModal}}</header>
