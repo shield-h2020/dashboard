@@ -154,12 +154,17 @@ class MsplPersistence:
     def _retrieve_origin_addresses(self, it_resource):
         print("===================== retrieving origin addresses =======================")
         print(it_resource)
+        if 'configuration' not in it_resource or 'rule' not in it_resource['configuration'][0]:
+            return []
 
         origin_addresses = list()
-        for rule in it_resource['configuration']['rule']:
+        for rule in it_resource['configuration'][0]['rule']:
+            print(rule['condition'])
             if 'condition' in rule and 'packet-filter-condition' in rule['condition'] and \
                     'source-address' in rule['condition']['packet-filter-condition']:
-                origin_addresses.append(rule['condition']['packet-filter-condition']['source_address'])
-            print(rule['condition'])
+                src_addr = rule['condition']['packet-filter-condition']['source-address']
+                if src_addr not in origin_addresses:
+                    origin_addresses.append(src_addr)
 
+        print("Retrieved origin addresses: {}".format(origin_addresses))
         return origin_addresses

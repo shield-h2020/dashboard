@@ -36,7 +36,7 @@ from dashboardutils.rabbit_client import RabbitAsyncConsumer
 from dashboardutils.tenant_ip_utils import get_tenant_by_ip, AssociationCodeError, MultipleAssociation
 from influxdb import InfluxDBClient
 from settings import ASSOCIATION_API_URL, INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_USER_PASSWORD, \
-    INFLUXDB_DB, TENANT_API_URL, TENANT_API_HEADERS
+    INFLUXDB_DB, TENANT_API_URL, TENANT_API_HEADERS, BACKENDAPI_URL
 from dashboardutils.attack_logger import AttackLogger
 
 
@@ -87,8 +87,6 @@ class AttackProcessor(PipeProducer):
         # Setup the instance as the events producer for the managed pipe.
         self.pipe.boot_in_sink(self)
 
-        # Create attack logger
-        self.attack_logger = AttackLogger(settings.BACKENDAPI_URL)
 
     def setup(self):
         self.influx_client = InfluxDBClient(
@@ -137,7 +135,8 @@ class AttackProcessor(PipeProducer):
         print("<-------------------------")
 
         # log this attack
-        self.attack_logger.add(field_dict['src_ip'], tag_dict['attack_type'])
+        attack_logger = AttackLogger(BACKENDAPI_URL)
+        attack_logger.add(field_dict['src_ip'], tag_dict['attack_type'])
 
     def parse_tenant(self, ip):
         """

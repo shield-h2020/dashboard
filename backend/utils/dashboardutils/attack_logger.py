@@ -26,7 +26,8 @@
 
 
 import requests
-
+import logging
+from dashboardutils import http_utils
 
 class AttackLogger:
 
@@ -81,8 +82,8 @@ class AttackLogger:
                 return
 
             registry_data = r.json()
-            if registry_data['_meta']['total'] > 0:
-                self.logger.debug('The registry has {} records of the <{},{}> association'
+            if registry_data['_meta']['total'] > 1:
+                self.logger.error('The registry has {} records of the <{},{}> association'
                                   .format(registry_data['_meta']['total'], ip_address, attack_type))
                 return
 
@@ -90,7 +91,7 @@ class AttackLogger:
             self.logger.error('Error connecting to the attack registry at {}.'.format(url), e)
             return
 
-        return registry_data['_items'][0]
+        return registry_data['_items'][0] if registry_data['_meta']['total'] == 1 else None
 
     def _post_attack_record(self, ip_address, attack_type):
         url = f'{self.backend_api_url}/attack/registry'

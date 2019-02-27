@@ -65,7 +65,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         headers = {'Content-Type': 'application/json'}
 
-        self.logger.debug("-> Send policy data to '%s'", url)
+        # self.logger.debug("-> Send policy data to '%s'", url)
 
         try:
             r = requests.post(url_r4, headers=headers, json=sec_policy, verify=False)
@@ -76,7 +76,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
                 if not (r.status_code == http_utils.HTTP_200_OK or r.status_code == http_utils.HTTP_201_CREATED or
                         r.status_code == http_utils.HTTP_202_ACCEPTED):
                     self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['POLICY_ISSUE'],
-                                        [[url, r.status_code]])
+                                        [[url_r4, r.status_code]])
 
             if r.text:
                 self.logger.debug(r.text)
@@ -84,7 +84,7 @@ class OsmVnsfoAdapter(VnsfOrchestratorAdapter):
 
         except requests.exceptions.ConnectionError:
             self.issue.raise_ex(IssueElement.ERROR, self.errors['POLICY']['VNSFO_UNREACHABLE'],
-                                [[url]])
+                                [[url_r4]])
 
     def instantiate_ns(self, ns_name, target, osm_version):
         """

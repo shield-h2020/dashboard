@@ -138,11 +138,11 @@ policies = {
     'item_title':          'policies',
     'description':         'Security recommendations',
     'schema':              api_model.policy_model,
-    'resource_methods':    ['POST', 'GET'],
+    'resource_methods':    ['POST', 'GET', 'DELETE'],
     'item_methods':        ['GET', 'PATCH', 'DELETE'],
 
     # TODO remove once inter-component authentication is in place.
-    'public_methods':      ['GET'],
+    'public_methods':      ['GET', 'DELETE'],
     'public_item_methods': ['GET', 'PATCH', 'DELETE']
     }
 
