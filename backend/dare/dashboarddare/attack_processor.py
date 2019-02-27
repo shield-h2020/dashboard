@@ -37,6 +37,7 @@ from dashboardutils.tenant_ip_utils import get_tenant_by_ip, AssociationCodeErro
 from influxdb import InfluxDBClient
 from settings import ASSOCIATION_API_URL, INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_USER_PASSWORD, \
     INFLUXDB_DB, TENANT_API_URL, TENANT_API_HEADERS
+from dashboardutils.attack_logger import AttackLogger
 
 
 class AttackProcessor(PipeProducer):
@@ -86,6 +87,9 @@ class AttackProcessor(PipeProducer):
         # Setup the instance as the events producer for the managed pipe.
         self.pipe.boot_in_sink(self)
 
+        # Create attack logger
+        self.attack_logger = AttackLogger(settings.BACKENDAPI_URL)
+
     def setup(self):
         self.influx_client = InfluxDBClient(
             INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_USER_PASSWORD, INFLUXDB_DB
@@ -125,6 +129,15 @@ class AttackProcessor(PipeProducer):
         }]
 
         self.influx_client.write_points(json_body)
+
+        print("------------------------->")
+        print(tag_dict)
+        print("---")
+        print(field_dict)
+        print("<-------------------------")
+
+        # log this attack
+        self.attack_logger.add(field_dict['src_ip'], tag_dict['attack_type'])
 
     def parse_tenant(self, ip):
         """

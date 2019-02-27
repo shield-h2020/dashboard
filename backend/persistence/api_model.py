@@ -77,6 +77,13 @@ policy_model = {
         'required': True
         },
 
+    # A list of IP address from where the attack was originated
+    'origin_addresses': {
+        'type':     'list',
+        'empty':    True,
+        'required': True
+    },
+
     # The recommendation to counter the threat. Format: user-defined.
     'recommendation': {
         'type':     'string',
@@ -84,6 +91,65 @@ policy_model = {
         'required': True
         }
     }
+
+attack_registry_model = {
+
+    # Malicious device source address
+    'ip_address': {
+        'type':     'string',
+        'empty':    False,
+        'required': False
+    },
+
+    # The kind of network attack. Format: user-defined.
+    'attack': {
+        'type':     'string',
+        'empty':    False,
+        'required': True
+    },
+
+    # The status of the attack on the infected device: 'active' or 'blocked'
+    'status': {
+        'type':     'string',
+        'empty':    False,
+        'required': True,
+        'allowed':  ['active', 'blocked']
+    }
+}
+
+attack_statistics_model = {
+    # Timestamp of when there's been a development (a new threat was detected or a threat was blocked)
+    'timestamp': {
+        'type':     'number',
+        'empty':    False,
+        'required': True
+    },
+
+    # Number of active malicious devices
+    'active': {
+        'type':     'number',
+        'empty':    False,
+        'required': True,
+        'default': 0.0
+    },
+
+    # Number of blocked malicious devices
+    'blocked': {
+        'type':     'number',
+        'empty':    False,
+        'required': True,
+        'default': 0.0
+    },
+
+    # Cumulative number of malicious devices
+    'cumulative': {
+        'type':     'number',
+        'empty':    False,
+        'required': True,
+        'default': 0.0
+    }
+
+}
 
 tenant_scopes_model = {
     'name':        {
@@ -972,3 +1038,5 @@ billing_clean = {
         'required': True,
     }
 }
+
+

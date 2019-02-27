@@ -32,7 +32,7 @@ from pprint import pprint
 import settings as cfg
 from vnsfo.vnsfo import VnsfoFactory, VnsfoNotSupported
 from vnsfo.vnsfo_adapter import VnsfOrchestratorPolicyIssue
-
+from dashboardutils.attack_logger import AttackLogger
 
 class DashboardPersistence:
     """
@@ -71,6 +71,11 @@ class DashboardPersistence:
 
         except VnsfoNotSupported:
             logger.error('VnsfOrchestratorPolicyIssue')
+
+        # Block attack in registry and statistics
+        attack_logger = AttackLogger(cfg.BACKENDAPI)
+        for origin_address in policy['origin_addresses']:
+            attack_logger.block(origin_address, policy['attack'])
 
     @staticmethod
     def convert_to_datetime(items):

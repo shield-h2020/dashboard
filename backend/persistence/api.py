@@ -45,6 +45,7 @@ from security import TokenAuthzOslo
 from validators import NetworkValidator
 from billing.monitor import BillingMonitor
 from hooks_policies import PolicyHooks
+from hooks_attacks import AttackHooks
 
 # Start Billing Update Monitor
 BillingMonitor(update_interval=0.5).start()
@@ -57,6 +58,10 @@ app.on_post_POST_ns_instance_update += NSInstanceHooks().post_ns_instance
 app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
 app.on_fetched_resource_distinct_policies += PolicyHooks.get_distinct_vnsf_policies
+app.on_pre_POST_attack_registry += AttackHooks.post_registry_set_status
+app.on_inserted_attack_registry += AttackHooks.statistics_add_active
+app.on_updated_attack_registry += AttackHooks.statistics_add_blocked
+app.on_pre_POST_attack_statistics += AttackHooks.post_statistics_set_timestamp
 
 app.on_post_POST_login += LoginHooks.post_login
 app.on_post_POST_login_user += LoginHooks.post_login

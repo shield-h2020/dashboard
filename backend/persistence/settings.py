@@ -105,6 +105,8 @@ DOMAIN = {
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin,
     'distinct_policies':      api_endpoints.distinct_policies,
+    'attack_registry':        api_endpoints.attack_registry,
+    'attack_statistics':      api_endpoints.attack_statistics,
     'validations':            api_endpoints.validations,
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,

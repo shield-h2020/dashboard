@@ -118,6 +118,7 @@ class MsplPersistence:
             policy_info['severity'] = policy_context['severity']
             policy_info['status'] = 'Not applied'
             policy_info['attack'] = policy_context['type']
+            policy_info['origin_addresses'] = self._retrieve_origin_addresses(it_resource)
             policy_info['recommendation'] = policy_xml_str
 
             policy_json = json.dumps(policy_info)
@@ -149,3 +150,16 @@ class MsplPersistence:
         except requests.exceptions.ConnectionError as e:
             self.logger.error('Error persisting the policy at {}.'.format(url), e)
             raise Exception
+
+    def _retrieve_origin_addresses(self, it_resource):
+        print("===================== retrieving origin addresses =======================")
+        print(it_resource)
+
+        origin_addresses = list()
+        for rule in it_resource['configuration']['rule']:
+            if 'condition' in rule and 'packet-filter-condition' in rule['condition'] and \
+                    'source-address' in rule['condition']['packet-filter-condition']:
+                origin_addresses.append(rule['condition']['packet-filter-condition']['source_address'])
+            print(rule['condition'])
+
+        return origin_addresses

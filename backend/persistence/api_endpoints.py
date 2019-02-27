@@ -176,6 +176,29 @@ distinct_policies = {
 
 }
 
+attack_registry = {
+    'item_title':       'Log records for the detected attacks',
+    'url':              'attack/registry',
+    'schema':           api_model.attack_registry_model,
+    'resource_methods': ['GET', 'POST', 'DELETE'],
+    'item_methods':     ['PATCH'],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET', 'POST', 'DELETE'],
+    'public_item_methods': ['PATCH']
+
+}
+
+attack_statistics = {
+    'item_title':       'Attack statistics throughout time',
+    'url':              'attack/statistics',
+    'schema':           api_model.attack_statistics_model,
+    'resource_methods': ['GET', 'POST', 'DELETE'],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods': ['GET', 'POST', 'DELETE']
+}
+
 
 ###
 #  NS Instances
