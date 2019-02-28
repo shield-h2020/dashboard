@@ -3,12 +3,16 @@
   "tenant.admin": "role:shield_client_admin",
   "tenant.user": "role:shield_client_user",
   "developer": "role:shield_developer",
+  "cyberagent": "role:shield_cyberagent",
 
   "tenant.scoped": "tenant_id:%(tenant_id)s",
   "tenant.user.scoped": "user_id:%(user_id)s",
 
   "developers.group": "tenant_id:%(tenant_id)s",
   "developer.scoped": "user_id:%(user_id)s",
+
+  "cyberagents.group": "tenant_id:%(tenant_ids)s",
+  "cyberagent.scoped": "user_id:%(user_id)s",
 
   "any.tenant.admin": "rule:tenant.admin or rule:platform.admin",
   "the.tenant.admin": "(rule:tenant.admin and rule:tenant.scoped) or rule:platform.admin",
@@ -17,6 +21,9 @@
 
   "any.developer": "(rule:developer and rule:developers.group) or rule:platform.admin",
   "developer.owned": "(rule:developer and rule:developer.scoped) or rule:platform.admin",
+
+  "any.cyberagent": "(rule:cyberagent and rule:cyberagents.group) or rule:platform.admin",
+  "cyberagent.owned": "(rule:cyberagent and rule:cyberagent.scoped) or rule:platform.admin",
 
   "tenant_scopes:create": "rule:platform.admin",
   "tenant_scopes:read": "rule:platform.admin",
@@ -111,4 +118,7 @@
   "billing_ns_usage:update": "rule:platform.admin",
   "billing_summary:read": "rule:platform.admin",
   "billing_summary:update": "rule:platform.admin",
+
+  "attack_statistics:read": "rule:any.cyberagent",
+
 }

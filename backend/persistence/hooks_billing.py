@@ -864,7 +864,7 @@ class BillingActions:
             'used_to': used_to.isoformat(),
             'fee': fee,
             'billable_percentage': billable_percentage,
-            'billable_fee': billable_fee
+            'billable_fee': round(billable_fee, 2)
         }
         (result, _, etag, status, _) = post_internal("billing_ns_usage", payload)
         print("-------> creation status: {}, result: {}".format(status, result))
@@ -894,7 +894,7 @@ class BillingActions:
         payload = {
             'used_to': used_to.isoformat(),
             'billable_percentage': billable_percentage,
-            'billable_fee': billable_fee,
+            'billable_fee': round(billable_fee, 2),
             'usage_status': usage_status
         }
         lookup = {"_id": item['_id']}
@@ -1100,7 +1100,7 @@ class BillingActions:
                         'number_nss': len(item['nss']),
                         'number_ns_instances': len(item['ns_instances']),
                         'status': item['status'],
-                        'billable_fee': item['billable_fee']
+                        'billable_fee': round(item['billable_fee'], 2)
                     }
                     (result, _, etag, status, _) = post_internal("billing_ns_summary", payload)
                     logger.debug("Created NS Summary for tenant id={} and month={}".format(tenant, month))
@@ -1117,7 +1117,7 @@ class BillingActions:
                         'number_nss': len(item['nss']),
                         'number_ns_instances': len(item['ns_instances']),
                         'status': item['status'],
-                        'billable_fee': item['billable_fee']
+                        'billable_fee': round(item['billable_fee'], 2)
                     }
                     lookup = {"_id": billing_ns_summary_id}
                     (result, _, etag, status) = patch_internal("billing_ns_summary", payload, **lookup)
@@ -1156,7 +1156,7 @@ class BillingActions:
                         'month': month,
                         'number_vnsfs': item['number_vnsfs'],
                         'status': item['status'],
-                        'billable_fee': item['billable_fee']
+                        'billable_fee': round(item['billable_fee'], 2)
                     }
                     logger.debug("Creating vNSF Summary for user_id={} and month={}".format(user, month))
                     (result, _, etag, status, _) = post_internal("billing_vnsf_summary", payload)
@@ -1172,7 +1172,7 @@ class BillingActions:
                     payload = {
                         'number_vnsfs': item['number_vnsfs'],
                         'status': item['status'],
-                        'billable_fee': item['billable_fee']
+                        'billable_fee': round(item['billable_fee'], 2)
                     }
                     lookup = {"_id": billing_vnsf_summary_id}
                     (result, _, etag, status) = patch_internal("billing_vnsf_summary", payload, **lookup)
