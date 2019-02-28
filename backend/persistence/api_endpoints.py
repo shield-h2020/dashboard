@@ -194,6 +194,7 @@ attack_statistics = {
     'url':              'attack/statistics',
     'schema':           api_model.attack_statistics_model,
     'resource_methods': ['GET', 'POST', 'DELETE'],
+    'allowed_roles':    ['attack_statistics:read'],
 
     # TODO remove once inter-component authentication is in place.
     'public_methods': ['GET', 'POST', 'DELETE']
