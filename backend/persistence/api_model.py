@@ -542,3 +542,381 @@ tm_attest_node = {
         'required': True,
     }
 }
+
+#
+# Defines the fee a Developer charges for the use of its vNSF.
+# The fees represented here are monthly rates.
+#
+billing_vnsf = {
+
+    # The Developer that this billing definition belongs to
+    'user_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # ID, from the catalogue, assigned to a vNSF onboarded by the Developer.
+    'vnsf_id': {
+        'type': 'objectid',
+        'empty': False,
+        'required': True,
+        'unique': True
+
+    },
+
+    # vNSF monthly rate charged by the Developer to the ISP.
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': False,
+        'default': 0.0
+    }
+}
+
+#
+# Defines the fee of an NS.
+# The fees represented here are monthly rates.
+#
+billing_ns = {
+    # ID, from the Store catalogue, assigned to the NS available to a SecaaS Client.
+    'ns_id': {
+        'type': 'objectid',
+        'empty': False,
+        'required': True,
+        'unique': True
+    },
+
+    # Calculated inherited monthly rates from the constituent vNSFs (OpEx)
+    'expense_fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Custom fee to charge for the NS
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': False,
+        'default': 0.0
+    },
+
+    # 'fee' minus 'expense_fee' balance
+    'instance_balance': {
+        'type': 'number',
+        'empty': False,
+        'required': False,
+        'default': 0.0
+    },
+
+    # Minimum number of instances to achieve a flatten balance
+    'flatten_min_instances': {
+        'type': 'number',
+        'empty': False,
+        'required': 'False',
+        'default': 0.0
+    }
+
+}
+
+
+
+#
+# Records the NS usage for a given SecaaS Client.
+#
+billing_ns_usage = {
+
+    # Instance ID retrieved from the vNSFO upon successful instantiation
+    'ns_instance_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+    },
+
+    # ID, from the Store catalogue, assigned to the NS available to a SecaaS Client.
+    'ns_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Tenant ID using the NS.
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Specifies if this usage is still counting, i.e. subject to be updated (open or closed)
+    'usage_status': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+        'allowed': ['open', 'closed']
+    },
+
+    # # Specifies if the ns instance is terminated or running
+    # 'instance_status': {
+    #     'type': 'string',
+    #     'empty': False,
+    #     'required': True,
+    #     'allowed':  ["running", "terminated"],
+    # },
+
+    # Month of billing. Format: YYYY-MM.
+    'month': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Date when the NS was instantiated by the SecaaS Client. Format: ISO 8601.
+    'used_from': {
+        # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
+        # string must be sent. The trick is to convert the string to a datetime instance in a hook function.
+        # The string type caters for the serialization to JSON so the type must match or Cerberus won't validate it
+        # and so it never gets to the hook function. Once it gets to the hook function it is converted to datetime
+        # and stored. Storing as datetime doesn't seem to be a problem as pymongo doesn't check the instance type (
+        # the assumption is that it was previously validated by Cerberus so it won't check it again).
+        # This is not the most elegant hack but it seems the most adequate given the constraints.
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Date when the NS was stopped by the SecaaS Client. Format: ISO 8601.
+    'used_to': {
+        # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
+        # string must be sent. The trick is to convert the string to a datetime instance in a hook function.
+        # The string type caters for the serialization to JSON so the type must match or Cerberus won't validate it
+        # and so it never gets to the hook function. Once it gets to the hook function it is converted to datetime
+        # and stored. Storing as datetime doesn't seem to be a problem as pymongo doesn't check the instance type (
+        # the assumption is that it was previously validated by Cerberus so it won't check it again).
+        # This is not the most elegant hack but it seems the most adequate given the constraints.
+        'type': 'string',
+        'empty': False,
+        'required': False
+    },
+
+    # Fee, applied at the time of instantiation, to charge for the NS usage.
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Reflects the monthly usage percentage which will be billable
+    'billable_percentage': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Calculated billable fee during the usage period of time of the month
+    'billable_fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+}
+
+
+#
+# Records the vNSF usage for a given Developer.
+# The amount of vNSF instances are not recorded. In contrast with Billing NS Usage,
+# the Billing vNSF usage only records the periods that a particular vNSF was active/instantiated,
+# regardless of the number of instances. In other words, if multiple instances of the same vNSF
+# are running at the same time (period overlap) it only records the 'used_from' date of the first
+# instantiation and the 'used_to' date of the last termination.
+#
+
+billing_vnsf_usage = {
+
+    # vNSF ID, from the Store catalogue
+    'vnsf_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Developer that owns the vNSF
+    'user_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Active status -> specifies if the vNSF instance is active or idle
+    'vnsf_status': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+        'allowed':  ["active", "idle"],
+    },
+
+
+
+    # Date when the vNSF was instantiated by the SecaaS Client. Format: ISO 8601.
+    'used_from': {
+        # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
+        # string must be sent. The trick is to convert the string to a datetime instance in a hook function.
+        # The string type caters for the serialization to JSON so the type must match or Cerberus won't validate it
+        # and so it never gets to the hook function. Once it gets to the hook function it is converted to datetime
+        # and stored. Storing as datetime doesn't seem to be a problem as pymongo doesn't check the instance type (
+        # the assumption is that it was previously validated by Cerberus so it won't check it again).
+        # This is not the most elegant hack but it seems the most adequate given the constraints.
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Date when the vNSF was stopped by the SecaaS Client. Format: ISO 8601.
+    'used_to': {
+        # This field should be of type datetime. The problem here is that datetime isn't JSON serializable so a
+        # string must be sent. The trick is to convert the string to a datetime instance in a hook function.
+        # The string type caters for the serialization to JSON so the type must match or Cerberus won't validate it
+        # and so it never gets to the hook function. Once it gets to the hook function it is converted to datetime
+        # and stored. Storing as datetime doesn't seem to be a problem as pymongo doesn't check the instance type (
+        # the assumption is that it was previously validated by Cerberus so it won't check it again).
+        # This is not the most elegant hack but it seems the most adequate given the constraints.
+        'type': 'string',
+        'empty': False,
+        'required': False
+    },
+
+    # Monthly fee, applied at the time of instantiation, to charge for the vNSF usage.
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Reflects the monthly usage percentage which will be billable
+    'billable_percentage': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Calculated billable fee during the usage period of time
+    'billable_fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+}
+
+#
+# Defines the fee a SecaaS Client ows to the ISP for the use of a NS.
+#
+billing_ns_summary = {
+
+    # Tenant ID using the NS.
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+    },
+
+    # Month of billing. Format: YYYY-MM.
+    'month': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Number of Network Instances used during the month
+    'number_ns': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Number of Network Instances used during the month
+    'number_ns_instances': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    # Status of the billing summary (closed or open)
+    'status': {
+        'type': 'string',
+        'empty': False,
+        'required': True,
+        'allowed':  ["closed", "open"],
+    },
+
+    # NS instances associated with the billing summary
+    'ns_instances': {
+        'type': 'list',
+        'required': True,
+        'empty': True,
+        'schema': {
+            'ns_instance_id': {
+                'type': 'string',
+                'empty': False,
+                'required': True,
+                'unique': True
+            },
+            'billing_ns_usages': {
+
+            }
+        }
+    },
+
+    # Fee to charge for the NS availability.
+    'billable_fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    }
+}
+
+#
+# Defines the fee the ISP ows to the Developer for the use of a vNSF.
+#
+billing_vnsf_summary = {
+
+    # The Billing vNSF that this summary refers to
+    'billing_vnsf': {
+        'type': 'objectid',
+        'data_relation': {
+            'resource': 'billing_vnsf',
+            'field': '_id',
+            'embeddable': True
+        },
+        'required': True,
+        'empty': False
+    },
+
+    # # Tenant ID using the NS.
+    # 'tenant_id': {
+    #     'type': 'string',
+    #     'empty': False,
+    #     'required': True
+    # },
+
+    # Month to charge. Format: YYYY-MM.
+    'month': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Fee to charge for the NS availability.
+    'fee': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    }
+}
+
+#
+# Keeps information about billing updates which are
+# typically called by the Billing Monitor Scheduler
+#
+billing_update = {}

@@ -40,8 +40,13 @@ from hooks_nss_inventory import NssInventoryHooks
 from hooks_tenants import TenantHooks
 from hooks_tm_notifications import TMNotifications
 from hooks_tm_attestation import TMAttestation
+from hooks_billing import BillingActions
 from security import TokenAuthzOslo
 from validators import NetworkValidator
+from billing.monitor import BillingMonitor
+
+# Start Billing Update Monitor
+BillingMonitor().start()
 
 app = Eve(auth=TokenAuthzOslo, validator=NetworkValidator)
 CORS(app)
@@ -76,6 +81,16 @@ app.on_fetched_resource_distinct_notifications_tm_host += TMNotifications.get_di
 app.on_insert_tm_attest_node += TMAttestation.tm_attest_node
 app.on_insert_tm_attest_all += TMAttestation.tm_attest_all
 
+# Billing hooks
+app.on_pre_POST_billing_vnsf += BillingActions.create_vnsf_billing_placeholder
+app.on_pre_POST_billing_ns += BillingActions.create_ns_billing_placeholder
+app.on_update_billing_ns += BillingActions.set_ns_billing_fee
+app.on_pre_POST_billing_ns_start_usage += BillingActions.start_billing_ns_usage
+app.on_update_billing_ns_stop_usage += BillingActions.stop_billing_ns_usage
+app.on_fetched_resource_billing_ns_usage += BillingActions.get_billins_ns_usage
+app.on_fetched_item_billing_ns_usage += BillingActions.get_billing_ns_usage_item
+app.on_pre_POST_billing_update += BillingActions.update_billing
+
 app.register_blueprint(swagger)
 
 app.config['SWAGGER_INFO'] = api_docs.swagger_info
@@ -88,4 +103,4 @@ if __name__ == '__main__':
 
     # use '0.0.0.0' to ensure your REST API is reachable from all your
     # network (and not only your computer).
-    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=cfg.BACKENDAPI_PORT, debug=False, threaded=True)

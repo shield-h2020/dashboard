@@ -117,8 +117,16 @@ DOMAIN = {
     'tenant_ips':             api_endpoints.tenant_ip_association,
     'tenant_vnsfs':           api_endpoints.tenant_vnsf_association,
     'ns_instance_update':     api_endpoints.ns_instance_update,
-    'tm_attest_node':              api_endpoints.tm_attest_node,
-    'tm_attest_all':          api_endpoints.tm_attest_all
+    'tm_attest_node':         api_endpoints.tm_attest_node,
+    'tm_attest_all':          api_endpoints.tm_attest_all,
+    'billing_vnsf':           api_endpoints.billing_vnsf,
+    'billing_ns':             api_endpoints.billing_ns,
+    'billing_ns_usage':       api_endpoints.billing_ns_usage,
+    'billing_ns_start_usage': api_endpoints.billing_ns_start_usage,
+    'billing_ns_stop_usage':  api_endpoints.billing_ns_stop_usage,
+    'billing_ns_summary':     api_endpoints.billing_ns_summary,
+    'billing_vnsf_summary':   api_endpoints.billing_vnsf_summary,
+    'billing_update':         api_endpoints.billing_update,
     }
 
 PAGINATION_LIMIT = 100

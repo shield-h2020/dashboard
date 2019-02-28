@@ -35,7 +35,6 @@ import settings as cfg
 from dashboardutils import http_utils
 from dashboardutils.pipe import PipeProducer
 from dashboardutils.rabbit_client import RabbitAsyncConsumer
-
 from .vnsfo_notification_persistence import VnsfoNotificationPersistence
 
 config = {
@@ -200,3 +199,19 @@ class VNSFONotification(PipeProducer):
         }
         self.logger.debug('Sending Notification: {}'.format(notification_json))
         self.notify_by_tenant(notification_json, tenant_id)
+
+        # Start NS Billing Usage if instantiation was successful
+        if op_status == 'running':
+            self.logger.debug("Starting billing for NS {}, instance ID {}".format(ns_id, ns_instance_id))
+
+            url = '{}'.format(cfg.START_BILLING_NS_USAGE_URL)
+
+            billing_data = {
+                'ns_instance_id': ns_instance_id
+            }
+
+            r = requests.get(url, headers=headers, json=billing_data, verify=False)
+
+            # if this tenant doesn't have any record of association -> create it
+            if not r.status_code == http_utils.HTTP_201_CREATED:
+                self.logger.error("Couldn't start billing for NS {}, instance ID {}".format(ns_id, ns_instance_id))

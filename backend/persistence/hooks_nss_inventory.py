@@ -36,6 +36,7 @@ from flask import abort, make_response, jsonify
 import requests
 from dashboardutils import http_utils
 
+
 class NssInventoryHooks:
     """
     Handles the backstage operations required for the Network Services Inventory part of the Dashboard API. These
@@ -138,7 +139,7 @@ class NssInventoryHooks:
                                     "Instantiation failed. Failed to trigger polling for NS instance_id '{}'"
                                         .format(updates['instance_id'])}}), 500))
 
-        logger.debug("NS instance_id '{}' instantiation cess was successful".format(updates['instance_id']))
+        logger.debug("NS instance_id '{}' instantiation process was successful".format(updates['instance_id']))
 
     @staticmethod
     def terminate_network_service(updates, original):

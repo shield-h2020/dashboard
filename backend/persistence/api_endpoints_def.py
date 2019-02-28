@@ -26,7 +26,6 @@
 
 
 from enum import Enum
-
 import api_model
 from dashboardutils import http_utils
 
@@ -692,6 +691,256 @@ class Endpoint(Enum):
                         }
                     },
                 }
+    }
+
+    BILLING_NS = {
+        __NAME__: 'network service billing',
+        __URL__: 'billing/ns',
+        __SCHEMA__: api_model.billing_ns,
+        __RESOURCE__: {
+            __HTTP_POST__: {
+                __POLICY__: 'billing_ns:create',
+                __DOCS__: {
+                    'summary': 'Establish billing fees for a Network Service',
+                    'description': 'Establish billing fees, namely the additional fee, for a particular Network Service',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_GET__: {
+                __POLICY__: 'billing_ns:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing fees of a Network Service',
+                    'description': 'Obtains the billing fees of a all Network Services',
+                    'responses': http_utils.responses_read
+                }
+            }
+
+        },
+        __ITEM__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_ns:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing fees for a particular Network Service',
+                    'description': 'Obtains the billing fees of a particular Network Service',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_PATCH__: {
+                __POLICY__: 'billing_ns:update',
+                __DOCS__: {
+                    'summary': 'Updates the billing fees of a Network Service',
+                    'description': 'Updates the `additional_fee` of a particular Network Service',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_ns:delete',
+                __DOCS__: {
+                    'summary': 'Remove a billing fee record of a Network Service',
+                    'description': 'Remove billing fee record of a Network Service',
+                    'responses': http_utils.responses_read
+                }
+            },
+        }
+
+    }
+
+    BILLING_VNSF = {
+        __NAME__: 'vnsf billing',
+        __URL__: 'billing/vnsf',
+        __SCHEMA__: api_model.billing_vnsf,
+        __RESOURCE__: {
+            __HTTP_POST__: {
+                __POLICY__: 'billing_vnsf:create',
+                __DOCS__: {
+                    'summary': 'Establish billing fees for a vNSF',
+                    'description': 'Establish billing fees, namely the fee and support_fee, for a particular vNSF',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_GET__: {
+                __POLICY__: 'billing_vnsf:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing fees for a vNSF',
+                    'description': 'Obtains the billing fees (fee and support fee) for a particular vNSF',
+                    'responses': http_utils.responses_read
+                }
+            },
+        },
+        __ITEM__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_vnsf:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing fees for a vNSF',
+                    'description': 'Obtains the billing fees (fee and support fee) for a particular vNSF',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_PATCH__: {
+                __POLICY__: 'billing_vnsf:update',
+                __DOCS__: {
+                    'summary': 'Updates the billing fees of a vNSF',
+                    'description': 'Updates the billing fees, namely the fee and support fee, of a particular vNSF',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_vnsf:delete',
+                __DOCS__: {
+                    'summary': 'Remove a billing fee record of a vNSF',
+                    'description': 'Remove billing fee record of a vNSF',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_NS_USAGE = {
+        __NAME__: 'start ns instance billing usage',
+        __URL__: 'billing/ns/usage',
+        __SCHEMA__: api_model.billing_ns_usage,
+        __RESOURCE__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_ns_usage:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing usage counters for all Network Service Instance',
+                    'description': 'Obtains the start and stop dates of billing of NS instances',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_POST__: {
+                __POLICY__: 'billing_ns_usage:create',
+                __DOCS__: {
+                    'summary': 'Create billing usage counters a Network Service Instance',
+                    'description': 'Create billing usage counters a Network Service Instance.',
+                    'responses': http_utils.responses_read
+                }
+            }
+        },
+        __ITEM__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_ns_usage:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing usage counters for a Network Service Instance',
+                    'description': 'Obtains the start and stop dates of billing of particular NS instance',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_PATCH__: {
+                __POLICY__: 'billing_ns_usage:update',
+                __DOCS__: {
+                    'summary': 'Updates the billing usage counters for a Network Service Instance',
+                    'description': 'Updates the billing usage counters for a Network Service Instance.',
+                    'responses': http_utils.responses_read
+                }
+            },
+
+            __HTTP_DELETE__: {
+                __POLICY__: 'billing_ns_usage:delete',
+                __DOCS__: {
+                    'summary': 'Remove a billing usage record of a Network Service',
+                    'description': 'Remove a billing usage record of a Network Service',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_NS_START_USAGE = {
+        __NAME__: 'start ns instance billing usage',
+        __URL__: 'billing/ns/start',
+        __SCHEMA__: api_model.billing_ns_usage,
+        __RESOURCE__: {
+            __HTTP_POST__: {
+                __POLICY__: 'billing_ns_usage:start',
+                __DOCS__: {
+                    'summary': 'Start billing usage counters for a Network Service Instance',
+                    'description': 'Registers the start date of billing of particular NS instance',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_NS_STOP_USAGE = {
+        __NAME__: 'stop ns instance billing usage',
+        __URL__: 'billing/ns/stop',
+        __SCHEMA__: api_model.billing_ns_usage,
+        __RESOURCE__: {},
+        __ITEM__: {
+            __HTTP_PATCH__: {
+                __POLICY__: 'billing_ns_usage:stop',
+                __DOCS__: {
+                    'summary': 'Stop billing usage counters for a Network Service Instance',
+                    'description': 'Registers the stop date of billing on a particular NS instance',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_NS_SUMMARY = {
+        __NAME__: 'Keeps record of monthly fees that SecaaS clients own to the ISP',
+        __URL__: 'billing/ns/summary',
+        __SCHEMA__: api_model.billing_ns_summary,
+        __RESOURCE__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_ns_summary:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing summary for all Network Service Instances',
+                    'description': 'Obtains the billing summary for all Network Service Instances',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_POST__: {
+                __POLICY__: 'billing_ns_summary:create',
+                __DOCS__: {
+                    'summary': 'Create a billing summary',
+                    'description': 'Create a billing summary for a particular tenant and month',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_VNSF_SUMMARY = {
+        __NAME__: 'Keeps record of monthly fees that the ISP owns to Developers',
+        __URL__: 'billing/vnsf/summary',
+        __SCHEMA__: api_model.billing_ns_summary,
+        __RESOURCE__: {
+            __HTTP_GET__: {
+                __POLICY__: 'billing_vnsf_summary:read',
+                __DOCS__: {
+                    'summary': 'Obtains the billing summary for all vNSFs',
+                    'description': 'Obtains the billing summary for all vNSFs',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_POST__: {
+                __POLICY__: 'billing_vnsf_summary:create',
+                __DOCS__: {
+                    'summary': 'Create a billing summary',
+                    'description': 'Create a billing summary for a particular Developer and Month',
+                    'responses': http_utils.responses_read
+                }
+            }
+        }
+    }
+
+    BILLING_UPDATE = {
+        __NAME__: 'update all billing information data',
+        __URL__: 'billing/update',
+        __SCHEMA__: api_model.billing_update,
+        __RESOURCE__: {
+            __HTTP_POST__: {
+                __POLICY__: 'billing:update',
+                __DOCS__: {
+                    'summary': 'Update Billing Information Data',
+                    'description': 'Update Billing Information Data including NS and vNSF Usages and Summaries',
+                    'responses': http_utils.responses_read
+                }
+            },
+        },
     }
 
 
