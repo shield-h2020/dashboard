@@ -48,6 +48,16 @@ class AttackHooks:
         Upon creation of a new attack record the status must be always set to 'active'
         """
         request.json['status'] = 'active'
+        request.json['detection_timestamp'] = time.time()
+
+    @staticmethod
+    def patch_registry_set_closure(updates, original):
+        """
+        Upon patch of an existing attack record, check if status is being set to blocked. In that case, set the
+        closure timestamp to current time
+        """
+        if updates['status'] == 'blocked':
+            updates['closure_timestamp'] = time.time()
 
 
     @staticmethod

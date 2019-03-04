@@ -114,7 +114,20 @@ attack_registry_model = {
         'empty':    False,
         'required': True,
         'allowed':  ['active', 'blocked']
+    },
+
+    'detection_timestamp': {
+        'type':     'number',
+        'empty':    False,
+        'required': True
+    },
+
+    'closure_timestamp': {
+        'type':     'number',
+        'empty':    False,
+        'required': False,
     }
+
 }
 
 attack_statistics_model = {

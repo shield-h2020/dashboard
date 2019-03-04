@@ -128,12 +128,6 @@ class AttackProcessor(PipeProducer):
 
         self.influx_client.write_points(json_body)
 
-        print("------------------------->")
-        print(tag_dict)
-        print("---")
-        print(field_dict)
-        print("<-------------------------")
-
         # log this attack
         attack_logger = AttackLogger(BACKENDAPI_URL)
         attack_logger.add(field_dict['src_ip'], tag_dict['attack_type'])

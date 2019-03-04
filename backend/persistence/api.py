@@ -59,6 +59,7 @@ app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
 app.on_fetched_resource_distinct_policies += PolicyHooks.get_distinct_vnsf_policies
 app.on_pre_POST_attack_registry += AttackHooks.post_registry_set_status
+app.on_update_attack_registry += AttackHooks.patch_registry_set_closure
 app.on_inserted_attack_registry += AttackHooks.statistics_add_active
 app.on_updated_attack_registry += AttackHooks.statistics_add_blocked
 app.on_pre_POST_attack_statistics += AttackHooks.post_statistics_set_timestamp

@@ -99,12 +99,12 @@ class AttackLogger:
         try:
             payload = {
                 'ip_address': ip_address,
-                'attack':     attack_type,
+                'attack':     attack_type
             }
             r = requests.post(url, headers=headers, json=payload, verify=False)
             if not r.status_code == http_utils.HTTP_201_CREATED:
-                self.logger.error('Failed to create a record of the <{},{}> association'
-                                  .format(ip_address, attack_type))
+                self.logger.error('Failed to create a record of the <{},{}> association: {}'
+                                  .format(ip_address, attack_type, r.text))
                 return
 
         except requests.exceptions.ConnectionError as e:
