@@ -1,0 +1,65 @@
+<section>
+    <div class="page-container mb50 p30">
+        <div class="page-content ml0">
+            <div class="page-content-wrap">
+                <div class="row">
+                    <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+                    <div class="panel panel-default mt30 m0 shadow_box">
+                        <div class="panel-body mp4 w92 p20">
+                            <!-- SELECTS-->
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <label class="col-xl-4 col-lg-4 col-md-3 col-sm-3 dashboard_datepicker_text">Period</label>
+                                    <select id="period" ng-model="selected_period" class="col-xl-8 col-lg-8 col-md-9 col-sm-9 filter_selects"
+                                        ng-change="$ctrl.setPeriod()">
+                                        <option ng-selected="true" value="0">Today</option>
+                                        <option value="1">Yesterday</option>
+                                        <option value="2">Last Week</option>
+                                        <option value="3">Custom</option>
+                                    </select>
+                                </div>
+                                <!-- DATEPICKERS -->
+                                <div class="col-lg-4 col-md-4 col-sm-12" ng-if="$ctrl.showDatePicker==true">
+                                    <sn-date-picker class="datepickerClass pl0 pr0 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                        label="Start" current-date="$ctrl.LastStartDate" on-change="$ctrl.setFilter({ key: 'startDate', value: $event.value})">
+                                    </sn-date-picker>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12" ng-if="$ctrl.showDatePicker==true">
+                                    <sn-date-picker class="datepickerClass pl0 pr0 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+                                        label="End" current-date="$ctrl.LastEndDate" on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})">
+                                    </sn-date-picker>
+                                </div>
+                            </div>
+                            <div class="smalldiv"></div>
+                            <!-- Number of Malicious Devices-->
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                    <div class="chart_holder">
+                                        <div class="bg_partial">
+                                            <label class="m5">Number of Malicious Devices</label>
+                                        </div>
+                                        <div lines-chart-malicious id="chart_malicious"></div>
+                                    </div>
+                                </div>
+                                <!-- Network Device Response-->
+                                <div class="col-lg-6 col-md-12 col-sm-12">
+                                    <div class="chart_holder">
+                                        <div class="bg_partial">
+                                            <label class="m5">Network Device Response</label>
+                                        </div>
+                                        <div double-line-chart id="chart_double_line"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- TABLE -->
+                                <div class="col-xs-12 p0">
+                                    <s-table headers="$ctrl.headers" items="$ctrl.attacksList" loading="$ctrl.isLoadingAttacks"></s-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
