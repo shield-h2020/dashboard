@@ -54,6 +54,7 @@ export const CatalogueComponent = {
       this.isLoadingBilling = false;
       this.filters = {};
       this.vnsfsService = VNSFService;
+      this.selectNS = null;
 
       this.headers = {
         ...TABLE_HEADERS,
@@ -135,14 +136,15 @@ export const CatalogueComponent = {
     toggleBillingFee(ns) {
       this.billingOpen = !this.billingOpen;
       if (this.billingOpen) {
-        this.getInfoBilling(ns);
+        this.selectNS = ns;
+        this.getInfoBilling();
       }
     }
 
-    getInfoBilling(data) {
+    getInfoBilling() {
       this.infoBilling = {};
       this.isLoadingBilling = true;
-      this.catalogueService.getBillingFeeService(data._id).then((info) => {
+      this.catalogueService.getBillingFeeService(this.selectNS._id).then((info) => {
         this.infoBilling = {
           fee: info.fee,
           expense_fee: info.expense_fee,
@@ -188,13 +190,21 @@ export const CatalogueComponent = {
     }
 
     getBillingApllyFee() {
-      this.catalogueService.applyFeeBilling(this.infoBilling)
-        .then(() => {
-          this.billingOpen = !this.billingOpen;
-          this.toast.success('Fee update successfully', 'Fee update');
-        });
+      this.catalogueService.getBillingFeeService(this.selectNS._id).then((info) => {
+        this.infoBilling.etag = info._etag;
+      })
+      .finally(() => {
+        this.applyFee();
+      });
     }
 
+    applyFee() {
+      this.catalogueService.applyFeeBilling(this.infoBilling)
+      .then(() => {
+        this.billingOpen = !this.billingOpen;
+        this.toast.success('Fee update successfully', 'Fee update');
+      });
+    }
 
     toggleDetailsModal(ns) {
       this.ns = ns;

@@ -28,19 +28,43 @@
 import time
 import settings as cfg
 import requests
+from eve.methods.get import get_internal
+from eve.methods.post import post_internal
 from dashboardutils import http_utils
 import logging
 
-class AttackHooks:
+logger = logging.getLogger(__name__)
 
-    logger = logging.getLogger(__name__)
+
+class AttackHooks:
 
     @staticmethod
     def post_statistics_set_timestamp(request):
         """
         Upon creation of a new attack statistic a timestamp of the current time is applied.
         """
-        request.json['timestamp'] = time.time()
+        logger.debug("Setting timestamp on attack statistics post")
+
+        current_time = time.time()
+
+        # Check if statistics already exist. If not create an time instance with 0 active and 0 blocked
+        # The tenant scope dictates which groups to create for a tenant.
+        # Returns a tuple: (response, last_modified, etag, status, headers)
+        (statistics_data, _, _, status, _) = get_internal('attack_statistics')
+        if status == http_utils.HTTP_200_OK and statistics_data['_meta']['total'] == 0:
+            logger.debug("Creating statistics !zero! for attack statistics")
+            payload = {
+                'timestamp': current_time - 1.0,  # decrease one second from current time
+                'active': 0,
+                'blocked': 0,
+                'cumulative': 0
+            }
+            (result, _, etag, status, _) = post_internal("attack_statistics", payload)
+            if not status == http_utils.HTTP_201_CREATED:
+                logger.error("Failed to create statistics zero in attack statistics")
+
+        # set timestamp to current time
+        request.json['timestamp'] = current_time
 
     @staticmethod
     def post_registry_set_status(request):
@@ -110,7 +134,7 @@ class AttackHooks:
         try:
             r = requests.get(url, headers=headers, verify=False)
             if not r.status_code == http_utils.HTTP_200_OK:
-                logger.error('Failed to retrieve the attack statistics')
+                logger.error('Failed to retrieve the attack statistics: {}'.format(r.text))
                 return
 
         except requests.exceptions.ConnectionError as e:
@@ -132,7 +156,7 @@ class AttackHooks:
             }
             r = requests.post(url, headers=headers, json=payload, verify=False)
             if not r.status_code == http_utils.HTTP_201_CREATED:
-                logger.error('Failed to create the attack statistics: {}'.format(payload))
+                logger.error('Failed to create the attack statistics {}: {}'.format(payload, r.text))
                 return
 
         except requests.exceptions.ConnectionError as e:

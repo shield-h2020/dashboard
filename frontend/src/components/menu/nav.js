@@ -1,4 +1,4 @@
-import { TENANT_ADMIN, SUPER_ADMIN, TENANT_USER, DEVELOPER } from '../../strings/role-strings';
+import { TENANT_ADMIN, SUPER_ADMIN, TENANT_USER, DEVELOPER, CYBER_AGENT } from '../../strings/role-strings';
 
 export const MENU_ENTRIES = [
   /*{
@@ -62,6 +62,11 @@ export const MENU_ENTRIES = [
     text: 'Onboard validations',
     route: 'validations',
     roles: [SUPER_ADMIN, DEVELOPER],
+  },
+  {
+    text: 'CESICAT Dashboard',
+    route: 'cesicat',
+    roles: [SUPER_ADMIN, CYBER_AGENT],
   },
 ];
 

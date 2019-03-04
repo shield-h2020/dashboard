@@ -13,7 +13,9 @@ export const LinesChartDirective = ($compile, $timeout) => ({
     link(scope, element) {
         scope.$watch('$ctrl.lineChartData', function () {
             document.getElementById('chart_ocurrences_line').innerHTML = '';
-
+            if (scope.$ctrl.lineChartData === undefined){
+              return;
+            } 
             let datachart = scope.$ctrl.lineChartData[scope.$ctrl.attackIndex].values;
 
             if (!datachart)

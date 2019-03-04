@@ -24,6 +24,7 @@ import { BillingDetailModule } from './billing-detail/billing-detail.module';
 import { OnboardValidationModule } from './onboard-validation/onboard-validation.module';
 import { NsInventoryModule } from './ns-inventory/ns-inventory.module';
 import { VnsfNotificationsModule } from './vnsf-notifications/vnsf-notifications.module';
+import { CESICATModule } from './CESICAT/cesicat.module';
 
 import Table2Module from './table2/table.module';
 import TableCustomActionsModule from './table-custom-actions/table-custom-actions.module';
@@ -56,6 +57,7 @@ export const ComponentsModule = angular.module('root.components', [
   OnboardValidationModule,
   NsInventoryModule,
   VnsfNotificationsModule,
+  CESICATModule,
 ])
   .name;
 

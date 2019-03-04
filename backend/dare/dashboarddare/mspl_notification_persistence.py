@@ -152,8 +152,6 @@ class MsplPersistence:
             raise Exception
 
     def _retrieve_origin_addresses(self, it_resource):
-        print("===================== retrieving origin addresses =======================")
-        print(it_resource)
         if 'configuration' not in it_resource or 'rule' not in it_resource['configuration'][0]:
             return []
 
@@ -166,5 +164,4 @@ class MsplPersistence:
                 if src_addr not in origin_addresses:
                     origin_addresses.append(src_addr)
 
-        print("Retrieved origin addresses: {}".format(origin_addresses))
         return origin_addresses

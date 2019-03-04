@@ -1093,7 +1093,7 @@ class BillingActions:
                     logger.debug("Billing NS Summary of tenant id={} and month={} does not exist. Creating it."
                                  .format(tenant, month))
 
-                    #with current_app.test_request_context():
+                    # with current_app.test_request_context():
                     payload = {
                         'tenant_id': tenant,
                         'month': month,

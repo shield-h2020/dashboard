@@ -43,15 +43,15 @@
       <div class="{{::$ctrl.styles.entrygroup}}">
         <div class="{{::$ctrl.styles.entry}}">
           <span class="{{::$ctrl.styles.label}}">Network Service Profit</span>
-          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeNS}}€</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeNS | currency:"":2}} €</span>
         </div>
         <div class="{{::$ctrl.styles.entry}}">
           <span class="{{::$ctrl.styles.label}}">vNSF Expense</span>
-          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeVNSF}}€</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeVNSF | currency:"":2}} €</span>
         </div>
         <div class="{{::$ctrl.styles.lastEntry}}">
           <span class="{{::$ctrl.styles.label}}">Total Proffit Balance (€)</span>
-          <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feeNS - $ctrl.feeVNSF)}}€</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feeNS - $ctrl.feeVNSF | currency:"":2)}} €</span>
         </div>
     </div>
   </div>
