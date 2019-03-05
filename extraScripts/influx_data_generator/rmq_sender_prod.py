@@ -16,7 +16,7 @@ def validate_ip(_ip):
     :raise ValueError: When the IP is invalid
     """
     if not re.match(ip_valid, _ip):
-        raise ValueError(f'Invalid IP address {_ip}')
+        raise ValueError('Invalid IP address {}'.format(_ip))
 
 
 def get_comma_separated_list(_list, validator=None):
@@ -48,12 +48,12 @@ def attack_generator(date, jump, entries, attack_types, severity, ips):
     """
     index = 0
     while index < entries:
-        name_entry = ["0001\t", f"{severity}\t", f"{choice(attack_types)}\t"]
-        attack_entries = ['192.168.4.90\t', f'{choice(ips)}\t', '443\t', '50228\t', 'TCP\t']
-        date_entry = [f"{datetime.strftime(date, '%Y-%m-%d %H:%M:%S')}\t", f"{date.year}\t", f"{date.month}\t",
-                      f"{date.day}\t", f"{date.hour}\t", f"{date.minute}\t", f"{date.second}\t"]
-        duration = [f"{randint(1, 180)}\t"]
-        pck_entries = [f"{randint(1, 1024)}\t", f"{randint(1, 1024)}\t", "0\t", "0\t", "0.000132496798604"]
+        name_entry = ["0001\t", "{}\t".format(severity), "{}\t".format(choice(attack_types))]
+        attack_entries = ['192.168.4.90\t', '{}\t'.format(choice(ips)), '443\t', '50228\t', 'TCP\t']
+        date_entry = ["{}\t".format(datetime.strftime(date, '%Y-%m-%d %H:%M:%S')), "{}\t".format(date.year), "{}\t".format(date.month),
+                      "{}\t".format(date.day), "{}\t".format(date.hour), "{}\t".format(date.minute), "{}\t".format(date.second)]
+        duration = ["{}\t".format(randint(1, 180))]
+        pck_entries = ["{}\t".format(randint(1, 1024)), "{}\t".format(randint(1, 1024)), "0\t", "0\t", "0.000132496798604"]
 
         entry = name_entry + date_entry + duration + attack_entries + pck_entries
         yield ''.join(entry)
@@ -122,7 +122,7 @@ def submit_data(_generator):
         channel.basic_publish(exchange='shield-dashboard-exchange',
                               routing_key='shield.notifications.attack',
                               body=message)
-        print(f"[{index}] Sent: {message}")
+        print("[{}] Sent: {}".format(index, message))
     _connection.close()
 
 
