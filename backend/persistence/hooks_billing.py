@@ -1180,21 +1180,32 @@ class BillingActions:
         running_instances = BillingActions._get_running_ns_instances(ns_id)
         if not running_instances:
             running_instances = list()
+        running_instances_balance = len(running_instances)*fee
 
-        if instance_balance >= 0:
-            flatten_min_instances = 1
+        total_balance = instance_balance + running_instances_balance
+
+        if total_balance >= 0:
+            flatten_min_instances = 0
         else:
-            if expense_fee <= 0 or fee <= 0:
+            if fee <= 0:
                 flatten_min_instances = 0
             else:
-                flat_ratio = 1 / (fee / expense_fee)
-                flatten_min_instances = math.trunc(flat_ratio - 1 if flat_ratio % 10 == 0.0 else flat_ratio)
+                flat_ratio = expense_fee / fee
+                flatten_min_instances = math.trunc(flat_ratio + 1) if expense_fee % fee else flat_ratio
+
+        # if instance_balance >= 0:
+        #     flatten_min_instances = 1
+        # else:
+        #     if expense_fee <= 0 or fee <= 0:
+        #         flatten_min_instances = 0
+        #     else:
+        #         flat_ratio = 1 / (fee / expense_fee)
+        #         flatten_min_instances = math.trunc(flat_ratio - 1 if flat_ratio % 10 == 0.0 else flat_ratio)
 
         request.json['instance_balance'] = [1, round(instance_balance, 2)]
         request.json['running_instances'] = [len(running_instances), round(len(running_instances)*fee, 2)]
-        request.json['flatten_min_instances'] = [flatten_min_instances, round(flatten_min_instances*fee, 2)]
-        request.json['total_balance'] = round(instance_balance + len(running_instances)*fee + flatten_min_instances*fee, 2)
-
+        request.json['total_balance'] = round(total_balance, 2)
+        request.json['flatten_min_instances'] = [flatten_min_instances, round(flatten_min_instances * fee, 2)]
         # Don't actually store this simulation, just return it
         abort(make_response(jsonify(**request.json), 200))
 
