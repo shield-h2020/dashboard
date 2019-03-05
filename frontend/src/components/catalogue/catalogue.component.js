@@ -162,7 +162,7 @@ export const CatalogueComponent = {
         .then((data) => {
           this.infoTableBilling = [
             {
-              parameter: 'Balance per instance',
+              parameter: 'Required Instances',
               description: 'Balance of a single instance (expense fee minus specified fee)',
               ns_instances: data.instance_balance[0],
               fee: data.instance_balance[1],

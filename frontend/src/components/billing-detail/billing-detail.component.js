@@ -94,7 +94,7 @@ export const BillingDetailComponent = {
       if (this.authService.isUserDeveloper()) {
         this.billingDetailService.getBillingUsageVNSF({ page: this.offset,
           limit: this.limit,
-        })
+        }, this.filters)
           .then((items) => {
             this.items = items._items;
             this.items.push({ vnsf_id: 'Total Amount (€)', billable_fee: items.total_billable_fee });
@@ -113,7 +113,7 @@ export const BillingDetailComponent = {
         this.showTableAdmin = true;
         this.billingDetailService.getBillingUsageNS({ page: this.offset,
           limit: this.limit,
-        })
+        }, this.filters)
         .then((items) => {
           this.itemsNS = items._items;
           this.itemsNS.push({ tenant_id: 'Network Service Balance (€)', billable_fee: items.total_billable_fee });
@@ -123,14 +123,13 @@ export const BillingDetailComponent = {
 
         this.billingDetailService.getBillingUsageVNSF({ page: this.offset,
           limit: this.limit,
-        })
+        }, this.filters)
         .then((items) => {
           this.itemsVNSFs = items._items;
           this.itemsVNSFs.push({ user_id: 'VNSFs Balance (€)', billable_fee: items.total_billable_fee });
           this.feeVNSF = items.total_billable_fee;
         })
         .finally(() => { this.isLoading = false; });
-        
       }
     }
 
