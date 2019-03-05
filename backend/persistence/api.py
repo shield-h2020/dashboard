@@ -104,8 +104,6 @@ app.on_fetched_item_billing_ns_usage += BillingActions.get_billing_ns_usage_item
 app.on_pre_POST_billing_update += BillingActions.update_billing
 app.on_pre_POST_billing_clean += BillingActions.clean_billing
 app.on_post_POST_billing_ns_simulate += BillingActions.billing_ns_simulate
-#app.on_post_GET_billing_usage += BillingActions.get_billing_usage
-# app.on_fetched_resource_billing_summary += BillingActions.get_billing_summary
 
 app.register_blueprint(swagger)
 
