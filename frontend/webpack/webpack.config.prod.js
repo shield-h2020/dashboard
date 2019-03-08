@@ -17,7 +17,7 @@ module.exports = webpackMerge(commonConfig, {
   },
 
   plugins: [
-    new ExtractTextPlugin('[name].[hash].css'),
+    new ExtractTextPlugin('[name].css'),
     new CleanWebpackPlugin(['prod']),
     new webpack.DefinePlugin({
       /* A null value is given for the application to read from the window.location. */
@@ -26,7 +26,7 @@ module.exports = webpackMerge(commonConfig, {
       __API_STORE_HOST__: JSON.stringify(process.env.VNSF_STORE_HOST),
       __API_STORE_PORT__: JSON.stringify(process.env.VNSF_STORE_PORT),
       __API_SOCKET_PORT__: JSON.stringify(process.env.SKT_PORT),
-      __INFLUXPORT__: JSON.stringify(process.env.INFLUXDB_PORT)
+      __INFLUXPORT__: JSON.stringify(process.env.INFLUXDB_PORT),
     }),
   ],
 });

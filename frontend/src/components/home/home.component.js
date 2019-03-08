@@ -79,6 +79,8 @@ export const HomeComponent = {
         this.state.go('vnsfslist');
       } else if (this.authService.isUserCyberAgent()) {
         this.state.go('cert');
+      } else {
+        return null;
       }
     }
 
