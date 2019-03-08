@@ -76,8 +76,11 @@ export const InventoryComponent = {
         },
       ];
 
-      this.offset = 0;
-      this.limit = 25;
+      this.pagination = {
+        page: 1,
+        limit: 10,
+        totalItems: 0,
+      };
       this.isLoading = false;
       this.filters = {};
       this.modalOpen = false;
@@ -138,15 +141,10 @@ export const InventoryComponent = {
     getData() {
       this.isLoading = true;
       this.inventoryService
-        .getInventoryServices({
-          page: this.offset,
-          limit: this.limit,
-        },
-          this.filters,
-        )
-        .then((items) => {
+        .getInventoryServices(this.pagination, this.filters)
+        .then((result) => {
           this.items = [];
-          items.filter(it => it).forEach((item) => {
+          result.items.filter(it => it).forEach((item) => {
             let selectedActions = [];
             if (item.status === 'available') {
               selectedActions = this.actionsItemAvailable;
@@ -166,6 +164,8 @@ export const InventoryComponent = {
             this.items.map((data) => 
               data.instance_id === '' ? data.instance_id = 'N.A' : data.instance_id = data.instance_id);
           });
+          this.pagination.totalItems = result ? result.meta.total : 0;
+          this.paging = this.calcPageItems();
         })
         .finally(() => {
           this.isLoading = false;
@@ -220,6 +220,24 @@ export const InventoryComponent = {
         .catch(() => {
           this.buttonClicked = false;
         });
+    }
+
+    changePage(amount) {
+      const { page, totalItems, limit } = this.pagination;
+      const numberOfPages = Math.ceil(totalItems / limit);
+      const condition = amount > 0 ?
+       page + 1 <= numberOfPages : this.pagination.page > 1;
+      if (condition) {
+        this.pagination.page += amount;
+        this.getData();
+      }
+    }
+
+    calcPageItems() {
+      const { page, totalItems, limit } = this.pagination;
+
+      const numberOfPages = Math.ceil(totalItems / limit);
+      return { page, totalPage: numberOfPages, total: totalItems };
     }
 
     prettyYAML(obj) {

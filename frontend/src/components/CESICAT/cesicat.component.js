@@ -1,9 +1,10 @@
 import moment from 'moment';
 import template from './cesicat.html';
 import * as d3 from 'd3';
+import styles from './cesicat.scss';
 
 const VIEW_STRING = {
-  title: 'CESICAT Dashboard',
+  title: 'CERT Dashboard',
 };
 
 const TABLE_HEADERS = {
@@ -33,6 +34,7 @@ export const CESICATComponent = {
 			this.cesicatService = CESICATService;
 			this.scope = $scope;
 			this.isLoadingAttacks = false;
+			this.styles = styles;
 			this.headers = {
 				...TABLE_HEADERS,
 			}
@@ -50,6 +52,11 @@ export const CESICATComponent = {
 			this.doubleLineChartData;
 			this.customStart;
 			this.customEnd;
+			this.pagination = {
+        page: 1,
+        limit: 12,
+        totalItems: 10,
+      };
 			this.AvColors = ["#85AACD", "#7AC8A0", "#C4C26F", "#D39596", "#8FB996", "#D0EFB1", "#D2AB99", "#413C58"];
 
 			this.setPeriod();
@@ -225,8 +232,28 @@ export const CESICATComponent = {
 					: moment.unix(item.closure_timestamp).format('YYYY-MM-DD HH:mm:ss'),
 				})
 			)
+				this.pagination.totalItems = data ? data._meta.total : 0;
 				this.isLoadingAttacks = false;
-			})
+			});
+	}
+
+	// Change Page
+	changePage(amount) {
+		const { page, totalItems, limit } = this.pagination;
+		const numberOfPages = Math.ceil(totalItems / limit);
+		const condition = amount > 0 ?
+		 page + 1 <= numberOfPages : this.paginationNS.page > 1;
+		if (condition) {
+			this.paginationNS.page += amount;
+			this.getData();
+		}
+	}
+
+	calcPageItems() {
+		const { page, totalItems, limit } = this.pagination;
+
+		const numberOfPages = Math.ceil(totalItems / limit);
+		return { page, totalPage: numberOfPages, total: totalItems };
 	}
 
     refreshPage() {
@@ -240,7 +267,7 @@ export const CESICATComponent = {
 
 export const CESICATState = {
   parent: 'home',
-  name: 'cesicat',
-  url: '/cesicat',
+  name: 'cert',
+  url: '/cert',
   component: 'cesicatView',
 };

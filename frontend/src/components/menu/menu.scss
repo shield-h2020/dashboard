@@ -1,19 +1,9 @@
 @import '~styleglobals/colors';
 
-.menu {
-  background: $color-gradient-blue-dark;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 600;
-  height: 100vh;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-  position: relative;
-}
-
 .logo {
-  height: 60px;
+  width: 100%;
   background-color: $color-white;
-  text-align: center;
-  padding-top: 12px;
+  padding: 12px;
 }
 
 .section {
@@ -29,6 +19,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  height: auto;
 
   .item {
     border-bottom: 1px solid $color-blue-dark;
@@ -161,13 +152,8 @@
   left: 24px;
 }
 
-@mixin menu--sm() {
+ @mixin menu--sm() {
   .menu {
-
-    .logo > img {
-      width: 90%;
-    }
-
     .item__label {
       padding: 8px;
       line-height: initial;
@@ -182,10 +168,6 @@
 
 @mixin menu--lg() {
   .menu {
-    .logo > img {
-      width: initial;
-    }
-
     .item__label {
       padding-left: 32px;
       line-height: initial;
@@ -202,7 +184,6 @@
   @include menu--sm();
 }
 
-@media only screen and (min-width: 1124px) {
+@media only screen and (min-width: 1200px) {
   @include menu--lg();
 }
-

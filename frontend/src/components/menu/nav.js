@@ -64,8 +64,8 @@ export const MENU_ENTRIES = [
     roles: [SUPER_ADMIN, DEVELOPER],
   },
   {
-    text: 'CESICAT Dashboard',
-    route: 'cesicat',
+    text: 'CERT Dashboard',
+    route: 'cert',
     roles: [SUPER_ADMIN, CYBER_AGENT],
   },
 ];

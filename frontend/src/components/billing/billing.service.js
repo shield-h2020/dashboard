@@ -18,20 +18,20 @@ export class BillingService {
     const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
     return this.http.get(API_BILLING_NS, { params })
-      .then(response => response.data._items);
+      .then(response => response.data);
   }
 
   getBillingSummaryVNSF({ page = 0, limit = 10 }, filters = {}) {
     const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     if (Object.keys(filters).length) params.where = JSON.stringify(filters);
     return this.http.get(`${API_BILLING_VNSF}`, { params })
-    .then(response => response.data._items);
+    .then(response => response.data);
   }
 
   getBillingSummary({ page = 0, limit = 10 }) {
     const params = { max_results: limit, page, nocache: (new Date()).getTime() };
     return this.http.get(`${API_BILLING}`, { params })
-    .then(response => response.data._items);
+    .then(response => response.data);
   }
 }
 

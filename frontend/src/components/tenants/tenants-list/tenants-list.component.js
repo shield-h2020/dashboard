@@ -120,14 +120,14 @@ export const TenantsListComponent = {
           });
       } else {
         this.currTenant = {
-          tenant_name: 'tenant name test',
-          client_description: 'test client description',
+          tenant_name: '',
+          client_description: '',
           tenant: null,
-          name: 'test name',
-          email: 'test@email.com',
-          client: 'test client',
+          name: '',
+          email: '',
+          client: '',
           password: '',
-          description: 'test description',
+          description: '',
           ip: [],
         };
         this.tenantsService.getScopeId(this.currTenant.scope_code)

@@ -22,12 +22,13 @@ export const HomeComponent = {
     userdata: '<',
   },
   controller: class HomeComponent {
-    constructor($scope, $state, toastr, VnsfNotificationService, IncidentsService) {
+    constructor($scope, $state, toastr, VnsfNotificationService, AuthService, IncidentsService) {
       'ngInject';
 
       this.scope = $scope;
       this.toast = toastr;
       this.state = $state;
+      this.authService = AuthService;
       this.vnsfNotificationService = VnsfNotificationService;
       this.incidentsService = IncidentsService;
       this.tmSocketAtmp = 0;
@@ -38,7 +39,6 @@ export const HomeComponent = {
       this.vnsfSocket;
       this.tmAdminSocket;
       this.tmSocket;
-
     }
 
     $onInit() {
@@ -69,6 +69,17 @@ export const HomeComponent = {
       this.scope.$on('MODAL_EVENT_EMIT', (event, data) => {
         this.modalEvent(data);
       });
+
+      // send to page
+      if (this.authService.isUserPlatformAdmin()) {
+        this.state.go('dashboard');
+      } else if (this.authService.isUserTenantAdmin()) {
+        this.state.go('dashboard');
+      } else if (this.authService.isUserDeveloper()) {
+        this.state.go('vnsfslist');
+      } else if (this.authService.isUserCyberAgent()) {
+        this.state.go('cert');
+      }
     }
 
     $onDestroy() {

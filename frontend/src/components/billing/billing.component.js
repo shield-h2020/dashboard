@@ -47,8 +47,11 @@ export const BillingComponent = {
       this.createOpen = false;
       this.deleteOpen = false;
       this.detailsOpen = false;
-      this.offset = 1;
-      this.limit = 25;
+      this.pagination = {
+        page: 1,
+        limit: 12,
+        totalItems: 12,
+      };
       this.isLoading = false;
       this.filters = {};
       if (this.authService.isUserTenantAdmin()) {
@@ -92,30 +95,48 @@ export const BillingComponent = {
       this.isLoading = true;
       this.filters = { tenant_id: this.authService.getTenant() };
       if (this.authService.isUserDeveloper()) {
-        this.billingService.getBillingSummaryVNSF({ page: this.offset,
-          limit: this.limit,
-        })
+        this.billingService.getBillingSummaryVNSF(this.pagination)
           .then((items) => {
-            this.items = items;
+            this.items = items._items;
+            this.pagination.totalItems = items ? items._meta.total : 0;
+            this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });
       } else if (this.authService.isUserTenantAdmin()) {
-        this.billingService.getBillingSummaryNS({ page: this.offset,
-          limit: this.limit,
-        }, this.filters)
+        this.billingService.getBillingSummaryNS(this.pagination, this.filters)
           .then((items) => {
-            this.items = items;
+            this.items = items._items;
+            this.pagination.totalItems = items ? items._meta.total : 0;
+            this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });
       } else if (this.authService.isUserPlatformAdmin()) {
-        this.billingService.getBillingSummary({ page: this.offset,
-          limit: this.limit,
-        })
+        this.billingService.getBillingSummary(this.pagination)
           .then((items) => {
-            this.items = items;
+            this.items = items._items;
+            this.pagination.totalItems = items ? items._meta.total : 0;
+            this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });
       }
+    }
+
+    changePage(amount) {
+      const { page, totalItems, limit } = this.pagination;
+      const numberOfPages = Math.ceil(totalItems / limit);
+      const condition = amount > 0 ?
+       page + 1 <= numberOfPages : this.pagination.page > 1;
+      if (condition) {
+        this.pagination.page += amount;
+        this.getData();
+      }
+    }
+
+    calcPageItems() {
+      const { page, totalItems, limit } = this.pagination;
+
+      const numberOfPages = Math.ceil(totalItems / limit);
+      return { page, totalPage: numberOfPages, total: totalItems };
     }
 
     goToDetailsPage({ month }) {

@@ -6,13 +6,6 @@
   margin-bottom: -16px;
 }
 
-.lastTr table {
-  margin-bottom: 50px;
-}
-
-.lastTr tr:last-child  {
-  font-weight: bold;
-}
 
 .header {
   font-size: 20px;
@@ -67,6 +60,17 @@
   }
 }
 
+.totalBilling {
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 20px;
+  margin:20px 0;
+  display: flex;
+  font-weight: bold;
+  .label {
+    width: 95%;
+  }
+}
 
 .xmlviewer {
   border: 1px solid #D8D8D8;
@@ -150,4 +154,28 @@
 
 @media (min-height: 800px) {
   @include modal--lg();
+}
+
+.page-button {
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  display: inline-block;
+  padding: 0;
+}
+
+.prev-button {
+  @extend .page-button;
+  border-left: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(45deg);
+}
+
+.next-button {
+  @extend .page-button;
+  border-right: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(-45deg);
 }

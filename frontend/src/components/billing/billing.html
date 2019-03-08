@@ -5,6 +5,13 @@
       <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
     </header>
     <s-table headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading" buttonclicked="$ctrl.buttonClicked"></s-table>
+    <div ng-if="!$ctrl.showTableAdmin" style="text-align: right; margin-top: 6px; margin-bottom: 16px;">
+      <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+      <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+      <span class="sn-table__footer">
+        Showing {{$ctrl.paging.page}} to {{$ctrl.paging.totalPage}} of {{$ctrl.paging.total}}
+      </span>
+    </div>
     <!-- Modal Upload -->
     <sn-upload-box on-submit="$ctrl.uploadApp($event.file)"></sn-upload-box>
     <!-- Modal Details -->

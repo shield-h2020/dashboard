@@ -29,26 +29,31 @@ export class InventoryService {
         tenant_id: this.authService.getTenant()
       });
     }
-
     const nsPromises = [];
+    const result = {};
     return this.http
       .get(API_INVENTORY, { params })
-      .then(response => {
+      .then((response) => {
         for (let i = 0; i < response.data._items.length; i += 1) {
           nsPromises.push(
             this.getCatalogueService(response.data._items[i].ns_id)
-              .then(item => {
+              .then((item) => {
                 const { _etag, ns_id, ...tagless } = item;
                 return {
                   ...response.data._items[i],
                   ...tagless,
-                  _id: response.data._items[i]._id
+                  _id: response.data._items[i]._id,
                 };
               })
-              .catch(() => this.q.resolve(null))
+              .catch(() => this.q.resolve(null)),
           );
+          nsPromises.meta = response.data._meta;
         }
-        return this.q.all(nsPromises).then(values => values);
+        return this.q.all(nsPromises).then((values) =>{ 
+          result.items = values;
+          result.meta = response.data._meta;
+          return result;
+        });
       })
       .catch(this.errorHandlerService.handleHttpError);
   }

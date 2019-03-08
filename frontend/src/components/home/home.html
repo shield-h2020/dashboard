@@ -1,11 +1,12 @@
-<div class="container-fluid container-fluid--no-padding-left">
-    <div class="row" style="overflow:hidden;">
-        <div class="col-lg-2 col-sm-2">
+    <div class="row m0"> 
+        <div class="col-lg-2 col-md-4 col-sm-12 menu p0">
             <sn-menu user="$ctrl.userdata"></sn-menu>
         </div>
-        <div class="col-lg-10 col-sm-10">
-            <ui-view></ui-view>
-            <eu-footer />
+        <div class="col-lg-10 col-lg-offset-2 col-md-8 col-md-offset-4 col-sm-12 view"> <!--col-sm-offset-4-->
+            <div class="container-fluid">
+                <ui-view></ui-view>
+                <eu-footer />
+            </div>
         </div>
     </div>
     <error-modal></error-modal>
@@ -13,4 +14,3 @@
     <vnsf-notifications-modal></vnsf-notifications-modal>
     <tm-notifications-modal></tm-notifications-modal>
     <attestation-modal></attestation-modal>
-</div>
