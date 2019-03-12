@@ -50,7 +50,7 @@ export const BillingComponent = {
       this.pagination = {
         page: 1,
         limit: 12,
-        totalItems: 12,
+        totalItems: null,
       };
       this.isLoading = false;
       this.filters = {};
@@ -106,7 +106,7 @@ export const BillingComponent = {
         this.billingService.getBillingSummaryNS(this.pagination, this.filters)
           .then((items) => {
             this.items = items._items;
-            this.pagination.totalItems = items ? items._meta.total : 0;
+            this.pagination.totalItems = items._meta.total ? items._meta.total : 0;
             this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });

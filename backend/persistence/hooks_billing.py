@@ -521,19 +521,49 @@ class BillingActions:
         BillingActions._stop_billing_vnsf_usage(billing_ns_usage_item)
 
     @staticmethod
+    def calc_ns_total_billable_fee(request, payload):
+        return BillingActions._calc_total_billable_fee('ns', request, payload)
+
+    @staticmethod
+    def calc_vnsf_total_billable_fee(request, payload):
+        return BillingActions._calc_total_billable_fee('vnsf', request, payload)
+
+    @staticmethod
+    def _calc_total_billable_fee(target, request, payload):
+        assert target in ['ns', 'vnsf']
+        logger = logging.getLogger(__name__)
+
+        response = json.loads(payload.get_data(as_text=True))
+        total_billable_fee = 0.0
+        filter = json.loads(request.args['where']) if 'where' in request.args else None
+        if filter and 'month' in filter.keys() and filter['month']:
+            logger.debug("Determining {} total billable fee for month {}".format(target, filter['month']))
+
+            # get total billable fee from ns summary
+            (summary_data, _, _, status, _) = get_internal('billing_{}_summary'.format(target), month=filter['month'])
+            if not status == http_utils.HTTP_200_OK or summary_data['_meta']['total'] == 0:
+                logger.debug("Couldn't determine {} total_billable_fee for month {}".format(target, filter['month']))
+                return
+
+            total_billable_fee = summary_data["_items"][0]['billable_fee']
+
+        response['total_billable_fee'] = total_billable_fee
+        payload.set_data(json.dumps(response))
+
+    @staticmethod
     def get_billing_ns_usage(response):
         """
         Gets information about a the billing of a NS usage.
-        On top of the database data it adds useful information, such as NS instance status and total billable fee
+        On top of the database data it adds useful information, such as NS instance status and page billable fee
         """
         logger = logging.getLogger(__name__)
         logger.debug("Fetching NS Billing Usages")
-        total_billable_fee = 0.0
+        page_billable_fee = 0.0
         for item in response['_items']:
             item['instance_status'] = BillingActions._get_ns_instance_status(item['ns_instance_id'])
-            total_billable_fee += item['billable_fee']
+            page_billable_fee += item['billable_fee']
 
-        response['total_billable_fee'] = round(total_billable_fee, 2)
+        response['page_billable_fee'] = round(page_billable_fee, 2)
 
     @staticmethod
     def get_billing_vnsf_usage(response):
@@ -543,11 +573,11 @@ class BillingActions:
         """
         logger = logging.getLogger(__name__)
         logger.debug("Fetching vNSF Billing Usages")
-        total_billable_fee = 0.0
+        page_billable_fee = 0.0
         for item in response['_items']:
-            total_billable_fee += item['billable_fee']
+            page_billable_fee += item['billable_fee']
 
-        response['total_billable_fee'] = round(total_billable_fee, 2)
+        response['page_billable_fee'] = round(page_billable_fee, 2)
 
     @staticmethod
     def get_billing_ns_usage_item(response):

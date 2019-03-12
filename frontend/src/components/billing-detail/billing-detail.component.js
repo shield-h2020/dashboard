@@ -71,17 +71,17 @@ export const BillingDetailComponent = {
       this.pagination = {
         page: 1,
         limit: 12,
-        totalItems: 10,
+        totalItems: null,
       };
       this.paginationVNSFs = {
         page: 1,
         limit: 5,
-        totalItems: 5,
+        totalItems: null,
       };
       this.paginationNS = {
         page: 1,
         limit: 5,
-        totalItems: 5,
+        totalItems: null,
       };
       this.isLoading = false;
       this.filters = {};
@@ -108,8 +108,8 @@ export const BillingDetailComponent = {
         this.billingDetailService.getBillingUsageVNSF(this.pagination, this.filters)
           .then((items) => {
             this.items = items._items;
-            this.pagination.totalItems = items ? items._meta.total : 0;
-            this.feed = items._items.total_billable_fee || 0;
+            this.pagination.totalItems = items._meta.total ? items._meta.total : 0;
+            this.feed = items.total_billable_fee || 0;
             this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });
@@ -118,8 +118,8 @@ export const BillingDetailComponent = {
         this.billingDetailService.getBillingUsageNS(this.pagination, this.filters)
           .then((items) => {
             this.items = items._items;
-            this.pagination.totalItems = items ? items._meta.total : 0;
-            this.feed = items._items.total_billable_fee || 0;
+            this.pagination.totalItems = items._meta.total ? items._meta.total : 0;
+            this.feed = items.total_billable_fee || 0;
             this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });
@@ -129,8 +129,8 @@ export const BillingDetailComponent = {
         this.billingDetailService.getBillingUsageNS(this.paginationNS, this.filters)
         .then((items) => {
           this.itemsNS = items._items;
-          this.pagination.totalItems = items ? items._meta.total : 0;
-          this.feedNS = items._items.total_billable_fee || 0;
+          this.paginationNS.totalItems = items._meta.total ? items._meta.total : 0;
+          this.feedNS = items.total_billable_fee || 0;
           this.pagingNS = this.calcPageItemsNS();
         })
         .finally(() => { this.isLoading = false; });
@@ -138,8 +138,8 @@ export const BillingDetailComponent = {
         this.billingDetailService.getBillingUsageVNSF(this.paginationVNSFs, this.filters)
         .then((items) => {
           this.itemsVNSFs = items._items;
-          this.pagination.totalItems = items ? items._meta.total : 0;
-          this.feedVNSFs = items._items.total_billable_fee || 0;
+          this.paginationVNSFs.totalItems = items._meta.total ? items._meta.total : 0;
+          this.feedVNSFs = items.total_billable_fee || 0;
           this.pagingVNSFs = this.calcPageItemsVNFs();
         })
         .finally(() => { this.isLoading = false; });
@@ -181,6 +181,7 @@ export const BillingDetailComponent = {
 
     calcPageItemsNS() {
       const { page, totalItems, limit } = this.paginationNS;
+      console.log(page, totalItems, limit)
       
       const numberOfPages = Math.ceil(totalItems / limit);
       return { page, totalPage: numberOfPages, total: totalItems };
