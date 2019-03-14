@@ -40,6 +40,7 @@ from eve.methods.get import get_internal
 from eve.methods.patch import patch_internal
 from eve.methods.post import post_internal
 
+from activity.logger import ActivityLogger
 from dashboardutils import http_utils
 from keystone_adapter import KeystoneAuthzApi
 import pprint
@@ -47,6 +48,8 @@ import logging
 import requests
 from flask import current_app
 
+
+activity_logger = ActivityLogger(cfg.BACKENDAPI)
 
 class BillingActions:
 
@@ -105,6 +108,11 @@ class BillingActions:
         json_data['expense_fee'] = expense_fee
         json_data['constituent_vnsfs'] = constituent_vnsfs
 
+        # retrieve 'user_id' and 'user_name' based on the auth token
+        token = current_app.auth.get_user_or_token()
+
+        # log activity
+        activity_logger.log("Onboarded NS {} (id={})".format(json_data['ns_name'], json_data['ns_id']), token)
 
     @staticmethod
     def create_vnsf_billing_placeholder(request):
@@ -142,10 +150,9 @@ class BillingActions:
         # retrieve 'vnsf_name' based on the vnsf_id
         json_data['vnsf_name'] = BillingActions._get_vnsf_name_from_store(json_data['vnsf_id'])
 
-        # assign the fee
-        # json_data['fee'] = 0.0
+        # log activity
+        activity_logger.log("Onboarded vNSF {} (id={})".format(json_data['vnsf_name'], json_data['vnsf_id']), token)
 
-        # note: no need to mess with 'fee' and 'support_fee' as they have a default value of 0.0 in the data model
 
     @staticmethod
     def _get_vnsf_id_from_store(vnsf_record_id):
@@ -359,24 +366,26 @@ class BillingActions:
             logger.error("Specification of fields other than 'ns_instance_id' is not allowed.")
             return
 
+        ns_instance_id = request.json['ns_instance_id']
+
         # Protect against inserting a new usage with the same ns_instance_id and month combination
         current_date = datetime.datetime.now()
         month = current_date.strftime('%Y-%m')
-        ns_usage_item = BillingActions._get_billing_ns_usage(request.json['ns_instance_id'], month=month)
+        ns_usage_item = BillingActions._get_billing_ns_usage(ns_instance_id, month=month)
         if ns_usage_item:
             logger.error("NS Usage record for NS instance id={} and month={} already exists"
-                         .format(request.json['ns_instance_id'], month))
+                         .format(ns_instance_id, month))
             return
 
         # Retrieve 'ns_id' and 'tenant_id' using the 'instance_id' from the nss_inventory
-        logger.debug("Retrieving information about provided instance id {}".format(request.json['ns_instance_id']))
+        logger.debug("Retrieving information about provided instance id {}".format(ns_instance_id))
         # Returns a tuple: (response, last_modified, etag, status, headers)
         with current_app.test_request_context():
-            (instance_data, _, _, status, _) = get_internal('nss_inventory', instance_id=request.json['ns_instance_id'])
+            (instance_data, _, _, status, _) = get_internal('nss_inventory', instance_id=ns_instance_id)
 
             if instance_data['_meta']['total'] == 0:
                 logger.error("Couldn't retrieve information about provided NS instance id {}"
-                             .format(request.json['ns_instance_id']))
+                             .format(ns_instance_id))
                 return
 
         tenant_id = instance_data['_items'][0]['tenant_id']
@@ -405,6 +414,7 @@ class BillingActions:
         request.json['billable_fee'] = BillingActions._get_usage_billable_fee(
             request.json['fee'], request.json['billable_percentage']
         )
+
 
     @staticmethod
     def after_start_billing_ns_usage(items):

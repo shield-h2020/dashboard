@@ -25,7 +25,7 @@
       <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
       <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
       <span class="sn-table__footer">
-        Showing {{$ctrl.paging.page}} to {{$ctrl.paging.totalPage}} of {{$ctrl.paging.total}}
+        Showing {{$ctrl.paging.page}} to {{$ctrl.paging.totalPage}} ({{$ctrl.paging.total}} records)
       </span>
   </div>
   <div ng-if="!$ctrl.showTableAdmin" class="{{::$ctrl.styles.totalBilling}}">
@@ -33,6 +33,8 @@
     <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feed | currency:"":2)}} €</span>
   </div>
   <!-- ADMIN -->
+  <div class="{{::$ctrl.styles.border}}">
+    <h4>Network Services</h4>
     <s-table 
       ng-if="$ctrl.showTableAdmin"
       headers="$ctrl.headersNS"
@@ -45,14 +47,17 @@
         <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePageNS(-1)"></button>
         <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePageNS(1)"></button>
         <span class="sn-table__footer">
-          Showing {{$ctrl.pagingNS.page}} to {{$ctrl.pagingNS.totalPage}} Total: {{$ctrl.pagingNS.total}}
+          Showing {{$ctrl.pagingNS.page}} to {{$ctrl.pagingNS.totalPage}} ({{$ctrl.pagingNS.total}} records)
         </span>
     </div>
     <div ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.totalBilling}}">
           <span class="{{::$ctrl.styles.label}}">Network Service Balance (€)</span>
           <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feedNS | currency:"":2)}} €</span>
     </div>
-    <s-table 
+  </div>
+  <div class="{{::$ctrl.styles.border}}">
+    <h4>vNSFs</h4>
+    <s-table
       ng-if="$ctrl.showTableAdmin"
       headers="$ctrl.headersVNSFs"
       items="$ctrl.itemsVNSFs" 
@@ -64,13 +69,14 @@
         <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePageVNSFs(-1)"></button>
         <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePageVNSFs(1)"></button>
         <span class="sn-table__footer">
-          Showing {{$ctrl.pagingVNSFs.page}} to {{$ctrl.pagingVNSFs.totalPage}} Total: {{$ctrl.pagingVNSFs.total}}
+          Showing {{$ctrl.pagingVNSFs.page}} to {{$ctrl.pagingVNSFs.totalPage}} ({{$ctrl.pagingVNSFs.total}} records)
         </span>
     </div>
     <div ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.totalBilling}}">
       <span class="{{::$ctrl.styles.label}}">VNSFs Balance (€)</span>
       <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feedVNSFs | currency:"":2)}} €</span>
     </div>
+  </div>
     <div ng-if="$ctrl.showTableAdmin">
       <div class="{{::$ctrl.styles.entrygroup}}">
         <div class="{{::$ctrl.styles.entry}}">

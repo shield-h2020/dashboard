@@ -27,6 +27,7 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
+  vnsf_name: 'vNSF',
   capabilities: 'Capabilities',
   state: 'State',
   vendor: 'Vendor',

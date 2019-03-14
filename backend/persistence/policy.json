@@ -121,4 +121,7 @@
 
   "attack_statistics:read": "rule:any.cyberagent",
 
+  "activity:create": "rule:platform.admin",
+  "activity:read": "rule:the.tenant.admin"
+
 }

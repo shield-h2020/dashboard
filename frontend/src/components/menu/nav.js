@@ -59,6 +59,11 @@ export const MENU_ENTRIES = [
     roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN, DEVELOPER],
   },
   {
+    text: 'Activity',
+    route: 'activity',
+    roles: [TENANT_ADMIN, SUPER_ADMIN, DEVELOPER],
+  },
+  {
     text: 'Onboard validations',
     route: 'validations',
     roles: [SUPER_ADMIN, DEVELOPER],

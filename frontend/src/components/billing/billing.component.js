@@ -23,7 +23,7 @@ const TABLE_HEADERS_VNSF = {
 
 const TABLE_HEADERS_ADMIN = {
   month: 'Year-Month',
-  number_tenants: '# Tenants',
+  number_tenants: '# Client',
   number_nss: '# Network Services',
   number_ns_instances: '# NS Instances',
   number_vnsfs: '# VNSFs',

@@ -133,7 +133,8 @@ DOMAIN = {
     'billing_update':         api_endpoints.billing_update,
     'billing_ns_simulate':    api_endpoints.billing_ns_simulate,
     'billing_summary':        api_endpoints.billing_summary,
-    'billing_clean':          api_endpoints.billing_clean
+    'billing_clean':          api_endpoints.billing_clean,
+    'activity':               api_endpoints.activity
     }
 
 PAGINATION_LIMIT = 100

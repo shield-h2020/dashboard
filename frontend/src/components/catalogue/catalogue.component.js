@@ -18,6 +18,7 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
+  ns_name: 'Nework Services',
   capabilities: 'Capabilities',
   _created: 'Enrolled',
 };
@@ -162,7 +163,7 @@ export const CatalogueComponent = {
         .then((data) => {
           this.infoTableBilling = [
             {
-              parameter: 'Required Instances',
+              parameter: 'Balance per instance',
               description: 'Balance of a single instance (expense fee minus specified fee)',
               ns_instances: data.instance_balance[0],
               fee: data.instance_balance[1],
@@ -174,7 +175,7 @@ export const CatalogueComponent = {
               fee: data.running_instances[1],
             },
             {
-              parameter: 'Balance per instance',
+              parameter: 'Required Instances',
               description: 'Minimum amount of instances to achieve profitablility',
               ns_instances: data.flatten_min_instances[0],
               fee: data.flatten_min_instances[1],

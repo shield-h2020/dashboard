@@ -1176,3 +1176,35 @@ class Endpoint(Enum):
             },
         },
     }
+
+    ACTIVITY = {
+        __NAME__: 'Activity logs',
+        __URL__: 'activity',
+        __SCHEMA__: api_model.activity,
+        __RESOURCE__: {
+            __HTTP_GET__: {
+                __POLICY__: 'activity:read',
+                __DOCS__: {
+                    'summary': 'Obtains activity log.',
+                    'description': 'Obtains activity log. It can be filtered by user and/or tenant.',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_POST__: {
+                __POLICY__: 'activity:create',
+                __DOCS__: {
+                    'summary': 'Writes to activity log.',
+                    'description': 'Writes to activity log. User must be authenticated in order to assign the owner of the log.',
+                    'responses': http_utils.responses_read
+                }
+            },
+            __HTTP_DELETE__: {
+                __POLICY__: 'activity:delete',
+                __DOCS__: {
+                    'summary': 'Clear activity log.',
+                    'description': 'Clear activity log.',
+                    'responses': http_utils.responses_read
+                }
+            }
+        },
+    }

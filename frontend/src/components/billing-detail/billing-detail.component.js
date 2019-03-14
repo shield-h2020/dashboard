@@ -8,7 +8,7 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS_NS = {
-  ns_id: 'Network Service',
+  ns_name: 'Network Service',
   ns_instance_id: 'Instance ID',
   usage_status: 'Status',
   used_from: 'Used from',
@@ -19,7 +19,7 @@ const TABLE_HEADERS_NS = {
 };
 
 const TABLE_HEADERS_VNSF = {
-  vnsf_id: 'vNSF',
+  vnsf_name: 'vNSF',
   usage_status: 'Status',
   used_from: 'Used from',
   used_to: 'Used to',
@@ -29,8 +29,8 @@ const TABLE_HEADERS_VNSF = {
 };
 
 const TABLE_HEADERS_NS_ADMIN = {
-  tenant_id: 'Tenant ID',
-  ns_id: 'Network Service',
+  tenant_name: 'Client',
+  ns_name: 'Network Service',
   ns_instance_id: 'Instance ID',
   usage_status: 'Instance Status',
   used_from: 'Used from',
@@ -41,8 +41,8 @@ const TABLE_HEADERS_NS_ADMIN = {
 };
 
 const TABLE_HEADERS_VNSF_ADMIN = {
-  user_id: 'User ID',
-  vnsf_id: 'vNSF',
+  user_name: 'User',
+  vnsf_name: 'vNSF',
   usage_status: 'Status',
   used_from: 'Used from',
   used_to: 'Used to',

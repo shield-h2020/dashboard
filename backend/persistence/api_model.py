@@ -1093,4 +1093,42 @@ billing_clean = {
     }
 }
 
+activity = {
+    'timestamp': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    'user_id': {
+        'type': 'string',
+        'empty': False,
+        'required': False
+    },
+
+    'user_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': False
+    },
+
+    'tenant_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'message': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    }
+}
+
 

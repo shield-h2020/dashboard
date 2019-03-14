@@ -794,3 +794,15 @@ billing_ns_simulate = {
     # TODO: remove later
     'public_methods': ['POST']
 }
+
+activity = {
+    'item_title':       EndpointHelper.get_name(Endpoint.ACTIVITY),
+    'url':              EndpointHelper.get_url(Endpoint.ACTIVITY),
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.ACTIVITY),
+    'schema':           EndpointHelper.get_schema(Endpoint.ACTIVITY),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.ACTIVITY)],
+
+    # TODO: remove later
+    'public_methods': ['POST', 'DELETE']
+}
+

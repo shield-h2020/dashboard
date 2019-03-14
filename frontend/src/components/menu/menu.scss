@@ -201,7 +201,9 @@
 @media only screen and (min-width: 500px) {
   .menu {
     position: relative;
-    height: 100%;
+    ul{
+      min-height: 450px;
+    }
   }
 }
 
