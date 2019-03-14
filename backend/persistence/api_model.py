@@ -635,13 +635,24 @@ billing_vnsf = {
         'required': True
     },
 
+    'user_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # ID, from the catalogue, assigned to a vNSF onboarded by the Developer.
     'vnsf_id': {
         'type': 'objectid',
         'empty': False,
         'required': True,
         'unique': True
+    },
 
+    'vnsf_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
     },
 
     # vNSF monthly rate charged by the Developer to the ISP.
@@ -664,6 +675,12 @@ billing_ns = {
         'empty': False,
         'required': True,
         'unique': True
+    },
+
+    'ns_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
     },
 
     'constituent_vnsfs': {
@@ -709,8 +726,20 @@ billing_ns_usage = {
         'required': True
     },
 
+    'ns_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # Tenant ID using the NS.
     'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_name': {
         'type': 'string',
         'empty': False,
         'required': True
@@ -808,8 +837,20 @@ billing_vnsf_usage = {
         'required': True
     },
 
+    'vnsf_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # Developer that owns the vNSF
     'user_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'user_name': {
         'type': 'string',
         'empty': False,
         'required': True
