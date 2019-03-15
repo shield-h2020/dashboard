@@ -35,6 +35,7 @@ export const TenantsListComponent = {
       this.deleteOpen = false;
       this.updateTenantForm = false;
       this.createTenantForm = false;
+      this.disabledCreate = false;
       this.styles = styles;
 
       this.updateTenant = this.updateTenant.bind(this);
@@ -170,6 +171,7 @@ export const TenantsListComponent = {
     createOrUpdateTenant() {
       let httpPromise;  
       if (this.isCreate) {
+        this.disabledCreate = true;
         //httpPromise = this.tenantsService.createTenantAndIps(this.currTenant);
         this.tenantsService.createTenant(this.currTenant)
           .then(data => this.newTenantInfo = data)
@@ -258,6 +260,7 @@ export const TenantsListComponent = {
       };
       this.tenantsService.createUser(user, this.newTenantInfo.tenant_id)
         .then(() => {
+          this.disabledCreate = false;
           this.toggleCreate();
           this.getData();
         });

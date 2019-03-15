@@ -11,7 +11,7 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS = {
-  ns_name: 'Nework Services',
+  ns_name: 'Nework Service',
   capabilities: 'Capabilities',
   status: 'Status',
   instance_id: 'Instance ID',

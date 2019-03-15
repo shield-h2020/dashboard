@@ -192,6 +192,7 @@
   background: $color-gradient-blue-dark;
   font-family: 'Orbitron', sans-serif;
   font-weight: 600;
+  min-width: 230px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
   .img-responsive {
     margin: 0 auto;
@@ -201,9 +202,9 @@
 @media only screen and (min-width: 500px) {
   .menu {
     position: relative;
-    ul{
-      min-height: 450px;
-    }
+  }
+  .profile{
+    bottom: auto;
   }
 }
 
@@ -211,5 +212,8 @@
   .menu {
     position: fixed;
     height: 100vh;
+  }
+  .profile{
+    bottom: 0;
   }
 }

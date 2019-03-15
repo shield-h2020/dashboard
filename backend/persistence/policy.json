@@ -108,8 +108,8 @@
 
   "billing_ns:create": "rule:platform.admin",
   "billing_ns:read": "rule:the.tenant.admin",
-  "billing_ns:update": "rule:the.tenant.admin",
-  "billing_ns:delete": "rule:the.tenant.admin",
+  "billing_ns:update": "rule:the.platform.admin",
+  "billing_ns:delete": "rule:the.platform.admin",
 
   "billing_ns_usage:create": "rule:platform.admin",
   "billing_ns_usage:read": "rule:platform.admin",

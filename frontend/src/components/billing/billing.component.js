@@ -23,10 +23,10 @@ const TABLE_HEADERS_VNSF = {
 
 const TABLE_HEADERS_ADMIN = {
   month: 'Year-Month',
-  number_tenants: '# Client',
+  number_tenants: '# SecaaS Client',
   number_nss: '# Network Services',
   number_ns_instances: '# NS Instances',
-  number_vnsfs: '# VNSFs',
+  number_vnsfs: '# vNSFs',
   status: 'Status',
   profit_balance: 'Profit Balance (€)',
 };
@@ -135,7 +135,7 @@ export const BillingComponent = {
     calcPageItems() {
       const { page, totalItems, limit } = this.pagination;
 
-      const numberOfPages = Math.ceil(totalItems / limit);
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
       return { page, totalPage: numberOfPages, total: totalItems };
     }
 

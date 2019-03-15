@@ -10,7 +10,7 @@ const VIEW_STRINGS = {
 
 const TABLE_HEADERS = {
   date: 'Date',
-  tenant_name: 'Client',
+  tenant_name: 'SecaaS Client',
   user_name: 'User',
   log: 'Log',
 };
@@ -37,10 +37,12 @@ export const ActivityComponent = {
       this.isLoading = false;
       this.filters = {};
       if (this.authService.isUserPlatformAdmin()) {
-        this.headers = { ...TABLE_HEADERS };
+         this.headers = { ...TABLE_HEADERS };
       } else {
-        delete TABLE_HEADERS.tenant_name;
-        this.headers = { ...TABLE_HEADERS };
+        const {date, user_name, log} = TABLE_HEADERS
+        this.headers = {date, user_name, log }
+        console.log(this.headers)
+         ;
       }
     }
 
@@ -116,7 +118,7 @@ export const ActivityComponent = {
     calcPageItems() {
       const { page, totalItems, limit } = this.pagination;
 
-      const numberOfPages = Math.ceil(totalItems / limit);
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
       return { page, totalPage: numberOfPages, total: totalItems };
     }
 

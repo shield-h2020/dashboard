@@ -89,7 +89,7 @@
       <footer class="row">
         <div class="col-xs-12">
           <button ng-click="$ctrl.toggleCreate()" class="sn-button">{{$ctrl.viewStrings.cancel}}</button>
-          <button ng-click="$ctrl.createOrUpdateTenant()" class="sn-button sn-button--primary">{{$ctrl.isCreate ? $ctrl.viewStrings.create : $ctrl.viewStrings.update}}</button>
+          <button ng-disabled="$ctrl.disabledCreate" ng-click="$ctrl.createOrUpdateTenant()" class="sn-button sn-button--primary">{{$ctrl.isCreate ? $ctrl.viewStrings.create : $ctrl.viewStrings.update}}</button>
         </div>
       </footer>
     </div>

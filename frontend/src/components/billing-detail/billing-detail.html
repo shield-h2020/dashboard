@@ -33,7 +33,7 @@
     <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feed | currency:"":2)}} €</span>
   </div>
   <!-- ADMIN -->
-  <div class="{{::$ctrl.styles.border}}">
+  <div  ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.border}}">
     <h4>Network Services</h4>
     <s-table 
       ng-if="$ctrl.showTableAdmin"
@@ -55,7 +55,7 @@
           <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feedNS | currency:"":2)}} €</span>
     </div>
   </div>
-  <div class="{{::$ctrl.styles.border}}">
+  <div  ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.border}}">
     <h4>vNSFs</h4>
     <s-table
       ng-if="$ctrl.showTableAdmin"

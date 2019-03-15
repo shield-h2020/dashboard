@@ -29,7 +29,7 @@ const TABLE_HEADERS_VNSF = {
 };
 
 const TABLE_HEADERS_NS_ADMIN = {
-  tenant_name: 'Client',
+  tenant_name: 'SecaaS Client',
   ns_name: 'Network Service',
   ns_instance_id: 'Instance ID',
   usage_status: 'Instance Status',
@@ -164,7 +164,7 @@ export const BillingDetailComponent = {
     calcPageItems() {
       const { page, totalItems, limit } = this.pagination;
  
-      const numberOfPages = Math.ceil(totalItems / limit);
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
       return { page, totalPage: numberOfPages, total: totalItems };
     }
 
@@ -183,7 +183,7 @@ export const BillingDetailComponent = {
       const { page, totalItems, limit } = this.paginationNS;
       console.log(page, totalItems, limit)
       
-      const numberOfPages = Math.ceil(totalItems / limit);
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
       return { page, totalPage: numberOfPages, total: totalItems };
     }
 
@@ -201,7 +201,7 @@ export const BillingDetailComponent = {
     calcPageItemsVNFs() {
       const { page, totalItems, limit } = this.paginationVNSFs;
       
-      const numberOfPages = Math.ceil(totalItems / limit);
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
       return { page, totalPage: numberOfPages, total: totalItems };
     }
 

@@ -148,7 +148,7 @@ class NssInventoryHooks:
         # log activity
         token = current_app.auth.get_user_or_token()
         activity_logger.log("Requested instantiation of NS {} ({}), assigned Instance ID {}"
-                            .format(ns_name, ns_id, updates['instance_id']), token)
+                            .format(ns_name, original['ns_id'], updates['instance_id']), token)
 
 
     @staticmethod
@@ -223,4 +223,4 @@ class NssInventoryHooks:
 
         # log activity
         activity_logger.log("Terminated NS {} ({}), with Instance ID {}"
-                            .format(ns_name, ns_id, instance_id), current_app.auth.get_user_or_token())
+                            .format(ns_name, original['ns_id'], instance_id), current_app.auth.get_user_or_token())

@@ -112,7 +112,7 @@ class BillingActions:
         token = current_app.auth.get_user_or_token()
 
         # log activity
-        activity_logger.log("Onboarded NS {} (id={})".format(json_data['ns_name'], json_data['ns_id']), token)
+        activity_logger.log("Onboarded NS {} ({})".format(json_data['ns_name'], json_data['ns_id']), token)
 
     @staticmethod
     def create_vnsf_billing_placeholder(request):
@@ -151,7 +151,7 @@ class BillingActions:
         json_data['vnsf_name'] = BillingActions._get_vnsf_name_from_store(json_data['vnsf_id'])
 
         # log activity
-        activity_logger.log("Onboarded vNSF {} (id={})".format(json_data['vnsf_name'], json_data['vnsf_id']), token)
+        activity_logger.log("Onboarded vNSF {} ({})".format(json_data['vnsf_name'], json_data['vnsf_id']), token)
 
 
     @staticmethod
