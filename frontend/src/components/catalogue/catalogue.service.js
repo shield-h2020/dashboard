@@ -55,15 +55,9 @@ export class CatalogueService {
   }
 
   applyFeeBilling({ fee, nsId, etag }) {
-    const currentSession = this.authService.getSessionInfo();
     const data = JSON.stringify({ fee: fee });
-    return this.http.patch(`${API_BILLING}/${nsId}`, data,
-      { headers: {
-        Authorization: `Basic ${this.window.btoa(`${currentSession.token}:''`)}`,
-        'Content-Type': 'application/json',
-        'If-Match': etag,
-      },
-      })
+    return this.http.patch(`${API_BILLING}/${nsId}`,
+    data, { headers: { 'If-Match': etag } })
       .then(response => response.data);
   }
 

@@ -640,7 +640,7 @@ billing_ns = {
 
     # TODO: remove later
     'public_methods':      ['GET', 'DELETE'],
-    'public_item_methods': ['GET', 'PATCH', 'DELETE']
+    'public_item_methods': ['GET', 'DELETE']
 }
 
 billing_vnsf = {
@@ -655,7 +655,7 @@ billing_vnsf = {
 
     # TODO: remove later
     'public_methods':          ['GET', 'DELETE'],
-    'public_item_methods':     ['GET', 'PATCH', 'DELETE']
+    'public_item_methods':     ['GET', 'DELETE']
 }
 #
 # billing_usage = {

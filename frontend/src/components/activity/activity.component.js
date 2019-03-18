@@ -4,8 +4,8 @@ import styles from './activity.scss';
 import moment from 'moment';
 
 const VIEW_STRINGS = {
-  title: 'Activivty',
-  tableTitle: 'Activivty',
+  title: 'Activity',
+  tableTitle: 'Activity',
 };
 
 const TABLE_HEADERS = {
@@ -78,7 +78,7 @@ export const ActivityComponent = {
           .then((items) => {
             items._items.forEach(item => this.items.push({
               log: item.message,
-              date: `${moment.unix(item.timestamp).format('YYYY-MM-DDTHH:mm:ss')}Z`,
+              date: `${moment.unix(item.timestamp).format('YYYY-MM-DD HH:mm:ss')}`,
               user_name: item.user_name,
               tenant_name: item.tenant_name,
             }),

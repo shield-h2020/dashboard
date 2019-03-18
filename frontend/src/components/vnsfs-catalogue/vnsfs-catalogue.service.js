@@ -101,16 +101,14 @@ export class VNSFService {
   }
 
   setBillingApplyFee({ fee, vnsf_id, _etag }) {
-    const currentSession = this.authService.getSessionInfo();
+    const tenant = this.authService.getTenant();
     const data = JSON.stringify({ fee: fee });
+    const params = {};
+    params.where = JSON.stringify({
+      tenant_id: tenant,
+    });
     return this.http.patch(`${API_BILLING}/${vnsf_id}`,
-      data,
-      { headers: {
-        Authorization: `Basic ${this.window.btoa(`${currentSession.token}:''`)}`,
-        'Content-Type': 'application/json',
-        'If-Match': _etag 
-    } 
-    })
+      data, { params, headers: { 'If-Match': _etag } })
       .then(response => response.data);
   }
 }

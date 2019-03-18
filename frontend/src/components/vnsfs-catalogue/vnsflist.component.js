@@ -140,6 +140,7 @@ export const VNSFListComponent = {
     }
 
     setBillingApplyFee() {
+      
       this.vnsfsService.setBillingApplyFee(this.infoBilling)
         .then(() => {
           this.billingOpen = !this.billingOpen;
