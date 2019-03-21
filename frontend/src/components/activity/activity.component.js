@@ -41,7 +41,6 @@ export const ActivityComponent = {
       } else {
         const {date, user_name, log} = TABLE_HEADERS
         this.headers = {date, user_name, log }
-        console.log(this.headers)
          ;
       }
     }
@@ -93,7 +92,7 @@ export const ActivityComponent = {
           .then((items) => {
             items._items.forEach(item => this.items.push({
               log: item.message,
-              date: `${moment.unix(item.timestamp).format('YYYY-MM-DDTHH:mm:ss')}Z`,
+              date: `${moment.unix(item.timestamp).format('YYYY-MM-DD HH:mm:ss')}`,
               user_name: item.user_name,
             }),
             );
