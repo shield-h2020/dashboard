@@ -147,6 +147,7 @@ class BillingActions:
         json_data['user_id'] = token_data['token']['user']['id']
         json_data['user_name'] = token_data['token']['user']['name']
         json_data['tenant_id'] = token_data['token']['user']['domain']['id']
+        json_data['tenant_name'] = token_data['token']['user']['domain']['name']
 
         # retrieve 'vnsf_name' based on the vnsf_id
         json_data['vnsf_name'] = BillingActions._get_vnsf_name_from_store(json_data['vnsf_id'])
@@ -482,6 +483,8 @@ class BillingActions:
                 'fee': fee,
                 'user_id': billing_vnsf['user_id'],
                 'user_name': billing_vnsf['user_name'],
+                'tenant_id': billing_vnsf['tenant_id'],
+                'tenant_name': billing_vnsf['tenant_name'],
                 'used_from': used_from.isoformat(),
                 'used_to': used_to.isoformat(),
                 'month': month,

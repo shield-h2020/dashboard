@@ -641,6 +641,19 @@ billing_vnsf = {
         'required': True
     },
 
+    # Tenant ID using the NS.
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # ID, from the catalogue, assigned to a vNSF onboarded by the Developer.
     'vnsf_id': {
         'type': 'objectid',
@@ -860,6 +873,12 @@ billing_vnsf_usage = {
         'type': 'string',
         'empty': False,
         'required': True
+    },
+
+    'tenant_name': {
+        'type': 'string',
+        'empty': False,
+        'required': False,
     },
 
     # Associated 'billing_ns_usage_id' -> which ns usage this vnsf usage is refered to
