@@ -146,6 +146,7 @@ class BillingActions:
         token_data = aaa.get_token_data(token)
         json_data['user_id'] = token_data['token']['user']['id']
         json_data['user_name'] = token_data['token']['user']['name']
+        json_data['tenant_id'] = token_data['token']['user']['domain']['id']
 
         # retrieve 'vnsf_name' based on the vnsf_id
         json_data['vnsf_name'] = BillingActions._get_vnsf_name_from_store(json_data['vnsf_id'])

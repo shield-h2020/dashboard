@@ -856,6 +856,12 @@ billing_vnsf_usage = {
         'required': True
     },
 
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # Associated 'billing_ns_usage_id' -> which ns usage this vnsf usage is refered to
     'associated_ns_usages': {
         'type': 'list',
