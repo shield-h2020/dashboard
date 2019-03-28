@@ -11,6 +11,13 @@
 			buttonclicked="$ctrl.buttonClicked"
 		>
 		</table-custom-actions>
+		<div style="text-align: right; margin-top: 16px;" ng-if="$ctrl.items.length">
+        <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+        <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+        <span class="sn-table__footer">
+					Showing {{$ctrl.paging.page}} to {{$ctrl.paging.totalPage}} of {{$ctrl.paging.total}}
+        </span> 
+      </div>
 		<!-- Modal -->
 		<div 
 			sn-modal 

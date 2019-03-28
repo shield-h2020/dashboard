@@ -69,6 +69,10 @@ export class AuthService {
     const user = this.getSessionInfo();
     return !!user.session.roles.find(r => r.name === 'shield_developer');
   }
+  isUserCyberAgent() {
+    const user = this.getSessionInfo();
+    return !!user.session.roles.find(r => r.name === 'shield_cyberagent');
+  }
 
   getTenant() {
     return this.getSessionInfo().session.user.domain.id;

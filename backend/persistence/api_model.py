@@ -77,6 +77,13 @@ policy_model = {
         'required': True
         },
 
+    # A list of IP address from where the attack was originated
+    'origin_addresses': {
+        'type':     'list',
+        'empty':    True,
+        'required': True
+    },
+
     # The recommendation to counter the threat. Format: user-defined.
     'recommendation': {
         'type':     'string',
@@ -84,6 +91,78 @@ policy_model = {
         'required': True
         }
     }
+
+attack_registry_model = {
+
+    # Malicious device source address
+    'ip_address': {
+        'type':     'string',
+        'empty':    False,
+        'required': False
+    },
+
+    # The kind of network attack. Format: user-defined.
+    'attack': {
+        'type':     'string',
+        'empty':    False,
+        'required': True
+    },
+
+    # The status of the attack on the infected device: 'active' or 'blocked'
+    'status': {
+        'type':     'string',
+        'empty':    False,
+        'required': True,
+        'allowed':  ['active', 'blocked']
+    },
+
+    'detection_timestamp': {
+        'type':     'number',
+        'empty':    False,
+        'required': True
+    },
+
+    'closure_timestamp': {
+        'type':     'number',
+        'empty':    False,
+        'required': False,
+    }
+
+}
+
+attack_statistics_model = {
+    # Timestamp of when there's been a development (a new threat was detected or a threat was blocked)
+    'timestamp': {
+        'type':     'number',
+        'empty':    False,
+        'required': True
+    },
+
+    # Number of active malicious devices
+    'active': {
+        'type':     'number',
+        'empty':    False,
+        'required': True,
+        'default': 0.0
+    },
+
+    # Number of blocked malicious devices
+    'blocked': {
+        'type':     'number',
+        'empty':    False,
+        'required': True,
+        'default': 0.0
+    },
+
+    # Cumulative number of malicious devices
+    'cumulative': {
+        'type':     'number',
+        'empty':    False,
+        'required': True,
+        'default': 0.0
+    }
+
+}
 
 tenant_scopes_model = {
     'name':        {
@@ -556,13 +635,37 @@ billing_vnsf = {
         'required': True
     },
 
+    'user_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    # Tenant ID using the NS.
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # ID, from the catalogue, assigned to a vNSF onboarded by the Developer.
     'vnsf_id': {
         'type': 'objectid',
         'empty': False,
         'required': True,
         'unique': True
+    },
 
+    'vnsf_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
     },
 
     # vNSF monthly rate charged by the Developer to the ISP.
@@ -585,6 +688,12 @@ billing_ns = {
         'empty': False,
         'required': True,
         'unique': True
+    },
+
+    'ns_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
     },
 
     'constituent_vnsfs': {
@@ -630,8 +739,20 @@ billing_ns_usage = {
         'required': True
     },
 
+    'ns_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # Tenant ID using the NS.
     'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_name': {
         'type': 'string',
         'empty': False,
         'required': True
@@ -729,11 +850,35 @@ billing_vnsf_usage = {
         'required': True
     },
 
+    'vnsf_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
     # Developer that owns the vNSF
     'user_id': {
         'type': 'string',
         'empty': False,
         'required': True
+    },
+
+    'user_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_name': {
+        'type': 'string',
+        'empty': False,
+        'required': False,
     },
 
     # Associated 'billing_ns_usage_id' -> which ns usage this vnsf usage is refered to
@@ -972,3 +1117,43 @@ billing_clean = {
         'required': True,
     }
 }
+
+activity = {
+    'timestamp': {
+        'type': 'number',
+        'empty': False,
+        'required': True
+    },
+
+    'user_id': {
+        'type': 'string',
+        'empty': False,
+        'required': False
+    },
+
+    'user_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'tenant_id': {
+        'type': 'string',
+        'empty': False,
+        'required': False
+    },
+
+    'tenant_name': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    },
+
+    'message': {
+        'type': 'string',
+        'empty': False,
+        'required': True
+    }
+}
+
+

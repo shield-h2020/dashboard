@@ -36,7 +36,10 @@ from flask import abort, make_response, jsonify
 import requests
 from dashboardutils import http_utils
 from hooks_billing import BillingActions
+from activity.logger import ActivityLogger
+from flask import current_app
 
+activity_logger = ActivityLogger(cfg.BACKENDAPI)
 
 class NssInventoryHooks:
     """
@@ -142,6 +145,12 @@ class NssInventoryHooks:
 
         logger.debug("NS instance_id '{}' instantiation process started successfully".format(updates['instance_id']))
 
+        # log activity
+        token = current_app.auth.get_user_or_token()
+        activity_logger.log("Requested instantiation of NS {} ({}), assigned Instance ID {}"
+                            .format(ns_name, original['ns_id'], updates['instance_id']), token)
+
+
     @staticmethod
     def terminate_network_service(updates, original):
 
@@ -211,3 +220,7 @@ class NssInventoryHooks:
             abort(make_response(jsonify(**{"_status": "ERR", "_error":
                                 {"code": 400, "message":
                                     "Termination failed. vNSFO Policy Issue not supported".format(r.text)}}), 400))
+
+        # log activity
+        activity_logger.log("Terminated NS {} ({}), with Instance ID {}"
+                            .format(ns_name, original['ns_id'], instance_id), current_app.auth.get_user_or_token())

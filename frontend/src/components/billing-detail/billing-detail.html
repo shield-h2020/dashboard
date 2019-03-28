@@ -1,6 +1,6 @@
 <section>
   <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
-  <div class="sn-card" auto-resizer>
+  <div class="sn-card">
     <header class="sn-card__header">
       <h5 class="header__title">
         {{::$ctrl.viewStrings.tableTitle}} {{::$ctrl.month}}
@@ -12,46 +12,84 @@
         {{::$ctrl.viewStrings.button }}
       </button>
     </header>
+    <!-- Default -->
     <s-table
       ng-if="!$ctrl.showTableAdmin"
       headers="$ctrl.headers" 
-      class="{{::$ctrl.styles.lastTr}}"
       items="$ctrl.items" 
       loading="$ctrl.isLoading" 
       buttonclicked="$ctrl.buttonClicked"
     >
     </s-table>
+    <div ng-if="!$ctrl.showTableAdmin" style="text-align: right; margin-top: 6px; margin-bottom: 16px;">
+      <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+      <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+      <span class="sn-table__footer">
+        Showing {{$ctrl.paging.page}} to {{$ctrl.paging.totalPage}} ({{$ctrl.paging.total}} records)
+      </span>
+  </div>
+  <div ng-if="!$ctrl.showTableAdmin" class="{{::$ctrl.styles.totalBilling}}">
+    <span class="{{::$ctrl.styles.label}}">Total Amount (€)</span>
+    <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feed | currency:"":2)}} €</span>
+  </div>
+  <!-- ADMIN -->
+  <div  ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.border}}">
+    <h4>Network Services</h4>
     <s-table 
       ng-if="$ctrl.showTableAdmin"
       headers="$ctrl.headersNS"
-      class="{{::$ctrl.styles.lastTr}}"
       items="$ctrl.itemsNS" 
       loading="$ctrl.isLoading" 
       buttonclicked="$ctrl.buttonClicked"
     >
     </s-table>
-    <s-table 
+    <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;" ng-if="$ctrl.itemsNS.length">
+        <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePageNS(-1)"></button>
+        <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePageNS(1)"></button>
+        <span class="sn-table__footer">
+          Showing {{$ctrl.pagingNS.page}} to {{$ctrl.pagingNS.totalPage}} ({{$ctrl.pagingNS.total}} records)
+        </span>
+    </div>
+    <div ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.totalBilling}}">
+          <span class="{{::$ctrl.styles.label}}">Network Service Balance (€)</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feedNS | currency:"":2)}} €</span>
+    </div>
+  </div>
+  <div  ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.border}}">
+    <h4>vNSFs</h4>
+    <s-table
       ng-if="$ctrl.showTableAdmin"
       headers="$ctrl.headersVNSFs"
-      class="{{::$ctrl.styles.lastTr}}"
       items="$ctrl.itemsVNSFs" 
       loading="$ctrl.isLoading" 
       buttonclicked="$ctrl.buttonClicked"
     >
     </s-table>
+    <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;" ng-if="$ctrl.itemsVNSFs.length">
+        <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePageVNSFs(-1)"></button>
+        <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePageVNSFs(1)"></button>
+        <span class="sn-table__footer">
+          Showing {{$ctrl.pagingVNSFs.page}} to {{$ctrl.pagingVNSFs.totalPage}} ({{$ctrl.pagingVNSFs.total}} records)
+        </span>
+    </div>
+    <div ng-if="$ctrl.showTableAdmin" class="{{::$ctrl.styles.totalBilling}}">
+      <span class="{{::$ctrl.styles.label}}">VNSFs Balance (€)</span>
+      <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feedVNSFs | currency:"":2)}} €</span>
+    </div>
+  </div>
     <div ng-if="$ctrl.showTableAdmin">
       <div class="{{::$ctrl.styles.entrygroup}}">
         <div class="{{::$ctrl.styles.entry}}">
           <span class="{{::$ctrl.styles.label}}">Network Service Profit</span>
-          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeNS}}€</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feedNS | currency:"":2}} €</span>
         </div>
         <div class="{{::$ctrl.styles.entry}}">
           <span class="{{::$ctrl.styles.label}}">vNSF Expense</span>
-          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feeVNSF}}€</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{$ctrl.feedVNSFs | currency:"":2}} €</span>
         </div>
         <div class="{{::$ctrl.styles.lastEntry}}">
           <span class="{{::$ctrl.styles.label}}">Total Proffit Balance (€)</span>
-          <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feeNS - $ctrl.feeVNSF)}}€</span>
+          <span class="{{::$ctrl.styles.entry__text}}">{{($ctrl.feedNS - $ctrl.feedVNSFs | currency:"":2)}} €</span>
         </div>
     </div>
   </div>

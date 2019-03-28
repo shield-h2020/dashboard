@@ -1,4 +1,4 @@
-import { TENANT_ADMIN, SUPER_ADMIN, TENANT_USER, DEVELOPER } from '../../strings/role-strings';
+import { TENANT_ADMIN, SUPER_ADMIN, TENANT_USER, DEVELOPER, CYBER_AGENT } from '../../strings/role-strings';
 
 export const MENU_ENTRIES = [
   /*{
@@ -51,17 +51,27 @@ export const MENU_ENTRIES = [
   {
     text: 'NS Inventory',
     route: 'nsinventory',
-    roles: [TENANT_ADMIN, TENANT_USER],
+    roles: [TENANT_ADMIN],
   },
   {
     text: 'Billing',
     route: 'billing',
-    roles: [TENANT_ADMIN, TENANT_USER, SUPER_ADMIN, DEVELOPER],
+    roles: [TENANT_ADMIN, SUPER_ADMIN, DEVELOPER],
+  },
+  {
+    text: 'Activity',
+    route: 'activity',
+    roles: [TENANT_ADMIN, SUPER_ADMIN, DEVELOPER],
   },
   {
     text: 'Onboard validations',
     route: 'validations',
     roles: [SUPER_ADMIN, DEVELOPER],
+  },
+  {
+    text: 'CERT Dashboard',
+    route: 'cert',
+    roles: [SUPER_ADMIN, CYBER_AGENT],
   },
 ];
 

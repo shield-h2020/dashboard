@@ -5,6 +5,8 @@ const API_TENANT = `${API_TENANTS}/${ACC_ID}`;
 const API_TENANT_IPS = `${API_ADDRESS}/tenant_ips`;
 const API_TENANT_SCOPES = `${API_ADDRESS}/definitions/tenant_scopes`;
 const API_TENANT_GROUPS = `${API_ADDRESS}/definitions/tenant_groups`;
+const API_TENANT_SCOPE_GROUPS = `${API_ADDRESS}/definitions/tenant_scope_groups`;
+const API_USERS = `${API_ADDRESS}/catalogue/users`;
 
 const STRINGS = {
   TENANT_ERROR: 'An error occurred',
@@ -160,11 +162,65 @@ export class TenantsService {
       .then(response => response.data._id);
   }
 
-  getTenantGroups() {
+  getAllScope() {
+    const params = {
+      nocache: (new Date()).getTime(),
+      where: {
+        'code': {
+           '$in': [
+             'shield_scope_tenant',
+             'shield_scope_developer',
+             'shield_scope_cyberagent',
+           ]
+        }, 
+      },
+     };
+    return this.http.get(API_TENANT_SCOPES, { params })
+      .then(response => response.data._items);
+  }
+
+  createTenant(data) {
+    const body = {
+      tenant_name: data.tenant_name,
+      description: data.client_description,
+      scope_id: data.tenant.scope_id,
+    };
     const params = { nocache: (new Date()).getTime() };
 
-    return this.http.get(`${API_TENANT_GROUPS}`, { params })
+    return this.http.post(`${API_TENANTS}`, body, { params })
+      .then(response => response.data)
+      .catch(this.errorHandleService.handleHttpError);
+  }
+
+  getTenantScopeGroups(filters = {}) {
+    const params = { nocache: (new Date()).getTime() };
+    if (Object.keys(filters).length) params.where = JSON.stringify(filters);
+
+    return this.http.get(`${API_TENANT_SCOPE_GROUPS}`, { params })
       .then(response => response.data._items)
+      .catch(this.errorHandleService.handleHttpError);
+  }
+
+  getTenantGroups(id) {
+    const params = { nocache: (new Date()).getTime() };
+
+    return this.http.get(`${API_TENANT_GROUPS}/${id}`, { params })
+      .then(response => response.data)
+      .catch(this.errorHandleService.handleHttpError);
+  }
+
+  createUser({ name, password, description, email, group_id }, tenantId) {
+    const params = {};
+      params.where = JSON.stringify({
+        tenant_id: tenantId,
+      });
+    return this.http.post(API_USERS, {
+      name,
+      password,
+      description,
+      email,
+      group_id,
+    }, { params })
       .catch(this.errorHandleService.handleHttpError);
   }
 }

@@ -37,6 +37,7 @@ Feature: Users CRUD
       | tenants/tenant_uw.json         | 201    |
       | tenants/tenant_a.json          | 201    |
       | tenants/tenant_developers.json | 201    |
+      | tenants/tenant_cyberagency.json | 201    |
 
 
   @smoke
@@ -64,7 +65,7 @@ Feature: Users CRUD
     Examples:
       | credentials                | user_data                | status |
       | login/tenant_uw_admin.json | users/tenant_user.json   | 201    |
-      | login/tenant_uw_admin.json | users/cyberagent.json    | 201    |
+      #| login/tenant_uw_admin.json | users/cyberagent.json    | 201    |
       | login/tenant_a_admin.json  | users/tenant_a_user.json | 201    |
 
 
@@ -80,3 +81,14 @@ Feature: Users CRUD
       | tenant_data                    | user                 | status |
       | tenants/tenant_developers.json | users/developer.json | 201    |
 
+  @smoke
+  Scenario Outline: Create cyberagents
+    Given The Platform Admin is logged in
+    Given The Tenant in use is <tenant_data>
+    When The Platform Admin creates a Developer from <user>
+    When The Developer is logged in
+    Then I expect the response code <status>
+
+    Examples:
+      | tenant_data                    | user                 | status |
+      | tenants/tenant_cyberagency.json | users/cyberagent.json | 201    |

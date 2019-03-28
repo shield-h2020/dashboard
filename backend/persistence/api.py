@@ -45,6 +45,7 @@ from security import TokenAuthzOslo
 from validators import NetworkValidator
 from billing.monitor import BillingMonitor
 from hooks_policies import PolicyHooks
+from hooks_attacks import AttackHooks
 
 # Start Billing Update Monitor
 BillingMonitor(update_interval=0.5).start()
@@ -57,6 +58,11 @@ app.on_post_POST_ns_instance_update += NSInstanceHooks().post_ns_instance
 app.on_update_policies += DashboardPersistence.convey_policy
 app.on_insert_policies_admin += DashboardPersistence.convert_to_datetime
 app.on_fetched_resource_distinct_policies += PolicyHooks.get_distinct_vnsf_policies
+app.on_pre_POST_attack_registry += AttackHooks.post_registry_set_status
+app.on_update_attack_registry += AttackHooks.patch_registry_set_closure
+app.on_inserted_attack_registry += AttackHooks.statistics_add_active
+app.on_updated_attack_registry += AttackHooks.statistics_add_blocked
+app.on_pre_POST_attack_statistics += AttackHooks.post_statistics_set_timestamp
 
 app.on_post_POST_login += LoginHooks.post_login
 app.on_post_POST_login_user += LoginHooks.post_login
@@ -92,14 +98,14 @@ app.on_update_billing_vnsf += BillingActions.set_billing_vnsf_fee
 app.on_pre_POST_billing_ns_start_usage += BillingActions.start_billing_ns_usage
 app.on_inserted_billing_ns_start_usage += BillingActions.after_start_billing_ns_usage
 app.on_updated_ns_terminate += BillingActions.stop_billing_ns_usage
+app.on_post_GET_billing_ns_usage += BillingActions.calc_ns_total_billable_fee
 app.on_fetched_resource_billing_ns_usage += BillingActions.get_billing_ns_usage
+app.on_post_GET_billing_vnsf_usage += BillingActions.calc_vnsf_total_billable_fee
 app.on_fetched_resource_billing_vnsf_usage += BillingActions.get_billing_vnsf_usage
 app.on_fetched_item_billing_ns_usage += BillingActions.get_billing_ns_usage_item
 app.on_pre_POST_billing_update += BillingActions.update_billing
 app.on_pre_POST_billing_clean += BillingActions.clean_billing
 app.on_post_POST_billing_ns_simulate += BillingActions.billing_ns_simulate
-#app.on_post_GET_billing_usage += BillingActions.get_billing_usage
-# app.on_fetched_resource_billing_summary += BillingActions.get_billing_summary
 
 app.register_blueprint(swagger)
 

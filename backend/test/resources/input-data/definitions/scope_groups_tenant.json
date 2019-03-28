@@ -4,7 +4,6 @@
   "scope_code": "shield_scope_tenant",
   "groups": [
     "shield-client-admins",
-    "shield-client-users",
-    "shield-cyberagents"
+    "shield-client-users"
   ]
 }

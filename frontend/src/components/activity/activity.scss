@@ -1,0 +1,144 @@
+@import '~styleglobals/colors';
+
+.scroller {
+  overflow-y: auto;
+  height: 600px;
+  margin-bottom: -16px;
+}
+
+.header {
+  font-size: 20px;
+  line-height: 24px;
+  color: $color-blue;
+  font-family: Orbitron;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.entrygroup {
+  border-bottom: 1px solid #D8D8D8;
+  margin: 0 0 16px;
+  padding-bottom: 24px;
+}
+
+.blueHeader{
+  font-size: 20px;
+  line-height: 24px;
+  color: $color-blue;
+  padding: 16px;
+  font-family: Orbitron;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;    
+}
+
+.entry {
+  color: #818181;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 12px;
+  display: flex;
+
+  .label {
+    width: 35%;
+
+    &:after {
+      content: ':';
+    }
+  }
+
+  &__text {
+    color: #000000;
+  }
+
+  & a {
+    color: #00B5E2;
+  }
+}
+
+.xmlviewer {
+  border: 1px solid #D8D8D8;
+  background-color: #F1F0F0;
+  padding: 9px;
+  color: #22293B;
+  font-family: "OpenSans";
+  font-size: 14px;
+  line-height: 19px;
+  margin: 12px 0;
+  white-space: pre-line;
+  word-break: break-all;
+}
+
+.text {
+    font-family: "OpenSans";
+    font-size: 13px;
+    line-height: 24px;
+    color: $color-black;
+    padding: 0 30px 30px;
+    max-height: 70vh;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.footer {
+  display: flex;
+  border-top: 1px solid #D8D8D8;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  padding: 0 !important;
+}
+
+.applyFee {
+  text-align: center;
+  margin: 10px;
+}
+
+.lastTr tr:last-child  {
+  font-weight: bold;
+}
+
+.modalBilling > div:nth-child(2)--hidden {
+  display: none;
+}
+.modalBilling {
+  //display: none;
+
+  > div:nth-child(2){
+    width: 1000px;
+    position: fixed;
+    top: 15vh;
+    left: calc(50vw - 500px);
+    background-color: $color-white;
+    border-radius: 4px;
+    box-shadow: 0 0 20px 0 rgba(0,0,0,0.15);
+  }
+}
+
+.page-button {
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  display: inline-block;
+  padding: 0;
+}
+
+.prev-button {
+  @extend .page-button;
+  border-left: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(45deg);
+}
+
+.next-button {
+  @extend .page-button;
+  border-right: 3px solid #818181;
+  border-bottom: 3px solid #818181;
+  transform: rotate(-45deg);
+}

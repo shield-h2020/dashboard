@@ -105,6 +105,8 @@ DOMAIN = {
     'policies':               api_endpoints.policies,
     'policies_admin':         api_endpoints.policies_admin,
     'distinct_policies':      api_endpoints.distinct_policies,
+    'attack_registry':        api_endpoints.attack_registry,
+    'attack_statistics':      api_endpoints.attack_statistics,
     'validations':            api_endpoints.validations,
     'notifications':          api_endpoints.notifications,
     'notifications_admin':    api_endpoints.notifications_admin,
@@ -131,7 +133,8 @@ DOMAIN = {
     'billing_update':         api_endpoints.billing_update,
     'billing_ns_simulate':    api_endpoints.billing_ns_simulate,
     'billing_summary':        api_endpoints.billing_summary,
-    'billing_clean':          api_endpoints.billing_clean
+    'billing_clean':          api_endpoints.billing_clean,
+    'activity':               api_endpoints.activity
     }
 
 PAGINATION_LIMIT = 100

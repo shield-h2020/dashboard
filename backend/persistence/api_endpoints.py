@@ -138,11 +138,11 @@ policies = {
     'item_title':          'policies',
     'description':         'Security recommendations',
     'schema':              api_model.policy_model,
-    'resource_methods':    ['POST', 'GET'],
+    'resource_methods':    ['POST', 'GET', 'DELETE'],
     'item_methods':        ['GET', 'PATCH', 'DELETE'],
 
     # TODO remove once inter-component authentication is in place.
-    'public_methods':      ['GET'],
+    'public_methods':      ['GET', 'DELETE'],
     'public_item_methods': ['GET', 'PATCH', 'DELETE']
     }
 
@@ -174,6 +174,30 @@ distinct_policies = {
     # TODO remove once inter-component authentication is in place.
     'public_methods':   ['GET'],
 
+}
+
+attack_registry = {
+    'item_title':       'Log records for the detected attacks',
+    'url':              'attack/registry',
+    'schema':           api_model.attack_registry_model,
+    'resource_methods': ['GET', 'POST', 'DELETE'],
+    'item_methods':     ['PATCH'],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods':   ['GET', 'POST', 'DELETE'],
+    'public_item_methods': ['PATCH']
+
+}
+
+attack_statistics = {
+    'item_title':       'Attack statistics throughout time',
+    'url':              'attack/statistics',
+    'schema':           api_model.attack_statistics_model,
+    'resource_methods': ['GET', 'POST', 'DELETE'],
+    'allowed_roles':    ['attack_statistics:read'],
+
+    # TODO remove once inter-component authentication is in place.
+    'public_methods': ['GET', 'POST', 'DELETE']
 }
 
 
@@ -616,7 +640,7 @@ billing_ns = {
 
     # TODO: remove later
     'public_methods':      ['GET', 'DELETE'],
-    'public_item_methods': ['GET', 'PATCH', 'DELETE']
+    'public_item_methods': ['GET', 'DELETE']
 }
 
 billing_vnsf = {
@@ -631,7 +655,7 @@ billing_vnsf = {
 
     # TODO: remove later
     'public_methods':          ['GET', 'DELETE'],
-    'public_item_methods':     ['GET', 'PATCH', 'DELETE']
+    'public_item_methods':     ['GET', 'DELETE']
 }
 #
 # billing_usage = {
@@ -770,3 +794,15 @@ billing_ns_simulate = {
     # TODO: remove later
     'public_methods': ['POST']
 }
+
+activity = {
+    'item_title':       EndpointHelper.get_name(Endpoint.ACTIVITY),
+    'url':              EndpointHelper.get_url(Endpoint.ACTIVITY),
+    'resource_methods': EndpointHelper.get_resource_methods(Endpoint.ACTIVITY),
+    'schema':           EndpointHelper.get_schema(Endpoint.ACTIVITY),
+    'allowed_roles':    [EndpointHelper.get_resource_policies(Endpoint.ACTIVITY)],
+
+    # TODO: remove later
+    'public_methods': ['POST', 'DELETE']
+}
+

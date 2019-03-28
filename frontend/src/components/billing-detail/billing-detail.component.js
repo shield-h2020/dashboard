@@ -8,7 +8,7 @@ const VIEW_STRINGS = {
 };
 
 const TABLE_HEADERS_NS = {
-  ns_id: 'Network Service',
+  ns_name: 'Network Service',
   ns_instance_id: 'Instance ID',
   usage_status: 'Status',
   used_from: 'Used from',
@@ -19,7 +19,7 @@ const TABLE_HEADERS_NS = {
 };
 
 const TABLE_HEADERS_VNSF = {
-  vnsf_id: 'vNSF',
+  vnsf_name: 'vNSF',
   usage_status: 'Status',
   used_from: 'Used from',
   used_to: 'Used to',
@@ -29,8 +29,8 @@ const TABLE_HEADERS_VNSF = {
 };
 
 const TABLE_HEADERS_NS_ADMIN = {
-  tenant_id: 'Tenant ID',
-  ns_id: 'Network Service',
+  tenant_name: 'SecaaS Client',
+  ns_name: 'Network Service',
   ns_instance_id: 'Instance ID',
   usage_status: 'Instance Status',
   used_from: 'Used from',
@@ -41,8 +41,8 @@ const TABLE_HEADERS_NS_ADMIN = {
 };
 
 const TABLE_HEADERS_VNSF_ADMIN = {
-  user_id: 'User ID',
-  vnsf_id: 'vNSF',
+  user_name: 'User',
+  vnsf_name: 'vNSF',
   usage_status: 'Status',
   used_from: 'Used from',
   used_to: 'Used to',
@@ -68,8 +68,21 @@ export const BillingDetailComponent = {
       this.createOpen = false;
       this.deleteOpen = false;
       this.detailsOpen = false;
-      this.offset = 1;
-      this.limit = 25;
+      this.pagination = {
+        page: 1,
+        limit: 12,
+        totalItems: null,
+      };
+      this.paginationVNSFs = {
+        page: 1,
+        limit: 5,
+        totalItems: null,
+      };
+      this.paginationNS = {
+        page: 1,
+        limit: 5,
+        totalItems: null,
+      };
       this.isLoading = false;
       this.filters = {};
       this.showTableAdmin = false;
@@ -89,53 +102,107 @@ export const BillingDetailComponent = {
     }
 
     getData() {
-      this.filters = { tenant_id: this.authService.getTenant(), month: this.month };
       this.isLoading = true;
       if (this.authService.isUserDeveloper()) {
-        this.billingDetailService.getBillingUsageVNSF({ page: this.offset,
-          limit: this.limit,
-        })
+        this.filters = { tenant_id: this.authService.getTenant(), month: this.month };
+        this.billingDetailService.getBillingUsageVNSF(this.pagination, this.filters)
           .then((items) => {
             this.items = items._items;
-            this.items.push({ vnsf_id: 'Total Amount (€)', billable_fee: items.total_billable_fee });
+            this.pagination.totalItems = items._meta.total ? items._meta.total : 0;
+            this.feed = items.total_billable_fee || 0;
+            this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });
       } else if (this.authService.isUserTenantAdmin()) {
-        this.billingDetailService.getBillingUsageNS({ page: this.offset,
-          limit: this.limit,
-        }, this.filters)
+        this.filters = { tenant_id: this.authService.getTenant(), month: this.month };
+        this.billingDetailService.getBillingUsageNS(this.pagination, this.filters)
           .then((items) => {
             this.items = items._items;
-            this.items.push({ ns_id: 'Total Amount (€)', billable_fee: items.total_billable_fee });
+            this.pagination.totalItems = items._meta.total ? items._meta.total : 0;
+            this.feed = items.total_billable_fee || 0;
+            this.paging = this.calcPageItems();
           })
           .finally(() => { this.isLoading = false; });
       } else if (this.authService.isUserPlatformAdmin()) {
+        this.filters = { month: this.month };
         this.showTableAdmin = true;
-        this.billingDetailService.getBillingUsageNS({ page: this.offset,
-          limit: this.limit,
-        })
+        this.billingDetailService.getBillingUsageNS(this.paginationNS, this.filters)
         .then((items) => {
           this.itemsNS = items._items;
-          this.itemsNS.push({ tenant_id: 'Network Service Balance (€)', billable_fee: items.total_billable_fee });
-          this.feeNS = items.total_billable_fee;
+          this.paginationNS.totalItems = items._meta.total ? items._meta.total : 0;
+          this.feedNS = items.total_billable_fee || 0;
+          this.pagingNS = this.calcPageItemsNS();
         })
         .finally(() => { this.isLoading = false; });
 
-        this.billingDetailService.getBillingUsageVNSF({ page: this.offset,
-          limit: this.limit,
-        })
+        this.billingDetailService.getBillingUsageVNSF(this.paginationVNSFs, this.filters)
         .then((items) => {
           this.itemsVNSFs = items._items;
-          this.itemsVNSFs.push({ user_id: 'VNSFs Balance (€)', billable_fee: items.total_billable_fee });
-          this.feeVNSF = items.total_billable_fee;
+          this.paginationVNSFs.totalItems = items._meta.total ? items._meta.total : 0;
+          this.feedVNSFs = items.total_billable_fee || 0;
+          this.pagingVNSFs = this.calcPageItemsVNFs();
         })
         .finally(() => { this.isLoading = false; });
-        
       }
     }
 
     addToInventory({ _id }) {
       this.billingService.addServiceToInventory(_id);
+    }
+
+    changePage(amount) {
+      const { page, totalItems, limit } = this.pagination;
+      const numberOfPages = Math.ceil(totalItems / limit);
+      const condition = amount > 0 ?
+       page + 1 <= numberOfPages : this.paginationNS.page > 1;
+      if (condition) {
+        this.paginationNS.page += amount;
+        this.getData();
+      }
+    }
+
+    calcPageItems() {
+      const { page, totalItems, limit } = this.pagination;
+ 
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
+      return { page, totalPage: numberOfPages, total: totalItems };
+    }
+
+    changePageNS(amount) {
+      const { page, totalItems, limit } = this.paginationNS;
+      const numberOfPages = Math.ceil(totalItems / limit);
+      const condition = amount > 0 ?
+       page + 1 <= numberOfPages : this.paginationNS.page > 1;
+      if (condition) {
+        this.paginationNS.page += amount;
+        this.getData();
+      }
+    }
+
+    calcPageItemsNS() {
+      const { page, totalItems, limit } = this.paginationNS;
+      console.log(page, totalItems, limit)
+      
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
+      return { page, totalPage: numberOfPages, total: totalItems };
+    }
+
+    changePageVNFs(amount) {
+      const { page, totalItems, limit } = this.paginationVNSFs;
+      const numberOfPages = Math.ceil(totalItems / limit);
+      const condition = amount > 0 ?
+       page + 1 <= numberOfPages : this.paginationNS.page > 1;
+      if (condition) {
+        this.paginationNS.page += amount;
+        this.getData();
+      }
+    }
+
+    calcPageItemsVNFs() {
+      const { page, totalItems, limit } = this.paginationVNSFs;
+      
+      const numberOfPages = Math.ceil(totalItems / limit) === 0 ? 1 : Math.ceil(totalItems / limit);
+      return { page, totalPage: numberOfPages, total: totalItems };
     }
 
     toggleDetailsPage(billing) {

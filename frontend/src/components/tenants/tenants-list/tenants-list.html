@@ -27,11 +27,11 @@
         <div class="col-xs-12 stack-m">
           <sn-input
             field-label="Client description"
-            on-update="$ctrl.changeCurrTenant('description', $event.value)"
-            field-value="$ctrl.currTenant.description"
+            on-update="$ctrl.changeCurrTenant('client_description', $event.value)"
+            field-value="$ctrl.currTenant.client_description"
           ></sn-input>
         </div>
-        <div class="col-xs-12">
+        <div ng-if="$ctrl.updateTenantForm" class="col-xs-12">
           <sn-list-input
             id="ips"
             label="Client IPs"
@@ -40,11 +40,56 @@
             validator="$ctrl.ipValidator"
           ></sn-list-input>
         </div>
+        <div ng-if="!$ctrl.updateTenantForm" class="col-xs-12 stack-m">
+          <label class="sn-input__label">Client Type</label>
+          <select 
+            class="sn-input__input"
+            ng-model="$ctrl.currTenant.tenant" 
+            ng-options="tenant.description for tenant in $ctrl.dropdown_tenant_scope">
+              <option value="">-- choose Client Type --</option>
+          </select>
+        </div>
+        <div ng-if="!$ctrl.updateTenantForm" class="{{::$ctrl.styles['blueHeader']}}">Create Admin for Client</div>
+        <div ng-if="!$ctrl.updateTenantForm" class="col-xs-6 stack-m">
+          <sn-input
+            field-label="Name"
+            on-update="$ctrl.changeCurrTenant('name', $event.value)"
+            field-value="$ctrl.currTenant.name"
+          ></sn-input>
+        </div>
+        <div ng-if="!$ctrl.updateTenantForm" class="col-xs-6 stack-m">
+          <sn-input
+            field-label="Email"
+            on-update="$ctrl.changeCurrTenant('email', $event.value)"
+            field-value="$ctrl.currTenant.email"
+          ></sn-input>
+        </div>
+        <div ng-if="!$ctrl.updateTenantForm" class="col-xs-12 stack-m">
+          <sn-input
+            field-label="Description"
+            field-type="text"
+            on-update="$ctrl.changeCurrTenant('description', $event.value)"
+            field-value="$ctrl.currTenant.description"
+          ></sn-input>
+        </div>
+        <div ng-if="!$ctrl.updateTenantForm" class="col-xs-12 stack-m">
+          <sn-input
+            field-label="Password"
+            field-type="password"
+            on-update="$ctrl.changeCurrTenant('password', $event.value)"
+          ></sn-input>
+        </div>
+        <div ng-if="!$ctrl.updateTenantForm" class="col-xs-12 stack-m">
+          <sn-input
+            field-label="Password (Confirmation)"
+            field-type="password"
+          ></sn-input>
+        </div>
       </article>
       <footer class="row">
         <div class="col-xs-12">
           <button ng-click="$ctrl.toggleCreate()" class="sn-button">{{$ctrl.viewStrings.cancel}}</button>
-          <button ng-click="$ctrl.createOrUpdateTenant()" class="sn-button sn-button--primary">{{$ctrl.isCreate ? $ctrl.viewStrings.create : $ctrl.viewStrings.update}}</button>
+          <button ng-disabled="$ctrl.disabledCreate" ng-click="$ctrl.createOrUpdateTenant()" class="sn-button sn-button--primary">{{$ctrl.isCreate ? $ctrl.viewStrings.create : $ctrl.viewStrings.update}}</button>
         </div>
       </footer>
     </div>

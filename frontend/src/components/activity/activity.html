@@ -1,0 +1,28 @@
+<section>
+  <h4 class="sn-uppertitle">{{::$ctrl.viewStrings.title}}</h4>
+  <div class="sn-card" auto-resizer>
+    <header class="sn-card__header">
+      <h5 class="header__title">{{::$ctrl.viewStrings.tableTitle}}</h5>
+    </header>
+    <!-- DATEPICKERS -->
+    <div class="row">
+      <div class="col-lg-4 col-md-6 col-sm-12">
+          <sn-date-picker class="datepickerClass pl0 pb10 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+              label="Start" current-date="$ctrl.LastStartDate" on-change="$ctrl.setFilter({ key: 'startDate', value: $event.value})">
+          </sn-date-picker>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-12">
+          <sn-date-picker class="datepickerClass pl0 pr0 pb10 col-xl-12 col-lg-12 col-md-12 col-sm-12"
+              label="End" current-date="$ctrl.LastEndDate" on-change="$ctrl.setFilter({ key: 'endDate', value: $event.value})">
+          </sn-date-picker>
+      </div>
+    </div>
+    <s-table headers="$ctrl.headers" items="$ctrl.items" loading="$ctrl.isLoading" buttonclicked="$ctrl.buttonClicked"></s-table>
+    <div style="text-align: right; margin-top: 6px; margin-bottom: 16px;">
+      <button class="{{$ctrl.styles['prev-button']}}" ng-click="$ctrl.changePage(-1)"></button>
+      <button class="{{$ctrl.styles['next-button']}}" ng-click="$ctrl.changePage(1)"></button>
+      <span class="sn-table__footer">
+        Showing {{$ctrl.paging.page}} to {{$ctrl.paging.totalPage}} ({{$ctrl.paging.total}} records)
+      </span>
+    </div>
+</section>

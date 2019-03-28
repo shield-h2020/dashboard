@@ -56,8 +56,8 @@ export class CatalogueService {
 
   applyFeeBilling({ fee, nsId, etag }) {
     const data = JSON.stringify({ fee: fee });
-    return this.http.patch(`${API_BILLING}/${nsId}`, data,
-      { headers: { 'If-Match': etag } })
+    return this.http.patch(`${API_BILLING}/${nsId}`,
+    data, { headers: { 'If-Match': etag } })
       .then(response => response.data);
   }
 

@@ -141,7 +141,6 @@ export const DashboardComponent = {
 					}
 					else {
 						this.scope.end = moment(this.scope.edate).endOf('month').format('YYYY-MM-DDTHH:mm:ss') + '.000Z';
-						//console.log(this.scope.end);
 						timeAgr = 'time(4w)';
 						this.dayTimeAgr = DAY_TIME_AGR.month;
 					}
