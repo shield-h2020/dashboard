@@ -155,7 +155,6 @@ class BillingActions:
         # log activity
         activity_logger.log("Onboarded vNSF {} ({})".format(json_data['vnsf_name'], json_data['vnsf_id']), token)
 
-
     @staticmethod
     def _get_vnsf_id_from_store(vnsf_record_id):
         """
